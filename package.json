@@ -1,0 +1,29 @@
+{
+  "name": "create-new-app",
+  "version": "1.0.0",
+  "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qodesmith/create-new-app"
+  },
+  "keywords": [
+    "react",
+    "webpack",
+    "scss",
+    "tachyons",
+    "express",
+    "mongo",
+    "mongodb"
+  ],
+  "author": "Qodesmith",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "command-line-args": "^4.0.7",
+    "validate-npm-package-name": "^3.0.0"
+  }
+}

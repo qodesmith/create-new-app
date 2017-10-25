@@ -1,0 +1,15 @@
+@import 'tachyons';
+@import 'colors';
+
+#app {
+  color: $white-90;
+  background: $black-80;
+  line-height: 1.35;
+  font-family: monospace;
+  min-height: 100vh;
+
+  header {
+    background: gold;
+    color: $black-80;
+  }
+}

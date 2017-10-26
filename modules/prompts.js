@@ -1,3 +1,5 @@
+const readline = require('readline');
+
 // Prompts the user with a yes/no question and stores the answer.
 function yesNo(answers, q, key) {
   // Create the readline instance that is the basis for our 'prompt'.

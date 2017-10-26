@@ -2,6 +2,8 @@
   README inspired by:
   * https://github.com/google/web-starter-kit
   * https://github.com/facebookincubator/create-react-app
+
+  TODO - look at https://github.com/kriasoft/react-starter-kit
 -->
 
 # Create New App

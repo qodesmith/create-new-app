@@ -55,20 +55,35 @@ While Webpack certainly seems like magic, let's just go over what that "magic" i
 
 #### Development Server
 
-This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let the Webpack handle those changes. Wnat hot-module-reloading? Pass `--hmr` on the CLI and enjoy.
+This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let the Webpack handle those changes.
 
+#### Babel
 
-## Features
+Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a build.
 
-| Feature | Summary |
-| ------- | ------- |
-| React | Our front-end weapon of choice! |
-| Sass | CSS pre-processing for the win. |
-| Tachyons | Our starting point for consistent styling. |
-| MongoDB | Full-stack JavaScript! Life is easier with POJO's. |
-| Express | Our Node API server. |
-| Webpack | * [WebpackCleanupPlugin](https://goo.gl/hTXPtE) - used to destroy & rebuild the `dist` folder each build.<br>* [ExtractTextPlugin](https://goo.gl/rHd8B2) - removes the css data that's in the JS bundle and extracts it into a css file.<br>* [PurifyCSSPlugin](https://goo.gl/QNGpEi) - removes (mostly) unused selectors from your CSS.<br>* [HtmlWebpackPlugin](https://goo.gl/og4sNK) - generates the `index.html` file.<br>* [UglifyJsPlugin](https://goo.gl/sB6d6b) - super-sexy minified code. |
-| PostCSS | Autoprefixing and media-query condensing. |
+#### Postcss
+
+SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles and smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together.
+
+#### PurifyCSS
+
+Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-webpack! It's not 100% fool-proof, but hey. It's something. And it's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
+
+#### UglifyJsPlugin
+
+[UglifyJsPlugin](https://goo.gl/sB6d6b) delivers super-sexy minified JavaScript.
+
+#### WebpackCleanupPlugin
+
+[WebpackCleanupPlugin](https://goo.gl/hTXPtE) is used to destroy & rebuild the `dist` folder each build.
+
+#### ExtractTextPlugin
+
+[ExtractTextPlugin](https://goo.gl/rHd8B2) removes the css data that's in the JS bundle and extracts it into a css file.
+
+#### HtmlWebpackPlugin
+
+[HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag referencing the build assets.
 
 ## Options
 

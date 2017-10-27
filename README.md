@@ -8,9 +8,11 @@
 
 # Create New App
 
-You want to make apps. You want to make apps with React. Excellent choice. And [Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And you've been hip to [Tachyons](http://tachyons.io/) for some time now, but alas... CRA doesn't include it. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do? **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
+You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
-It's just like CRA but full stack with options. You get a [Webpack](https://webpack.js.org/configuration/) development server and build which ties all-the-things together. Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
+[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And you've been hip to [Tachyons](http://tachyons.io/) for some time now, but alas... CRA doesn't include it. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do? **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
+
+It's just like CRA but with full stack options. You get a [Webpack](https://webpack.js.org/configuration/) development server and build which ties all-the-things together. Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
 
 ## Installation
 
@@ -45,7 +47,7 @@ create-new-app awesomeness --api /api --apiport 1234
 # You've decided you want a new API. Express is set up for you:
 create-new-app awesomeness -e
 
-# You want a new API, but would like MongoDB wired up & ready to go:
+# You want a new API with MongoDB wired up & ready to go:
 create-new-app awesomeness -m
 ```
 
@@ -55,7 +57,7 @@ While Webpack certainly seems like magic, let's just go over what that "magic" i
 
 #### Development Server
 
-This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let the Webpack handle those changes.
+This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let the Webpack refresh that screen.
 
 #### Babel
 
@@ -67,7 +69,7 @@ SCSS is included and get's compiled down to CSS. But that's half the magic. [Pos
 
 #### PurifyCSS
 
-Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-webpack! It's not 100% fool-proof, but hey. It's something. And it's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
+Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-webpack)! It's not an [exact](https://goo.gl/nznWhV) science, but hey, it's something. And it's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
 
 #### UglifyJsPlugin
 
@@ -75,7 +77,7 @@ Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-
 
 #### WebpackCleanupPlugin
 
-[WebpackCleanupPlugin](https://goo.gl/hTXPtE) is used to destroy & rebuild the `dist` folder each build.
+[WebpackCleanupPlugin](https://goo.gl/hTXPtE) is used to destroy & rebuild the `dist` folder each build. It's the folder that will contain your app's bundled assets.
 
 #### ExtractTextPlugin
 
@@ -83,7 +85,7 @@ Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-
 
 #### HtmlWebpackPlugin
 
-[HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag referencing the build assets.
+[HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
 
 ## Options
 

@@ -28,9 +28,7 @@ const answers = {};
 
 
 process.on('unhandledRejection', err => {
-  if (err.name === 'RangeError') {
-    console.log(err);
-  }
+  console.log(err);
 });
 
 

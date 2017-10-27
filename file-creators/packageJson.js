@@ -35,7 +35,7 @@ function packageJson(answers) {
   const lastIndex = keywords.length - 1;
   const kwds = keywords.reduce((acc, kw, i) => {
     return `${acc}\n${kwSpaces}"${kw}"${i === lastIndex ? '' : ','}`;
-  });
+  }, '');
   const kwdsArr = keywords.length ? `[${kwds}\n${lastSpaces}]` : '[]';
 
   // Resolve the keywords array.

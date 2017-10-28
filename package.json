@@ -1,6 +1,6 @@
 {
   "name": "create-new-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
   "main": "main.js",
   "scripts": {
@@ -17,7 +17,16 @@
     "tachyons",
     "express",
     "mongo",
-    "mongodb"
+    "mongodb",
+    "generator",
+    "generate",
+    "scaffold",
+    "scaffolding",
+    "development",
+    "app",
+    "cli",
+    "tool",
+    "template"
   ],
   "author": "Qodesmith",
   "license": "MIT",

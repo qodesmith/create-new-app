@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Node built-in modules.
 const fs = require('fs');
 const path = require('path');

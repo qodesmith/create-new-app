@@ -4,7 +4,7 @@ export function didTreeShakingWork() {
   /*
     From the CLI run `npm run build`.
     Check the .js file in the dist folder.
-    If the above string cannot be found, tree shaking worked!
+    If the string below cannot be found, tree shaking worked!
   */
   return 'IF YOU CAN SEE ME THEN TREE SHAKING DID NOT WORK!';
 }

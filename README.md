@@ -226,3 +226,9 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
     </tr>
   </tbody>
 </table>
+
+## TODO's
+
+* Ensure compatibility with Windows & Linux environments
+* Implement PWA's by default with CLI option to disable
+* Implement Jest along with a test for the `App.js` example component

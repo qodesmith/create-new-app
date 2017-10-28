@@ -289,8 +289,9 @@ const webpackConfig = {
     }),
 
     /*
+      https://goo.gl/4L3vEM
       https://goo.gl/sB6d6b - "For the most efficient webpack production build..."
-      https://goo.gl/sB6d6b, https://goo.gl/4L3vEM
+
       Uses uglifyJS v2 (NOT the latest beta release) to minify JavaScript.
 
       *NOTE* - Tree shaking does NOT seem to be working at the moment (9/23/2017).

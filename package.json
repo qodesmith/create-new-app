@@ -1,18 +1,7 @@
 {
   "name": "create-new-app",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
-  "main": "main.js",
-  "bin": {
-    "create-new-app": "./main.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/qodesmith/create-new-app"
-  },
   "keywords": [
     "react",
     "webpack",
@@ -31,8 +20,25 @@
     "tool",
     "template"
   ],
-  "author": "Qodesmith",
+  "homepage": "https://github.com/qodesmith/create-new-app",
+  "bugs": {
+    "url": "https://github.com/qodesmith/create-new-app/issues",
+    "email": "theqodesmith@gmail.com"
+  },
   "license": "MIT",
+  "author": "Qodesmith <theqodesmith@gmail.com> (http://aaroncordova.xyz)",
+  "main": "main.js",
+  "bin": {
+    "create-new-app": "./main.js",
+    "cna": "./main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qodesmith/create-new-app"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "chalk": "^2.1.0",
     "command-line-args": "^4.0.7",

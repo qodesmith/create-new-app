@@ -13,11 +13,13 @@ const cla = require('command-line-args');
 
 // File creators.
 const dotEnv = require('./file-creators/dotEnv');
+const gitIgnore = require('./file-creators/gitIgnore');
 const packageJson = require('./file-creators/packageJson');
 const webpackConfig = require('./file-creators/webpackConfig.js');
 
 // Custom modules.
 const isOnline = require('./modules/isOnline');
+const copyTree = require('./modules/copyTree');
 // const { yesNo, question } = require('./modules/prompts');
 const noName = require('./modules/noName');
 const badName = require('./modules/badName');
@@ -141,7 +143,8 @@ async function ask() {
     offline: isOffline || !!offline,
     title: title || appName,
     description: description || title || titleCase(appName),
-    server: express || mongo
+    server: express || mongo,
+    appDir: `${cwd}/${appName}`
   });
 
   // The api port takes prescedence over the dev server port.
@@ -152,10 +155,10 @@ async function ask() {
 
 // STEP 2
 function createProjectDirectory() {
-  const { appName } = answers;
+  const { appName, appDir } = answers;
 
   // Check if the directory already exists.
-  const exists = fs.existsSync(appName);
+  const exists = fs.existsSync(appDir);
   if (exists) {
     console.log(`The directory ${chalk.green(appName)} already exists.`);
     return console.log('Try a different name.');
@@ -166,47 +169,48 @@ function createProjectDirectory() {
   console.log(`Creating a new app in ${greenDir}${boldName}.`);
 
   // Create the project directory.
-  run(`mkdir ${appName}`);
+  fs.mkdirSync(appDir)
   createFiles();
 }
 
 // STEP 3
 function createFiles() {
-  const { appName, server, mongo } = answers;
+  const { appDir, server, mongo } = answers;
 
   // `.env`
-  fs.writeFileSync(`./${appName}/.env`, dotEnv(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/.env`, dotEnv(answers), 'utf-8');
 
   // `.gitignore`
-  run(`cp ${dir('files/.gitignore')} ./${appName}`);
+  fs.writeFileSync(`${appDir}/.gitignore`, gitIgnore(), 'utf-8');
 
   // `package.json`
-  fs.writeFileSync(`./${appName}/package.json`, packageJson(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/package.json`, packageJson(answers), 'utf-8');
 
   // `postcss.config.js`
-  run(`cp ${dir('files/postcss.config.js')} ./${appName}`);
+  fs.copyFileSync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`);
 
   // `README.md`
-  run(`cp ${dir('files/README.md')} ./${appName}`);
+  fs.copyFileSync(dir('files/README.md'), `${appDir}/README.md`);
 
   // `server.js` (with or without MongoDB options)
-  server && run(`cp ${dir(`files/server${mongo ? '-mongo' : ''}.js`)} ./${appName}/server.js`);
+  server && fs.copyFileSync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`);
+  // server && run(`cp ${dir(`files/server${mongo ? '-mongo' : ''}.js`)} ./${appName}/server.js`);
 
   // `webpack.config.js`
-  fs.writeFileSync(`./${appName}/webpack.config.js`, webpackConfig(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(answers), 'utf-8');
 
   // `api` directory tree.
-  mongo && run(`cp -rf ${dir('files/api')} ./${appName}`);
+  mongo && copyTree(dir('./files/api'), appDir);
 
   // `src` directory tree.
-  run(`cp -rf ${dir('files/src')} ./${appName}`);
+  copyTree(dir('./files/src'), appDir);
 
   installDependencies();
 }
 
 // STEP 4
 function installDependencies() {
-  const { appName, mongo, server, offline } = answers;
+  const { appName, appDir, mongo, server, offline } = answers;
   const forceOffline = offline ? '--offline' : ''; // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : '';
   const {
@@ -229,7 +233,7 @@ function installDependencies() {
     run(`npm ${forceOffline} i ${dependencies.join(' ')}`);
   }
 
-  const cyanDir = chalk.cyan(cwd);
+  const cyanDir = chalk.cyan(appDir);
   const boldName = chalk.bold(appName);
   const serverMsg = server ? 'and Express servers' : 'server';
 
@@ -247,11 +251,11 @@ function installDependencies() {
     console.log(`    Starts the Express server (no development server).\n`);
   }
 
-  console.log(`\nWe suggest that you begin by typing:\n`);
+  console.log(`\nGet started by typing:\n`);
   console.log(`  ${chalk.cyan('cd')} ${appName}`)
   console.log(`  ${chalk.cyan('npm start')}\n`);
 
-  console.log('Happy hacking!');
+  console.log('JavaScript rules!');
 }
 
 ask(); // Push the 1st domino and let's get this show on the road!

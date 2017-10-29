@@ -194,7 +194,6 @@ function createFiles() {
 
   // `server.js` (with or without MongoDB options)
   server && fs.copyFileSync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`);
-  // server && run(`cp ${dir(`files/server${mongo ? '-mongo' : ''}.js`)} ./${appName}/server.js`);
 
   // `webpack.config.js`
   fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(answers), 'utf-8');

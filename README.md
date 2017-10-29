@@ -24,6 +24,9 @@ npm install -g create-new-app
 
 ```
 create-new-app <app-name> [options]
+
+# Shorthand:
+cna <app-name> [options]
 ```
 
 ### Simplest Example

@@ -1,5 +1,8 @@
-const { mkdirSync, copyFileSync, statSync, readdirSync } = require('fs');
+let { mkdirSync, copyFileSync, statSync, readdirSync } = require('fs');
 const ignores = ['.DS_Store'];
+
+// Node < 8 doesn't have `copyFileSync` :/
+if (!copyFileSync) copyFileSync = require('./copyFileSync');
 
 // Copies the entire contents of one tree to a given destination.
 function copyTree(sourceFolder, destination) {

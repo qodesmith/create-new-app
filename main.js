@@ -45,7 +45,7 @@ function dir(text) {
 }
 
 // Node < 8 doesn't have `copyFileSync` :/
-if (!fs.copyFileSync) fs.copyfileSync = require('./modules/copyFileSync');
+if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
 
 /*
   Options

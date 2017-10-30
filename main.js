@@ -32,7 +32,7 @@ const answers = {};
 
 
 process.on('unhandledRejection', err => {
-  console.log(err);
+  // console.log(err);
 });
 
 
@@ -191,7 +191,7 @@ function createProjectDirectory() {
 
 // STEP 4
 function createFiles() {
-  const { appDir, server, mongo } = answers;
+  const { appDir, server, mongo, express } = answers;
 
   // `.env`
   fs.writeFileSync(`${appDir}/.env`, dotEnv(answers), 'utf-8');
@@ -216,6 +216,11 @@ function createFiles() {
 
   // `api` directory tree.
   mongo && copyTree(dir('./files/api'), appDir);
+  if (express && !mongo) {
+    const apiDir = `${appDir}/api`;
+    fs.mkdirSync(apiDir);
+    fs.copyFileSync(dir('files/express-home-route.js'), `${apiDir}/home.js`);
+  }
 
   // `src` directory tree.
   copyTree(dir('./files/src'), appDir);

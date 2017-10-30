@@ -5,11 +5,7 @@ const { exec } = require('child_process');
 function isOnline() {
   return new Promise((resolve, reject) => {
     exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
-      if (err) {
-        reject(false);
-      } else {
-        resolve(!!stdout);
-      }
+      err ? reject(false) : resolve(!!stdout);
     });
   });
 }

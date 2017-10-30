@@ -114,7 +114,7 @@ const optionDefinitions = [
 ];
 
 // STEP 1
-isOnline().then(res => ask(res)).catch(() => ask(false));
+isOnline().then(res => ask(res));
 
 
 // STEP 2
@@ -140,7 +140,6 @@ function ask(online) {
 
   if (!appName) return noName();
   if (!validation.validForNewPackages) return badName(appName, validation);
-
   if (offline || !online) {
     !online && console.log(chalk.yellow('You appear to be offline.'));
     console.log(chalk.yellow('Installing via local npm cache.'));

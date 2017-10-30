@@ -2,14 +2,16 @@
 
 const { exec } = require('child_process');
 
-async function isOnline() {
-  const [nope, yup] = await new Promise(resolve => {
+function isOnline() {
+  return new Promise((resolve, reject) => {
     exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
-      resolve([err || null, stdout || null]);
+      if (err) {
+        reject(false);
+      } else {
+        resolve(!!stdout);
+      }
     });
   });
-
-  return !!yup;
 }
 
 module.exports = isOnline;

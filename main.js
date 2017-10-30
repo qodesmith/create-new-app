@@ -113,9 +113,12 @@ const optionDefinitions = [
   { name: 'port', alias: 'p', type: val => portValidator(val, 'dev'), defaultValue: 3000 }
 ];
 
-
 // STEP 1
-async function ask() {
+isOnline().then(res => ask(res)).catch(() => ask(false));
+
+
+// STEP 2
+function ask(online) {
   // const [nodeLocation, thisFile, ...args] = process.argv;
   const options = cla(optionDefinitions, {partial: true});
   const {
@@ -138,16 +141,15 @@ async function ask() {
   if (!appName) return noName();
   if (!validation.validForNewPackages) return badName(appName, validation);
 
-  const isOffline = !await isOnline();
-  if (offline || isOffline) {
-    isOffline && console.log(chalk.yellow('You appear to be offline.'));
+  if (offline || !online) {
+    !online && console.log(chalk.yellow('You appear to be offline.'));
     console.log(chalk.yellow('Installing via local npm cache.'));
   }
 
   // Merge all-the-things into the `answers` object.
   Object.assign(answers, options, {
     api: typeof api === 'string' ? api.replace(/ /g, '') : null,
-    offline: isOffline || !!offline,
+    offline: !online || !!offline,
     title: title || appName,
     description: description || title || titleCase(appName),
     server: express || mongo,
@@ -160,7 +162,7 @@ async function ask() {
   createProjectDirectory();
 }
 
-// STEP 2
+// STEP 3
 function createProjectDirectory() {
   const { appName, appDir, force } = answers;
 
@@ -185,7 +187,7 @@ function createProjectDirectory() {
   createFiles();
 }
 
-// STEP 3
+// STEP 4
 function createFiles() {
   const { appDir, server, mongo } = answers;
 
@@ -219,7 +221,7 @@ function createFiles() {
   installDependencies();
 }
 
-// STEP 4
+// STEP 5
 function installDependencies() {
   const { appName, appDir, mongo, server, offline } = answers;
   const forceOffline = offline ? '--offline' : ''; // https://goo.gl/aZLDLk
@@ -268,5 +270,3 @@ function installDependencies() {
 
   console.log('JavaScript rules!');
 }
-
-ask(); // Push the 1st domino and let's get this show on the road!

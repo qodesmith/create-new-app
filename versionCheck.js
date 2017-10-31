@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 // Possible permissions errors? - https://goo.gl/mH9n3j
 
-process.on()
-
 const nodeVersion = process.versions.node;
 
 if (nodeVersion[0] < 6) {

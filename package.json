@@ -1,6 +1,6 @@
 {
   "name": "create-new-app",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
   "keywords": [
     "react",
@@ -43,5 +43,8 @@
     "chalk": "^2.1.0",
     "command-line-args": "^4.0.7",
     "validate-npm-package-name": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }

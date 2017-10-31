@@ -1,15 +1,27 @@
 #!/usr/bin/env node
 
+// External modules.
+const validateName = require('validate-npm-package-name');
+const chalk = require('chalk');
+const cla = require('command-line-args');
+
+// Before going further, ensure we have Node >= 6 & npm >= 3 installed.
+const nodeVersion = process.versions.node;
+if (nodeVersion[0] < 6) {
+  const msg1 = 'Create New App requires Node >= 6 and npm >= 3.';
+  const msg2 = 'Please upgrade. The easiest way is to use Node Version Manager:';
+  const msg3 = '  https://github.com/creationix/nvm';
+
+  console.log(chalk.yellow(msg1));
+  console.log(chalk.yellow(msg2));
+  return console.log(msg3);
+}
+
 // Node built-in modules.
 const fs = require('fs');
 const path = require('path');
 // const readline = require('readline');
 const { execSync } = require('child_process');
-
-// External modules.
-const validateName = require('validate-npm-package-name');
-const chalk = require('chalk');
-const cla = require('command-line-args');
 
 // File creators.
 const dotEnv = require('./file-creators/dotEnv');

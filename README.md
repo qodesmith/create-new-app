@@ -1,12 +1,26 @@
-<!--
-  README inspired by:
-  * https://github.com/google/web-starter-kit
-  * https://github.com/facebookincubator/create-react-app
+```
+                         __
+                        /\ \__
+  ___  _ __   __     __ \ \ ,_\    __
+ /'___/\`'__/'__`\ /'__`\\ \ \/  /'__`\
+/\ \__\ \ \/\  __//\ \L\.\\ \ \_/\  __/
+\ \____\ \_\ \____\ \__/.\_\ \__\ \____\
+ \/____/\/_/\/____/\/__/\/_/\/__/\/____/
+  ___      __  __  __  __
+/' _ `\  /'__`/\ \/\ \/\ \
+/\ \/\ \/\  __\ \ \_/ \_/ \
+\ \_\ \_\ \____\ \___x___/'
+ \/_/\/_/\/____/\/__//__/
+   __    _____   _____    By: The Qodesmith
+ /'__`\ /\ '__`\/\ '__`\
+/\ \L\.\\ \ \L\ \ \ \L\ \
+\ \__/.\_\ \ ,__/\ \ ,__/
+ \/__/\/_/\ \ \/  \ \ \/
+           \ \_\   \ \_\
+            \/_/    \/_/
+```
 
-  TODO - look at https://github.com/kriasoft/react-starter-kit
--->
-
-# Create New App
+# Create New App &middot; [![npm version](https://badge.fury.io/js/create-new-app.svg)](https://badge.fury.io/js/create-new-app)
 
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
@@ -16,13 +30,13 @@ It's just like CRA but with full stack options. You get a [Webpack](https://webp
 
 ## Installation
 
-```
+```shell
 npm install -g create-new-app
 ```
 
 ## Usage
 
-```
+```shell
 create-new-app <app-name> [options]
 
 # Shorthand:
@@ -31,16 +45,17 @@ cna <app-name> [options]
 
 ### Simplest Example
 
-```
+```shell
 create-new-app awesomeness
 cd awesomeness
 npm start
 ```
+
 ^^^ #Boom. Your app is running on `http://localhost:3000`. Simple, no? Let's look at some other examples...
 
 ### Other Examples
 
-```
+```shell
 # You already have a local API built & running at `localhost:1234`:
 create-new-app awesomeness --apiport 1234
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const nodeVersion = process.versions.node;
 
 if (nodeVersion[0] < 6) {

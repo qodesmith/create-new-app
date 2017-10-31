@@ -1,15 +1,21 @@
 #!/usr/bin/env node
+// Possible permissions errors? - https://goo.gl/mH9n3j
+
+process.on()
 
 const nodeVersion = process.versions.node;
 
 if (nodeVersion[0] < 6) {
-  const msg1 = 'Create New App requires Node >= 6 and npm >= 3.';
-  const msg2 = 'Please upgrade. The easiest way is to use Node Version Manager:';
-  const msg3 = '  https://github.com/creationix/nvm';
+  const message = `
+    +-------------------------------------------------------------------+
+    |                                                                   |
+    |  Create New App requires Node >= 6 and npm >= 3.                  |
+    |  Please upgrade. The easiest way is to use Node Version Manager:  |
+    |    https://github.com/creationix/nvm                              |
+    |                                                                   |
+    +-------------------------------------------------------------------+
+  `;
 
-  console.log(msg1);
-  console.log(msg2);
-  console.log(msg3);
-
+  console.log(message);
   process.exit(1);
 }

@@ -1,6 +1,6 @@
 {
   "name": "create-new-app",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
   "keywords": [
     "react",
@@ -37,7 +37,8 @@
     "url": "https://github.com/qodesmith/create-new-app"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "./versionCheck.js"
   },
   "dependencies": {
     "chalk": "^2.1.0",

@@ -222,6 +222,9 @@ function createFiles() {
     fs.copyFileSync(dir('files/express-home-route.js'), `${apiDir}/home.js`);
   }
 
+  // `dist` directory tree.
+  copyTree(dir('./files/dist'), appDir);
+
   // `src` directory tree.
   copyTree(dir('./files/src'), appDir);
 

@@ -221,7 +221,7 @@ const webpackConfig = {
       Used instead of `CleanWebpackPlugin` - https://goo.gl/PtC14x
     */
     new WebpackCleanupPlugin({
-      exclude: ['favicon.ico']
+      exclude: ['favicon.ico'] // https://goo.gl/KQxNVb
     }),
 
     /*

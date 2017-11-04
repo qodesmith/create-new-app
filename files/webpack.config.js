@@ -220,7 +220,9 @@ const webpackConfig = {
       Used to destroy & rebuild the dist folder each build.
       Used instead of `CleanWebpackPlugin` - https://goo.gl/PtC14x
     */
-    new WebpackCleanupPlugin(),
+    new WebpackCleanupPlugin({
+      exclude: ['favicon.ico']
+    }),
 
     /*
       https://goo.gl/rHd8B2
@@ -249,8 +251,8 @@ const webpackConfig = {
     }),
 
     /*
-      https://goo.gl/og4sNK, https://goo.gl/pwnnmX
-      Generates the index.html file.
+      https://goo.gl/pwnnmX, https://goo.gl/og4sNK
+      Generates the `index.html` file.
     */
     new HtmlWebpackPlugin({
       // https://goo.gl/9UFR8u
@@ -264,11 +266,12 @@ const webpackConfig = {
         collapseWhitespace: true
       },
 
+      // Path the the template file.
+      template: path.resolve(__dirname, 'src/index.ejs'),
+
       /*****************************
         Customized things below...
       *****************************/
-
-      template: path.resolve(__dirname, 'src/index.ejs'),
 
       // Will color the url bar when viewed on a mobile device.
       mobileThemeColor: 'black',
@@ -294,7 +297,7 @@ const webpackConfig = {
 
       Uses uglifyJS v2 (NOT the latest beta release) to minify JavaScript.
 
-      *NOTE* - Tree shaking does NOT seem to be working at the moment (9/23/2017).
+      *NOTE* - Tree shaking does NOT seem to be working in UglifyJs at the moment (9/23/2017).
       See the workaround implemented with 'babel-loader' and 'env' above.
       Tree shaking *should* be handled by UglifyJS alone, but its not at the moment.
       Github issues:

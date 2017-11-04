@@ -7,7 +7,7 @@ function packageJson(answers) {
     `  "description": "${description}",`,
     server && `  "main": "server.js",`,
     `  "scripts": {`,
-    `    "build": "cross-env NODE_ENV=production webpack"`,
+    `    "build": "cross-env NODE_ENV=production webpack",`,
     server && `    "build:dev": "cross-env NODE_ENV=development webpack",`,
     server && `    "local": "npm run server:api",`,
     server && `    "server:dev": "webpack-dev-server --open",`,

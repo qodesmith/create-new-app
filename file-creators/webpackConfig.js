@@ -4,7 +4,7 @@ const path = require('path');
 function webpackConfig(answers) {
   const { server, port, apiport, api, title, description } = answers;
   const filePath = path.resolve(__dirname, '../files/webpack.config.js');
-  const file = fs.readFileSync(filePath)
+  const file = fs.readFileSync(filePath, 'utf-8')
     .toString()
     .replace('PLACEHOLDER-API', api)
     .replace('PLACEHOLDER-PORT', port)

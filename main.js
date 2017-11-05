@@ -22,6 +22,7 @@ const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
 // const { yesNo, question } = require('./modules/prompts');
 const showVersion = require('./modules/showVersion');
+const showHelp = require('./modules/showHelp');
 const noName = require('./modules/noName');
 const badName = require('./modules/badName');
 const portValidator = require('./modules/portValidator');
@@ -104,6 +105,7 @@ if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
 const optionDefinitions = [
   { name: 'appName', type: String, defaultOption: true },
   { name: 'version', alias: 'v', type: Boolean },
+  { name: 'help', alias: 'h', type: Boolean },
   { name: 'offline', alias: 'o', type: Boolean },
   { name: 'title', alias: 't', type: String },
   { name: 'force', alias: 'f', type: Boolean }, // Use with caution.
@@ -133,6 +135,7 @@ function ask(online) {
   const {
     appName,
     version,
+    help,
     offline,
     title,
     author,
@@ -149,6 +152,7 @@ function ask(online) {
   const validation = validateName(appName);
 
   if (version) return showVersion();
+  if (help) return showHelp();
   if (!appName) return noName();
   if (!validation.validForNewPackages) return badName(appName, validation);
   if (offline || !online) {

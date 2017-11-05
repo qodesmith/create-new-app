@@ -21,6 +21,7 @@ const webpackConfig = require('./file-creators/webpackConfig.js');
 const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
 // const { yesNo, question } = require('./modules/prompts');
+const showVersion = require('./modules/showVersion');
 const noName = require('./modules/noName');
 const badName = require('./modules/badName');
 const portValidator = require('./modules/portValidator');
@@ -57,6 +58,10 @@ if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
     * converted to title-case for the webapge title (webpack) if `title` not provided
     * mongoURI and mongoSession variables in `.env` use this name (if `mongo` is used)
     * set as a variable in `.env`
+
+  version
+    * displays the current version of this package
+    * ignores any other CLI arguments and only displays the version number
 
   offline
     * forces the `npm install` to use local cache
@@ -98,6 +103,7 @@ if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
 
 const optionDefinitions = [
   { name: 'appName', type: String, defaultOption: true },
+  { name: 'version', alias: 'v', type: Boolean },
   { name: 'offline', alias: 'o', type: Boolean },
   { name: 'title', alias: 't', type: String },
   { name: 'force', alias: 'f', type: Boolean }, // Use with caution.
@@ -126,6 +132,7 @@ function ask(online) {
   const options = cla(optionDefinitions, {partial: true});
   const {
     appName,
+    version,
     offline,
     title,
     author,
@@ -141,6 +148,7 @@ function ask(online) {
   } = options;
   const validation = validateName(appName);
 
+  if (version) return showVersion();
   if (!appName) return noName();
   if (!validation.validForNewPackages) return badName(appName, validation);
   if (offline || !online) {

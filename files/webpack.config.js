@@ -85,7 +85,7 @@ const webpackConfig = {
                 https://goo.gl/sBmiwZ - A comment on the above post shows that we
                 can use `modules: false`.
 
-                https://goo.gl/fg7zPE - `babel-preset-env` documentation.
+                https://goo.gl/aAxYAq - `babel-preset-env` documentation.
               */
               // 'env',
               [

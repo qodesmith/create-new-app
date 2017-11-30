@@ -104,7 +104,14 @@ const webpackConfig = {
                 https://goo.gl/GKDWnQ, https://goo.gl/8BUXWt
                 Need for certain uses of `...rest`.
               */
-              'transform-object-rest-spread'
+              'transform-object-rest-spread',
+
+              /*
+                https://goo.gl/tdqE4q, https://goo.gl/4gJkJh
+                Allows us to use arrow functions as methods on classes
+                so we don't need to do bindings in the constructor.
+              */
+              'transform-class-properties'
             ]
           }
         }

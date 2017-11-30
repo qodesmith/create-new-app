@@ -4,7 +4,7 @@ function dependencies(mongo) {
     'babel-core',
     'babel-loader',
     'babel-plugin-transform-object-rest-spread',
-    '@babel/preset-env',
+    'babel-preset-env',
     'babel-preset-react',
     'cross-env',
     'css-loader',

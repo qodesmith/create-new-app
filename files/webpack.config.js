@@ -89,7 +89,7 @@ const webpackConfig = {
               */
               // 'env',
               [
-                '@babel/preset-env',
+                'env',
                 {
                   targets: {
                     browsers: 'last 2 versions'

@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurifyCSSPlugin = require('purifycss-webpack');
 const webpack = require('webpack');
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 
 console.log(`
@@ -89,7 +89,7 @@ const webpackConfig = {
               */
               // 'env',
               [
-                'env',
+                '@babel/preset-env',
                 {
                   targets: {
                     browsers: 'last 2 versions'
@@ -304,38 +304,18 @@ const webpackConfig = {
         - https://github.com/webpack/webpack/issues/2867
         - https://github.com/webpack/webpack/issues/4784
     */
-    isProd && new UglifyJsPlugin({ // Minify options: https://goo.gl/3UaFRm
-      compress: { // https://goo.gl/Hn5iiE
-        sequences: 200,
-        properties: true,
-        dead_code: true,
-        drop_debugger: true,
-        conditionals: true,
-        evaluate: true,
-        booleans: true,
-        // typeofs: false, // Throws `unsupported` error.
-        loops: true,
-        unused: true,
-        if_return: true,
-        // inline: true, // Throws `unsupported` error.
-        join_vars: true,
-        reduce_vars: true,
-        warnings: true,
-        negate_iife: true,
-        passes: 2
-      },
-      mangle: { // https://goo.gl/6Aq8DB
-        toplevel: true
-      },
-      output: { // https://goo.gl/Qr5uKx
-        bracketize: false,
-        comments: false,
-        keep_quoted_props: false,
-        preamble: '// Qode Creative - JavaScript awesomeness.',
-        quote_keys: false,
-        quote_style: 0
-      },
-      ie8: false
+    isProd && new UglifyJsPlugin({
+      uglifyOptions: { // https://goo.gl/sShtou, https://goo.gl/3UaFRm
+        compress: { // https://goo.gl/Hn5iiE
+          passes: 2,
+          warnings: true
+        },
+        mangle: { // https://goo.gl/6Aq8DB
+          toplevel: true,
+          safari10: true
+        },
+        toplevel: true // Enables top level var & fxn mangling / dropping unused vars & fxns.
+      }
     })
   ].filter(Boolean)
 };

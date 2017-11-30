@@ -4,7 +4,7 @@ function dependencies(mongo) {
     'babel-core',
     'babel-loader',
     'babel-plugin-transform-object-rest-spread',
-    'babel-preset-env',
+    '@babel/preset-env',
     'babel-preset-react',
     'cross-env',
     'css-loader',
@@ -25,6 +25,7 @@ function dependencies(mongo) {
     'sass-loader',
     'style-loader',
     'tachyons-sass',
+    'uglifyjs-webpack-plugin',
     'webpack',
     'webpack-cleanup-plugin',
     'webpack-dev-middleware',
@@ -53,6 +54,5 @@ function dependencies(mongo) {
     dependencies
   };
 }
-
 
 module.exports = dependencies;

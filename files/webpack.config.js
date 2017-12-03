@@ -6,7 +6,7 @@ const glob = require('glob-all');
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PurifyCSSPlugin = require('purifycss-webpack');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -240,16 +240,13 @@ const webpackConfig = {
     new ExtractTextPlugin('styles.[hash].css'),
 
     /*
-      https://goo.gl/QNGpEi
-      Issue with Tachyons: https://goo.gl/nznWhV
-      Removes (mostly) unused selectors from your CSS.
+      https://goo.gl/hkBPMd
+      Removes unused selectors from your CSS.
       This will use the output of the above `ExtractTextPlugin`
       as the asset to purify, searching the files within the paths option.
     */
-    isProd && new PurifyCSSPlugin({
-      minimize: isProd,
-      verbose: true,
-      purifyOptions: { info: true },
+    isProd && new PurgecssPlugin({
+      styleExtensions: ['.css'],
       paths: glob.sync([
         // path.resolve(__dirname, 'dist/*.html'),
         // path.resolve(__dirname, 'dist/**/*.css'),
@@ -302,14 +299,7 @@ const webpackConfig = {
       https://goo.gl/4L3vEM
       https://goo.gl/sB6d6b - "For the most efficient webpack production build..."
 
-      Uses uglifyJS v2 (NOT the latest beta release) to minify JavaScript.
-
-      *NOTE* - Tree shaking does NOT seem to be working in UglifyJs at the moment (9/23/2017).
-      See the workaround implemented with 'babel-loader' and 'env' above.
-      Tree shaking *should* be handled by UglifyJS alone, but its not at the moment.
-      Github issues:
-        - https://github.com/webpack/webpack/issues/2867
-        - https://github.com/webpack/webpack/issues/4784
+      Uses uglifyJS v3 to minify JavaScript.
     */
     isProd && new UglifyJsPlugin({
       uglifyOptions: { // https://goo.gl/sShtou, https://goo.gl/3UaFRm

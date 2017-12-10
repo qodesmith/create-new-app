@@ -87,9 +87,9 @@ Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a buil
 
 SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles and smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together.
 
-#### PurifyCSS
+#### Purgecss
 
-Automatically [removes unused CSS](https://github.com/webpack-contrib/purifycss-webpack)! It's not an [exact](https://goo.gl/nznWhV) science, but hey, it's something. And it's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
+Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack-plugin)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
 
 #### UglifyJsPlugin
 
@@ -249,6 +249,8 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
 
 ## TODO's
 
+* Include Redux as an option (or default?)
+* Include `redux-first-router` as an option
 * Implement PWA's by default with CLI option to disable
 * Implement Jest along with a test for the `App.js` example component
 * Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV

@@ -223,6 +223,17 @@ const webpackConfig = {
   */
   plugins: [
     /*
+      https://goo.gl/SZjjmC
+      Make global variables available to the app.
+      This plugin does direct text replacement, so strings
+      should be wrapped in JSON.stringify.
+    */
+    new webpack.DefinePlugin({
+      __DEV__: process.env.NODE_ENV === 'development',
+      __PROD__: isProd
+    }),
+
+    /*
       https://goo.gl/hTXPtE
       Used to destroy & rebuild the dist folder each build.
       Used instead of `CleanWebpackPlugin` - https://goo.gl/PtC14x

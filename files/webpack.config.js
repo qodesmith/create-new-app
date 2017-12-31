@@ -9,6 +9,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const whitelister = require('purgecss-whitelister');
 
 
 console.log(`
@@ -257,12 +258,31 @@ const webpackConfig = {
       as the asset to purify, searching the files within the paths option.
     */
     isProd && new PurgecssPlugin({
+      keyframes: false, // https://goo.gl/bACbDW
       styleExtensions: ['.css'],
       paths: glob.sync([
         // path.resolve(__dirname, 'dist/*.html'),
         // path.resolve(__dirname, 'dist/**/*.css'),
         path.resolve(__dirname, 'src/**/*.js')
-      ], { nodir: true }) // `nodir` is a glob thing - https://goo.gl/5sLRY1.
+      ]),
+      // whitelist: whitelister(path.resolve(__dirname, 'path/to/your/styles.css')),
+      whitelist: [],
+      extractors: [
+        {
+          /*
+            https://goo.gl/hr6mdb
+            This Extractor fixes the issue of classes in JSX:
+            <Test className={`one two three`} />
+            'one' would not be seen and would otherwise be removed from the CSS.
+          */
+          extractor: class AvoidBacktickIssue {
+            static extract(content) {
+              return content.match(/[A-Za-z0-9_-]+/g) || [];
+            }
+          },
+          extensions: ['js'] // file extensions
+        }
+      ]
     }),
 
     /*

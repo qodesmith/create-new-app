@@ -20,6 +20,7 @@ function dependencies(mongo) {
     'postcss-discard-comments',
     'postcss-loader',
     'purgecss-webpack-plugin',
+    'purgecss-whitelister',
     'react',
     'react-dom',
     'sass-loader',

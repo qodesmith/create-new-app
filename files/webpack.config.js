@@ -9,16 +9,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const whitelister = require('purgecss-whitelister');
+const whitelister = require('purgecss-whitelister'); // https://goo.gl/7B7hbD
 
 
 console.log(`
 
-  +--------------------------------
-  |
-  |   NODE ENVIRONMENT: ${NODE_ENV}
-  |
-  +--------------------------------
+  +-----------------------------------+
+  |                                   |
+      NODE ENVIRONMENT: ${NODE_ENV}
+  |                                   |
+  +-----------------------------------+
 
 `);
 
@@ -265,8 +265,15 @@ const webpackConfig = {
         // path.resolve(__dirname, 'dist/**/*.css'),
         path.resolve(__dirname, 'src/**/*.js')
       ]),
-      // whitelist: whitelister(path.resolve(__dirname, 'path/to/your/styles.css')),
-      whitelist: [],
+      /*
+        Need to whitelist some 3rd party styles?
+        No need to manually construct an array for purgecss-webpack-plugin.
+        Let this do it for you! Checkout the docs: https://goo.gl/7B7hbD
+
+        Example:
+        whitelister(path.resolve(__dirname, 'node_modules/myModule/styles.css'));
+      */
+      whitelist: whitelister(),
       extractors: [
         {
           /*

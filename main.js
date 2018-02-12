@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Node built-in modules.
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 // const readline = require('readline');
 const { execSync } = require('child_process');
@@ -38,8 +38,13 @@ process.on('unhandledRejection', err => {
 });
 
 
-function run(command) {
-  execSync(command, { stdio: [0, 1, 2] }); // https://goo.gl/QnaS5C
+function run(command, silent) {
+  /*
+    The silent option mute's the commands CLI output except for errors.
+    This helps keep the CLI looking clean.
+  */
+  const stdio = silent ? ['pipe', 'pipe', 2] : 'inherit'; // https://goo.gl/QnaS5C
+  execSync(command, { stdio });
 }
 
 function dir(text) {

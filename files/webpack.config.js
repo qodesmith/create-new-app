@@ -40,7 +40,18 @@ const webpackConfig = {
     https://goo.gl/7eTbVQ
     Entry point into our application (relative to `context` above).
   */
-  entry: './entry.js',
+  entry: [
+    /*
+      In order to use asyc/await...
+      https://goo.gl/u68j23, https://goo.gl/b6iv2R
+
+      Instead of `import 'babel-polyfill'` in our app,
+      we ensure it is top-level (executed before *anything* else)
+      by making it the 1st entry point.
+    */
+    '@babel/polyfill',
+    './entry.js'
+  ],
 
   /*
     https://goo.gl/7eTbVQ
@@ -62,8 +73,19 @@ const webpackConfig = {
   /*
     https://goo.gl/PAvN8T
     Loaders work at the individual file level during or before the bundle generation.
+
+    https://goo.gl/1MKGMm
+    Webpack processes things from right to left.
+
+    Imagine a series of functions, each being called with the output of the next:
+    loaders: [loader1, loader2, loader3] => loader1(loarder3(loader3(file)))
   */
   module: {
+    /*
+      https://goo.gl/CmRegj
+      "Loaders describe to webpack how to process non-JavaScript modules
+      and include these dependencies into your bundles."
+    */
     rules: [
       /*
         https://goo.gl/N6uJv3

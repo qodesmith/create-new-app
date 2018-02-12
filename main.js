@@ -18,6 +18,7 @@ const packageJson = require('./file-creators/packageJson');
 const webpackConfig = require('./file-creators/webpackConfig.js');
 
 // Custom modules.
+const run = require('./modules/run');
 const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
 // const { yesNo, question } = require('./modules/prompts');
@@ -37,15 +38,6 @@ process.on('unhandledRejection', err => {
   // console.log(err);
 });
 
-
-function run(command, silent) {
-  /*
-    The silent option mute's the commands CLI output except for errors.
-    This helps keep the CLI looking clean.
-  */
-  const stdio = silent ? ['pipe', 'pipe', 2] : 'inherit'; // https://goo.gl/QnaS5C
-  execSync(command, { stdio });
-}
 
 function dir(text) {
   return path.resolve(__dirname, text);

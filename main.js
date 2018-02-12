@@ -4,7 +4,6 @@
 const fs = require('fs-extra');
 const path = require('path');
 // const readline = require('readline');
-const { execSync } = require('child_process');
 
 // External modules.
 const validateName = require('validate-npm-package-name');

@@ -33,8 +33,8 @@ function promptYN(question) {
 }
 
 // Prompts the user with a question then sanitizes & stores the answer.
-function promptQ(data) {
-  if (typeof data === 'string') data = { question: data };
+function promptQ(data, isBlank) {
+  if (typeof data === 'string') data = { question: data, blank: !!isBlank };
   const { question, sanitizer, blank } = data;
 
   // Create the readline instance that is the basis for our 'prompt'.

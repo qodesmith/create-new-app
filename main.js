@@ -160,7 +160,7 @@ function guidedProcess(online, options) {
   }
 
   // Api proxy port.
-  const proxyPort = await promptQ({
+  const apiProxyPort = await promptQ({
     question: chalk.bold('Enter a proxy port for your api (default = 8080):'),
     sanitizer: val => (Number.isInteger(+num) && +num > 0 ? +num : 8080)
   });
@@ -179,17 +179,28 @@ function guidedProcess(online, options) {
   ].join('\n');
   const userInfo = await promptYN(userQuestion);
   if (userInfo) {
-    author = await promptQ(chalk.bold('Author:')) || null;
-    email = await promptQ(chalk.bold('Email:')) || null;
-    description = await promptQ(chalk.bold('Description:')) || null;
-    keywords = await promptQ(chalk.bold('Keywords (separate by space):')) || null;
+    author = await promptQ(chalk.bold('Author:'), true) || '';
+    email = await promptQ(chalk.bold('Email:'), true) || '';
+    description = await promptQ(chalk.bold('Description:'), true) || '';
+    keywords = await promptQ({
+      question: chalk.bold('Keywords (separate by space):'),
+      sanitizer: values => values ? values.split(' ') : []
+    });
   }
 
   return {
     ...options,
     appName,
-
-  }
+    mongo,
+    express,
+    api,
+    apiport: apiProxyPort,
+    port: devServerPort,
+    author,
+    email,
+    description,
+    keywords
+  };
 }
 
 function parseArgs() {

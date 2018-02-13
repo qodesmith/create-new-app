@@ -21,6 +21,7 @@ const run = require('./modules/run');
 const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
 const { promptYN, promptQ } = require('./modules/prompts');
+const checkDirExists = require('./modules/checkDirExists');
 const showVersion = require('./modules/showVersion');
 const showHelp = require('./modules/showHelp');
 const noName = require('./modules/noName');
@@ -30,8 +31,6 @@ const titleCase = require('./modules/titleCase');
 
 // Other.
 const cwd = process.cwd();
-const answers = {};
-
 
 process.on('unhandledRejection', err => {
   // console.log(err);
@@ -125,7 +124,7 @@ const optionDefinitions = [
   const online = await isOnline();
 
   // STEP 2 - decide between a guided process or not.
-  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(online, parseArgs());
+  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(online, parseArgs(online));
 
   // STEP 3 - create project directory.
   return createProjectDirectory(options);
@@ -134,9 +133,37 @@ const optionDefinitions = [
   createFiles(options);
 })(process.argv);
 
+function parseArgs(online) {
+  // const [nodeLocation, thisFile, ...args] = process.argv;
+  const options = cla(optionDefinitions, { partial: true });
+  const { appName, api, offline, title, description, express, mongo } = options;
+  const validation = validateName(appName);
+
+  // Add properties we'll use down the line.
+  Object.assign(options, {
+    api: api ? api.replace(/ /g, '') : null,
+    offline: !online || !!offline,
+    title: title || appName,
+    description: description || title || titleCase(appName),
+    server: express || mongo,
+    appDir: `${cwd}/${appName}`
+  });
+
+  /*
+    2 no name scenarios:
+      1. User simply typed `cna` => trigger the guided process (in `letsGo` above).
+      2. User typed `cna --some --options` => should display the how-to message.
+  */
+
+  if (!appName) noName() && process.exit();
+  if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
+  return options;
+}
+
 function guidedProcess(online, options) {
   // App name.
   const appName = await promptQ('Enter a name for your app:');
+  checkDirExists(options);
 
   // Mongo + Express.
   const mongoQuestion = [
@@ -201,22 +228,6 @@ function guidedProcess(online, options) {
     description,
     keywords
   };
-}
-
-function parseArgs() {
-  // const [nodeLocation, thisFile, ...args] = process.argv;
-  const options = cla(optionDefinitions, { partial: true });
-  const validation = validateName(options.appName);
-
-  /*
-    2 no name scenarios:
-      1. User simply typed `cna` => trigger the guided process (in `letsGo` above).
-      2. User typed `cna --some --options` => should display the how-to message.
-  */
-
-  if (!options.appName) noName() && process.exit();
-  if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
-  return options;
 }
 
 function processUsersCommand(online, options) {

@@ -20,7 +20,7 @@ const webpackConfig = require('./file-creators/webpackConfig.js');
 const run = require('./modules/run');
 const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
-// const { yesNo, question } = require('./modules/prompts');
+const { yesNo, question } = require('./modules/prompts');
 const showVersion = require('./modules/showVersion');
 const showHelp = require('./modules/showHelp');
 const noName = require('./modules/noName');
@@ -36,7 +36,6 @@ const answers = {};
 process.on('unhandledRejection', err => {
   // console.log(err);
 });
-
 
 function dir(text) {
   return path.resolve(__dirname, text);
@@ -120,44 +119,70 @@ const optionDefinitions = [
   { name: 'port', alias: 'p', type: val => portValidator(val, 'dev'), defaultValue: 3000 }
 ];
 
-// STEP 1
-isOnline().then(res => ask(res));
+// Let's go! Push the first dominoe.
+(async function letsGo(argz) {
+  // STEP 1 - check if we're online.
+  const online = await isOnline();
 
+  // STEP 2 - decide between a guided process or not.
+  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(online, parseArgs());
 
-// STEP 2
-function ask(online) {
+  // STEP 3 - create project directory.
+  return createProjectDirectory(options);
+
+  // STEP 4 - create project files & folders.
+  createFiles(options);
+})(process.argv);
+
+function guidedProcess(online, options) {
+  const appName = await
+}
+
+function parseArgs() {
   // const [nodeLocation, thisFile, ...args] = process.argv;
-  const options = cla(optionDefinitions, {partial: true});
+  const options = cla(optionDefinitions, { partial: true });
+  const validation = validateName(options.appName);
+
+  /*
+    2 no name scenarios:
+      1. User simply typed `cna` => trigger the guided process (in `letsGo` above).
+      2. User typed `cna --some --options` => should display the how-to message.
+  */
+
+  if (!options.appName) noName() && process.exit();
+  if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
+  return options;
+}
+
+function processUsersCommand(online, options) {
   const {
     appName,
     version,
     help,
     offline,
     title,
-    author,
     description,
-    email,
-    keywords,
     api,
     apiport,
     express,
     mongo,
-    port,
-    force
+    port
   } = options;
-  const validation = validateName(appName);
 
+  // `cna -v` or `cna --version`
   if (version) return showVersion();
+
+  // `cna -h` or `cna --help`
   if (help) return showHelp();
-  if (!appName) return noName();
-  if (!validation.validForNewPackages) return badName(appName, validation);
+
+  // Not online.
   if (offline || !online) {
     !online && console.log(chalk.yellow('You appear to be offline.'));
     console.log(chalk.yellow('Installing via local npm cache.'));
   }
 
-  // Merge all-the-things into the `answers` object.
-  Object.assign(answers, options, {
+  // Merge all-the-things into one object.
+  Object.assign(options, {
     api: typeof api === 'string' ? api.replace(/ /g, '') : null,
     offline: !online || !!offline,
     title: title || appName,
@@ -167,14 +192,14 @@ function ask(online) {
   });
 
   // The api port takes prescedence over the dev server port.
-  if ((express || mongo) && answers.port === answers.apiport) answers.port++;
+  if ((express || mongo) && port === apiport) options.port++;
 
-  createProjectDirectory();
+  return options;
 }
 
 // STEP 3
-function createProjectDirectory() {
-  const { appName, appDir, force } = answers;
+function createProjectDirectory(options) {
+  const { appName, appDir, force } = options;
 
   // Check if the directory already exists.
   const exists = fs.existsSync(appDir);
@@ -184,7 +209,7 @@ function createProjectDirectory() {
     if (force) {
       console.log('Force installing in pre-existing directory...');
     } else {
-      return console.log('Try a different name.');
+      console.log('Try a different name.') && process.exit();
     }
   }
 
@@ -194,7 +219,6 @@ function createProjectDirectory() {
 
   // Create the project directory.
   !force && fs.mkdirSync(appDir);
-  createFiles();
 }
 
 // STEP 4

@@ -6,7 +6,7 @@ function promptYN(question) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `${q} [y, n] `
+    prompt: `\n${question} [y, n] `
   });
 
   return new Promise(resolve => {
@@ -34,13 +34,14 @@ function promptYN(question) {
 
 // Prompts the user with a question then sanitizes & stores the answer.
 function promptQ(data) {
-  const { q, sanitizer, blank } = data;
+  if (typeof data === 'string') data = { question: data };
+  const { question, sanitizer, blank } = data;
 
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `${q} `
+    prompt: `\n${question} `
   });
 
   return new Promise(resolve => {

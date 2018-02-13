@@ -20,7 +20,7 @@ const webpackConfig = require('./file-creators/webpackConfig.js');
 const run = require('./modules/run');
 const isOnline = require('./modules/isOnline');
 const copyTree = require('./modules/copyTree');
-const { yesNo, question } = require('./modules/prompts');
+const { promptYN, promptQ } = require('./modules/prompts');
 const showVersion = require('./modules/showVersion');
 const showHelp = require('./modules/showHelp');
 const noName = require('./modules/noName');
@@ -135,7 +135,61 @@ const optionDefinitions = [
 })(process.argv);
 
 function guidedProcess(online, options) {
-  const appName = await
+  // App name.
+  const appName = await promptQ('Enter a name for your app:');
+
+  // Mongo + Express.
+  const mongoQuestion = [
+    'Including MongoDB will also come with an Express server.',
+    'You can answer no for this and still include an Express server later.',
+    chalk.bold('Would you like to include MongoDB and Express?')
+  ].join('\n');
+  const mongo = await promptYN(mongoQuestion);
+
+  // Express only.
+  let express = mongo;
+  if (!mongo) express = await promptYN(chalk.bold('Would you like an Express server?'));
+
+  // Api flag.
+  let api = null;
+  if (mongo || express) {
+    api = await promptQ({
+      question: chalk.bold('Enter your local api route (default = /api):'),
+      blank: true
+    }) || '/api';
+  }
+
+  // Api proxy port.
+  const proxyPort = await promptQ({
+    question: chalk.bold('Enter a proxy port for your api (default = 8080):'),
+    sanitizer: val => (Number.isInteger(+num) && +num > 0 ? +num : 8080)
+  });
+
+  // Dev server port.
+  const devServerPort = await promptQ({
+    question: chalk.bold('Enter a development server port (default = 3000):')
+    sanitizer: val => (Number.isInteger(+num) && +num > 0 ? +num : 3000)
+  });
+
+  // Author, email, description, keyowrds.
+  let author, email, description, keywords;
+  const userQuestion = [
+    'At this time would you like to enter the following info:'
+    'author, email, description, keywords?'
+  ].join('\n');
+  const userInfo = await promptYN(userQuestion);
+  if (userInfo) {
+    author = await promptQ(chalk.bold('Author:')) || null;
+    email = await promptQ(chalk.bold('Email:')) || null;
+    description = await promptQ(chalk.bold('Description:')) || null;
+    keywords = await promptQ(chalk.bold('Keywords (separate by space):')) || null;
+  }
+
+  return {
+    ...options,
+    appName,
+
+  }
 }
 
 function parseArgs() {

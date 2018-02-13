@@ -1,7 +1,7 @@
 const readline = require('readline');
 
 // Prompts the user with a yes/no question and stores the answer.
-function yesNo(answers, q, key) {
+function promptYN(answers, q, key) {
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
     input: process.stdin,
@@ -37,7 +37,7 @@ function yesNo(answers, q, key) {
 }
 
 // Prompts the user with a question then sanitizes & stores the answer.
-function question(answers, options) {
+function promptQ(answers, options) {
   const { q, key, sanitizer, blank } = options;
 
   // Create the readline instance that is the basis for our 'prompt'.
@@ -73,6 +73,6 @@ function question(answers, options) {
 }
 
 module.exports = {
-  yesNo,
-  question
+  promptYN,
+  promptQ
 };

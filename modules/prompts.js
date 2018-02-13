@@ -1,7 +1,7 @@
 const readline = require('readline');
 
 // Prompts the user with a yes/no question and stores the answer.
-function promptYN(answers, q, key) {
+function promptYN(question) {
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
     input: process.stdin,
@@ -21,24 +21,20 @@ function promptYN(answers, q, key) {
       switch (answer) {
         case 'y':
         case 'yes':
-          answers[key] = true;
-          break;
+          return resolve(true);
         case 'n':
         case 'no':
-          answers[key] = false;
-          break;
+          return resolve(false);
         default:
-          return resolve(yesNo(answers, q, key));
+          resolve(promptYN(question));
       }
-
-      resolve();
-    });
+    })
   });
 }
 
 // Prompts the user with a question then sanitizes & stores the answer.
-function promptQ(answers, options) {
-  const { q, key, sanitizer, blank } = options;
+function promptQ(data) {
+  const { q, sanitizer, blank } = data;
 
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
@@ -53,21 +49,10 @@ function promptQ(answers, options) {
 
     // Event listener that triggers when the user hit's enter.
     rl.on('line', answer => {
-      let original;
       rl.close();
 
-      if (sanitizer) {
-        original = answer;
-        answer = sanitizer(answer);
-      }
-
-      if (answer || blank) {
-        answers[key] = answer || '';
-        if (sanitizer) answers[`${key}Original`] = original;
-        resolve();
-      } else {
-        resolve(question(answers, options));
-      }
+      if (sanitizer) answer = sanitizer(answer);
+      resolve((answer || blank) ? (answer || null) : promptQ(data));
     });
   });
 }

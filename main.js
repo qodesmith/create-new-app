@@ -120,7 +120,7 @@ const optionDefinitions = [
   { name: 'keywords', type: String, multiple: true, defaultValue: [] },
 
   // API / server options.
-  { name: 'api', type: String },
+  { name: 'api', type: String, defaultValue: null },
   { name: 'apiport', type: val => portValidator(val, 'api'), defaultValue: 8080 },
   { name: 'express', alias: 'e', type: Boolean },
   { name: 'mongo', alias: 'm', type: Boolean },
@@ -134,12 +134,9 @@ const optionDefinitions = [
 
   // STEP 2 - decide between a guided process or not.
   let options;
-  if (argz.length === 2) {
-    options = await guidedProcess(online);
-  } else {
-    options = processUsersCommand(parseArgs(online))
-  }
-  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(parseArgs(online));
+  const options = argz.length === 2
+    ? await guidedProcess(online)
+    : processUsersCommand(parseArgs(online));
 
   // STEP 3 - create project directory.
   return createProjectDirectory(options);
@@ -201,7 +198,7 @@ function createSandbox(options) {
 }
 
 // Creates an object choc full of properties via a series of prompts.
-function guidedProcess(options) {
+function guidedProcess(online) {
   /*
     Questions asked during the guided process:
       * App name?
@@ -210,9 +207,49 @@ function guidedProcess(options) {
       * MongoDB?
   */
 
-  // App name.
+  // Aggregate the default CLI values into an object.
+  const options = optionDefinitions
+    .filter(({ defaultValue }) => defaultValue !== undefined)
+    .reduce((acc, ({ name, defaultValue })) => {
+      acc[name] = defaultValue;
+      return acc;
+    }, {});
+
+  const n = chalk.bold('n');
   const appName = await promptQ('Enter a name for your app:');
-  checkDirExists(options);
+  const appDir = `${cwd}/${appName}`;
+
+  /*
+    This may seem redundant since we check this again later down the line
+    but we don't want the user to go through the whole process of answering
+    these questions only to be rejected later. Reject as soon as possible.
+  */
+  checkDirExists({ appDir, appName });
+
+  console.log(`\nPress \`enter\` to default to ${chalk.bold('no')} to the following questions\n\n`);
+  const redux = await promptQ(`Would you like to include Redux? [y, ${n}]`);
+  const router = redux && promptQ(`would you like to include Redux First Router? [y, ${n}]`);
+  const express = await promptQ(`Would you like to include an Express server? [y, ${n}]`);
+  const mongo = express && await promptQ(`Would you like to include MongoDB? [y, ${n}]`);
+
+  return {
+    ...options, // Default CLI values.
+
+    // Values from questions.
+    appName,
+    redux,
+    router,
+    express,
+    mongo,
+    online,
+    offline: !online,
+
+    // Calculated properties.
+    title: appName,
+    description: titleCase(appName),
+    server: express || mongo,
+    appDir,
+  };
 }
 
 // Processes --version and --help commands (among other things).
@@ -255,23 +292,14 @@ function createProjectDirectory(options) {
   const { appName, appDir, force } = options;
 
   // Check if the directory already exists.
-  const exists = fs.existsSync(appDir);
-  if (exists) {
-    console.log(`The directory ${chalk.green(appName)} already exists.`);
-
-    if (force) {
-      console.log('Force installing in pre-existing directory...');
-    } else {
-      console.log('Try a different name.') && process.exit();
-    }
-  }
+  checkDirExists(options);
 
   const greenDir = chalk.green(`${cwd}/`);
   const boldName = chalk.green.bold(appName);
-  console.log(`Creating a new app in ${greenDir}${boldName}.`);
+  console.log(`Creating a new app in ${greenDir}${boldName}...`);
 
   // Create the project directory.
-  !force && fs.mkdirSync(appDir);
+  fs.mkdirSync(appDir);
 }
 
 // STEP 4

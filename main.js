@@ -204,7 +204,10 @@ function createSandbox(options) {
 function guidedProcess(options) {
   /*
     Questions asked during the guided process:
-      * App name
+      * App name?
+      * Include redux?
+      * Express server?
+      * MongoDB?
   */
 
   // App name.

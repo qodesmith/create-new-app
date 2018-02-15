@@ -102,6 +102,7 @@ const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean },
   { name: 'offline', alias: 'o', type: Boolean },
   { name: 'title', alias: 't', type: String },
+  { name: 'redux', alias: 'r', type: Boolean},
   { name: 'force', alias: 'f', type: Boolean }, // Use with caution.
 
   // `package.json` fields.
@@ -124,7 +125,13 @@ const optionDefinitions = [
   const online = await isOnline();
 
   // STEP 2 - decide between a guided process or not.
-  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(online, parseArgs(online));
+  let options;
+  if (argz.length === 2) {
+    options = await guidedProcess(online);
+  } else {
+    options = processUsersCommand(parseArgs(online))
+  }
+  const options = await (argz.length === 2 ? guidedProcess : processUsersCommand)(parseArgs(online));
 
   // STEP 3 - create project directory.
   return createProjectDirectory(options);
@@ -133,6 +140,7 @@ const optionDefinitions = [
   createFiles(options);
 })(process.argv);
 
+// Analyzes the CLI arguments & returns an object choc full of properties.
 function parseArgs(online) {
   // const [nodeLocation, thisFile, ...args] = process.argv;
   const options = cla(optionDefinitions, { partial: true });
@@ -141,8 +149,9 @@ function parseArgs(online) {
 
   // Add properties we'll use down the line.
   Object.assign(options, {
+    online, // Actual online status.
+    offline: !online || !!offline, // Argument option from the CLI.
     api: api ? api.replace(/ /g, '') : null,
-    offline: !online || !!offline,
     title: title || appName,
     description: description || title || titleCase(appName),
     server: express || mongo,
@@ -160,7 +169,8 @@ function parseArgs(online) {
   return options;
 }
 
-function guidedProcess(online, options) {
+// Creates an object choc full of properties via a series of prompts.
+function guidedProcess(options) {
   // App name.
   const appName = await promptQ('Enter a name for your app:');
   checkDirExists(options);
@@ -230,12 +240,14 @@ function guidedProcess(online, options) {
   };
 }
 
-function processUsersCommand(online, options) {
+// Processes --version and --help commands (among other things).
+function processUsersCommand(options) {
   const {
     appName,
     version,
     help,
-    offline,
+    online, // Actual online status.
+    offline, // CLI argument.
     title,
     description,
     api,
@@ -256,16 +268,6 @@ function processUsersCommand(online, options) {
     !online && console.log(chalk.yellow('You appear to be offline.'));
     console.log(chalk.yellow('Installing via local npm cache.'));
   }
-
-  // Merge all-the-things into one object.
-  Object.assign(options, {
-    api: typeof api === 'string' ? api.replace(/ /g, '') : null,
-    offline: !online || !!offline,
-    title: title || appName,
-    description: description || title || titleCase(appName),
-    server: express || mongo,
-    appDir: `${cwd}/${appName}`
-  });
 
   // The api port takes prescedence over the dev server port.
   if ((express || mongo) && port === apiport) options.port++;

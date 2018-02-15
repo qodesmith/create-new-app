@@ -54,6 +54,10 @@ if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
     * mongoURI and mongoSession variables in `.env` use this name (if `mongo` is used)
     * set as a variable in `.env`
 
+  redux
+    * `utils` folder created with redux-specific sub-folders
+    * causes `entry.js` to have different contents
+
   version
     * displays the current version of this package
     * ignores any other CLI arguments and only displays the version number
@@ -100,14 +104,17 @@ const optionDefinitions = [
   { name: 'appName', type: String, defaultOption: true },
   { name: 'version', alias: 'v', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean },
-  { name: 'offline', alias: 'o', type: Boolean },
-  { name: 'title', alias: 't', type: String },
-  { name: 'redux', alias: 'r', type: Boolean},
-  { name: 'force', alias: 'f', type: Boolean }, // Use with caution.
+  { name: 'offline', alias: 'o', type: Boolean, defaultValue: false },
+  { name: 'title', alias: 't', type: String, defaultValue: '' },
+  { name: 'force', alias: 'f', type: Boolean, defaultValue: false }, // Use with caution.
+
+  // Experimental.
+  { name: 'redux', alias: 'r', type: Boolean, defaultValue: false },
+  { name: 'router', type: Boolean, defaultValue: false },
 
   // `package.json` fields.
   { name: 'author', type: String, defaultValue: '' },
-  { name: 'description', type: String },
+  { name: 'description', type: String, defaultValue: '' },
   { name: 'email', type: String, defaultValue: '' },
   { name: 'keywords', type: String, multiple: true, defaultValue: [] },
 
@@ -144,13 +151,15 @@ const optionDefinitions = [
 function parseArgs(online) {
   // const [nodeLocation, thisFile, ...args] = process.argv;
   const options = cla(optionDefinitions, { partial: true });
-  const { appName, api, offline, title, description, express, mongo } = options;
+  const { appName, api, offline, title, description, express, mongo, redux, router } = options;
   const validation = validateName(appName);
 
   // Add properties we'll use down the line.
   Object.assign(options, {
     online, // Actual online status.
-    offline: !online || !!offline, // Argument option from the CLI.
+    redux,
+    router,
+    offline: !online || offline, // Argument option from the CLI.
     api: api ? api.replace(/ /g, '') : null,
     title: title || appName,
     description: description || title || titleCase(appName),

@@ -106,6 +106,7 @@ const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean },
   { name: 'offline', alias: 'o', type: Boolean, defaultValue: false },
   { name: 'title', alias: 't', type: String, defaultValue: '' },
+  { name: 'sandbox', alias: 's', type: Boolean, defaultValue: false },
   { name: 'force', alias: 'f', type: Boolean, defaultValue: false }, // Use with caution.
 
   // Experimental.
@@ -151,7 +152,18 @@ const optionDefinitions = [
 function parseArgs(online) {
   // const [nodeLocation, thisFile, ...args] = process.argv;
   const options = cla(optionDefinitions, { partial: true });
-  const { appName, api, offline, title, description, express, mongo, redux, router } = options;
+  const {
+    appName,
+    api,
+    offline,
+    title,
+    description,
+    express,
+    mongo,
+    redux,
+    router,
+    sandbox
+  } = options;
   const validation = validateName(appName);
 
   // Add properties we'll use down the line.
@@ -174,79 +186,30 @@ function parseArgs(online) {
   */
 
   if (!appName) noName() && process.exit();
+  if (sandbox) createSandbox(options) && process.exit();
   if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
   return options;
 }
 
+function createSandbox(options) {
+  const { appDir } = options;
+
+  createProjectDirectory(options);
+  fs.copyFileSync(dir('./files/sandbox/index.html'), `${appDir}/index.html`);
+  fs.copyFileSync(dir('./files/sandbox/main.js'), `${appDir}/main.js`);
+  fs.copyFileSync(dir('./files/sandbox/styles.css'), `${appDir}/styles.css`);
+}
+
 // Creates an object choc full of properties via a series of prompts.
 function guidedProcess(options) {
+  /*
+    Questions asked during the guided process:
+      * App name
+  */
+
   // App name.
   const appName = await promptQ('Enter a name for your app:');
   checkDirExists(options);
-
-  // Mongo + Express.
-  const mongoQuestion = [
-    'Including MongoDB will also come with an Express server.',
-    'You can answer no for this and still include an Express server later.',
-    chalk.bold('Would you like to include MongoDB and Express?')
-  ].join('\n');
-  const mongo = await promptYN(mongoQuestion);
-
-  // Express only.
-  let express = mongo;
-  if (!mongo) express = await promptYN(chalk.bold('Would you like an Express server?'));
-
-  // Api flag.
-  let api = null;
-  if (mongo || express) {
-    api = await promptQ({
-      question: chalk.bold('Enter your local api route (default = /api):'),
-      blank: true
-    }) || '/api';
-  }
-
-  // Api proxy port.
-  const apiProxyPort = await promptQ({
-    question: chalk.bold('Enter a proxy port for your api (default = 8080):'),
-    sanitizer: val => (Number.isInteger(+num) && +num > 0 ? +num : 8080)
-  });
-
-  // Dev server port.
-  const devServerPort = await promptQ({
-    question: chalk.bold('Enter a development server port (default = 3000):')
-    sanitizer: val => (Number.isInteger(+num) && +num > 0 ? +num : 3000)
-  });
-
-  // Author, email, description, keyowrds.
-  let author, email, description, keywords;
-  const userQuestion = [
-    'At this time would you like to enter the following info:'
-    'author, email, description, keywords?'
-  ].join('\n');
-  const userInfo = await promptYN(userQuestion);
-  if (userInfo) {
-    author = await promptQ(chalk.bold('Author:'), true) || '';
-    email = await promptQ(chalk.bold('Email:'), true) || '';
-    description = await promptQ(chalk.bold('Description:'), true) || '';
-    keywords = await promptQ({
-      question: chalk.bold('Keywords (separate by space):'),
-      sanitizer: values => values ? values.split(' ') : []
-    });
-  }
-
-  return {
-    ...options,
-    appName,
-    mongo,
-    express,
-    api,
-    apiport: apiProxyPort,
-    port: devServerPort,
-    author,
-    email,
-    description,
-    keywords
-  };
 }
 
 // Processes --version and --help commands (among other things).

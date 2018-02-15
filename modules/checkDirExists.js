@@ -1,6 +1,6 @@
 // Check if the directory already exists.
 const { existsSync } = require('fs-extra');
-const chalk = reuire('chalk');
+const chalk = require('chalk');
 
 function checkDirExists({ appDir, appName, force }) {
   if (!existsSync(appDir)) return;

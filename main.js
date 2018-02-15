@@ -133,7 +133,6 @@ const optionDefinitions = [
   const online = await isOnline();
 
   // STEP 2 - decide between a guided process or not.
-  let options;
   const options = argz.length === 2
     ? await guidedProcess(online)
     : processUsersCommand(parseArgs(online));
@@ -192,17 +191,19 @@ function createSandbox(options) {
   const { appDir } = options;
 
   createProjectDirectory(options);
-  fs.copyFileSync(dir('./files/sandbox/index.html'), `${appDir}/index.html`);
-  fs.copyFileSync(dir('./files/sandbox/main.js'), `${appDir}/main.js`);
-  fs.copyFileSync(dir('./files/sandbox/styles.css'), `${appDir}/styles.css`);
+  fs.copySync('./files/sandbox', appDir);
+  // fs.copyFileSync(dir('./files/sandbox/index.html'), `${appDir}/index.html`);
+  // fs.copyFileSync(dir('./files/sandbox/main.js'), `${appDir}/main.js`);
+  // fs.copyFileSync(dir('./files/sandbox/styles.css'), `${appDir}/styles.css`);
 }
 
 // Creates an object choc full of properties via a series of prompts.
-function guidedProcess(online) {
+async function guidedProcess(online) {
   /*
     Questions asked during the guided process:
       * App name?
       * Include redux?
+      * Include router?
       * Express server?
       * MongoDB?
   */
@@ -210,7 +211,7 @@ function guidedProcess(online) {
   // Aggregate the default CLI values into an object.
   const options = optionDefinitions
     .filter(({ defaultValue }) => defaultValue !== undefined)
-    .reduce((acc, ({ name, defaultValue })) => {
+    .reduce((acc, { name, defaultValue }) => {
       acc[name] = defaultValue;
       return acc;
     }, {});

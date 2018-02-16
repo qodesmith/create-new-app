@@ -3,8 +3,14 @@
 
 const { exec } = require('child_process');
 
-module.exports = () => new Promise((resolve, reject) => {
+module.exports = () => new Promise(resolve => {
+  let slow = false;
+
+  // Prevent this from taking forever for slow connections.
+  const tooSlow = setTimeout(() => ((slow = true) && resolve(false)), 5000);
+
   exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
-    resolve(err ? false : !!stdout);
+    clearTimeout(tooSlow);
+    !slow && resolve(err ? false : !!stdout);
   });
 });

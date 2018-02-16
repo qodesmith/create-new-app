@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 // Node built-in modules.
-const fs = require('fs-extra');
 const path = require('path');
-// const readline = require('readline');
+const readline = require('readline');
 
 // External modules.
+const fs = require('fs-extra');
 const validateName = require('validate-npm-package-name');
 const chalk = require('chalk');
 const cla = require('command-line-args');
@@ -127,8 +127,13 @@ const optionDefinitions = [
   { name: 'port', alias: 'p', type: val => portValidator(val, 'dev'), defaultValue: 3000 }
 ];
 
+
 // Let's go! Push the first dominoe.
 (async function letsGo(argz) {
+  // Clear the console - https://goo.gl/KyrhG2
+  readline.cursorTo(process.stdout, 0, 0);
+  readline.clearScreenDown(process.stdout);
+
   // STEP 1 - check if we're online.
   const online = await isOnline();
 
@@ -181,20 +186,16 @@ function parseArgs(online) {
       2. User typed `cna --some --options` => should display the how-to message.
   */
 
-  if (!appName) noName() && process.exit();
-  if (sandbox) createSandbox(options) && process.exit();
+  if (!appName) return noName() && process.exit();
+  if (sandbox) return createSandbox(options) && process.exit();
   if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
   return options;
 }
 
 function createSandbox(options) {
   const { appDir } = options;
-
   createProjectDirectory(options);
   fs.copySync('./files/sandbox', appDir);
-  // fs.copyFileSync(dir('./files/sandbox/index.html'), `${appDir}/index.html`);
-  // fs.copyFileSync(dir('./files/sandbox/main.js'), `${appDir}/main.js`);
-  // fs.copyFileSync(dir('./files/sandbox/styles.css'), `${appDir}/styles.css`);
 }
 
 // Creates an object choc full of properties via a series of prompts.

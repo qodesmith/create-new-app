@@ -1,12 +1,15 @@
 const readline = require('readline');
+const chalk = require('chalk');
 
 // Prompts the user with a yes/no question and stores the answer.
-function promptYN(question) {
+function promptYN(question, deflt) {
   // Create the readline instance that is the basis for our 'prompt'.
+  const n = chalk.bold('n');
+  const y = chalk.bold('y');
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `\n${question} [y, n] `
+    prompt: `${question} [${deflt ? y : 'y'}, ${deflt === false ? n : 'n'}] `
   });
 
   return new Promise(resolve => {
@@ -26,7 +29,7 @@ function promptYN(question) {
         case 'no':
           return resolve(false);
         default:
-          resolve(promptYN(question));
+          resolve(deflt === undefined ? promptYN(question) : deflt);
       }
     })
   });
@@ -34,14 +37,14 @@ function promptYN(question) {
 
 // Prompts the user with a question then sanitizes & stores the answer.
 function promptQ(data, isBlank) {
-  if (typeof data === 'string') data = { question: data, blank: !!isBlank };
-  const { question, sanitizer, blank } = data;
+  if (typeof data === 'string') data = { question: data };
+  const { question, sanitizer } = data;
 
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `\n${question} `
+    prompt: `${question} `
   });
 
   return new Promise(resolve => {
@@ -53,12 +56,9 @@ function promptQ(data, isBlank) {
       rl.close();
 
       if (sanitizer) answer = sanitizer(answer);
-      resolve((answer || blank) ? (answer || null) : promptQ(data));
+      resolve((answer || !!isBlank) ? (answer || null) : promptQ(data));
     });
   });
 }
 
-module.exports = {
-  promptYN,
-  promptQ
-};
+module.exports = { promptYN, promptQ };

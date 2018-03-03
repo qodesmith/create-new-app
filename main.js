@@ -31,17 +31,10 @@ const titleCase = require('./modules/titleCase');
 
 // Other.
 const cwd = process.cwd();
+const dir = text => path.resolve(__dirname, text);
 
-process.on('unhandledRejection', err => {
-  // console.log(err);
-});
-
-function dir(text) {
-  return path.resolve(__dirname, text);
-}
-
-// Node < 8 doesn't have `copyFileSync` :/
-if (!fs.copyFileSync) fs.copyFileSync = require('./modules/copyFileSync');
+// Avoid Node complaining about unhandled rejection errors.
+process.on('unhandledRejection', err => { /* console.log(err) */ });
 
 /*
   Options
@@ -127,9 +120,10 @@ const optionDefinitions = [
   { name: 'port', alias: 'p', type: val => portValidator(val, 'dev'), defaultValue: 3000 }
 ];
 
-
 // Let's go! Push the first dominoe.
-(async function letsGo(argz) {
+letsGo();
+
+async function letsGo() {
   // Clear the console - https://goo.gl/KyrhG2
   readline.cursorTo(process.stdout, 0, 0);
   readline.clearScreenDown(process.stdout);
@@ -138,16 +132,20 @@ const optionDefinitions = [
   const online = await isOnline();
 
   // STEP 2 - decide between a guided process or not.
-  const options = argz.length === 2
-    ? await guidedProcess(online)
-    : processUsersCommand(parseArgs(online));
+  let options;
+  if (process.argv.length === 2) {
+    options = await guidedProcess(online);
+  } else {
+    options = processUsersCommand(parseArgs(online));
+  }
+  return console.log(options);
 
   // STEP 3 - create project directory.
   return createProjectDirectory(options);
 
   // STEP 4 - create project files & folders.
   createFiles(options);
-})(process.argv);
+}
 
 // Analyzes the CLI arguments & returns an object choc full of properties.
 function parseArgs(online) {
@@ -187,26 +185,22 @@ function parseArgs(online) {
   */
 
   if (!appName) return noName() && process.exit();
-  if (sandbox) return createSandbox(options) && process.exit();
-  if (!validation.validForNewPackages) badName(appName, validation) && process.exit();
-  return options;
-}
+  checkDirExists(options);
 
-function createSandbox(options) {
-  const { appDir } = options;
-  createProjectDirectory(options);
-  fs.copySync('./files/sandbox', appDir);
+  if (sandbox) return createSandbox(options) && process.exit();
+  if (!validation.validForNewPackages) return badName(appName, validation) && process.exit();
+  return options;
 }
 
 // Creates an object choc full of properties via a series of prompts.
 async function guidedProcess(online) {
   /*
     Questions asked during the guided process:
-      * App name?
-      * Include redux?
-      * Include router?
-      * Express server?
-      * MongoDB?
+      1.  App name?
+      2.  Include redux?
+      3.  Include router?
+      4.  Express server?
+      5.  MongoDB?
   */
 
   // Aggregate the default CLI values into an object.
@@ -227,12 +221,14 @@ async function guidedProcess(online) {
     these questions only to be rejected later. Reject as soon as possible.
   */
   checkDirExists({ appDir, appName });
+  const validation = validateName(appName);
+  if (!validation.validForNewPackages) return badName(appName, validation);
 
-  console.log(`\nPress \`enter\` to default to ${chalk.bold('no')} to the following questions\n\n`);
-  const redux = await promptQ(`Would you like to include Redux? [y, ${n}]`);
-  const router = redux && promptQ(`would you like to include Redux First Router? [y, ${n}]`);
-  const express = await promptQ(`Would you like to include an Express server? [y, ${n}]`);
-  const mongo = express && await promptQ(`Would you like to include MongoDB? [y, ${n}]`);
+  console.log(`\nPressing \`enter\` defaults to ${chalk.bold('no')} for the following...\n`);
+  const redux = await promptYN('Would you like to include Redux?', false);
+  const router = redux && await promptYN('Would you like to include Redux First Router?', false);
+  const express = await promptYN('Would you like to include an Express server?', false);
+  const mongo = express && await promptYN('Would you like to include MongoDB?', false);
 
   return {
     ...options, // Default CLI values.
@@ -289,12 +285,20 @@ function processUsersCommand(options) {
   return options;
 }
 
+// Simple sandbox projects, executed from `processUsersCommand`.
+function createSandbox(options) {
+  const { appDir } = options;
+
+  checkDirExists(options);
+  createProjectDirectory(options);
+  fs.copySync('./files/sandbox', appDir);
+}
+
 // STEP 3
 function createProjectDirectory(options) {
   const { appName, appDir, force } = options;
 
   // Check if the directory already exists.
-  checkDirExists(options);
 
   const greenDir = chalk.green(`${cwd}/`);
   const boldName = chalk.green.bold(appName);

@@ -20,6 +20,6 @@ module.exports = () => new Promise(resolve => {
 
   exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
     clearTimeout(tooSlow);
-    !slow && resolve(err ? false : !!stdout);
+    !slow && resolve(err ? false : true);
   });
 });

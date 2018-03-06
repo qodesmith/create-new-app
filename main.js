@@ -136,11 +136,12 @@ async function letsGo() {
   if (process.argv.length === 2) {
     options = await guidedProcess(online);
   } else {
-    options = processUsersCommand(parseArgs(online));
+    const parsedArgs = parseArgs(online);
+    options = processUsersCommand(parsedArgs);
   }
-  return console.log(options);
 
-  // STEP 3 - create project directory.
+  // STEP 3 - create project directory or sandbox project.
+  if (options.sandbox) return createSandbox(options);
   return createProjectDirectory(options);
 
   // STEP 4 - create project files & folders.
@@ -150,8 +151,10 @@ async function letsGo() {
 // Analyzes the CLI arguments & returns an object choc full of properties.
 function parseArgs(online) {
   // const [nodeLocation, thisFile, ...args] = process.argv;
-  const options = cla(optionDefinitions, { partial: true });
+  let options = cla(optionDefinitions, { partial: true });
   const {
+    version,
+    help,
     appName,
     api,
     offline,
@@ -166,29 +169,29 @@ function parseArgs(online) {
   const validation = validateName(appName);
 
   // Add properties we'll use down the line.
-  Object.assign(options, {
+  options = {
+    ...options,
     online, // Actual online status.
     redux,
     router,
-    offline: !online || offline, // Argument option from the CLI.
+    offline: !online || offline, // Argument option from the CLI to process *as* offline.
     api: api ? api.replace(/ /g, '') : null,
-    title: title || appName,
+    title: title || titleCase(appName),
     description: description || title || titleCase(appName),
     server: express || mongo,
     appDir: `${cwd}/${appName}`
-  });
+  };
 
-  /*
-    2 no name scenarios:
-      1. User simply typed `cna` => trigger the guided process (in `letsGo` above).
-      2. User typed `cna --some --options` => should display the how-to message.
-  */
+  // `cna -v` or `cna --version`
+  if (version) return showVersion() || process.exit();
 
-  if (!appName) return noName() && process.exit();
-  checkDirExists(options);
+  // `cna -h` or `cna --help`
+  if (help) return showHelp() || process.exit();
 
-  if (sandbox) return createSandbox(options) && process.exit();
-  if (!validation.validForNewPackages) return badName(appName, validation) && process.exit();
+  checkDirExists(options) || process.exit();
+
+  if (sandbox) return { ...options, sandbox: true };
+  if (!validation.validForNewPackages) return badName(appName, validation) || process.exit();
   return options;
 }
 
@@ -220,9 +223,9 @@ async function guidedProcess(online) {
     but we don't want the user to go through the whole process of answering
     these questions only to be rejected later. Reject as soon as possible.
   */
-  checkDirExists({ appDir, appName });
+  checkDirExists({ appDir, appName }) || process.exit();
   const validation = validateName(appName);
-  if (!validation.validForNewPackages) return badName(appName, validation);
+  if (!validation.validForNewPackages) return badName(appName, validation) || process.exit();
 
   console.log(`\nPressing \`enter\` defaults to ${chalk.bold('no')} for the following...\n`);
   const redux = await promptYN('Would you like to include Redux?', false);
@@ -264,17 +267,12 @@ function processUsersCommand(options) {
     apiport,
     express,
     mongo,
-    port
+    port,
+    sandbox
   } = options;
 
-  // `cna -v` or `cna --version`
-  if (version) return showVersion();
-
-  // `cna -h` or `cna --help`
-  if (help) return showHelp();
-
   // Not online.
-  if (offline || !online) {
+  if (!sandbox && (offline || !online)) {
     !online && console.log(chalk.yellow('You appear to be offline.'));
     console.log(chalk.yellow('Installing via local npm cache.'));
   }
@@ -289,7 +287,7 @@ function processUsersCommand(options) {
 function createSandbox(options) {
   const { appDir } = options;
 
-  checkDirExists(options);
+  checkDirExists(options) || process.exit();
   createProjectDirectory(options);
   fs.copySync('./files/sandbox', appDir);
 }

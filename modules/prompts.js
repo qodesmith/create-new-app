@@ -31,7 +31,7 @@ function promptYN(question, deflt) {
         default:
           resolve(deflt === undefined ? promptYN(question) : deflt);
       }
-    })
+    });
   });
 }
 

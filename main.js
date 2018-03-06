@@ -142,10 +142,13 @@ async function letsGo() {
 
   // STEP 3 - create project directory or sandbox project.
   if (options.sandbox) return createSandbox(options);
-  return createProjectDirectory(options);
+  createProjectDirectory(options);
 
   // STEP 4 - create project files & folders.
   createFiles(options);
+
+  // STEP 5 - install dependecies.
+
 }
 
 // Analyzes the CLI arguments & returns an object choc full of properties.
@@ -294,30 +297,27 @@ function createSandbox(options) {
 
 // STEP 3
 function createProjectDirectory(options) {
-  const { appName, appDir, force } = options;
-
-  // Check if the directory already exists.
-
+  const { appName, appDir, force, sandbox } = options;
   const greenDir = chalk.green(`${cwd}/`);
   const boldName = chalk.green.bold(appName);
-  console.log(`Creating a new app in ${greenDir}${boldName}...`);
+  console.log(`Creating a new${sandbox ? ' sandbox' : ''} app in ${greenDir}${boldName}...`);
 
   // Create the project directory.
   fs.mkdirSync(appDir);
 }
 
 // STEP 4
-function createFiles() {
-  const { appDir, server, mongo, express } = answers;
+function createFiles(options) {
+  const { appDir, server, mongo, express } = options;
 
   // `.env`
-  fs.writeFileSync(`${appDir}/.env`, dotEnv(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf-8');
 
   // `.gitignore`
   fs.writeFileSync(`${appDir}/.gitignore`, gitIgnore(), 'utf-8');
 
   // `package.json`
-  fs.writeFileSync(`${appDir}/package.json`, packageJson(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf-8');
 
   // `postcss.config.js`
   fs.copyFileSync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`);
@@ -329,7 +329,7 @@ function createFiles() {
   server && fs.copyFileSync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`);
 
   // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(answers), 'utf-8');
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(options), 'utf-8');
 
   // `api` directory tree.
   mongo && copyTree(dir('./files/api'), appDir);

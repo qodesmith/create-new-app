@@ -29,7 +29,7 @@ console.log(`
 */
 
 
-const webpackConfig = {
+module.exports = {
   /*
     https://goo.gl/1JzNCP
     The base directory for resolving entry points & loaders from configuration.
@@ -377,4 +377,143 @@ const webpackConfig = {
   ].filter(Boolean)
 };
 
-module.exports = webpackConfig;
+
+const webpackConfig = {
+  mode: process.env.NODE_ENV, // https://goo.gl/R88FtY - new in Webpack 4.
+
+  /*
+    https://goo.gl/3FP7kM
+    The base directory, an absolute path, for resolving
+    entry pointsand loaders from configuration.
+  */
+  context: path.resolve(__dirname, 'src'),
+
+  /*
+    https://goo.gl/X8nHJZ
+    The point or points to enter the application.
+  */
+  entry: './entry.js',
+
+  /*
+    https://goo.gl/xvjXJd
+    The top-level output key contains set of options instructing webpack
+    on how and where it should output your bundles, assets and anything else
+    you bundle or load with webpack.
+  */
+  output: {
+
+    /*
+      https://goo.gl/DsD2Nn
+      This option determines the name of each output bundle.
+    */
+    filename: '[name].[hash].bundle.js',
+
+    /*
+      https://goo.gl/bwR2sW
+      The output directory as an absolute path.
+    */
+    path: path.resolve(__dirname, 'dist'),
+
+    /*
+      https://goo.gl/jvYGYt
+      The URL of your `output.path` from the view of the HTML page.
+      The value of the option is prefixed to every URL created by the runtime or loaders.
+    */
+    publicPath: '/'
+  },
+
+  /*
+    https://goo.gl/AENyuH
+    These options determine how the different types of modules within a project will be treated.
+  */
+  module: {
+
+    /*
+      An array of Rules which are matched to requests when modules are created.
+      These rules can modify how the module is created.
+      They can apply loaders to the module, or modify the parser.
+    */
+    rules: [
+      /*
+        https://goo.gl/aq8Jce
+        A Rule can be separated into three parts — Conditions, Results and nested Rules.
+
+        Conditions (https://goo.gl/9wzXt9)
+        ----------
+        In a Rule the properties `test`, `include`, `exclude` and `resource` are
+        matched with the resource and the property issuer is matched with the issuer.
+                         --------                                             ------
+
+        When we import './style.css' within app.js,
+        the resource is /path/to/style.css and the issuer is /path/to/app.js.
+
+        Results
+        -------
+        There are two output values of a Rule:
+          1. Applied loaders
+            - An array of loaders applied to the resource.
+            - Properties: `loader`, `options`, `use`.
+            - The `enforce` property affects the loader category. Whether it's a normal, pre- or post- loader.
+          2. Parser options
+            - An options object which should be used to create the parser for this module.
+            - Properties: `parser`.
+
+        Nested Rules
+        ------------
+        Nested rules can be specified under the properties `rules` and `oneOf`.
+        These rules are evaluated when the Rule condition matches.
+      */
+
+      /*
+        JAVASCRIPT
+        ----------
+        * ESx => ES5
+        * JSX => ES5
+      */
+      {
+        test: /\.js$/,
+        exclude: /node_modules/, // This may not be needed since we supplied `include`.
+        include: path.resolve(__dirname, 'src'),
+
+        /*
+          https://goo.gl/99S6sU
+          Loaders will be applied from right to left.
+          E.x.: loader3(loader2(loader1(data)))
+        */
+        use: [
+          // https://goo.gl/EXjzoG
+          {
+            // https://goo.gl/N6uJv3 - Babel loader.
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-env', // https://goo.gl/aAxYAq
+                '@babel/preset-react' // https://goo.gl/4aEFV3
+              ],
+
+              // https://goo.gl/N9gaqc - List of Babel plugins.
+              plugins: [
+                '@babel/plugin-proposal-object-rest-spread', // https://goo.gl/LCHWnP
+                '@babel/plugin-proposal-class-properties' // https://goo.gl/TE6TyG
+              ]
+            }
+          }
+        ]
+      },
+
+      /*
+        SCSS
+        ----
+        * SCSS => CSS
+        * Extract CSS from JS bundle => separate asset
+        * Asset => <link> in index.html
+      */
+      {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        include: path.resolve(__dirname, 'src'),
+        use: []
+      }
+    ]
+  }
+};

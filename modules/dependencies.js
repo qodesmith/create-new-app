@@ -1,20 +1,40 @@
 function dependencies(mongo) {
   const devDependencies = [
     'autoprefixer',
-    'babel-core',
-    'babel-loader',
-    'babel-plugin-transform-class-properties',
-    'babel-plugin-transform-object-rest-spread',
-    'babel-preset-env',
-    'babel-preset-react',
+
+    // BABEL THINGS
+    // https://goo.gl/ESXgmh
+    'babel-loader@8.0.0-beta.0',
+    '@babel/core',
+    '@babel/preset-env',
+    '@babel/preset-react'
+    '@babel/plugin-proposal-object-rest-spread',
+    '@babel/plugin-proposal-class-properties',
+
+
+    // WEBPACK CORE THINGS
+    'webpack',
+    'webpack-cli',
+    'webpack-dev-middleware',
+    'webpack-dev-server',
+
+    // WEBPACK OTHER THINGS
+    'webpack-cleanup-plugin',
+    'uglifyjs-webpack-plugin',
+    'sass-loader',
+    'style-loader',
+    'extract-text-webpack-plugin',
+    'html-webpack-plugin',
+    'file-loader',
+
+
+
+
     'cross-env',
     'css-loader',
     'css-mqpacker',
     'dotenv',
-    'extract-text-webpack-plugin',
-    'file-loader',
     'glob-all',
-    'html-webpack-plugin',
     'node-sass',
     'npm-run-all',
     'postcss-discard-comments',
@@ -23,14 +43,7 @@ function dependencies(mongo) {
     'purgecss-whitelister',
     'react',
     'react-dom',
-    'sass-loader',
-    'style-loader',
     'tachyons-sass',
-    'uglifyjs-webpack-plugin',
-    'webpack',
-    'webpack-cleanup-plugin',
-    'webpack-dev-middleware',
-    'webpack-dev-server'
   ];
 
   const serverDependencies = [

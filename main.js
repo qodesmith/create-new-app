@@ -12,7 +12,6 @@ const cla = require('command-line-args');
 
 // File creators.
 const dotEnv = require('./file-creators/dotEnv');
-const gitIgnore = require('./file-creators/gitIgnore');
 const packageJson = require('./file-creators/packageJson');
 const webpackConfig = require('./file-creators/webpackConfig.js');
 
@@ -314,7 +313,7 @@ function createFiles(options) {
   fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf-8');
 
   // `.gitignore`
-  fs.writeFileSync(`${appDir}/.gitignore`, gitIgnore(), 'utf-8');
+  fs.writeFileSync(`${appDir}/.gitignore`, 'node_modules\n', 'utf-8');
 
   // `package.json`
   fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf-8');

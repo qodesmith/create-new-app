@@ -33,7 +33,7 @@ const cwd = process.cwd();
 const dir = text => path.resolve(__dirname, text);
 
 // Avoid Node complaining about unhandled rejection errors.
-process.on('unhandledRejection', err => { /* console.log(err) */ });
+process.on('unhandledRejection', err => console.log(err));
 
 /*
   Options
@@ -127,13 +127,20 @@ async function letsGo() {
   readline.cursorTo(process.stdout, 0, 0);
   readline.clearScreenDown(process.stdout);
 
+  console.log(process.argv.length)
+  return
+
   // STEP 1 - check if we're online.
   const online = await isOnline();
 
   // STEP 2 - decide between a guided process or not.
   let options;
+
+  // Called with no arguments.
   if (process.argv.length === 2) {
     options = await guidedProcess(online);
+
+  // Called with 1 or more arguments.
   } else {
     const parsedArgs = parseArgs(online);
     options = processUsersCommand(parsedArgs);
@@ -147,7 +154,7 @@ async function letsGo() {
   createFiles(options);
 
   // STEP 5 - install dependecies.
-
+  installDependencies(options);
 }
 
 // Analyzes the CLI arguments & returns an object choc full of properties.
@@ -208,13 +215,10 @@ async function guidedProcess(online) {
       5.  MongoDB?
   */
 
-  // Aggregate the default CLI values into an object.
-  const options = optionDefinitions
+  // Aggregate the default CLI values into an object so we can use those.
+  const defaultOptions = optionDefinitions
     .filter(({ defaultValue }) => defaultValue !== undefined)
-    .reduce((acc, { name, defaultValue }) => {
-      acc[name] = defaultValue;
-      return acc;
-    }, {});
+    .reduce((acc, { name, defaultValue }) => ({ ...acc, [name]: defaultValue }), {})
 
   const n = chalk.bold('n');
   const appName = await promptQ('Enter a name for your app:');
@@ -236,7 +240,7 @@ async function guidedProcess(online) {
   const mongo = express && await promptYN('Would you like to include MongoDB?', false);
 
   return {
-    ...options, // Default CLI values.
+    ...defaultOptions, // Default CLI values.
 
     // Values from questions.
     appName,
@@ -287,11 +291,8 @@ function processUsersCommand(options) {
 
 // Simple sandbox projects, executed from `processUsersCommand`.
 function createSandbox(options) {
-  const { appDir } = options;
-
-  checkDirExists(options) || process.exit();
   createProjectDirectory(options);
-  fs.copySync('./files/sandbox', appDir);
+  fs.copySync('./files/sandbox', options.appDir);
 }
 
 // STEP 3
@@ -299,7 +300,10 @@ function createProjectDirectory(options) {
   const { appName, appDir, force, sandbox } = options;
   const greenDir = chalk.green(`${cwd}/`);
   const boldName = chalk.green.bold(appName);
-  console.log(`Creating a new${sandbox ? ' sandbox' : ''} app in ${greenDir}${boldName}...`);
+  const boldSandbox = chalk.bold(' sandbox');
+
+  checkDirExists(options) || (!sandbox && force) || process.exit();
+  console.log(`Creating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}...`);
 
   // Create the project directory.
   fs.mkdirSync(appDir);
@@ -313,7 +317,7 @@ function createFiles(options) {
   fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf-8');
 
   // `.gitignore`
-  fs.writeFileSync(`${appDir}/.gitignore`, 'node_modules\n', 'utf-8');
+  fs.copyFileSync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
 
   // `package.json`
   fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf-8');
@@ -343,13 +347,11 @@ function createFiles(options) {
 
   // `src` directory tree.
   copyTree(dir('./files/src'), appDir);
-
-  installDependencies();
 }
 
 // STEP 5
-function installDependencies() {
-  const { appName, appDir, mongo, server, offline } = answers;
+function installDependencies(options) {
+  const { appName, appDir, mongo, server, offline } = options;
   const forceOffline = offline ? '--offline' : ''; // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : '';
   const {
@@ -364,12 +366,12 @@ function installDependencies() {
   // Install the devDependencies.
   console.log(`\nInstalling \`devDependencies\` via npm${cache}. This may take a bit...`);
   const devs = devDependencies.concat(server ? serverDependencies : []);
-  run(`npm ${forceOffline} i -D ${devs.join(' ')}`);
+  console.log(devs) && run(`npm ${forceOffline} i -D ${devs.join(' ')}`);
 
   // Install the dependencies.
   if (server) {
     console.log(`\nInstalling \`dependencies\` via npm${cache}. Again, this may take a bit...`);
-    run(`npm ${forceOffline} i ${dependencies.join(' ')}`);
+    console.log(dependencies) && run(`npm ${forceOffline} i ${dependencies.join(' ')}`);
   }
 
   const cyanDir = chalk.cyan(appDir);

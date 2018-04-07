@@ -13,6 +13,12 @@ function home(req, res) {
     if (!isProd) naughtyAjax(req);
     res.json({ nothing: 'to see here' });
   } else {
+
+    /*
+      This folder & file will exists after you have run `npm run build`.
+      While developing, the development server will serve `index.html`
+      from memory, avoiding any contact with this route in the first place.
+    */
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));
   }
 }

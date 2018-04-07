@@ -1,24 +1,23 @@
-/*
-  This file will be the top-most entry point for all styles in the app.
-  Any dependant styles should be explicitly imported here.
-*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//    This file will be the top-most entry point for all styles in the app.    //
+//    Any dependant styles should be explicitly imported here: em;             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*
-  Tachyons
+  Sassyons
   --------
 
-  You can use the entire Tachyons library with `@import 'tachyons'`.
-  To cherry-pick individual Tachyons modules, comment out the library import
-  and use individual imports instead.
+  PSA - Sassyons is a utility library that is NOT meant to be bundled as a whole into your project.
+  There are an obnoxious amount of classes that give you, the developer, full control
+  over styling your project. HOWEVER, the Webpack bundle included with this project
+  uses `purgecss` to strip out unused styles, so you need not be concered!
 
-  *Note* - you will need the variable files commented out below in order
-  to use certain individual Tachyons modules.
+  Read more - https://github.com/qodesmith/sassyons
 */
-@import 'tachyons'; // Use this to import the whole library.
-// @import 'colors'; // Variables.
-// @import 'media-queries'; // Variables.
-// @import 'flexbox'; // Example module import.
+@import 'sassyons';
 
 
 /*
@@ -26,6 +25,6 @@
   ------------------
 
   All our application-specific styles will go below.
-  @import each of them in reverse-priority order.
+  @import each of them in reverse-priority order (bottom = highest priority).
 */
 @import 'global';

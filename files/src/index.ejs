@@ -18,6 +18,8 @@
   <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 </head>
 <body>
-
+  <% if (htmlWebpackPlugin.options.polyfill) { %>
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+  <% } %>
 </body>
 </html>

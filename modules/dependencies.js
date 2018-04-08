@@ -1,71 +1,68 @@
+// NPM Semver Calculator - https://semver.npmjs.com/
+
 function dependencies(mongo) {
   const devDependencies = [
-    'autoprefixer',
+    // MAIN
+    'react@^16',
+    'react-dom@^16',
+    'sassyons', // Always keep latest.
 
-    // BABEL THINGS
-    // https://goo.gl/ESXgmh
-    'babel-loader@8.0.0-beta.0',
-    '@babel/core',
-    '@babel/preset-env',
-    '@babel/preset-react'
-    '@babel/plugin-proposal-object-rest-spread',
-    '@babel/plugin-proposal-class-properties',
+    // POSTCSS
+    'postcss@^6',
+    'autoprefixer@^8',
+    'css-mqpacker@^6',
+    'postcss-discard-comments@^2',
+
+    // WEBPACK
+    'webpack@^4',
+    'webpack-cli@^2',
+    'webpack-dev-server@^3',
+    'mini-css-extract-plugin', // Currently < 1
+    'clean-webpack-plugin', // Currently < 1
+    'html-webpack-plugin@^3',
+    'purgecss-webpack-plugin@^1',
+    'purgecss-whitelister', // Always keep latest.
+    'glob-all', // Always keep latest
+    'css-loader', // Currently < 1
+    'sass-loader@^6',
+    'node-sass@^4',
+
+    // BABEL - https://goo.gl/ESXgmh
+    'babel-loader@^8.0.0-beta',
+    '@babel/core@^7.0.0-beta',
+    '@babel/preset-env@^7.0.0-beta',
+    '@babel/preset-react@^7.0.0-beta',
+    '@babel/plugin-proposal-object-rest-spread@^7.0.0-beta',
+    '@babel/plugin-proposal-class-properties@^7.0.0-beta',
 
 
-    // WEBPACK CORE THINGS
-    'webpack',
-    'webpack-cli',
-    'webpack-dev-middleware',
-    'webpack-dev-server',
-
-    // WEBPACK OTHER THINGS
-    'webpack-cleanup-plugin',
-    'uglifyjs-webpack-plugin',
-    'sass-loader',
-    'style-loader',
-    'extract-text-webpack-plugin',
-    'html-webpack-plugin',
-    'file-loader',
-
-
-
-
-    'cross-env',
-    'css-loader',
-    'css-mqpacker',
-    'dotenv',
-    'glob-all',
-    'node-sass',
-    'npm-run-all',
-    'postcss-discard-comments',
-    'postcss-loader',
-    'purgecss-webpack-plugin',
-    'purgecss-whitelister',
-    'react',
-    'react-dom',
-    'tachyons-sass',
+    // OTHER
+    'cross-env@^5',
+    'npm-run-all', // Always keep latest.
+    'dotenv' // Always keep latest.
   ];
 
+  // These will only take effect if we're creating an app with a server.
+  // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = [
-    'nodemon'
-  ];
+    // SERVER
+    'dotenv', // Always keep latest.
+    'express@^4',
+    'helmet@^3',
+    'compression@^1',
+    'body-parser@^1',
+    'nodemon', // Always keep latest.
 
-  const dependencies = [
-    'body-parser',
-    'catchify',
-    'compression',
-    mongo && 'connect-mongodb-session',
-    'dotenv',
-    'express',
-    mongo && 'express-session',
-    'helmet',
-    mongo && 'mongodb'
+    // MONGO
+    mongo && 'mongodb@^3',
+    mongo && 'catchify@^2',
+    mongo && 'connect-mongodb-session@^2',
+    mongo && 'express-session@^1',
   ].filter(Boolean);
 
   return {
     devDependencies,
-    serverDependencies,
-    dependencies
+    serverDependencies
   };
 }
 

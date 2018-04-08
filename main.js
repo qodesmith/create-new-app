@@ -352,12 +352,11 @@ function createFiles(options) {
 // STEP 5
 function installDependencies(options) {
   const { appName, appDir, mongo, server, offline } = options;
-  const forceOffline = offline ? '--offline' : ''; // https://goo.gl/aZLDLk
+  const forceOffline = offline ? ' --offline' : ''; // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : '';
   const {
     devDependencies,
-    serverDependencies,
-    dependencies
+    serverDependencies
   } = require('./modules/dependencies')(mongo);
 
   // Change into the projects directory.
@@ -365,13 +364,12 @@ function installDependencies(options) {
 
   // Install the devDependencies.
   console.log(`\nInstalling \`devDependencies\` via npm${cache}. This may take a bit...`);
-  const devs = devDependencies.concat(server ? serverDependencies : []);
-  console.log(devs) && run(`npm ${forceOffline} i -D ${devs.join(' ')}`);
+  run(`npm${forceOffline} i -D ${devDependencies.join(' ')}`);
 
   // Install the dependencies.
   if (server) {
     console.log(`\nInstalling \`dependencies\` via npm${cache}. Again, this may take a bit...`);
-    console.log(dependencies) && run(`npm ${forceOffline} i ${dependencies.join(' ')}`);
+    run(`npm${forceOffline} i ${serverDependencies.join(' ')}`);
   }
 
   const cyanDir = chalk.cyan(appDir);
@@ -389,12 +387,12 @@ function installDependencies(options) {
 
   if (server) {
     console.log(`  ${chalk.cyan('npm run local')}`);
-    console.log(`    Starts the Express server (no development server).\n`);
+    console.log(`    Starts only the Express server (no development server).\n`);
   }
 
   console.log(`\nGet started by typing:\n`);
   console.log(`  ${chalk.cyan('cd')} ${appName}`)
-  console.log(`  ${chalk.cyan('npm start')}\n`);
+  console.log(`  ${chalk.cyan('npm start')}\n\n`);
 
-  console.log('JavaScript rules!');
+  console.log(chalk.yellow.bold('JavaScript === Awesomeness™'));
 }

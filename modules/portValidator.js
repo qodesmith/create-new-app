@@ -1,9 +1,7 @@
 const chalk = require('chalk');
 
-function portValidator(val, type) {
+function portValidator(val, type, defaultPort) {
   const num = Number.isInteger(+val) ? (+val) : undefined;
-  const defaultPorts = { api: 3000, dev: 8080 }
-  const defaultPort = defaultPorts[type];
 
   if (num === undefined) {
     const msg = `\n"${val}" is an invalid port. Defaulting to ${defaultPort}...\n`;

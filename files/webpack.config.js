@@ -1,5 +1,5 @@
 require('dotenv').load(); // https://goo.gl/Cj8nKu
-const { NODE_ENV } = process.env
+const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
 const path = require('path');
 const glob = require('glob-all');
 
@@ -316,6 +316,7 @@ module.exports = (env, argv) => ({
       https://goo.gl/eFdUfe
       Tell the server where to serve content from.
       This is only necessary if you want to serve static files.
+      Content not served from Webpack's devServer is served from here.
     */
     contentBase: path.resolve(__dirname, 'dist'),
 
@@ -324,7 +325,19 @@ module.exports = (env, argv) => ({
       '...the index.html page will likely have to be served
       in place of any 404 responses.'
     */
-    historyApiFallback: true
+    historyApiFallback: true,
+
+    // https://goo.gl/EVMMyC
+    port: DEV_SERVER_PORT,
+
+    /*
+      Redirect non-static asset calls
+      or unrecognized urls to the backend API server.
+      404's will be served `index.html` by `historyApiFallback` above.
+    */
+    proxy: API ? {
+      [API]: `http://localhost:${API_PORT}`
+    } : null
   },
 
   // https://goo.gl/K4eZeE

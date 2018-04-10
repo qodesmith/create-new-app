@@ -7,7 +7,7 @@ function packageJson(answers) {
     keywords,
     author,
     email
-  }
+  };
 
   if (server) {
     packageJson.main = 'server.js'

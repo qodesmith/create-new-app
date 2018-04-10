@@ -1,11 +1,14 @@
 // NPM Semver Calculator - https://semver.npmjs.com/
 
-function dependencies(mongo) {
+function dependencies(mongo, redux, router) {
   const devDependencies = [
     // MAIN
     'react@^16',
     'react-dom@^16',
     'sassyons', // Always keep latest.
+    redux && 'redux@^3',
+    redux && 'react-redux@^5',
+    router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
 
     // POSTCSS
     'postcss@^6',
@@ -40,7 +43,7 @@ function dependencies(mongo) {
     'cross-env@^5',
     'npm-run-all', // Always keep latest.
     'dotenv' // Always keep latest.
-  ];
+  ].filter(Boolean);
 
   // These will only take effect if we're creating an app with a server.
   // They will be saved in `package.json` as `dependencies`.

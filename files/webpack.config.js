@@ -202,7 +202,19 @@ module.exports = (env, argv) => ({
               minimize: true
             }
           },
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+
+              /*
+                Anything sass that needs to be consumbed from
+                node_modules should be listed here.
+              */
+              includePaths: [
+                'node_modules/sassyons'
+              ]
+            }
+          }
         ]
       }
     ]
@@ -216,14 +228,14 @@ module.exports = (env, argv) => ({
       Create aliases to import certain modules more easily.
       Eliminates having to type out ../../../ all the time.
     */
-    alias: {
-      components: path.resolve(__dirname, 'src/components'),
-      actions: path.resolve(__dirname, 'src/utils/actions'),
-      helpers: path.resolve(__dirname, 'src/utils/helpers'),
-      middleware: path.resolve(__dirname, 'src/utils/middleware'),
-      reducers: path.resolve(__dirname, 'src/utils/reducers'),
-      utils: path.resolve(__dirname, 'src/utils')
-    },
+    // alias: {
+    //   components: path.resolve(__dirname, 'src/components'),
+    //   actions: path.resolve(__dirname, 'src/utils/actions'),
+    //   helpers: path.resolve(__dirname, 'src/utils/helpers'),
+    //   middleware: path.resolve(__dirname, 'src/utils/middleware'),
+    //   reducers: path.resolve(__dirname, 'src/utils/reducers'),
+    //   utils: path.resolve(__dirname, 'src/utils')
+    // },
 
     /*
       https://goo.gl/57vTmD
@@ -337,7 +349,7 @@ module.exports = (env, argv) => ({
     */
     proxy: API ? {
       [API]: `http://localhost:${API_PORT}`
-    } : null
+    } : {}
   },
 
   // https://goo.gl/K4eZeE

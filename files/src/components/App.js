@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 
-export function didTreeShakingWork() {
-  /*
-    From the CLI run `npm run build`.
-    Check the .js file in the dist folder.
-    If the string below cannot be found, tree shaking worked!
-  */
-  return 'IF YOU CAN SEE ME THEN TREE SHAKING DID NOT WORK!';
-}
-
-class example extends Component {
+class Example extends Component {
   componentWillMount() {
     document.body.className = 'bg-black-80 f4 white-80';
   }
@@ -28,4 +19,4 @@ class example extends Component {
   }
 };
 
-export default example;
+export default Example;

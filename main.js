@@ -13,7 +13,6 @@ const cla = require('command-line-args');
 // File creators.
 const dotEnv = require('./file-creators/dotEnv');
 const packageJson = require('./file-creators/packageJson');
-const webpackConfig = require('./file-creators/webpackConfig.js');
 
 // Custom modules.
 const run = require('./modules/run');
@@ -47,6 +46,9 @@ process.on('unhandledRejection', err => console.log(err));
   redux
     * `utils` folder created with redux-specific sub-folders
     * causes `entry.js` to have different contents
+
+  router
+    * ???
 
   version
     * displays the current version of this package
@@ -89,17 +91,22 @@ process.on('unhandledRejection', err => console.log(err));
 */
 
 const optionDefinitions = [
-  { name: 'appName', type: String, defaultOption: true },
+  // Information only.
   { name: 'version', alias: 'v', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean },
-  { name: 'offline', alias: 'o', type: Boolean, defaultValue: false },
-  { name: 'title', alias: 't', type: String, defaultValue: '' },
-  { name: 'sandbox', alias: 's', type: Boolean, defaultValue: false },
-  { name: 'force', alias: 'f', type: Boolean, defaultValue: false }, // Use with caution.
 
-  // Experimental.
-  { name: 'redux', alias: 'r', type: Boolean, defaultValue: false },
-  { name: 'router', type: Boolean, defaultValue: false },
+
+  { name: 'appName', type: String, defaultOption: true },
+  { name: 'title', alias: 't', type: String, defaultValue: '' },
+
+  // Optional addons.
+  { name: 'redux', alias: 'x', type: Boolean, defaultValue: false },
+  { name: 'router', alias: 'r', type: Boolean, defaultValue: false },
+
+  // Flags.
+  { name: 'offline', alias: 'o', type: Boolean, defaultValue: false },
+  { name: 'force', alias: 'f', type: Boolean, defaultValue: false }, // Use with caution.
+  { name: 'sandbox', alias: 's', type: Boolean, defaultValue: false },
 
   // `package.json` fields.
   { name: 'author', type: String, defaultValue: '' },
@@ -111,7 +118,6 @@ const optionDefinitions = [
   { name: 'devServerPort', type: val => portValidator(val, 'dev', 8080), defaultValue: 8080 },
   { name: 'apiPort', type: val => portValidator(val, 'api', 3000), defaultValue: 3000 },
   { name: 'api', type: String, defaultValue: null },
-
   { name: 'express', alias: 'e', type: Boolean },
   { name: 'mongo', alias: 'm', type: Boolean }
 ];
@@ -272,8 +278,13 @@ function processUsersCommand(options) {
 
 // Simple sandbox projects, executed from `processUsersCommand`.
 function createSandbox(options) {
+  if (!options.appName) {
+    console.log('Oops! You forgot to provide a project name.');
+    return console.log(`  ${chalk.green('create-new-app <project-name> --sandbox')}`);
+  }
+
   createProjectDirectory(options);
-  fs.copySync('./files/sandbox', options.appDir);
+  fs.copySync(dir('files/sandbox'), options.appDir);
 }
 
 // STEP 3
@@ -284,7 +295,7 @@ function createProjectDirectory(options) {
   const boldSandbox = chalk.bold(' sandbox');
 
   checkDirExists(options) || (!sandbox && force) || process.exit();
-  console.log(`Creating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}...`);
+  console.log(`Creating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}.`);
 
   // Create the project directory.
   fs.mkdirSync(appDir);
@@ -292,7 +303,7 @@ function createProjectDirectory(options) {
 
 // STEP 4
 function createFiles(options) {
-  const { appDir, server, mongo, express } = options;
+  const { appDir, server, mongo, express, redux, router } = options;
 
   // `.env`
   fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf-8');
@@ -328,17 +339,26 @@ function createFiles(options) {
 
   // `src` directory tree.
   copyTree(dir('./files/src'), appDir);
+
+  // Redux + redux first router.
+  if (router) {
+    copyTree('./files/redux/utils', `${appDir}/src`);
+
+  // Redux only.
+  } else if (redux) {
+
+  }
 }
 
 // STEP 5
 function installDependencies(options) {
-  const { appName, appDir, mongo, server, offline } = options;
+  const { appName, appDir, mongo, server, offline, redux, router } = options;
   const forceOffline = offline ? ' --offline' : ''; // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : '';
   const {
     devDependencies,
     serverDependencies
-  } = require('./modules/dependencies')(mongo);
+  } = require('./modules/dependencies')(mongo, redux, router);
 
   // Change into the projects directory.
   process.chdir(`${cwd}/${appName}`);

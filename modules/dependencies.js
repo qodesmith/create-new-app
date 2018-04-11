@@ -9,6 +9,7 @@ function dependencies(mongo, redux, router) {
     redux && 'redux@^3',
     redux && 'react-redux@^5',
     router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
+    router && 'history@^4',
 
     // POSTCSS
     'postcss@^6',

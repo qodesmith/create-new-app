@@ -342,7 +342,26 @@ function createFiles(options) {
 
   // Redux + redux first router.
   if (router) {
+    // Entry file.
+    fs.copyFileSync(dir('files/redux/redux1stRouterEntry.js'), `${appDir}/src/entry.js`);
+
+    // Example / NotFound components.
+    fs.copyFileSync(dir('files/redux/Redux1stApp.js'), `${appDir}/src/components/App.js`);
+    fs.copyFileSync(dir('files/redux/Redux1stExample.js'), `${appDir}/src/components/Example.js`);
+    fs.copyFileSync(dir('files/redux/NotFound.js'), `${appDir}/src/components/NotFound.js`);
+
+    // Redux store.
+    copyTree('./files/redux/configureStore', `${appDir}/src`);
+
+    // Redux utilities (actions, helpers, middleware, reducers).
     copyTree('./files/redux/utils', `${appDir}/src`);
+
+    // Router routes map.
+    fs.copyFileSync(dir('files/redux/routesMap.js'), `${appDir}/src`);
+
+    // Router thunks folder.
+    fs.mkdirSync(`${appDir}/src/route-thunks`);
+
 
   // Redux only.
   } else if (redux) {

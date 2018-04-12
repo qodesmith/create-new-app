@@ -8,7 +8,8 @@ function dependencies(mongo, redux, router) {
     'sassyons', // Always keep latest.
     redux && 'redux@^3',
     redux && 'react-redux@^5',
-    router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
+    router && 'redux-first-router@0.0.16-next', // Currently < 1, on the road to "Rudy".
+    router && 'redux-first-router-link@^1',
     router && 'history@^4',
 
     // POSTCSS

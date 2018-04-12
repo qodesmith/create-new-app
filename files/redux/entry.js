@@ -12,7 +12,8 @@ import { Provider } from 'react-redux';
 import App from './components/App';
 
 // Import a store, created & ready to go.
-import store from './reduxStore';
+import store from './store';
+
 
 // Create a single element for our app to live.
 console.log('Loaded, bro.');

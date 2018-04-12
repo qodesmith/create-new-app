@@ -1,38 +1,44 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { exampleActionCreator } from '../utils/actions'
+import { exampleActionCreator } from '../utils/actions';
+import Example from './Example';
 
-class Example extends Component {
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
   componentWillMount() {
     document.body.className = 'bg-black-80 f4 white-80';
   }
 
-  render() {
-    const { title, author, color, randomizeColor } = this.props;
-    const style = { color };
+  // React error handling!
+  componentDidCatch(error) {
+    this.setState({ error });
+    console.log(error);
+  }
 
-    return (
-      <Fragment>
-        <header className='pv5 bg-gold black-80 tc'>
-          <h1 className='mt0 mb1'>{title}</h1>
-          <div className='ttc'>by {author}</div>
-        </header>
-        <div className='pt4 pb1 tc'>Go save the world with <span style={style}>JavaScript</span></div>
-        <div className='tc'>and edit <code>src/components/<span className='b'>App.js</span></code>!</div>
-        <button onClick={randomizeColor}>Random Color</button>
-      </Fragment>
-    );
+  render() {
+    if (this.state.error) {
+      return (
+        <Fragment>
+          <h2>Uh oh!</h2>
+          <p>Looks like the client has encountered a problem.</p>
+          <p>
+            Please refresh your browser and try again.
+            If this issue persists, scream and run around like you're on fire.
+            Or, check the console and see what was logged. I mean either one is fine.
+          </p>
+        </Fragment>
+      );
+    }
+
+    return <Example />
   }
 };
 
-const mapStateToProps = ({ example }) => ({
-  title: example.title,
-  author: example.author,
-  color: example.color
-});
+const mapStateToProps = ({ location }) => ({ location });
 
-const mapDispatchToProps = dispatch => ({
-  randomizeColor: () => dispatch(exampleActionCreator())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Example);
+export default connect(mapStateToProps)(App);

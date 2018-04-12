@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { exampleActionCreator } from '../utils/actions'
+import { exampleActionCreator } from '../utils/actions';
+import Link from 'redux-first-router-link';
 
 const E1 = ({ title, author, color, randomizeColor }) => (
   <Fragment>
@@ -11,20 +12,23 @@ const E1 = ({ title, author, color, randomizeColor }) => (
     <div className='pt4 pb1 tc'>
       Go save the world with <span style={{ color }}>JavaScript</span>
     </div>
-    <div className='tc'>and edit <code>src/components/<span className='b'>App.js</span></code>!</div>
-    <div className='flex justify-center'>
-      <button className='mr2' onClick={randomizeColor}>Random Color</button>
-      <button className='ml2'>Example page 2</button>
+    <div className='tc'>
+      and edit <code>src/components/<span className='b'>App.js</span></code>!
+    </div>
+    <div className='df justify-center mt3'>
+      <div className='mr2 ph3 pv2 no-select ba-1px pointer' onClick={randomizeColor}>
+        Random Color
+      </div>
+
+      {/* https://goo.gl/DJjc4W */}
+      <Link to={{type: 'EXAMPLE2'}}>
+        <div className='ml2 ph3 pv2 no-select ba-1px pointer white-80'>Example page 2</div>
+      </Link>
     </div>
   </Fragment>
 );
 
-const mapStateToProps = ({ example }) => ({
-  title: example.title,
-  author: example.author,
-  color: example.color
-});
-
+const mapStateToProps = ({ example }) => ({ ...example });
 const mapDispatchToProps = dispatch => ({
   randomizeColor: () => dispatch(exampleActionCreator()),
 });
@@ -32,8 +36,9 @@ const mapDispatchToProps = dispatch => ({
 export const Example1 = connect(mapStateToProps, mapDispatchToProps)(E1);
 
 export class Example2 extends Component {
-  constructor() {
-    this.state = { date: new Date().toLocaleString() }
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date().toLocaleString() };
   }
 
   componentDidMount() {
@@ -48,8 +53,8 @@ export class Example2 extends Component {
 
   render() {
     return (
-      <div className='flex justify-center align-items-center'>
-        <h1>{this.state.date}</h1>
+      <div className='df justify-center align-items-center vh-100'>
+        <h1 className='ma0 tc'>{this.state.date}</h1>
       </div>
     );
   }

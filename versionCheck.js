@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Possible permissions errors? - https://goo.gl/mH9n3j
 
-const chalk = require('chalk');
-const nodeVersion = process.versions.node;
-const spaces = ' '.repeat(43 - nodeVersion.length);
-const url = chalk.cyan.bold('https://github.com/creationix/nvm');
-const name = chalk.bold('Create New App');
+const chalk = require('chalk')
+const nodeVersion = process.versions.node
+const spaces = ' '.repeat(43 - nodeVersion.length)
+const url = chalk.cyan.bold('https://github.com/creationix/nvm')
+const name = chalk.bold('Create New App')
 
 if (nodeVersion[0] < 6) {
   const message = `
@@ -17,8 +17,8 @@ if (nodeVersion[0] < 6) {
     |    ${url}                              |
     |                                                                   |
     +-------------------------------------------------------------------+
-  `;
+  `
 
-  console.log(message);
-  process.exit(1);
+  console.log(message)
+  process.exit(1)
 }

@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { NOT_FOUND } from 'redux-first-router';
-import { exampleActionCreator } from '../utils/actions';
-import NotFound from './NotFound';
-import { Example1, Example2 } from './Example';
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
+import { NOT_FOUND } from 'redux-first-router'
+import { exampleActionCreator } from '../utils/actions'
+import NotFound from './NotFound'
+import { Example1, Example2 } from './Example'
 
 /*
   Each key in the `views` object represents a route found in `routesMap.js`.
@@ -14,26 +14,26 @@ const views = {
   [NOT_FOUND]: NotFound,
   HOME: Example1,
   EXAMPLE2: Example2
-};
+}
 
 class App extends Component {
   constructor(props) {
-    super(props);
-    this.state = { error: null };
+    super(props)
+    this.state = { error: null }
   }
 
   componentWillMount() {
-    document.body.className = 'bg-black-80 f4 white-80';
+    document.body.className = 'bg-black-80 f4 white-80'
   }
 
   // React error handling!
   componentDidCatch(error) {
-    this.setState({ error });
-    console.log(error);
+    this.setState({ error })
+    console.log(error)
   }
 
   render() {
-    const View = views[this.props.location.type];
+    const View = views[this.props.location.type]
 
     if (this.state.error) {
       return (
@@ -46,13 +46,13 @@ class App extends Component {
             Or, check the console and see what was logged. I mean either one is fine.
           </p>
         </Fragment>
-      );
+      )
     }
 
     return <View />
   }
-};
+}
 
-const mapStateToProps = ({ location }) => ({ location });
+const mapStateToProps = ({ location }) => ({ location })
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(App)

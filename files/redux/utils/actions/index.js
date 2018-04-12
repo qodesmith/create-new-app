@@ -1,1 +1,1 @@
-export const  exampleActionCreator = () => ({ type: 'CHANGE_COLOR' });
+export const  exampleActionCreator = () => ({ type: 'CHANGE_COLOR' })

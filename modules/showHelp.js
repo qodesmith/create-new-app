@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+const chalk = require('chalk')
 
 function showHelp() {
   console.log(`
@@ -29,7 +29,7 @@ function showHelp() {
 
     Have an issue?  Help keep ${chalk.bold('create-new-app')} awesome by reporting it here:
       ${chalk.cyan('https://github.com/qodesmith/create-new-app/issues/new')}
-  `);
+  `)
 }
 
-module.exports = showHelp;
+module.exports = showHelp

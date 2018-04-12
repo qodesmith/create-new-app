@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
-import { exampleActionCreator } from '../utils/actions';
+import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
+import { exampleActionCreator } from '../utils/actions'
 
 const Example = ({ title, author, color, randomizeColor }) => (
   <Fragment>
@@ -20,11 +20,11 @@ const Example = ({ title, author, color, randomizeColor }) => (
       </div>
     </div>
   </Fragment>
-);
+)
 
-const mapStateToProps = ({ example }) => ({ ...example });
+const mapStateToProps = ({ example }) => ({ ...example })
 const mapDispatchToProps = dispatch => ({
   randomizeColor: () => dispatch(exampleActionCreator())
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Example);
+export default connect(mapStateToProps, mapDispatchToProps)(Example)

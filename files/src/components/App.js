@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react'
 
 class Example extends Component {
   componentWillMount() {
-    document.body.className = 'bg-black-80 f4 white-80';
+    document.body.className = 'bg-black-80 f4 white-80'
   }
 
   render() {
@@ -15,8 +15,8 @@ class Example extends Component {
         <div className='pt4 pb1 tc'>Go save the world with JavaScript</div>
         <div className='tc'>and edit <code>src/components/<span className='b'>App.js</span></code>!</div>
       </Fragment>
-    );
+    )
   }
-};
+}
 
-export default Example;
+export default Example

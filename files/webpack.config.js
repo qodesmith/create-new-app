@@ -1,14 +1,14 @@
-require('dotenv').load(); // https://goo.gl/Cj8nKu
+require('dotenv').load() // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
-const path = require('path');
-const glob = require('glob-all');
+const path = require('path')
+const glob = require('glob-all')
 
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PurgecssPlugin = require('purgecss-webpack-plugin');
-const whitelister = require('purgecss-whitelister');
+const webpack = require('webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const PurgecssPlugin = require('purgecss-webpack-plugin')
+const whitelister = require('purgecss-whitelister')
 
 
 console.log(`
@@ -19,7 +19,7 @@ console.log(`
   |                                   |
   +-----------------------------------+
 
-`);
+`)
 
 
 module.exports = (env, argv) => ({
@@ -375,4 +375,4 @@ module.exports = (env, argv) => ({
     consumed in Node, change this to `node`. There are others as well.
   */
   target: 'web'
-});
+})

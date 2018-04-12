@@ -14,6 +14,6 @@
 const routesMap = {
   HOME: '/',
   EXAMPLE2: '/another-page'
-};
+}
 
-export default routesMap;
+export default routesMap

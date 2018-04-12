@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { exampleActionCreator } from '../utils/actions';
-import Link from 'redux-first-router-link';
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
+import { exampleActionCreator } from '../utils/actions'
+import Link from 'redux-first-router-link'
 
 const E1 = ({ title, author, color, randomizeColor }) => (
   <Fragment>
@@ -26,29 +26,29 @@ const E1 = ({ title, author, color, randomizeColor }) => (
       </Link>
     </div>
   </Fragment>
-);
+)
 
-const mapStateToProps = ({ example }) => ({ ...example });
+const mapStateToProps = ({ example }) => ({ ...example })
 const mapDispatchToProps = dispatch => ({
   randomizeColor: () => dispatch(exampleActionCreator()),
-});
+})
 
-export const Example1 = connect(mapStateToProps, mapDispatchToProps)(E1);
+export const Example1 = connect(mapStateToProps, mapDispatchToProps)(E1)
 
 export class Example2 extends Component {
   constructor(props) {
-    super(props);
-    this.state = { date: new Date().toLocaleString() };
+    super(props)
+    this.state = { date: new Date().toLocaleString() }
   }
 
   componentDidMount() {
     this.interval = setInterval(() => this.setState({
       date: new Date().toLocaleString()
-    }), 1000);
+    }), 1000)
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this.interval)
   }
 
   render() {
@@ -56,6 +56,6 @@ export class Example2 extends Component {
       <div className='df justify-center align-items-center vh-100'>
         <h1 className='ma0 tc'>{this.state.date}</h1>
       </div>
-    );
+    )
   }
-};
+}

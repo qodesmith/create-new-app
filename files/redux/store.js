@@ -1,21 +1,21 @@
-import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
-import exampleReducer from './utils/reducers/exampleReducer';
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
+import exampleReducer from './utils/reducers/exampleReducer'
 
 
 // Add all your custom middleware to this array.
-const middlewareList = [];
+const middlewareList = []
 
 // Add all your reducers to this object.
-const rootReducer = combineReducers({ example: exampleReducer });
+const rootReducer = combineReducers({ example: exampleReducer })
 
 // https://goo.gl/XRLgX8
 // Using Redux DevTools extension? You should...
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // Create the Redux store, in all its router-ified glory!
 const store = createStore(
   rootReducer,
   composeEnhancers(applyMiddleware(...middlewareList))
-);
+)
 
-export default store;
+export default store

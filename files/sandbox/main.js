@@ -6,4 +6,4 @@
   and simply refresh Chrome to see those changes.
 */
 
-console.log('Loaded, bro.');
+console.log('Loaded, bro.')

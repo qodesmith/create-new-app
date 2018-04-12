@@ -1,5 +1,5 @@
-const path = require('path');
-const isProd = process.env.NODE_ENV === 'production';
+const path = require('path')
+const isProd = process.env.NODE_ENV === 'production'
 
 /*
   THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
@@ -9,7 +9,7 @@ const isProd = process.env.NODE_ENV === 'production';
 function home(req, res) {
   // AJAX requests that request non-existent routes.
   if (req.xhr) {
-    res.json({ nothing: 'to see here' });
+    res.json({ nothing: 'to see here' })
   } else {
 
     /*
@@ -17,8 +17,8 @@ function home(req, res) {
       While developing, the development server will serve `index.html`
       from memory, avoiding any contact with this route in the first place.
     */
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'))
   }
 }
 
-module.exports = home;
+module.exports = home

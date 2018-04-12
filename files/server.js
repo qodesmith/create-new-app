@@ -5,16 +5,16 @@
   security - http://goo.gl/LBmJXK
 */
 
-require('dotenv').load(); // https://goo.gl/Cj8nKu
-const path = require('path');
-const express = require('express');
-const helmet = require('helmet'); // Sets various http headers - https://goo.gl/g7K98x
-const compression = require('compression'); // Gzip! - https://goo.gl/ShNShk
-const bp = require('body-parser'); // Makes `req.body` available - https://goo.gl/0UviQN
-const app = express();
+require('dotenv').load() // https://goo.gl/Cj8nKu
+const path = require('path')
+const express = require('express')
+const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
+const compression = require('compression') // Gzip! - https://goo.gl/ShNShk
+const bp = require('body-parser') // Makes `req.body` available - https://goo.gl/0UviQN
+const app = express()
 
 // Environment variables.
-const { appName, PORT, NODE_ENV } = process.env;
+const { appName, PORT, NODE_ENV } = process.env
 
 // Express middleware.
 app.use(
@@ -23,7 +23,7 @@ app.use(
   compression(), // GZIP
   bp.json(), // http://goo.gl/ixEWAa, https://goo.gl/Xp2pBC, https://goo.gl/g9V9AM
   bp.urlencoded({ extended: false }) // http://goo.gl/ixEWAa, https://goo.gl/jkPwBu
-);
+)
 
 /*
   ADD YOUR CUSTOM ENDPOINTS HERE
@@ -35,7 +35,7 @@ app.use(
   Catch-all endpoint which delivers `index.html` and let's
   the front-end handle all the routing including 404's.
 */
-app.get('*', require('./api/home'));
+app.get('*', require('./api/home'))
 
 // And so it begins...
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}...`))

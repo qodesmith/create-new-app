@@ -45,7 +45,7 @@ function dependencies(mongo, redux, router) {
     'cross-env@^5',
     'npm-run-all', // Always keep latest.
     'dotenv' // Always keep latest.
-  ].filter(Boolean);
+  ].filter(Boolean)
 
   // These will only take effect if we're creating an app with a server.
   // They will be saved in `package.json` as `dependencies`.
@@ -63,12 +63,12 @@ function dependencies(mongo, redux, router) {
     mongo && 'catchify@^2',
     mongo && 'connect-mongodb-session@^2',
     mongo && 'express-session@^1',
-  ].filter(Boolean);
+  ].filter(Boolean)
 
   return {
     devDependencies,
     serverDependencies
-  };
+  }
 }
 
-module.exports = dependencies;
+module.exports = dependencies

@@ -340,39 +340,32 @@ function createFiles(options) {
   // `src` directory tree.
   copyTree(dir('./files/src'), appDir);
 
-  // Redux + redux first router.
-  if (router) {
+  if (redux || router) {
     // Entry file.
     fs.copyFileSync(dir('files/redux/entry.js'), `${appDir}/src/entry.js`);
-
-    // Example / NotFound components.
-    fs.copyFileSync(dir('files/redux/Redux1stApp.js'), `${appDir}/src/components/App.js`);
-    fs.copyFileSync(dir('files/redux/Redux1stExample.js'), `${appDir}/src/components/Example.js`);
-    fs.copyFileSync(dir('files/redux/NotFound.js'), `${appDir}/src/components/NotFound.js`);
-
-    // Redux store.
-    fs.copyFileSync(dir('files/redux/routerStore.js'), `${appDir}/src/store.js`);
 
     // Redux utilities (actions, helpers, middleware, reducers).
     copyTree(dir('files/redux/utils'), `${appDir}/src`);
 
-    // Router routes map.
-    fs.copyFileSync(dir('files/redux/routesMap.js'), `${appDir}/src/routesMap.js`);
+    if (router) {
+      // Components.
+      fs.copyFileSync(dir('files/redux/Redux1stApp.js'), `${appDir}/src/components/App.js`);
+      fs.copyFileSync(dir('files/redux/Redux1stExample.js'), `${appDir}/src/components/Example.js`);
+      fs.copyFileSync(dir('files/redux/NotFound.js'), `${appDir}/src/components/NotFound.js`);
 
-  // Redux only.
-  } else if (redux) {
-    // Entry file.
-    fs.copyFileSync(dir('files/redux/entry.js'), `${appDir}/src/entry.js`);
+      // Store.
+      fs.copyFileSync(dir('files/redux/routerStore.js'), `${appDir}/src/store.js`);
 
-    // Example component.
-    fs.copyFileSync(dir('files/redux/ReduxApp.js'), `${appDir}/src/components/App.js`);
-    fs.copyFileSync(dir('files/redux/ReduxExample.js'), `${appDir}/src/components/Example.js`);
+      // Router routes map.
+      fs.copyFileSync(dir('files/redux/routesMap.js'), `${appDir}/src/routesMap.js`);
+    } else {
+      // Components.
+      fs.copyFileSync(dir('files/redux/ReduxApp.js'), `${appDir}/src/components/App.js`);
+      fs.copyFileSync(dir('files/redux/ReduxExample.js'), `${appDir}/src/components/Example.js`);
 
-    // Redux store.
-    fs.copyFileSync(dir('files/redux/store.js'), `${appDir}/src/store.js`);
-
-    // Redux utilities (actions, helpers, middleware, reducers).
-    copyTree(dir('files/redux/utils'), `${appDir}/src`);
+      // Store.
+      fs.copyFileSync(dir('files/redux/store.js'), `${appDir}/src/store.js`);
+    }
   }
 }
 

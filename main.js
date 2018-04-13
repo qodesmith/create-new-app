@@ -123,7 +123,8 @@ const optionDefinitions = [
 ]
 
 // Let's go! Push the first dominoe.
-(async function letsGo() {
+letsGo()
+async function letsGo() {
   // Clear the console - https://goo.gl/KyrhG2
   readline.cursorTo(process.stdout, 0, 0)
   readline.clearScreenDown(process.stdout)
@@ -154,7 +155,8 @@ const optionDefinitions = [
 
   // STEP 5 - install dependecies.
   installDependencies(options)
-})()
+}
+
 
 // Analyzes the CLI arguments & returns an object choc full of properties.
 function parseArgs(online) {

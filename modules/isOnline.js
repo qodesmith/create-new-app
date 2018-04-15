@@ -16,7 +16,7 @@ module.exports = () => new Promise(resolve => {
     slow = true
     console.log('\nYour internet connection appears to be unstable...\n')
     resolve(false)
-  }, 5000)
+  }, 3500)
 
   exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
     clearTimeout(tooSlow)

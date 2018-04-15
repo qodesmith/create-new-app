@@ -347,8 +347,8 @@ module.exports = (env, argv) => ({
       or unrecognized urls to the backend API server.
       404's will be served `index.html` by `historyApiFallback` above.
     */
-    proxy: API ? {
-      [API]: `http://localhost:${API_PORT}`
+    proxy: (API || API_PORT) ? {
+      [API || '/']: `http://localhost:${API_PORT}`
     } : {}
   },
 

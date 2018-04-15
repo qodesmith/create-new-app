@@ -14,7 +14,7 @@ const bp = require('body-parser') // Makes `req.body` available - https://goo.gl
 const app = express()
 
 // Environment variables.
-const { appName, PORT, NODE_ENV } = process.env
+const { appName, API_PORT, NODE_ENV } = process.env
 
 // Express middleware.
 app.use(
@@ -38,4 +38,4 @@ app.use(
 app.get('*', require('./api/home'))
 
 // And so it begins...
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`))
+app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}...`))

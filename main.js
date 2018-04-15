@@ -414,7 +414,5 @@ function installDependencies(options) {
 
   console.log(`\nGet started by typing:\n`)
   console.log(`  ${chalk.cyan('cd')} ${appName}`)
-  console.log(`  ${chalk.cyan('npm start')}\n\n`)
-
-  console.log(chalk.yellow.bold('JavaScript === Awesomeness™'))
+  console.log(`  ${chalk.cyan('npm start')}\n`)
 }

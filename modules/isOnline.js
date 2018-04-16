@@ -6,7 +6,7 @@
     * https://goo.gl/3zxtLa - `connectivity`
 */
 
-const { exec } = require('child_process')
+const http = require('http')
 
 module.exports = () => new Promise(resolve => {
   let slow = false
@@ -14,12 +14,13 @@ module.exports = () => new Promise(resolve => {
   // Prevent this from taking forever for slow connections.
   const tooSlow = setTimeout(() => {
     slow = true
-    console.log('\nYour internet connection appears to be unstable...\n')
+    console.log('\nYour internet connection appears to be unstable.')
+    console.log('Proceeding with offline mode...')
     resolve(false)
   }, 3500)
 
-  exec('curl www.google.com', { stdio: [0, 1, 2] }, (err, stdout, stdin) => {
+  http.get('http://google.com', ({ statusCode }) => {
     clearTimeout(tooSlow)
-    !slow && resolve(err ? false : true)
+    !slow && resolve(statusCode === 200)
   })
 })

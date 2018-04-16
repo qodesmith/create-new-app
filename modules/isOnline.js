@@ -21,6 +21,6 @@ module.exports = () => new Promise(resolve => {
 
   http.get('http://google.com', ({ statusCode }) => {
     clearTimeout(tooSlow)
-    !slow && resolve(statusCode === 200)
+    !slow && resolve(String(statusCode)[0] === '2') // Ensure we have a 2xx status code.
   })
 })

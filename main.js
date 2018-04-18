@@ -376,23 +376,13 @@ function installDependencies(options) {
   const { appName, appDir, mongo, server, offline, redux, router } = options
   const forceOffline = offline ? ' --offline' : '' // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : ''
-  const {
-    devDependencies,
-    serverDependencies
-  } = require('./modules/dependencies')(mongo, redux, router)
 
   // Change into the projects directory.
   process.chdir(`${cwd}/${appName}`)
 
-  // Install the devDependencies.
-  console.log(`\nInstalling \`devDependencies\` via npm${cache}. This may take a bit...`)
-  run(`npm${forceOffline} i -D ${devDependencies.join(' ')}`)
-
   // Install the dependencies.
-  if (server) {
-    console.log(`\nInstalling \`dependencies\` via npm${cache}. Again, this may take a bit...`)
-    run(`npm${forceOffline} i ${serverDependencies.join(' ')}`)
-  }
+  console.log(`\nInstalling project dependencies via npm${cache}...`)
+  run(`npm${forceOffline} i`)
 
   const cyanDir = chalk.cyan(appDir)
   const boldName = chalk.bold(appName)

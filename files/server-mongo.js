@@ -15,7 +15,7 @@ const session = require('express-session') // Save data across requests - https:
 const app = express()
 
 // Environment variables.
-const { mongoURI, mongoSession, appName, secret, PORT, NODE_ENV } = process.env
+const { mongoURI, mongoSession, appName, secret, API_PORT, NODE_ENV } = process.env
 
 // MongoDB
 const { sessionStoreErr } = require('./api/utilities/handleErrors')
@@ -57,8 +57,9 @@ app.use(
 /*
   Catch-all endpoint which delivers `index.html` and let's
   the front-end handle all the routing including 404's.
+  This should be the last chronological GET route.
 */
 app.get('*', require('./api/home'))
 
 // And so it begins...
-app.listen(PORT, () => console.log(`Listening on port ${PORT}...`))
+app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}...`))

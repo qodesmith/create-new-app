@@ -15,7 +15,7 @@ module.exports = () => new Promise(resolve => {
   const tooSlow = setTimeout(() => {
     slow = true
     console.log('\nYour internet connection appears to be unstable.')
-    console.log('Proceeding with offline mode...')
+    console.log('Proceeding with offline mode...\n')
     resolve(false)
   }, 3500)
 

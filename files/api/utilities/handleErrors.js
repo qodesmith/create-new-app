@@ -50,16 +50,6 @@ function sessionStoreErr(err) {
   saveErrorToDb(error)
 }
 
-// Called when a user tries to make ajax requests to non-existent endpoints.
-function naughtyAjax(req) {
-  const error = createError('naughty ajax', {
-    url: req.originalUrl,
-    method: req.method
-  })
-
-  saveErrorToDb(error)
-}
-
 // When Mongo can't connect.
 function noConnect(res, err) {
   const error = createError('no connect', err)
@@ -69,6 +59,5 @@ function noConnect(res, err) {
 module.exports = {
   operationErr,
   sessionStoreErr,
-  naughtyAjax,
   noConnect
 }

@@ -7,18 +7,12 @@ const isProd = process.env.NODE_ENV === 'production'
 */
 
 function home(req, res) {
-  // AJAX requests that request non-existent routes.
-  if (req.xhr) {
-    res.json({ nothing: 'to see here' })
-  } else {
-
-    /*
-      This folder & file will exists after you have run `npm run build`.
-      While developing, the development server will serve `index.html`
-      from memory, avoiding any contact with this route in the first place.
-    */
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'))
-  }
+  /*
+    This folder & file will exists after you have run `npm run build`.
+    While developing, the development server will serve `index.html`
+    from memory, avoiding any contact with this route in the first place.
+  */
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'))
 }
 
 module.exports = home

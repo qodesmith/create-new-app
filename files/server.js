@@ -34,6 +34,7 @@ app.use(
 /*
   Catch-all endpoint which delivers `index.html` and let's
   the front-end handle all the routing including 404's.
+  This should be the last chronological GET route.
 */
 app.get('*', require('./api/home'))
 

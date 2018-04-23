@@ -14,7 +14,7 @@ const bp = require('body-parser') // Makes `req.body` available - https://goo.gl
 const app = express()
 
 // Environment variables.
-const { appName, API_PORT, NODE_ENV } = process.env
+const { appName, API_PORT } = process.env
 
 // Express middleware.
 app.use(

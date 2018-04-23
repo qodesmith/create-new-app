@@ -15,7 +15,7 @@ const session = require('express-session') // Save data across requests - https:
 const app = express()
 
 // Environment variables.
-const { mongoURI, mongoSession, appName, secret, API_PORT, NODE_ENV } = process.env
+const { mongoURI, mongoSession, appName, secret, API_PORT } = process.env
 
 // MongoDB
 const { sessionStoreErr } = require('./api/utilities/handleErrors')

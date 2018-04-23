@@ -6,7 +6,7 @@
     * https://goo.gl/3zxtLa - `connectivity`
 */
 
-const http = require('http')
+const dns = require('dns')
 
 module.exports = () => new Promise(resolve => {
   let slow = false
@@ -19,8 +19,9 @@ module.exports = () => new Promise(resolve => {
     resolve(false)
   }, 3500)
 
-  http.get('http://google.com', ({ statusCode }) => {
+  // https://nodejs.org/api/dns.html
+  dns.lookup('google.com', (err, address, family) => {
     clearTimeout(tooSlow)
-    !slow && resolve(String(statusCode)[0] === '2') // Ensure we have a 2xx status code.
+    !slow && resolve(!err)
   })
 })

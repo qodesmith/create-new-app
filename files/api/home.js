@@ -1,5 +1,4 @@
 const path = require('path')
-const isProd = process.env.NODE_ENV === 'production'
 
 /*
   THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A

@@ -3,14 +3,21 @@
   when connecting to MongoDB throughout the app. An example:
 
   async function example() {
-    const [dbErr, db] = await mongo()
-    db.collection('posts')...
+    const [dbErr, client, db] = await mongo()
+    const postsCollection = db.collection('posts')
+
+    ...
+
+    client.close()
   }
 */
 
-const catchify = require('catchify')
-const MongoClient = require('mongodb').MongoClient
-const { mongoURI } = process.env
-const mongo = () => catchify(MongoClient.connect(mongoURI))
+const { MongoClient } = require('mongodb')
+const { mongoURI, appName } = process.env
+const mongo = () => (
+  MongoClient.connect(mongoURI)
+    .then(client => [null, client, client.db(appName)])
+    .catch(err => [err])
+)
 
 module.exports = mongo

@@ -40,7 +40,7 @@ app.use(
     name: appName, // Needed if multiple apps running on same host.
     resave: false, // Forces cookie to be resaved back to the session store even if no changes.
     saveUninitialized: true, // Forces a session that is uninitialized to be saved to the store.
-    secret: secret, // The secret used to sign the session ID cookie.
+    secret, // The secret used to sign the session ID cookie.
     cookie: {
       maxAge: null, // Default = `null` - closing browser removes cookie & session.
       httpOnly: true // Default = `true` - on the client, `document.cookie` will not be available.

@@ -381,7 +381,8 @@ function installDependencies(options) {
   process.chdir(`${cwd}/${appName}`)
 
   // Install the dependencies.
-  console.log(`\nInstalling project dependencies via npm${cache}...`)
+  offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
+  console.log(`Installing project dependencies via npm${cache}...`)
   run(`npm${forceOffline} i`)
 
   const cyanDir = chalk.cyan(appDir)

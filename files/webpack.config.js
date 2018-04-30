@@ -163,7 +163,10 @@ module.exports = (env, argv) => ({
                   {
                     targets: {
                       browsers: [
-                        'last 2 versions'
+                        // https://goo.gl/2uAdKL - avoid `last 2 versions`.
+                        '>0.25%',
+                        'not ie 11',
+                        'not op_mini all'
                       ]
                     },
                     modules: false // Needed for tree shaking to work.

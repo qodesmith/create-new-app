@@ -298,7 +298,7 @@ function createProjectDirectory(options) {
   const boldSandbox = chalk.bold(' sandbox')
 
   checkDirExists(options) || (!sandbox && force) || process.exit()
-  console.log(`Creating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}.`)
+  console.log(`\nCreating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}.`)
 
   // Create the project directory.
   fs.mkdirSync(appDir)
@@ -383,7 +383,7 @@ function installDependencies(options) {
 
   // Install the dependencies.
   offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
-  console.log(`Installing project dependencies via npm${cache}...`)
+  console.log(`Installing project dependencies via npm${cache}...\n`)
   run(`npm${forceOffline} i`)
 
   const cyanDir = chalk.cyan(appDir)

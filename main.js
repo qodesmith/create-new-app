@@ -13,6 +13,7 @@ const cla = require('command-line-args')
 // File creators.
 const dotEnv = require('./file-creators/dotEnv')
 const packageJson = require('./file-creators/packageJson')
+const webpackConfig = require('./file-creators/webpackConfig')
 
 // Custom modules.
 const run = require('./modules/run')
@@ -326,7 +327,7 @@ function createFiles(options) {
   server && fs.copyFileSync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
 
   // `webpack.config.js`
-  fs.copyFileSync(dir('files/webpack.config.js'), `${appDir}/webpack.config.js`)
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(redux), 'utf-8')
 
   // `api` directory tree.
   mongo && copyTree(dir('./files/api'), appDir)

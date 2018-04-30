@@ -1,4 +1,4 @@
-const mongo = require('utilities/mongo')
+const mongo = require('../utilities/mongo')
 
 function exampleGetEndpoint(req, res) {
   const [err, client, db] = await mongo()

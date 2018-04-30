@@ -1,5 +1,5 @@
 require('dotenv').load() // https://goo.gl/Cj8nKu
-const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
+const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, reduxApp } = process.env
 const path = require('path')
 const glob = require('glob-all')
 
@@ -231,14 +231,7 @@ module.exports = (env, argv) => ({
       Create aliases to import certain modules more easily.
       Eliminates having to type out ../../../ all the time.
     */
-    // alias: {
-    //   components: path.resolve(__dirname, 'src/components'),
-    //   actions: path.resolve(__dirname, 'src/utils/actions'),
-    //   helpers: path.resolve(__dirname, 'src/utils/helpers'),
-    //   middleware: path.resolve(__dirname, 'src/utils/middleware'),
-    //   reducers: path.resolve(__dirname, 'src/utils/reducers'),
-    //   utils: path.resolve(__dirname, 'src/utils')
-    // },
+    alias: PLACEHOLDER_WEBPACK_ALIAS
 
     /*
       https://goo.gl/57vTmD

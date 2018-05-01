@@ -4,7 +4,7 @@
 
   async function example() {
     const [dbErr, client, db] = await mongo()
-    const postsCollection = db.collection('posts')
+    const postsCollection = await db.collection('posts')
 
     ...
 

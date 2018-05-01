@@ -12,23 +12,21 @@ const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/
   The idea is that there will be an admin-only section on the front end
   that will display this error data in a meaningful way.
 */
-const createError = (type = 'unknown', err = {}) => {
-  const error = JSON.parse(JSON.stringify(err))
-  return {
-    type,
-    ...error,
-    date: localDate()
-  }
-}
+const createError = (type = 'unknown', err = {}) => ({
+  type,
+  ...JSON.parse(JSON.stringify(err)),
+  localDate: localDate(),
+  date: Date.now()
+})
 
 // A helper function that saves errors to the database.
 async function saveErrorToDb(err) {
   if (isDev) return console.log('ERROR CREATED FOR DB:', err)
 
-  const [dbErr, db] = await mongo()
+  const [dbErr, client, db] = await mongo()
   if (dbErr) return
   await db.collection('errors').insertOne(err)
-  db.close()
+  client.close()
 }
 
 // Inserts, saves, etc. error's are handled with this function.

@@ -10,7 +10,7 @@ const dependencies = (mongo, redux, router) => {
     // MAIN
     react: '^16',
     'react-dom': '^16',
-    sassyons: 'latest', // Always keep latest.
+    sassyons: '^1',
     redux: redux && '^3',
     'react-redux': redux && '^5',
     'redux-first-router': router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
@@ -56,7 +56,6 @@ const dependencies = (mongo, redux, router) => {
   // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = {
     // SERVER
-    dotenv: 'latest', // Always keep latest.
     express: '^4',
     helmet: '^3',
     compression: '^1',

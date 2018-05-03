@@ -2,11 +2,11 @@
 // Possible permissions errors? - https://goo.gl/mH9n3j
 
 const chalk = require('chalk');
-const nodeVersion = process.versions.node;
+const nodeVersion = +process.versions.node.split('.')[0];
 const spaces = ' '.repeat(43 - nodeVersion.length);
 const url = chalk.cyan.bold('https://github.com/creationix/nvm');
 
-if (nodeVersion[0] < 6) {
+if (nodeVersion < 6) {
   const message = `
     +-------------------------------------------------------------------+
     |                                                                   |

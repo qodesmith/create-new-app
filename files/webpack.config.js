@@ -210,7 +210,7 @@ module.exports = (env, argv) => ({
             options: {
 
               /*
-                Anything sass that needs to be consumbed from
+                Anything sass that needs to be consumed from
                 node_modules should be listed here.
               */
               includePaths: [
@@ -308,6 +308,7 @@ module.exports = (env, argv) => ({
       styleExtensions: ['.css'],
       paths: glob.sync([
         path.resolve(__dirname, 'src/**/*.js'),
+        path.resolve(__dirname, 'src/**/*.jsx'),
         path.resolve(__dirname, 'src/index.ejs')
       ]),
 

@@ -1,5 +1,10 @@
-# This files contents were taken from Github's Node example:
+# The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
+
+# Ignore all files in the dist folder BUT a few
+dist/*
+!dist/favicon.ico
+!dist/robots.txt
 
 # Logs
 logs

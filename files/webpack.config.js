@@ -1,7 +1,7 @@
 require('dotenv').load() // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, reduxApp } = process.env
 const path = require('path')
-const glob = require('glob-all')
+const globAll = require('glob-all')
 
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -231,7 +231,7 @@ module.exports = (env, argv) => ({
       Create aliases to import certain modules more easily.
       Eliminates having to type out ../../../ all the time.
     */
-    alias: PLACEHOLDER_WEBPACK_ALIAS
+    alias: @@__PLACEHOLDER_WEBPACK_ALIAS__@@
 
     /*
       https://goo.gl/57vTmD
@@ -306,11 +306,11 @@ module.exports = (env, argv) => ({
     env.prod && new PurgecssPlugin({
       keyframes: false, // https://goo.gl/bACbDW
       styleExtensions: ['.css'],
-      paths: glob.sync([
-        path.resolve(__dirname, 'src/**/*.js'),
-        path.resolve(__dirname, 'src/**/*.jsx'),
-        path.resolve(__dirname, 'src/index.ejs')
-      ]),
+      paths: globAll.sync([
+        './src/**/*.js',
+        './src/**/*.jsx',
+        './src/index.ejs'
+      ], { absolute: true }),
 
       /*
         Optionally whitelist 3rd party libraries.

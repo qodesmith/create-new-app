@@ -2,12 +2,12 @@ const fs = require('fs')
 const path = require('path')
 
 function webpackConfig(redux) {
-  const placeholder = 'PLACEHOLDER_WEBPACK_ALIAS'
+  const placeholder = '@@__PLACEHOLDER_WEBPACK_ALIAS__@@'
   const filePath = path.resolve(__dirname, '../files/webpack.config.js')
   const config = fs.readFileSync(filePath, 'utf-8')
   const lines = config.split('\n')
 
-  // Which line # has the placehold string.
+  // Which line # has the placeholder string.
   const num = lines.findIndex(line => line.includes(placeholder))
 
   // The line contents.
@@ -29,7 +29,7 @@ function webpackConfig(redux) {
     redux && `${indent}middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
     redux && `${indent}reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
     redux && `${indent}utils: path.resolve(__dirname, 'src/utils')`,
-    `${indent.slice(0, -2)}},` // Closing bracket indented 2 spaces closer.
+    `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
   ].filter(Boolean).join('\n')
 
   return config.replace(placeholder, aliasObject)

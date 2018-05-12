@@ -205,7 +205,7 @@ module.exports = (env, argv) => ({
               minimize: true
             }
           },
-          'postcss-loader',
+          'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
           {
             loader: 'sass-loader',
             options: {

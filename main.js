@@ -352,9 +352,9 @@ function createFiles(options) {
 
     if (router) {
       // Components.
-      fs.copyFileSync(dir('files/redux/Redux1stApp.js'), `${appDir}/src/components/App.js`)
-      fs.copyFileSync(dir('files/redux/Redux1stExample.js'), `${appDir}/src/components/Example.js`)
-      fs.copyFileSync(dir('files/redux/NotFound.js'), `${appDir}/src/components/NotFound.js`)
+      fs.copyFileSync(dir('files/redux/Redux1stApp.jsx'), `${appDir}/src/components/App.jsx`)
+      fs.copyFileSync(dir('files/redux/Redux1stExample.jsx'), `${appDir}/src/components/Example.jsx`)
+      fs.copyFileSync(dir('files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
 
       // Store.
       fs.copyFileSync(dir('files/redux/routerStore.js'), `${appDir}/src/store.js`)
@@ -363,8 +363,8 @@ function createFiles(options) {
       fs.copyFileSync(dir('files/redux/routesMap.js'), `${appDir}/src/routesMap.js`)
     } else {
       // Components.
-      fs.copyFileSync(dir('files/redux/ReduxApp.js'), `${appDir}/src/components/App.js`)
-      fs.copyFileSync(dir('files/redux/ReduxExample.js'), `${appDir}/src/components/Example.js`)
+      fs.copyFileSync(dir('files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
+      fs.copyFileSync(dir('files/redux/ReduxExample.jsx'), `${appDir}/src/components/Example.jsx`)
 
       // Store.
       fs.copyFileSync(dir('files/redux/store.js'), `${appDir}/src/store.js`)

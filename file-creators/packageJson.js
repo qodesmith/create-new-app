@@ -10,17 +10,22 @@ function packageJson(answers) {
     email,
     keywords = []
   } = answers
+
   const {
     devDependencies,
     serverDependencies
   } = require('../modules/dependencies')(mongo, redux, router)
+
   let packageJson = {
     name: appName,
     version: '0.1.0',
     description,
     keywords,
     author,
-    email
+    email,
+
+    // https://goo.gl/2uAdKL - avoid `last 2 versions`.
+    browserslist: ['>0.25%', 'not ie 11', 'not op_mini all']
   }
 
   if (server) {

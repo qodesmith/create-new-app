@@ -19,9 +19,11 @@ const dependencies = (mongo, redux, router) => {
 
     // POSTCSS
     postcss: '^6',
+    'postcss-loader': '^2',
     autoprefixer: '^8',
     'css-mqpacker': '^6',
     'postcss-discard-comments': '^2',
+    'postcss-combine-duplicated-selectors': '^5',
 
     // WEBPACK
     webpack: '^4',

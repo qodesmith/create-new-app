@@ -205,6 +205,7 @@ module.exports = (env, argv) => ({
               minimize: true
             }
           },
+          'postcss-loader',
           {
             loader: 'sass-loader',
             options: {
@@ -315,7 +316,7 @@ module.exports = (env, argv) => ({
       /*
         Optionally whitelist 3rd party libraries.
         Example:
-          whitelist: whitelister(path.resolve(__dirname, 'node_modules/library/styles.css'))
+          whitelist: whitelister('./node_modules/library/styles.css')
       */
     })
   ].filter(Boolean),

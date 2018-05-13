@@ -11,7 +11,14 @@ function home(req, res) {
     While developing, the development server will serve `index.html`
     from memory, avoiding any contact with this route in the first place.
   */
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'))
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
+    /*
+      If the file wasn't found, send 404.
+      This can happen in you manually change
+      the url to something non-existant
+    */
+    res.sendStatus(404)
+  })
 }
 
 module.exports = home

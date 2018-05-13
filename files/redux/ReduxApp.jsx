@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { exampleActionCreator } from '../utils/actions'
+import { exampleActionCreator } from 'actions'
 import Example from './Example'
 
 

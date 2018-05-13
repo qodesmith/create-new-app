@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { NOT_FOUND } from 'redux-first-router'
-import { exampleActionCreator } from '../utils/actions'
+import { exampleActionCreator } from 'actions'
 import NotFound from './NotFound'
 import { Example1, Example2 } from './Example'
 

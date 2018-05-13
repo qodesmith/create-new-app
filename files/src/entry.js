@@ -6,7 +6,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 // Import our top-level component.
-import App from './components/App'
+import App from 'components/App'
 
 // Create a single element for our app to live.
 console.log('Loaded, bro.')

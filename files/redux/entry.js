@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 // Import our top-level component.
-import App from './components/App'
+import App from 'components/App'
 
 // Import a store, created & ready to go.
 import store from './store'

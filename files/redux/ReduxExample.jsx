@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import { exampleActionCreator } from '../utils/actions'
+import { exampleActionCreator } from 'actions'
 
 const Example = ({ title, author, color, randomizeColor }) => (
   <Fragment>

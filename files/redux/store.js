@@ -1,5 +1,5 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
-import exampleReducer from './utils/reducers/exampleReducer'
+import exampleReducer from 'reducers/exampleReducer'
 
 
 // Add all your custom middleware to this array.

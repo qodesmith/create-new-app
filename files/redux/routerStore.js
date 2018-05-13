@@ -2,7 +2,7 @@ import { connectRoutes } from 'redux-first-router'
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
 import createHistory from 'history/createBrowserHistory'
 import routesMap from './routesMap'
-import exampleReducer from './utils/reducers/exampleReducer'
+import exampleReducer from 'reducers/exampleReducer'
 
 const history = createHistory()
 const { reducer: locationReducer, middleware, enhancer } = connectRoutes(history, routesMap)

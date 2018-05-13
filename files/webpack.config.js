@@ -342,6 +342,7 @@ module.exports = (env, argv) => ({
     port: DEV_SERVER_PORT,
 
     /*
+      https://goo.gl/a6WW1p
       Redirect non-static asset calls
       or unrecognized urls to the backend API server.
       404's will be served `index.html` by `historyApiFallback` above.

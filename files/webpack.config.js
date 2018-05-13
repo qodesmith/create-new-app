@@ -325,7 +325,7 @@ module.exports = (env, argv) => ({
   devServer: {
     /*
       https://goo.gl/eFdUfe
-      Tell the server where to serve content from.
+      Tell the dev server where to serve content from.
       This is only necessary if you want to serve static files.
       Content not served from Webpack's devServer is served from here.
     */
@@ -343,12 +343,32 @@ module.exports = (env, argv) => ({
 
     /*
       https://goo.gl/a6WW1p
-      Redirect non-static asset calls
-      or unrecognized urls to the backend API server.
+      Redirect non-static asset calls to the backend API server.
+      Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served `index.html` by `historyApiFallback` above.
     */
     proxy: (API || API_PORT) ? {
-      [API || '/']: `http://localhost:${API_PORT}`
+      [API || '/']: {
+        target: `http://localhost:${API_PORT}`,
+        bypass(req, res, proxyOptions) {
+          const { url, method } = req
+
+          // Direct all non-get requests to the API server.
+          if (method.toLowerCase() !== 'get') return
+
+          /*
+            Proxy url (browser) requests back to '/'
+            and let the front end do all the routing.
+            For all others, let the API server respond.
+          */
+
+          // Url / browser request
+          if (req.headers.accept.includes('html')) return API || '/'
+
+          // Let the API server respond.
+          return
+        }
+      }
     } : {}
   },
 

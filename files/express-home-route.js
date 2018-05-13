@@ -1,5 +1,4 @@
 const path = require('path')
-const isProd = process.env.NODE_ENV === 'production'
 
 /*
   THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
@@ -8,11 +7,18 @@ const isProd = process.env.NODE_ENV === 'production'
 
 function home(req, res) {
   /*
-    This folder & file will exists after you have run `npm run build`.
+    This folder & file will exist after you have run `npm run build`.
     While developing, the development server will serve `index.html`
     from memory, avoiding any contact with this route in the first place.
   */
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'))
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
+    /*
+      If the file wasn't found, send 404.
+      This can happen in you manually change
+      the url to something non-existant
+    */
+    res.sendStatus(404)
+  })
 }
 
 module.exports = home

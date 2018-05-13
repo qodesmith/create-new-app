@@ -1,4 +1,4 @@
-import { randomHexColor } from '../helpers'
+import { randomHexColor } from 'helpers'
 
 const initialState = {
   title: 'Create New App',

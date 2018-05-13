@@ -7,7 +7,7 @@ const path = require('path')
 
 function home(req, res) {
   /*
-    This folder & file will exists after you have run `npm run build`.
+    This folder & file will exist after you have run `npm run build`.
     While developing, the development server will serve `index.html`
     from memory, avoiding any contact with this route in the first place.
   */

@@ -1,5 +1,5 @@
 const mongo = require('./mongo')
-const isDev = process.env.NODE_ENV === 'development'
+const isProd = process.env.NODE_ENV === 'production'
 
 /*
   Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
@@ -21,7 +21,7 @@ const createError = (type = 'unknown', err = {}) => ({
 
 // A helper function that saves errors to the database.
 async function saveErrorToDb(err) {
-  if (isDev) return console.log('ERROR CREATED FOR DB:', err)
+  if (!isProd) return console.log('ERROR CREATED FOR DB:', err)
 
   const [dbErr, client, db] = await mongo()
   if (dbErr) return

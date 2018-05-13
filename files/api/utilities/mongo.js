@@ -18,10 +18,11 @@ const { mongoURI, appName } = process.env
 /*
   We default to connecting to a database named after the `appName`.
   Users are still free to pass in their own custom name.
+  To set the db name globally, replace `appName` below with a string.
 */
-const mongo = (database = appName) => (
+const mongo = (databaseName = appName) => (
   MongoClient.connect(mongoURI)
-    .then(client => [null, client, client.db(database)])
+    .then(client => [null, client, client.db(databaseName)])
     .catch(err => [err])
 )
 

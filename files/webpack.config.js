@@ -365,7 +365,7 @@ module.exports = (env, argv) => ({
           // Url / browser request
           if (req.headers.accept.includes('html')) return API || '/'
 
-          // Let the API server respond by implcitely returning here.
+          // Let the API server respond by implcitly returning here.
         }
       }
     } : {}

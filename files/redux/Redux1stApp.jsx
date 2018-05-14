@@ -26,7 +26,11 @@ class App extends Component {
     document.body.className = 'bg-black-80 f4 white-80'
   }
 
-  // React error handling!
+  /*
+    https://goo.gl/BGzrSf - React error handling!
+    "Error boundaries catch errors during rendering,
+    in lifecycle methods, and in constructors of the whole tree below them."
+  */
   componentDidCatch(error) {
     this.setState({ error })
     console.log(error)

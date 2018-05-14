@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { exampleActionCreator } from 'actions'
 import Example from './Example'
@@ -23,7 +23,7 @@ class App extends Component {
   render() {
     if (this.state.error) {
       return (
-        <Fragment>
+        <div className='w-50 w-100-m ph3'>
           <h2>Uh oh!</h2>
           <p>Looks like the client has encountered a problem.</p>
           <p>
@@ -31,7 +31,7 @@ class App extends Component {
             If this issue persists, scream and run around like you're on fire.
             Or, check the console and see what was logged. I mean either one is fine.
           </p>
-        </Fragment>
+        </div>
       )
     }
 

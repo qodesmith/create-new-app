@@ -371,8 +371,12 @@ module.exports = (env, argv) => ({
     } : {}
   },
 
-  // https://goo.gl/K4eZeE
-  devtool: !env.prod && 'eval-source-map',
+  /*
+    https://goo.gl/K4eZeE
+    Seems to be the fastest one with accurate line numbers
+    matching what you'd see in your editor.
+  */
+  devtool: !env.prod && 'cheap-module-eval-source-map',
 
   /*
     https://goo.gl/ZisDCb

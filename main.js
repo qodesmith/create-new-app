@@ -334,7 +334,7 @@ function createFiles(options) {
   if (express && !mongo) {
     const apiDir = `${appDir}/api`
     fs.mkdirSync(apiDir)
-    fs.copyFileSync(dir('files/express-home-route.js'), `${apiDir}/home.js`)
+    fs.copyFileSync(dir('files/api/home.js'), `${apiDir}/home.js`)
   }
 
   // `dist` directory tree.

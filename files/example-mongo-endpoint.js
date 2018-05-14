@@ -1,6 +1,6 @@
 const mongo = require('../utilities/mongo')
 
-function exampleGetEndpoint(req, res) {
+async function exampleGetEndpoint(req, res) {
   const [err, client, db] = await mongo()
   if (err) return console.log(err)
 

@@ -46,10 +46,11 @@ process.on('unhandledRejection', err => console.log(err))
 
   redux
     * `utils` folder created with redux-specific sub-folders
-    * causes `entry.js` to have different contents
+    * causes `entry.js` & `App.jsx` to have different contents
 
   router
-    * ???
+    * will automatically include redux
+    * creates `store.js`, `routesMap.js`, `Example.jsx`, nad `NotFound.jsx`
 
   version
     * displays the current version of this package
@@ -71,6 +72,8 @@ process.on('unhandledRejection', err => console.log(err))
 
   api
     * sets the `devServer.proxy[api]` key value
+    * for example '/api' would be the value
+    * set as API variable in the `.env` file
 
   apiPort
     * sets the `devServer.proxy[api]` port value
@@ -97,7 +100,7 @@ const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean },
 
 
-  { name: 'appName', type: String, defaultOption: true },
+  { name: 'appName', type: String, defaultOption: true }, // Main argument.
   { name: 'title', alias: 't', type: String, defaultValue: '' },
 
   // Optional addons.
@@ -177,6 +180,7 @@ function parseArgs(online) {
   } = options
   const validation = validateName(appName)
 
+
   // Add properties we'll use down the line.
   options = {
     ...options,
@@ -185,7 +189,7 @@ function parseArgs(online) {
     router,
     offline: !online || offline, // Argument option from the CLI to process *as* offline.
     api: api ? api.replace(/ /g, '') : null,
-    server: express || mongo,
+    server: !!(express || mongo),
     appDir: `${cwd}/${appName}`
   }
 

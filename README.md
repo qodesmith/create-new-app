@@ -24,7 +24,7 @@
 
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
-[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And you've been hip to [Tachyons](http://tachyons.io/) for some time now, but alas... CRA doesn't include it. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
+[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And you've been hip to [Sassyons](https://github.com/qodesmith/sassyons) for some time now, but alas... CRA doesn't include it. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
 
 **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
 
@@ -38,11 +38,20 @@ npm install -g create-new-app
 
 ## Usage
 
+#### DIY
 ```shell
 create-new-app <app-name> [options]
 
 # Shorthand:
 cna <app-name> [options]
+```
+
+#### Guided Process
+```shell
+create-new app
+
+# Shorthand:
+cna
 ```
 
 ### Simplest Example
@@ -58,11 +67,14 @@ npm start
 ### Other Examples
 
 ```shell
+# Let the guided process ask you no more than 4 questions:
+create-new-app
+
 # You already have a local API built & running at `localhost:1234`:
-create-new-app awesomeness --apiport 1234
+create-new-app awesomeness --apiPort 1234
 
 # Perhaps all requests to that local api are behind the `/api` flag:
-create-new-app awesomeness --api /api --apiport 1234
+create-new-app awesomeness --api /api --apiPort 1234
 
 # You've decided you want a new API. Express is set up for you:
 create-new-app awesomeness -e
@@ -138,15 +150,15 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
       <td>-</td>
     </tr>
     <tr>
-      <td><code>--apiport</code></td>
+      <td><code>--apiPort</code></td>
       <td align="center">-</td>
       <td>Number</td>
       <td>
         Port number to the api server.
         <br><br>
         <em>Examples:</em>
-        <br><code>--apiport 5000</code>
-        <br><code>--apiport=5000</code>
+        <br><code>--apiPort 5000</code>
+        <br><code>--apiPort=5000</code>
       </td>
       <td>8080</td>
     </tr>

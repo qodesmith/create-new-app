@@ -347,8 +347,8 @@ module.exports = (env, argv) => ({
       Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served `index.html` by `historyApiFallback` above.
     */
-    proxy: (API || API_PORT) ? {
-      [API || '/']: {
+    proxy: API ? {
+      [API]: {
         target: `http://localhost:${API_PORT}`,
         bypass(req, res, proxyOptions) {
           const { url, method } = req
@@ -362,8 +362,8 @@ module.exports = (env, argv) => ({
             For all others, let the API server respond.
           */
 
-          // Url / browser request
-          if (req.headers.accept.includes('html')) return API || '/'
+          // Url / browser request - allow front end routing to handle all the things.
+          if (req.headers.accept.includes('html')) return '/'
 
           // Let the API server respond by implcitly returning here.
         }

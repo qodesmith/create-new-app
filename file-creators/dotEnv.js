@@ -12,6 +12,8 @@ function dotEnv(options) {
     `appName=${appName}`,
     title && `title=${title}`,
     description && `description='${description}'`,
+    api && `API=${api}`,
+    (api || server) && `API_PORT=${apiPort}`,
     `DEV_SERVER_PORT=${devServerPort}\n`
   ].filter(Boolean)
 
@@ -22,8 +24,6 @@ function dotEnv(options) {
     mongo && `mongoURI=mongodb://localhost:27017/${appName}`,
     mongo && `mongoSession=${appName}Sessions`,
     mongo && `secret=${uuid()}`,
-    api && `API=${api}`,
-    `API_PORT=${apiPort}`,
     ...contents
   ].filter(Boolean).join('\n')
 }

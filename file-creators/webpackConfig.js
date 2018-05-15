@@ -1,51 +1,38 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs')
+const path = require('path')
 
-function webpackConfig(answers) {
-  const { server, port, apiport, api, title, description } = answers;
-  const filePath = path.resolve(__dirname, '../files/webpack.config.js');
-  const file = fs.readFileSync(filePath, 'utf-8')
-    .toString()
-    .replace('PLACEHOLDER-API', api)
-    .replace('PLACEHOLDER-PORT', port)
-    .replace('PLACEHOLDER-APIPORT', apiport)
-    .replace('PLACEHOLDER-TITLE', title)
-    .replace('PLACEHOLDER-DESCRIPTION', description)
-    .split('\n');
+function webpackConfig(redux) {
+  const placeholder = '@@__PLACEHOLDER_WEBPACK_ALIAS__@@'
+  const filePath = path.resolve(__dirname, '../files/webpack.config.js')
+  const config = fs.readFileSync(filePath, 'utf-8')
+  const lines = config.split('\n')
+
+  // Which line # has the placeholder string.
+  const num = lines.findIndex(line => line.includes(placeholder))
+
+  // The line contents.
+  const line = lines[num]
 
   /*
-    Remove all api-server related things.
-    server - use local Express server
-    api - remote server, no local Express server
+    https://goo.gl/DirJ71
+    Figure out how many empty spaces there are for the indentation.
+    Our object properties should be indented 2 more than that.
   */
-  if (!server && typeof api !== 'string') {
-    // Contents of the line we're looking for.
-    const proxy = 'proxy: {';
+  const indent = ' '.repeat(line.search(/\S/) + 2)
 
-    // The start of the portion of the array we want to splice out.
-    const proxyStart = file.findIndex(line => line.includes(proxy));
+  // Construct the appropriate webpack alias object for redux or not.
+  const aliasObject = [
+    '{',
+    `${indent}components: path.resolve(__dirname, 'src/components')${redux ? ',' : ''}`,
+    redux && `${indent}actions: path.resolve(__dirname, 'src/utils/actions'),`,
+    redux && `${indent}helpers: path.resolve(__dirname, 'src/utils/helpers'),`,
+    redux && `${indent}middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
+    redux && `${indent}reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
+    redux && `${indent}utils: path.resolve(__dirname, 'src/utils')`,
+    `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
+  ].filter(Boolean).join('\n')
 
-    // How many preceding spaces.
-    const proxyIndent = file[proxyStart].search(/\S/); // https://goo.gl/DirJ71
-
-    // New array with proxy as the 1st line.
-    const proxyArr = file.slice(proxyStart);
-
-    // What our desired end line should look like.
-    const endLine = ' '.repeat(proxyIndent) + '}';
-
-    // The end of the portion of the array we want to splice out.
-    const proxyEnd = proxyArr.findIndex(line => line.includes(endLine)) + proxyStart;
-
-    // Remove the proxy portion of the array.
-    file.splice(proxyStart, proxyEnd - proxyStart + 1);
-
-    // With no server, remove the slash which allows
-    // opening the generated html file in the browser directly.
-    return file.join('\n').replace(`publicPath: '/'`, `publicPath: ''`);
-  }
-
-  return file.join('\n');
+  return config.replace(placeholder, aliasObject)
 }
 
-module.exports = webpackConfig;
+module.exports = webpackConfig

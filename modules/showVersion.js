@@ -1,6 +1,6 @@
 function showVersion() {
-  const json = require('../package.json');
-  console.log(json.version);
+  const json = require('../package.json')
+  console.log(json.version)
 }
 
-module.exports = showVersion;
+module.exports = showVersion

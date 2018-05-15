@@ -1,37 +1,61 @@
 function packageJson(answers) {
-  const { appName, server, description, author, email, keywords } = answers;
-  const json = [
-    '{',
-    `  "name": "${appName}",`,
-    `  "version": "0.1.0",`,
-    `  "description": "${description}",`,
-    server && `  "main": "server.js",`,
-    `  "scripts": {`,
-    `    "build": "cross-env NODE_ENV=production webpack",`,
-    server && `    "build:dev": "cross-env NODE_ENV=development webpack",`,
-    server && `    "local": "npm run server:api",`,
-    server && `    "server:dev": "webpack-dev-server --open",`,
-    server && `    "server:api": "nodemon server.js",`,
-    server && `    "start": "cross-env NODE_ENV=development npm-run-all --parallel server:*"`,
-    !server && `    "start": "cross-env NODE_ENV=development webpack-dev-server --open"`,
-    `  },`,
-    `  "keywords": [PLACEHOLDER-KEYWORDS],`,
-    `  "author": "${author}",`,
-    `  "email": "${email}",`,
-    `  "license": "MIT",`,
-    `  "browserslist": "last 2 versions"`,
-    '}',
-    ''
-  ];
+  const {
+    mongo,
+    redux,
+    router,
+    appName,
+    server,
+    description,
+    author,
+    email,
+    keywords = []
+  } = answers
 
-  const kwds = keywords.reduce((acc, kw, i) => {
-    return `${acc}\n    "${kw}"${i === keywords.length - 1 ? '\n  ' : ','}`;
-  }, '');
+  const {
+    devDependencies,
+    serverDependencies
+  } = require('../modules/dependencies')(mongo, redux, router)
 
-  return json
-    .filter(Boolean)
-    .join('\n')
-    .replace('PLACEHOLDER-KEYWORDS', kwds);
+  let packageJson = {
+    name: appName,
+    version: '0.1.0',
+    description,
+    keywords,
+    author,
+    email,
+
+    // https://goo.gl/2uAdKL - avoid `last 2 versions`.
+    browserslist: ['>0.25%', 'not ie 11', 'not op_mini all']
+  }
+
+  if (server) {
+    packageJson = {
+      ...packageJson,
+      main: 'server.js',
+      dependencies: serverDependencies,
+      devDependencies,
+      scripts: {
+        build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
+        'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env.dev',
+        local: 'npm run server:api',
+        'server:dev': 'webpack-dev-server --mode development --env.dev --open --progress',
+        'server:api': 'nodemon server.js',
+        start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
+      }
+    }
+  } else {
+    packageJson = {
+      ...packageJson,
+      devDependencies,
+      scripts: {
+        build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
+        start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --open --progress'
+      }
+    }
+  }
+
+  // https://goo.gl/vldff
+  return JSON.stringify(packageJson, null, 2)
 }
 
-module.exports = packageJson;
+module.exports = packageJson

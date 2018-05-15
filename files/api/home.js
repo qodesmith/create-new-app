@@ -1,6 +1,4 @@
-const path = require('path');
-const { naughtyAjax } = require('./utilities/handleErrors');
-const isProd = process.env.NODE_ENV === 'production';
+const path = require('path')
 
 /*
   THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
@@ -8,13 +6,19 @@ const isProd = process.env.NODE_ENV === 'production';
 */
 
 function home(req, res) {
-  // AJAX requests that request non-existent routes.
-  if (req.xhr) {
-    if (!isProd) naughtyAjax(req);
-    res.json({ nothing: 'to see here' });
-  } else {
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
-  }
+  /*
+    This folder & file will exist after you have run `npm run build`.
+    While developing, the development server will serve `index.html`
+    from memory, avoiding any contact with this route in the first place.
+  */
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
+    /*
+      If the file wasn't found, send 404.
+      This can happen in you manually change
+      the url to something non-existant
+    */
+    res.sendStatus(404)
+  })
 }
 
-module.exports = home;
+module.exports = home

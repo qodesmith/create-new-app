@@ -1,59 +1,82 @@
-function dependencies(mongo) {
-  const devDependencies = [
-    'autoprefixer',
-    'babel-core',
-    'babel-loader',
-    'babel-plugin-transform-class-properties',
-    'babel-plugin-transform-object-rest-spread',
-    'babel-preset-env',
-    'babel-preset-react',
-    'cross-env',
-    'css-loader',
-    'css-mqpacker',
-    'dotenv',
-    'extract-text-webpack-plugin',
-    'file-loader',
-    'glob-all',
-    'html-webpack-plugin',
-    'node-sass',
-    'npm-run-all',
-    'postcss-discard-comments',
-    'postcss-loader',
-    'purgecss-webpack-plugin',
-    'purgecss-whitelister',
-    'react',
-    'react-dom',
-    'sass-loader',
-    'style-loader',
-    'tachyons-sass',
-    'uglifyjs-webpack-plugin',
-    'webpack',
-    'webpack-cleanup-plugin',
-    'webpack-dev-middleware',
-    'webpack-dev-server'
-  ];
+// NPM Semver Calculator - https://semver.npmjs.com/
 
-  const serverDependencies = [
-    'nodemon'
-  ];
+const dependencyReducer = obj => (
+  Object.keys(obj).sort().reduce((acc, key) => {
+    if (obj[key]) acc[key] = obj[key]
+    return acc
+  }, {})
+)
 
-  const dependencies = [
-    'body-parser',
-    'catchify',
-    'compression',
-    mongo && 'connect-mongodb-session',
-    'dotenv',
-    'express',
-    mongo && 'express-session',
-    'helmet',
-    mongo && 'mongodb'
-  ].filter(Boolean);
+const dependencies = (mongo, redux, router) => {
+  const devDependencies = {
+    // MAIN
+    react: '^16',
+    'react-dom': '^16',
+    sassyons: '^1',
+    redux: (redux || router) && '^3',
+    'react-redux': (redux || router) && '^5',
+    'redux-first-router': router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
+    'redux-first-router-link': router && '^1',
+    history: router && '^4',
+
+    // POSTCSS
+    postcss: '^6',
+    'postcss-loader': '^2',
+    autoprefixer: '^8',
+    'css-mqpacker': '^6',
+    'postcss-discard-comments': '^2',
+    'postcss-combine-duplicated-selectors': '^5',
+
+    // WEBPACK
+    webpack: '^4',
+    'webpack-cli': '^2',
+    'webpack-dev-server': '^3',
+    'mini-css-extract-plugin': '^0', // Currently < 1
+    'clean-webpack-plugin': '^0', // Currently < 1
+    'html-webpack-plugin': '^3',
+    'purgecss-webpack-plugin': '^1',
+    'purgecss-whitelister': 'latest', // Always keep latest.
+    'glob-all': 'latest', // Always keep latest
+    'css-loader': '^0', // Currently < 1
+    'sass-loader': '^6',
+    'node-sass': '^4',
+
+    // BABEL - https://goo.gl/ESXgmh
+    'babel-loader': '^8.0.0-beta',
+    '@babel/core': '^7.0.0-beta',
+    '@babel/preset-env': '^7.0.0-beta',
+    '@babel/preset-react': '^7.0.0-beta',
+    '@babel/plugin-proposal-object-rest-spread': '^7.0.0-beta',
+    '@babel/plugin-proposal-class-properties': '^7.0.0-beta',
+
+
+    // OTHER
+    'cross-env': '^5',
+    'npm-run-all': 'latest', // Always keep latest.
+    'dotenv': 'latest' // Always keep latest.
+  }
+
+  // These will only take effect if we're creating an app with a server.
+  // They will be saved in `package.json` as `dependencies`.
+  const serverDependencies = {
+    // SERVER
+    express: '^4',
+    helmet: '^3',
+    compression: '^1',
+    'body-parser': '^1',
+    nodemon: 'latest', // Always keep latest.
+
+    // MONGO
+    mongodb: mongo && '^3',
+    catchify: mongo && '^2',
+    'connect-mongodb-session': mongo && '^2',
+    'express-session': mongo && '^1',
+  }
 
   return {
-    devDependencies,
-    serverDependencies,
-    dependencies
-  };
+    devDependencies: dependencyReducer(devDependencies),
+    serverDependencies: dependencyReducer(serverDependencies)
+  }
 }
 
-module.exports = dependencies;
+module.exports = dependencies

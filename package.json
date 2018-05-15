@@ -1,12 +1,14 @@
 {
   "name": "create-new-app",
-  "version": "1.5.2",
-  "description": "Easily generate a new React project including Webpack, SCSS, Tachyons, Express, & MongoDB.",
+  "version": "2.0.0",
+  "description": "Easily generate a new fully-equiped React project, optionally with Express & MongoDB.",
   "keywords": [
     "react",
+    "redux",
+    "redux-first-router",
     "webpack",
     "scss",
-    "tachyons",
+    "sassyons",
     "express",
     "mongo",
     "mongodb",
@@ -41,8 +43,9 @@
     "preinstall": "node ./versionCheck.js"
   },
   "dependencies": {
-    "chalk": "^2.1.0",
+    "chalk": "^2.4.1",
     "command-line-args": "^4.0.7",
+    "fs-extra": "^5.0.0",
     "validate-npm-package-name": "^3.0.0"
   },
   "engines": {

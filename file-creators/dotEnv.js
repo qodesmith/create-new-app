@@ -1,18 +1,31 @@
 // https://goo.gl/MrXVRS - micro UUID!
-const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid);
+const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
 
-function dotEnv(answers) {
-  const { appName, apiport, mongo, port, server } = answers;
-  const name = `appName=${appName}\n`;
+function dotEnv(options) {
+  const { appName, devServerPort, api, apiPort, mongo, server, title, description } = options
+  const warning = [
+    '# THIS FILE WILL BE GIT IGNORED.',
+    '# IT IS HIGHLY RECOMMENDED THAT YOU DO NOT COMMIT THIS FILE INTO VERSION CONTROL.',
+    '# PLEASE KEEP ANY SENSITIVE DATA OUT OF VERSION CONTROL.\n\n'
+  ]
   const contents = [
-    `PORT=${apiport}`,
+    `appName=${appName}`,
+    title && `title=${title}`,
+    description && `description='${description}'`,
+    api && `API=${api}`,
+    (api || server) && `API_PORT=${apiPort}`,
+    `DEV_SERVER_PORT=${devServerPort}\n`
+  ].filter(Boolean)
+
+  if (!server) return [...warning, ...contents].join('\n')
+
+  return [
+    ...warning,
     mongo && `mongoURI=mongodb://localhost:27017/${appName}`,
     mongo && `mongoSession=${appName}Sessions`,
     mongo && `secret=${uuid()}`,
-    name
-  ].filter(Boolean).join('\n');
-
-  return server ? contents : name;
+    ...contents
+  ].filter(Boolean).join('\n')
 }
 
-module.exports = dotEnv;
+module.exports = dotEnv

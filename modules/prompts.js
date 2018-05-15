@@ -1,78 +1,63 @@
-const readline = require('readline');
+const readline = require('readline')
+const chalk = require('chalk')
 
 // Prompts the user with a yes/no question and stores the answer.
-function yesNo(answers, q, key) {
+function promptYN(question, deflt) {
   // Create the readline instance that is the basis for our 'prompt'.
+  const n = chalk.bold('n')
+  const y = chalk.bold('y')
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `${q} [y, n] `
-  });
+    prompt: `${question} [${deflt ? y : 'y'}, ${deflt === false ? n : 'n'}] `
+  })
 
   return new Promise(resolve => {
     // Trigger the user prompt.
-    rl.prompt();
+    rl.prompt()
 
     // Event listener that triggers when the user hit's enter.
     rl.on('line', answer => {
-      rl.close();
-      answer = answer.trim().toLowerCase();
+      rl.close()
 
-      switch (answer) {
+      switch (answer.trim().toLowerCase()) {
         case 'y':
         case 'yes':
-          answers[key] = true;
-          break;
+          return resolve(true)
         case 'n':
         case 'no':
-          answers[key] = false;
-          break;
+          return resolve(false)
         default:
-          return resolve(yesNo(answers, q, key));
+          resolve(deflt === undefined ? promptYN(question) : deflt)
       }
-
-      resolve();
-    });
-  });
+    })
+  })
 }
 
 // Prompts the user with a question then sanitizes & stores the answer.
-function question(answers, options) {
-  const { q, key, sanitizer, blank } = options;
+function promptQ(data, isBlank) {
+  if (typeof data === 'string') data = { question: data }
+  const { question, sanitizer } = data
 
   // Create the readline instance that is the basis for our 'prompt'.
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: `${q} `
-  });
+    prompt: `${question} `
+  })
 
   return new Promise(resolve => {
     // Trigger the user prompt.
-    rl.prompt();
+    rl.prompt()
 
     // Event listener that triggers when the user hit's enter.
     rl.on('line', answer => {
-      let original;
-      rl.close();
+      rl.close()
 
-      if (sanitizer) {
-        original = answer;
-        answer = sanitizer(answer);
-      }
-
-      if (answer || blank) {
-        answers[key] = answer || '';
-        if (sanitizer) answers[`${key}Original`] = original;
-        resolve();
-      } else {
-        resolve(question(answers, options));
-      }
-    });
-  });
+      if (sanitizer) answer = sanitizer(answer)
+      resolve((answer || !!isBlank) ? (answer || null) : promptQ(data))
+    })
+  })
 }
 
-module.exports = {
-  yesNo,
-  question
-};
+module.exports = { promptYN, promptQ }

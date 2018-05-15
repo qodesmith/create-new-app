@@ -351,10 +351,8 @@ module.exports = (env, argv) => ({
       [API]: {
         target: `http://localhost:${API_PORT}`,
         bypass(req, res, proxyOptions) {
-          const { url, method } = req
-
           // Direct all non-get requests to the API server.
-          if (method.toLowerCase() !== 'get') return
+          if (req.method.toLowerCase() !== 'get') return
 
           /*
             Proxy url (browser) requests back to '/'

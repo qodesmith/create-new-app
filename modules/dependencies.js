@@ -13,8 +13,8 @@ const dependencies = (mongo, redux, router) => {
     react: '^16',
     'react-dom': '^16',
     sassyons: '^1',
-    redux: redux && '^3',
-    'react-redux': redux && '^5',
+    redux: (redux || router) && '^3',
+    'react-redux': (redux || router) && '^5',
     'redux-first-router': router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
     'redux-first-router-link': router && '^1',
     history: router && '^4',

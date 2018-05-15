@@ -331,7 +331,7 @@ function createFiles(options) {
   server && fs.copyFileSync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
 
   // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(redux), 'utf-8')
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(redux || router), 'utf-8')
 
   // `api` directory tree.
   mongo && copyTree(dir('./files/api'), appDir)
@@ -389,6 +389,7 @@ function installDependencies(options) {
   offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
   console.log(`Installing project dependencies via npm${cache}...\n`)
   run(`npm${forceOffline} i`)
+
 
   const cyanDir = chalk.cyan(appDir)
   const boldName = chalk.bold(appName)

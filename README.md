@@ -38,7 +38,21 @@ npm install -g create-new-app
 
 ## Usage
 
-#### DIY
+#### Guided Process
+
+Simply type `create-new-app` and you'll be asked up to 5 questions:
+1. Enter a name for your app
+2. Would you like to include Redux?
+3. Would you like to include Redux First Router?
+4. Would you like to include an Express server?
+5. Would you like to include MongoDB?
+
+#### Manual Options
+
+Simplest example: `create-new-app <app-name>`
+^^^ #Boom. Your app is running on `http://localhost:3000`.
+
+Want the full control of all the options? No problem:
 ```shell
 create-new-app <app-name> [options]
 
@@ -46,32 +60,16 @@ create-new-app <app-name> [options]
 cna <app-name> [options]
 ```
 
-#### Guided Process
-```shell
-create-new app
-
-# Shorthand:
-cna
-```
-
-### Simplest Example
-
-```shell
-create-new-app awesomeness
-cd awesomeness
-npm start
-```
-
-^^^ #Boom. Your app is running on `http://localhost:3000`. Simple, no? Let's look at some other examples...
+Simple, no? Let's look at some other examples...
 
 ### Other Examples
 
 ```shell
-# Let the guided process ask you no more than 4 questions:
+# Let the guided process walk you through it:
 create-new-app
 
 # You already have a local API built & running at `localhost:1234`:
-create-new-app awesomeness --apiPort 1234
+create-new-app awesomeness --api / --apiPort 1234
 
 # Perhaps all requests to that local api are behind the `/api` flag:
 create-new-app awesomeness --api /api --apiPort 1234
@@ -83,13 +81,14 @@ create-new-app awesomeness -e
 create-new-app awesomeness -m
 ```
 
+
 ## Webpack Magic
 
 While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
 
 #### Development Server
 
-This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let the Webpack refresh that screen.
+This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let Webpack refresh that screen.
 
 #### Babel
 
@@ -97,33 +96,76 @@ Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a buil
 
 #### Postcss
 
-SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles and smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together.
+SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, and [combining redudant selectors](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors).
 
 #### Purgecss
 
-Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack-plugin)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles.
+Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack-plugin)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles. Also included is the [purgecss-whitelister](https://github.com/qodesmith/purgecss-whitelister) to prevent CSS from 3rd party tools you might be using from being removed.
 
 #### UglifyJsPlugin
 
-[UglifyJsPlugin](https://goo.gl/sB6d6b) delivers super-sexy minified JavaScript.
+[UglifyJsPlugin](https://goo.gl/sB6d6b) delivers super-sexy minified JavaScript - and tree shaking!
 
-#### WebpackCleanupPlugin
+#### CleanWebpackPlugin
 
-[WebpackCleanupPlugin](https://goo.gl/hTXPtE) is used to destroy & rebuild the `dist` folder each build. It's the folder that will contain your app's bundled assets.
+[CleanWebpackPlugin](https://goo.gl/xP7eDB) is used to clean the `dist` folder when running a build. It's the folder that will contain your app's bundled assets.
 
-#### ExtractTextPlugin
+#### MiniCssExtractPlugin
 
-[ExtractTextPlugin](https://goo.gl/rHd8B2) removes the css data that's in the JS bundle and extracts it into a css file.
+[MiniCssExtractPlugin](https://goo.gl/pvSAek) removes the css data that's in the JS bundle and extracts it into a css file.
 
 #### HtmlWebpackPlugin
 
 [HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
 
+
 ## Options
+
+### Redux / Redux First Router options
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Alias</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td width="125px"><code>--redux</code></td>
+      <td align="center">-x</td>
+      <td>Boolean</td>
+      <td>
+        Includes <a href="https://redux.js.org/">Redux</a> in your application, completely wired up & ready to go.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--redux</code>
+        <br><code>--x</code>
+      </td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td><code>--router</code></td>
+      <td align="center">-r</td>
+      <td>Boolean</td>
+      <td>
+        Includes <a href="https://github.com/faceyspacey/redux-first-router">Redux First Router</a> in your application, completely wired up & ready to go. Enjoy the perhaps lesser known but powerful alternative to React Router - and made for Redux by design!
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--router</code>
+        <br><code>-r</code>
+      </td>
+      <td>8080</td>
+  </tbody>
+</table>
+
 
 ### API server options
 
-The purpose of an API server is to receive proxied requests from Webpack's development server. When you need a back end for your app, you need an API server. If you have a pre-existing one already, simply use the `--api` option. Otherwise, an Express server will be set up for you with either the `--express` or `--mongo` option.
+The purpose of an API server is to receive proxied requests from Webpack's development server. When you need a back end for your app, you need an API server. If you have a pre-existing one already, simply use the `--api` option. Otherwise, an Express server will be set up for you with either the `--express` or `--mongo` options.
 
 <table>
   <thead>
@@ -167,7 +209,7 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
       <td align="center"><code>-e</code></td>
       <td>Boolean</td>
       <td>
-        Set up a local Express api server on with Node.
+        Set up a local Express api server with Node.
         <br><br>
         <em>Examples:</em>
         <br><code>--express</code>
@@ -189,17 +231,15 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
       <td><code>false</code></td>
     </tr>
     <tr>
-      <td><code>--port</code></td>
-      <td align="center"><code>-p</code></td>
+      <td><code>--devServerPort</code></td>
+      <td align="center"><code>-</code></td>
       <td>Number</td>
       <td>
         Port number to the development server.
         <br><br>
         <em>Examples:</em>
-        <br><code>--port 2000</code>
-        <br><code>--port=2000</code>
-        <br><code>-p 2000</code>
-        <br><code>-p=2000</code>
+        <br><code>--devServerPort 2000</code>
+        <br><code>--devServerPort=2000</code>
       </td>
       <td>3000</td>
     </tr>
@@ -256,13 +296,33 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
       </td>
       <td>Title-cased version of the app name.</td>
     </tr>
+    <tr>
+      <td><code>--sandbox</code></td>
+      <td><code>-</code></td>
+      <td>Boolean</td>
+      <td>
+        Creates a "sandbox" app which consists of 3 simple files:
+        <ul>
+          <li>index.html</li>
+          <li>styles.css</li>
+          <li>main.js</li>
+        </ul>
+        If you use this option, everything else will be ignored. This option is perfect for whipping up a quick directory with some files to play in.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--sandbox</code>
+        <br><code>-s</code>
+      </td>
+      <td>false</td>
+    </tr>
   </tbody>
 </table>
 
+
 ## TODO's
 
-* Include Redux as an option (or default?)
-* Include `redux-first-router` as an option
-* Implement PWA's by default with CLI option to disable
-* Implement Jest along with a test for the `App.js` example component
-* Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV
+- [x] Include Redux as an option ~~(or default?)~~
+- [x] Include `redux-first-router` as an option
+- [ ] Implement PWA's by default with CLI option to disable
+- [ ] Implement ~~Jest~~ [Cypress](https://www.cypress.io/) along with a test for the `App.js` example component
+- [ ] Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV

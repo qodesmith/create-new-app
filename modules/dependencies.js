@@ -1,12 +1,14 @@
 // NPM Semver Calculator - https://semver.npmjs.com/
 
-var dependencyReducer = obj => Object.entries(obj).reduce((acc, pkg) => {
-  const [name, version] = pkg
-  return version ? { ...acc, [name]: version } : acc
-}, {})
+const dependencyReducer = obj => (
+  Object.keys(obj).sort().reduce((acc, key) => {
+    if (obj[key]) acc[key] = obj[key]
+    return acc
+  }, {})
+)
 
 const dependencies = (mongo, redux, router) => {
-  var devDependencies = {
+  const devDependencies = {
     // MAIN
     react: '^16',
     'react-dom': '^16',

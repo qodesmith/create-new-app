@@ -49,7 +49,7 @@ Simply type `create-new-app` and you'll be asked up to 5 questions:
 
 #### Manual Options
 
-Simplest example: `create-new-app <app-name>`
+Simplest example: `create-new-app <app-name>`<br>
 ^^^ #Boom. Your app is running on `http://localhost:3000`.
 
 Want the full control of all the options? No problem:
@@ -139,17 +139,17 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
       <td align="center">-x</td>
       <td>Boolean</td>
       <td>
-        Includes <a href="https://redux.js.org/">Redux</a> in your application, completely wired up & ready to go.
+        Includes <a href="https://redux.js.org/">Redux</a> in your application, completely wired up & ready to go. Store, reducers, middleware... all that good stuff.
         <br><br>
         <em>Examples:</em>
         <br><code>--redux</code>
-        <br><code>--x</code>
+        <br><code>-x</code>
       </td>
-      <td>false</td>
+      <td><code>false</code></td>
     </tr>
     <tr>
       <td><code>--router</code></td>
-      <td align="center">-r</td>
+      <td align="center"><code>-r</code></td>
       <td>Boolean</td>
       <td>
         Includes <a href="https://github.com/faceyspacey/redux-first-router">Redux First Router</a> in your application, completely wired up & ready to go. Enjoy the perhaps lesser known but powerful alternative to React Router - and made for Redux by design!
@@ -159,13 +159,14 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
         <br><code>-r</code>
       </td>
       <td>8080</td>
+    </tr>
   </tbody>
 </table>
 
 
 ### API server options
 
-The purpose of an API server is to receive proxied requests from Webpack's development server. When you need a back end for your app, you need an API server. If you have a pre-existing one already, simply use the `--api` option. Otherwise, an Express server will be set up for you with either the `--express` or `--mongo` options.
+When you need a back end for your app, you need an API server. The purpose of an API server is to receive proxied requests from Webpack's development server. If you have a pre-existing api already, simply use the `--api` option. Otherwise, an Express server will be set up for you with either the `--express` or `--mongo` options.
 
 <table>
   <thead>
@@ -273,7 +274,7 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
       <td><code>-o</code></td>
       <td>Boolean</td>
       <td>
-        Forces npm to use cache when installing. Great if you don't want npm hogging your data (tethering, anyone?).
+        Forces npm to use cache when installing. Great if you don't want npm hogging your data. Tethering, anyone?
         <br><br>
         <em>Examples:</em>
         <br><code>--offline</code>
@@ -298,7 +299,7 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
     </tr>
     <tr>
       <td><code>--sandbox</code></td>
-      <td><code>-</code></td>
+      <td>-</td>
       <td>Boolean</td>
       <td>
         Creates a "sandbox" app which consists of 3 simple files:
@@ -313,7 +314,7 @@ The purpose of an API server is to receive proxied requests from Webpack's devel
         <br><code>--sandbox</code>
         <br><code>-s</code>
       </td>
-      <td>false</td>
+      <td><code>false</code></td>
     </tr>
   </tbody>
 </table>

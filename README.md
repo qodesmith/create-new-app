@@ -136,7 +136,7 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
   <tbody>
     <tr>
       <td width="125px"><code>--redux</code></td>
-      <td align="center">-x</td>
+      <td align="center"><code>-x</code></td>
       <td>Boolean</td>
       <td>
         Includes <a href="https://redux.js.org/">Redux</a> in your application, completely wired up & ready to go. Store, reducers, middleware... all that good stuff.
@@ -180,7 +180,7 @@ When you need a back end for your app, you need an API server. The purpose of an
   </thead>
   <tbody>
     <tr>
-      <td width="125px"><code>--api</code></td>
+      <td width="165px"><code>--api</code></td>
       <td align="center">-</td>
       <td>String</td>
       <td>
@@ -204,6 +204,20 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--apiPort=5000</code>
       </td>
       <td>8080</td>
+    </tr>
+    <tr>
+      <td><code>--devServerPort</code></td>
+      <td align="center">-</td>
+      <td>Number</td>
+      <td>
+        Port number to the development server.<br>
+        Note: The `apiPort` takes priority over the `devServerPort`. In the event that they are both the same, `devServerPort` will be incremented by 1.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--devServerPort 2000</code>
+        <br><code>--devServerPort=2000</code>
+      </td>
+      <td>3000</td>
     </tr>
     <tr>
       <td><code>--express</code></td>
@@ -230,19 +244,6 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>-m</code>
       </td>
       <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--devServerPort</code></td>
-      <td align="center"><code>-</code></td>
-      <td>Number</td>
-      <td>
-        Port number to the development server.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--devServerPort 2000</code>
-        <br><code>--devServerPort=2000</code>
-      </td>
-      <td>3000</td>
     </tr>
   </tbody>
 </table>

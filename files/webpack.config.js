@@ -1,5 +1,5 @@
 require('dotenv').load() // https://goo.gl/Cj8nKu
-const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, reduxApp } = process.env
+const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
 const path = require('path')
 const globAll = require('glob-all')
 

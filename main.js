@@ -268,7 +268,8 @@ function processUsersCommand(options) {
     express,
     mongo,
     devServerPort,
-    sandbox
+    sandbox,
+    api
   } = options
 
   // Not online.
@@ -278,7 +279,7 @@ function processUsersCommand(options) {
   }
 
   // The apiPort takes prescedence over the devServerPort.
-  if ((express || mongo) && devServerPort === apiPort) options.devServerPort++
+  if ((express || mongo || api) && devServerPort === apiPort) options.devServerPort++
 
   return options
 }

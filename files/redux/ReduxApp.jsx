@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { exampleActionCreator } from 'actions'
 import Example from './Example'
 
@@ -39,6 +38,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ location }) => ({ location })
-
-export default connect(mapStateToProps)(App)
+export default App

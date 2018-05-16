@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 
 class Example extends Component {
   componentWillMount() {
-    document.body.className = 'bg-black-80 f4 white-80'
+    document.body.className = 'bg-black-80 fw4 white-80'
   }
 
   render() {

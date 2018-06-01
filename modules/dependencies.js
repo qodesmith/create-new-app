@@ -48,6 +48,7 @@ const dependencies = (mongo, redux, router) => {
     '@babel/preset-react': '^7.0.0-beta',
     '@babel/plugin-proposal-object-rest-spread': '^7.0.0-beta',
     '@babel/plugin-proposal-class-properties': '^7.0.0-beta',
+    '@babel/polyfill': '^7.0.0-beta',
 
 
     // OTHER

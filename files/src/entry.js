@@ -1,3 +1,8 @@
+// You may or may not need this depending on
+// what JavaScript features you're using - e.x. async / await.
+// Feel free to remove it and see what happens!
+import '@babel/polyfill'
+
 // Import our top-level sass file.
 import './styles/styles.scss'
 
@@ -9,7 +14,6 @@ import ReactDOM from 'react-dom'
 import App from 'components/App'
 
 // Create a single element for our app to live.
-console.log('Loaded, bro.')
 document.body.innerHTML = '<div id="app"></div>'
 
 // Mount our app.

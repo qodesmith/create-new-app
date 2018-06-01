@@ -35,9 +35,11 @@ module.exports = (env, argv) => ({
 
   /*
     https://goo.gl/X8nHJZ
-    The point or points to enter the application.
+    The point(s) to enter the application.
   */
-  entry: path.resolve(__dirname, 'src/entry.js'),
+  entry: [
+    path.resolve(__dirname, 'src/entry.js')
+  ],
 
   /*
     https://goo.gl/xvjXJd
@@ -124,7 +126,6 @@ module.exports = (env, argv) => ({
       {
         // sideEffects: false,
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/, // This may not be needed since we supplied `include`.
         include: path.resolve(__dirname, 'src'),
 
         /*
@@ -139,6 +140,7 @@ module.exports = (env, argv) => ({
               https://goo.gl/N6uJv3 - Babel loader.
                 - babel-loader@^8.0.0-beta
                 - @babel/core
+                - @babel/polyfill (used in the entry.js file)
                 - @babel/preset-env
                 - @babel/preset-react
                 - @babel/plugin-proposal-object-rest-spread
@@ -159,7 +161,7 @@ module.exports = (env, argv) => ({
                   https://goo.gl/aAxYAq - `babel-preset-env` documentation.
                 */
                 [
-                  '@babel/preset-env',
+                  '@babel/preset-env', // https://goo.gl/aAxYAq
                   {
                     targets: {
                       browsers: [
@@ -172,7 +174,6 @@ module.exports = (env, argv) => ({
                     modules: false // Needed for tree shaking to work.
                   }
                 ],
-                // '@babel/preset-env', // https://goo.gl/aAxYAq
                 '@babel/preset-react' // https://goo.gl/4aEFV3
               ],
 
@@ -363,7 +364,7 @@ module.exports = (env, argv) => ({
           // Url / browser request - allow front end routing to handle all the things.
           if (req.headers.accept.includes('html')) return '/'
 
-          // Let the API server respond by implcitly returning here.
+          // Let the API server respond by implicitly returning here.
         }
       }
     } : {}

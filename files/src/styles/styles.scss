@@ -1,9 +1,19 @@
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//    This file will be the top-most entry point for all styles in the app.    //
-//    Any dependant styles should be explicitly imported here: em;             //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                             //
+//  This file will be the top-most entry point for all styles in the app.                      //
+//  Any dependant styles should be explicitly imported here.                                   //
+//                                                                                             //
+//  Using `~` - https://goo.gl/sU3Cmv                                                          //
+//  "The sass-loader uses node-sass' custom importer feature to pass all queries               //
+//  to the webpack resolving engine. Thus you can import your Sass modules from node_modules.  //
+//  Just prepend them with a ~ to tell webpack that this is not a relative import."            //
+//  Think of `~` as a way of saying `node_modules`.                                            //
+//                                                                                             //
+//  Importing CSS files - include the extension:                                               //
+//  @import '~my-library/styles.css'                                                           //
+//  @import 'path/to/my/library/styles.css'                                                    //
+//                                                                                             //
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 /*

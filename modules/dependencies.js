@@ -37,7 +37,8 @@ const dependencies = (mongo, redux, router) => {
     'purgecss-webpack-plugin': '^1',
     'purgecss-whitelister': 'latest', // Always keep latest.
     'glob-all': 'latest', // Always keep latest
-    'css-loader': '^0', // Currently < 1
+    'css-loader': '^1',
+    'file-loader': '^1',
     'sass-loader': '^6',
     'node-sass': '^4',
 

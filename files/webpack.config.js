@@ -222,6 +222,25 @@ module.exports = (env, argv) => ({
             }
           }
         ]
+      },
+
+      /*
+        FONTS
+        -----
+        * Copies fonts found within the `src` tree to the `dist` folder
+        * Keeps the original file name
+      */
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        include: path.resolve(__dirname, 'src'),
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]'
+            }
+          }
+        ]
       }
     ]
   },

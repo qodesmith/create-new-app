@@ -212,8 +212,9 @@ module.exports = (env, argv) => ({
             options: {
 
               /*
-                Anything sass that needs to be consumed from
-                node_modules should be listed here.
+                https://goo.gl/hVweJ7
+                An array of paths that in which to attempt to resolve your
+                @import declarations made in your scss files.
               */
               includePaths: [
                 'node_modules/sassyons'

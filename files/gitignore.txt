@@ -1,6 +1,9 @@
 # The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
 
+# Mac-specific
+.DS_Store
+
 # Ignore all files in the dist folder BUT a few
 dist/*
 !dist/favicon.ico

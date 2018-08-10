@@ -24,6 +24,7 @@ function dotEnv(options) {
     mongo && `mongoURI=mongodb://localhost:27017/${appName}`,
     mongo && `mongoSession=${appName}Sessions`,
     mongo && `secret=${uuid()}`,
+    mongo && !api && `API=/api`, // Default api value if none was specified.
     ...contents
   ].filter(Boolean).join('\n')
 }

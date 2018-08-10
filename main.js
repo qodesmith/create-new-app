@@ -379,7 +379,7 @@ function createFiles(options) {
 
 // STEP 5
 function installDependencies(options) {
-  const { appName, appDir, mongo, server, offline, redux, router } = options
+  const { appName, appDir, server, offline, redux, router } = options
   const forceOffline = offline ? ' --offline' : '' // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : ''
 

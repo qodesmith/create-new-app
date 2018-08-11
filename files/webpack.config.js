@@ -359,6 +359,14 @@ module.exports = (env, argv) => ({
     */
     historyApiFallback: true,
 
+    /*
+      https://goo.gl/A8ZvxG
+      Want to view your site on your phone?
+      Make sure your computer and phone are on the same wifi network,
+      and navigate to your computers ip addres: 192.1.2.3:8080
+    */
+    host: '0.0.0.0',
+
     // https://goo.gl/EVMMyC
     port: DEV_SERVER_PORT,
 

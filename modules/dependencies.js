@@ -29,7 +29,7 @@ const dependencies = (mongo, redux, router) => {
 
     // WEBPACK
     webpack: '^4',
-    'webpack-cli': '^2',
+    'webpack-cli': '^3',
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^0', // Currently < 1
     'clean-webpack-plugin': '^0', // Currently < 1

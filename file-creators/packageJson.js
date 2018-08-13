@@ -38,7 +38,7 @@ function packageJson(answers) {
         build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
         'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env.dev',
         local: 'npm run server:api',
-        'server:dev': 'webpack-dev-server --mode development --env.dev --open --progress',
+        'server:dev': 'webpack-dev-server --mode development --env.dev --progress',
         'server:api': 'nodemon server.js',
         start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
       }
@@ -49,7 +49,7 @@ function packageJson(answers) {
       devDependencies,
       scripts: {
         build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
-        start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --open --progress'
+        start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
       }
     }
   }

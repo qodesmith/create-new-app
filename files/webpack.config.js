@@ -363,12 +363,21 @@ module.exports = (env, argv) => ({
       https://goo.gl/A8ZvxG
       Want to view your site on your phone?
       Make sure your computer and phone are on the same wifi network,
-      and navigate to your computers ip addres: 192.1.2.3:8080
+      and navigate to your computers ip addres: 192.1.2.3:<dev server port>
     */
     host: '0.0.0.0',
 
+    // https://goo.gl/fZ1Hff
+    open: true,
+
     // https://goo.gl/EVMMyC
     port: DEV_SERVER_PORT,
+
+    /*
+      https://goo.gl/mrysGp, https://goo.gl/srfqLB
+      Nobody wants to see 0.0.0.0 in the browser. This get's rid of that.
+    */
+    public: `http://localhost:${DEV_SERVER_PORT}`,
 
     /*
       https://goo.gl/a6WW1p

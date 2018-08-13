@@ -363,7 +363,7 @@ module.exports = (env, argv) => ({
       https://goo.gl/A8ZvxG
       Want to view your site on your phone?
       Make sure your computer and phone are on the same wifi network,
-      and navigate to your computers ip addres: 192.1.2.3:<dev server port>
+      and navigate to your computer's ip addres: 192.1.2.3:<dev server port>
     */
     host: '0.0.0.0',
 

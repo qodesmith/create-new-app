@@ -43,7 +43,7 @@ npm install -g create-new-app
 Simply type `create-new-app` and you'll be asked up to 5 questions:
 1. Enter a name for your app
 2. Would you like to include Redux?
-3. Would you like to include Redux First Router?
+3. Would you like to include React Router?
 4. Would you like to include an Express server?
 5. Would you like to include MongoDB?
 
@@ -90,6 +90,10 @@ While Webpack certainly seems like magic, let's just go over what that "magic" i
 
 This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let Webpack refresh that screen.
 
+#### Tree Shaking / Minification
+
+Delivers super-sexy minified JavaScript without those dead branches!
+
 #### Babel
 
 Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a build.
@@ -101,10 +105,6 @@ SCSS is included and get's compiled down to CSS. But that's half the magic. [Pos
 #### Purgecss
 
 Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack-plugin)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles. Also included is the [purgecss-whitelister](https://github.com/qodesmith/purgecss-whitelister) to prevent CSS from 3rd party tools you might be using from being removed.
-
-#### UglifyJsPlugin
-
-[UglifyJsPlugin](https://goo.gl/sB6d6b) delivers super-sexy minified JavaScript - and tree shaking!
 
 #### CleanWebpackPlugin
 
@@ -121,7 +121,7 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
 
 ## Options
 
-### Redux / Redux First Router options
+### Redux option
 
 <table>
   <thead>
@@ -147,12 +147,29 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
       </td>
       <td><code>false</code></td>
     </tr>
+  </tbody>
+</table>
+
+
+### React Router option
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Alias</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr>
       <td><code>--router</code></td>
       <td align="center"><code>-r</code></td>
       <td>Boolean</td>
       <td>
-        Includes <a href="https://github.com/faceyspacey/redux-first-router">Redux First Router</a> in your application, completely wired up & ready to go. Enjoy the perhaps lesser known but powerful alternative to React Router - and made for Redux by design!
+        Includes <a href="https://github.com/ReactTraining/react-router">Redux First Router</a> in your application, completely wired up & ready to go. Enjoy the widely supported go-to router of choice in the React ecosystem!
         <br><br>
         <em>Examples:</em>
         <br><code>--router</code>
@@ -324,7 +341,7 @@ When you need a back end for your app, you need an API server. The purpose of an
 ## TODO's
 
 - [x] Include Redux as an option ~~(or default?)~~
-- [x] Include `redux-first-router` as an option
+- [x] Include ~~`redux-first-router`~~ React Router as an option
 - [ ] Implement PWA's by default with CLI option to disable
-- [ ] Implement ~~Jest~~ [Cypress](https://www.cypress.io/) along with a test for the `App.js` example component
+- [ ] Implement ~~Jest~~ [Cypress](https://www.cypress.io/) along with a test for the generated components
 - [ ] Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV

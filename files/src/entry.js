@@ -15,6 +15,7 @@ import App from 'components/App'
 
 // Create a single element for our app to live.
 document.body.innerHTML = '<div id="app"></div>'
+document.body.className = 'bg-black-80 fw4 white-80'
 
 // Mount our app.
 ReactDOM.render(

@@ -237,7 +237,7 @@ async function guidedProcess(online) {
 
   console.log(`\nPressing \`enter\` defaults to ${chalk.bold('no')} for the following...\n`)
   const redux = await promptYN('Would you like to include Redux?', false)
-  const router = redux && await promptYN('Would you like to include Redux First Router?', false)
+  const router = await promptYN('Would you like to include React Router?', false)
   const express = await promptYN('Would you like to include an Express server?', false)
   const mongo = express && await promptYN('Would you like to include MongoDB?', false)
 
@@ -342,38 +342,52 @@ function createFiles(options) {
     fs.copyFileSync(dir('files/api/home.js'), `${apiDir}/home.js`)
   }
 
+
   // `dist` directory tree.
   copyTree(dir('./files/dist'), appDir)
 
-  // `src` directory tree.
-  copyTree(dir('./files/src'), appDir)
+  // Depending on the options, Exclude certain files from being copied.
+  const excludes = [
+    router && redux && 'appReducer.js',
+    !router && redux && 'homeReducer.js',
+    router && 'App.jsx'
+  ].filter(Boolean)
 
-  if (redux || router) {
+  // `src` directory tree.
+  copyTree(dir('./files/src'), appDir, excludes, true)
+
+  if (router && redux) {
+    // Store.
+    fs.copyFileSync(dir('files/redux/store-router.js'), `${appDir}/src/store.js`)
+
+    // Redux utilities (actions, helpers, middleware, reducers).
+    copyTree(dir('files/redux/utils'), `${appDir}/src`, excludes)
+
+    // Entry file.
+    fs.copyFileSync(dir('files/redux/entry-router.js'), `${appDir}/src/entry.js`)
+
+    // Components.
+    fs.copyFileSync(dir('files/redux/RouterHome.jsx'), `${appDir}/src/components/Home.jsx`)
+    fs.copyFileSync(dir('files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+  } else if (redux) {
+    // Store.
+    fs.copyFileSync(dir('files/redux/store.js'), `${appDir}/src/store.js`)
+
+    // Redux utilities (actions, helpers, middleware, reducers).
+    copyTree(dir('files/redux/utils'), `${appDir}/src`, excludes)
+
     // Entry file.
     fs.copyFileSync(dir('files/redux/entry.js'), `${appDir}/src/entry.js`)
 
-    // Redux utilities (actions, helpers, middleware, reducers).
-    copyTree(dir('files/redux/utils'), `${appDir}/src`)
+    // Components.
+    fs.copyFileSync(dir('files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
+  } else if (router) {
+    // Entry file.
+    fs.copyFileSync(dir('files/router/entry.js'), `${appDir}/src/entry.js`)
 
-    if (router) {
-      // Components.
-      fs.copyFileSync(dir('files/redux/Redux1stApp.jsx'), `${appDir}/src/components/App.jsx`)
-      fs.copyFileSync(dir('files/redux/Redux1stExample.jsx'), `${appDir}/src/components/Example.jsx`)
-      fs.copyFileSync(dir('files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
-
-      // Store.
-      fs.copyFileSync(dir('files/redux/routerStore.js'), `${appDir}/src/store.js`)
-
-      // Router routes map.
-      fs.copyFileSync(dir('files/redux/routesMap.js'), `${appDir}/src/routesMap.js`)
-    } else {
-      // Components.
-      fs.copyFileSync(dir('files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
-      fs.copyFileSync(dir('files/redux/ReduxExample.jsx'), `${appDir}/src/components/Example.jsx`)
-
-      // Store.
-      fs.copyFileSync(dir('files/redux/store.js'), `${appDir}/src/store.js`)
-    }
+    // Components.
+    fs.copyFileSync(dir('files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
+    fs.copyFileSync(dir('files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
   }
 }
 

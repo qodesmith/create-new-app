@@ -10,14 +10,12 @@ import './styles/styles.scss'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-// Import our store provider.
-import { Provider } from 'react-redux'
+// Import our components.
+import Home from 'components/Home'
+import NotFound from 'components/NotFound'
 
-// Import our top-level component.
-import App from 'components/App'
-
-// Import a store, created & ready to go.
-import store from './store'
+// Import React Router things.
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 
 // Create a single element for our app to live.
@@ -25,8 +23,11 @@ document.body.innerHTML = '<div id="app"></div>'
 document.body.className = 'bg-black-80 fw4 white-80'
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Router>
+    <Switch>
+      <Route exact path='/' component={Home} />
+      <Route component={NotFound} />
+    </Switch>
+  </Router>,
   document.querySelector('#app')
 )

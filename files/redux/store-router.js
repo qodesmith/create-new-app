@@ -1,12 +1,12 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
-import app from 'reducers/appReducer'
+import home from 'reducers/homeReducer'
 
 
 // Add all your custom middleware to this array.
 const middlewareList = []
 
 // Add all your reducers to this object.
-const rootReducer = combineReducers({ app })
+const rootReducer = combineReducers({ home })
 
 // https://goo.gl/XRLgX8
 // Using Redux DevTools extension? You should...

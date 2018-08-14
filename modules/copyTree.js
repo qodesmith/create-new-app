@@ -5,7 +5,7 @@ const ignores = ['.DS_Store']
 if (!copyFileSync) copyFileSync = require('./copyFileSync')
 
 // Copies the entire contents of one tree to a given destination.
-function copyTree(sourceFolder, destination) {
+function copyTree(sourceFolder, destination, excludedFiles = []) {
   const sourceFolderName = sourceFolder.split('/').pop()
   const targetFolder = `${destination}/${sourceFolderName}`
   const files = []
@@ -25,11 +25,13 @@ function copyTree(sourceFolder, destination) {
   })
 
   // 3. Iterate through files and copy them to the new target folder.
-  files.forEach(file => copyFileSync(`${sourceFolder}/${file}`, `${targetFolder}/${file}`))
+  files
+    .filter(file => !excludedFiles.includes(file))
+    .forEach(file => copyFileSync(`${sourceFolder}/${file}`, `${targetFolder}/${file}`))
 
   // 4. Iterate through folders and create them in the new target folder,
   //    then recursively call `copyTree` for each of those folders.
-  folders.forEach(folder => copyTree(`${sourceFolder}/${folder}`, `${targetFolder}`))
+  folders.forEach(folder => copyTree(`${sourceFolder}/${folder}`, `${targetFolder}`, excludedFiles))
 }
 
 module.exports = copyTree

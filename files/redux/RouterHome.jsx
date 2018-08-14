@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { changeColor } from 'actions'
 
 
-const App = ({ color, randomizeColor }) => (
+const Home = ({ color, randomizeColor }) => (
   <Fragment>
     <header className='pv5 bg-gold black-80 tc'>
       <h1 className='mt0 mb1'>Create New App</h1>
@@ -13,7 +13,7 @@ const App = ({ color, randomizeColor }) => (
       Go save the world with <span className='b' style={{ color }}>JavaScript</span>
     </div>
     <div className='tc'>
-      and edit <code>src/components/<span className='b'>App.jsx</span></code>!
+      and edit <code>src/components/<span className='b'>Home.jsx</span></code>!
     </div>
     <div className='df justify-center mt3'>
       <div className='ph3 pv2 no-select ba-1px pointer' onClick={randomizeColor}>
@@ -23,9 +23,9 @@ const App = ({ color, randomizeColor }) => (
   </Fragment>
 )
 
-const mapStateToProps = ({ app }) => app
+const mapStateToProps = ({ home }) => home
 const mapDispatchToProps = dispatch => ({
   randomizeColor: () => dispatch(changeColor())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

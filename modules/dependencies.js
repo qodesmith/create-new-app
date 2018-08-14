@@ -15,8 +15,7 @@ const dependencies = (mongo, redux, router) => {
     sassyons: '^1',
     redux: (redux || router) && '^3',
     'react-redux': (redux || router) && '^5',
-    'redux-first-router': router && '0.0.16-next', // Currently < 1, on the road to "Rudy".
-    'redux-first-router-link': router && '^1',
+    'react-router-dom': router && '^4',
     history: router && '^4',
 
     // POSTCSS

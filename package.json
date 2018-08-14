@@ -1,11 +1,11 @@
 {
   "name": "create-new-app",
-  "version": "2.4.3",
+  "version": "3.0.0",
   "description": "Easily generate a new fully-equiped React project, optionally with Express & MongoDB.",
   "keywords": [
     "react",
     "redux",
-    "redux-first-router",
+    "react-router",
     "webpack",
     "scss",
     "sassyons",

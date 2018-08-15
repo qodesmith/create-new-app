@@ -165,7 +165,7 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
   </thead>
   <tbody>
     <tr>
-      <td><code>--router</code></td>
+      <td width="125px"><code>--router</code></td>
       <td align="center"><code>-r</code></td>
       <td>Boolean</td>
       <td>

@@ -199,7 +199,7 @@ module.exports = (env, argv) => ({
         exclude: /node_modules/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          MiniCssExtractPlugin.loader, // https://goo.gl/uUBr8G
+          env.prod ? MiniCssExtractPlugin.loader : 'style-loader', // https://goo.gl/uUBr8G
           {
             loader: 'css-loader',
             options: {

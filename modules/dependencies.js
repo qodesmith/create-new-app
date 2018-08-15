@@ -40,6 +40,7 @@ const dependencies = (mongo, redux, router) => {
     'file-loader': '^1',
     'sass-loader': '^6',
     'node-sass': '^4',
+    'style-loader': '^0', // Currently < 1
 
     // BABEL - https://goo.gl/ESXgmh
     'babel-loader': '^8.0.0-beta',

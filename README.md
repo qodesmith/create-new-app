@@ -169,7 +169,7 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
       <td align="center"><code>-r</code></td>
       <td>Boolean</td>
       <td>
-        Includes <a href="https://github.com/ReactTraining/react-router">Router</a> in your application, completely wired up & ready to go. Enjoy the widely supported go-to router of choice in the React ecosystem!
+        Includes <a href="https://github.com/ReactTraining/react-router">React Router</a> in your application, completely wired up & ready to go. Enjoy the widely supported go-to router of choice in the React ecosystem!
         <br><br>
         <em>Examples:</em>
         <br><code>--router</code>

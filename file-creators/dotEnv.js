@@ -12,7 +12,7 @@ function dotEnv(options) {
     `appName=${appName}`,
     title && `title=${title}`,
     description && `description='${description}'`,
-    api && `API=${api}`,
+    (api || server) && `API=${api || '/'}`,
     (api || server) && `API_PORT=${apiPort}`,
     `DEV_SERVER_PORT=${devServerPort}\n`
   ].filter(Boolean)

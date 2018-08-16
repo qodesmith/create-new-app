@@ -121,7 +121,7 @@ const optionDefinitions = [
   // API / server / devServer options.
   { name: 'devServerPort', type: val => portValidator(val, 'dev', 8080), defaultValue: 8080 },
   { name: 'apiPort', type: val => portValidator(val, 'api', 3000), defaultValue: 3000 },
-  { name: 'api', type: String, defaultValue: null },
+  { name: 'api', type: String, defaultValue: null }, // No default from the command line, but defaulted in `dotEnv.js`.
   { name: 'express', alias: 'e', type: Boolean },
   { name: 'mongo', alias: 'm', type: Boolean }
 ]

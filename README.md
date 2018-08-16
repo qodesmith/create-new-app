@@ -221,7 +221,7 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--api /api</code>
         <br><code>--api=/api</code>
       </td>
-      <td>-</td>
+      <td><code>/</code></td>
     </tr>
     <tr>
       <td><code>--apiPort</code></td>

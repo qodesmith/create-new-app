@@ -213,7 +213,7 @@ module.exports = (env, argv) => ({
               */
               includePaths: [
                 'node_modules/sassyons'
-              ]
+              ],
 
               /*
                 https://goo.gl/xxBHk3

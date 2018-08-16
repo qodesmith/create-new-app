@@ -24,11 +24,11 @@
 
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
-[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And you've been hip to [Sassyons](https://github.com/qodesmith/sassyons) for some time now, but alas... CRA doesn't include it. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
+[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
 
 **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
 
-It's just like CRA but with full stack options. You get a [Webpack](https://webpack.js.org/configuration/) development server and build which ties all-the-things together. Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
+It's just like CRA but with full stack options - and more! You get a [Webpack](https://webpack.js.org/configuration/) development server, a build which ties all-the-things together, and a custom SCSS utility library named [Sassyons](https://github.com/qodesmith/sassyons). Optionally include [React Router](https://reacttraining.com/react-router/), [Redux](https://redux.js.org/), [Express](https://expressjs.com/), and [MongoDB](https://mongodb.github.io/node-mongodb-native/). Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
 
 ## Installation
 
@@ -38,16 +38,16 @@ npm install -g create-new-app
 
 ## Usage
 
-#### Guided Process
+### Guided Process
 
-Simply type `create-new-app` and you'll be asked up to 5 questions:
+It couldn't be easier to use Create New App. Simply type `create-new-app` (or `cna` for short) and you'll start the guided process, being asked up to 5 questions:
 1. Enter a name for your app
 2. Would you like to include Redux?
 3. Would you like to include React Router?
 4. Would you like to include an Express server?
 5. Would you like to include MongoDB?
 
-#### Manual Options
+### Manual Options
 
 Simplest example: `create-new-app <app-name>`<br>
 ^^^ #Boom. Your app is running on `http://localhost:3000`.
@@ -60,9 +60,23 @@ create-new-app <app-name> [options]
 cna <app-name> [options]
 ```
 
+### Sandbox Project
+
+Sometimes you simply want a quick sandbox project to test something real quick. Maybe in order to test a simple function or some CSS. Create New App has you covered:
+
+```shell
+cna <app-name> --sandbox
+```
+
+This will generate 3 empty files for you:
+1. index.html
+2. main.js
+3. styles.css
+
 Simple, no? Let's look at some other examples...
 
-### Other Examples
+
+## Other Examples
 
 ```shell
 # Let the guided process walk you through it:
@@ -84,37 +98,37 @@ create-new-app awesomeness -m
 
 ## Webpack Magic
 
-While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
+**Webpack 4!!!** While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
 
-#### Development Server
+### Development Server
 
 This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let Webpack refresh that screen.
 
-#### Tree Shaking / Minification
+### Tree Shaking / Minification
 
-Delivers super-sexy minified JavaScript without those dead branches!
+Delivers super-sexy minified JavaScript without those dead branches! Your CSS is purged & minified as well. #Bandwidth
 
-#### Babel
+### Babel
 
-Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a build.
+Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a build. Be sure to check out the `entry.js` file and see if you need `@babel/polyfill` or not.
 
-#### Postcss
+### Postcss
 
-SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, and [combining redudant selectors](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors).
+SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, [combining](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors) redudant selectors, [removing](https://github.com/ben-eb/postcss-discard-comments) comments, and [sorting](https://github.com/Siilwyn/css-declaration-sorter) properties for better gzip compression! It's also [purging](https://github.com/FullHuman/postcss-purgecss) unused css (see below).
 
-#### Purgecss
+### Purgecss
 
-Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack-plugin)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles. Also included is the [purgecss-whitelister](https://github.com/qodesmith/purgecss-whitelister) to prevent CSS from 3rd party tools you might be using from being removed.
+Automatically [removes unused CSS](https://www.purgecss.com/)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles. Also included is the [purgecss-whitelister](https://github.com/qodesmith/purgecss-whitelister) to prevent CSS from 3rd party tools being removed that you want to keep.
 
-#### CleanWebpackPlugin
+### CleanWebpackPlugin
 
 [CleanWebpackPlugin](https://goo.gl/xP7eDB) is used to clean the `dist` folder when running a build. It's the folder that will contain your app's bundled assets.
 
-#### MiniCssExtractPlugin
+### MiniCssExtractPlugin
 
-[MiniCssExtractPlugin](https://goo.gl/pvSAek) removes the css data that's in the JS bundle and extracts it into a css file.
+[MiniCssExtractPlugin](https://goo.gl/pvSAek) removes the CSS data that's in the JS bundle and extracts it into a CSS file. This is the recommended plugin to use instead of the old [extract text webpack plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin).
 
-#### HtmlWebpackPlugin
+### HtmlWebpackPlugin
 
 [HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
 
@@ -175,7 +189,7 @@ Automatically [removes unused CSS](https://github.com/FullHuman/purgecss-webpack
         <br><code>--router</code>
         <br><code>-r</code>
       </td>
-      <td>8080</td>
+      <td><code>false</code></td>
     </tr>
   </tbody>
 </table>
@@ -220,7 +234,7 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--apiPort 5000</code>
         <br><code>--apiPort=5000</code>
       </td>
-      <td>8080</td>
+      <td><code>8080</code></td>
     </tr>
     <tr>
       <td><code>--devServerPort</code></td>
@@ -234,7 +248,7 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--devServerPort 2000</code>
         <br><code>--devServerPort=2000</code>
       </td>
-      <td>3000</td>
+      <td><code>3000</code></td>
     </tr>
     <tr>
       <td><code>--express</code></td>
@@ -317,7 +331,7 @@ When you need a back end for your app, you need an API server. The purpose of an
     </tr>
     <tr>
       <td><code>--sandbox</code></td>
-      <td>-</td>
+      <td><code>-s</code></td>
       <td>Boolean</td>
       <td>
         Creates a "sandbox" app which consists of 3 simple files:

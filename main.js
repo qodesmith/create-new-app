@@ -46,11 +46,11 @@ process.on('unhandledRejection', err => console.log(err))
 
   redux
     * `utils` folder created with redux-specific sub-folders
-    * causes `entry.js` & `App.jsx` to have different contents
+    * modifies `entry.js` & `App.jsx` accordingly
 
   router
-    * will automatically include redux
-    * creates `store.js`, `routesMap.js`, `Example.jsx`, nad `NotFound.jsx`
+    * creates `Home.jsx`, and `NotFound.jsx`
+    * modifies `entry.js` accordingly
 
   version
     * displays the current version of this package

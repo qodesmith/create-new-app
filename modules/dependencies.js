@@ -12,7 +12,7 @@ const dependencies = (mongo, redux, router) => {
     // MAIN
     react: '^16',
     'react-dom': '^16',
-    sassyons: '^1',
+    sassyons: '^2',
     redux: (redux || router) && '^3',
     'react-redux': (redux || router) && '^5',
     'react-router-dom': router && '^4',

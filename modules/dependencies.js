@@ -19,12 +19,18 @@ const dependencies = (mongo, redux, router) => {
     history: router && '^4',
 
     // POSTCSS
-    postcss: '^6',
+    // https://cssnano.co/optimisations/ - list of plugins.
     'postcss-loader': '^2',
-    autoprefixer: '^8',
-    'css-mqpacker': '^6',
+    postcss: '^6',
+    '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css here and not as a Webpack plugin.
+    'purgecss-whitelister': 'latest', // Always keep latest.
     'postcss-discard-comments': '^2',
+    'css-mqpacker': '^6',
     'postcss-combine-duplicated-selectors': '^5',
+    autoprefixer: '^8',
+    'postcss-colormin': '^4',
+    'css-declaration-sorter': '^4',
+
 
     // WEBPACK
     webpack: '^4',
@@ -33,8 +39,6 @@ const dependencies = (mongo, redux, router) => {
     'mini-css-extract-plugin': '^0', // Currently < 1
     'clean-webpack-plugin': '^0', // Currently < 1
     'html-webpack-plugin': '^3',
-    'purgecss-webpack-plugin': '^1',
-    'purgecss-whitelister': 'latest', // Always keep latest.
     'glob-all': 'latest', // Always keep latest
     'css-loader': '^1',
     'file-loader': '^1',

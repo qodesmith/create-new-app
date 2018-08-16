@@ -1,14 +1,10 @@
 require('dotenv').load() // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
 const path = require('path')
-const globAll = require('glob-all')
-
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const PurgecssPlugin = require('purgecss-webpack-plugin')
-const whitelister = require('purgecss-whitelister')
 
 
 console.log(`
@@ -196,17 +192,16 @@ module.exports = (env, argv) => ({
       */
       {
         test: /\.(scss|css)$/,
-        exclude: /node_modules/,
         include: path.resolve(__dirname, 'src'),
         use: [
           env.prod ? MiniCssExtractPlugin.loader : 'style-loader', // https://goo.gl/uUBr8G
           {
             loader: 'css-loader',
             options: {
-              minimize: true
+              importLoaders: 2
             }
           },
-          'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
+          env.prod && 'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
           {
             loader: 'sass-loader',
             options: {
@@ -219,9 +214,15 @@ module.exports = (env, argv) => ({
               includePaths: [
                 'node_modules/sassyons'
               ]
+
+              /*
+                https://goo.gl/xxBHk3
+                Values: nested, expanded, compact, compressed
+              */
+              outputStyle: env.prod ? 'compressed' : 'expanded'
             }
           }
-        ]
+        ].filter(Boolean)
       },
 
       /*
@@ -285,9 +286,9 @@ module.exports = (env, argv) => ({
     }),
 
     // This must be used in conjunction with the associated scss module rule.
-    new MiniCssExtractPlugin({
+    env.prod && new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
-      // both options are optional
+      // Both options are optional.
       filename: '[name].[hash].css',
       chunkFilename: '[id].css'
     }),
@@ -317,28 +318,6 @@ module.exports = (env, argv) => ({
         collapseWhitespace: true,
         removeComments: true
       }
-    }),
-
-    /*
-      https://goo.gl/hkBPMd
-      Removes unused selectors from your CSS.
-      This will use the output of the above `MiniCssExtractPlugin`
-      as the asset to purify, searching the files within the paths option.
-    */
-    env.prod && new PurgecssPlugin({
-      keyframes: false, // https://goo.gl/bACbDW
-      styleExtensions: ['.css'],
-      paths: globAll.sync([
-        './src/**/*.js',
-        './src/**/*.jsx',
-        './src/index.ejs'
-      ], { absolute: true }),
-
-      /*
-        Optionally whitelist 3rd party libraries.
-        Example:
-          whitelist: whitelister('./node_modules/library/styles.css')
-      */
     })
   ].filter(Boolean),
 

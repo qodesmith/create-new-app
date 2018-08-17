@@ -4,7 +4,7 @@ const noComment = require('postcss-discard-comments')
 const mqPacker = require('css-mqpacker')
 const combineSelectors = require('postcss-combine-duplicated-selectors')
 const autoprefixer = require('autoprefixer')
-const colorMin = require('postcss-colormin')
+const colormin = require('postcss-colormin').default
 const sorter = require('css-declaration-sorter')
 // const whitelister = require('purgecss-whitelister')
 
@@ -26,7 +26,7 @@ module.exports = {
     mqPacker({ sort: true }),
     combineSelectors({ removeDuplicatedProperties: true }),
     autoprefixer(),
-    colorMin(),
+    colormin(),
     sorter()
   ]
 }

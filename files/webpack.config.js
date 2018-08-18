@@ -194,14 +194,14 @@ module.exports = (env, argv) => ({
         test: /\.(scss|css)$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          env.prod ? MiniCssExtractPlugin.loader : 'style-loader', // https://goo.gl/uUBr8G
+          MiniCssExtractPlugin.loader, // https://goo.gl/uUBr8G
           {
             loader: 'css-loader',
             options: {
               importLoaders: 2
             }
           },
-          env.prod && 'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
+          'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
           {
             loader: 'sass-loader',
             options: {
@@ -222,7 +222,7 @@ module.exports = (env, argv) => ({
               outputStyle: env.prod ? 'compressed' : 'expanded'
             }
           }
-        ].filter(Boolean)
+        ]
       },
 
       /*
@@ -286,7 +286,7 @@ module.exports = (env, argv) => ({
     }),
 
     // This must be used in conjunction with the associated scss module rule.
-    env.prod && new MiniCssExtractPlugin({
+    new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // Both options are optional.
       filename: '[name].[hash].css',
@@ -319,7 +319,7 @@ module.exports = (env, argv) => ({
         removeComments: true
       }
     })
-  ].filter(Boolean),
+  ],
 
   // https://goo.gl/HBnQlq
   devServer: {

@@ -7,7 +7,7 @@ const catchy = thing => {
   const isPromise = ({}).toString.call(thing) === '[object Promise]'
 
   return new Promise((resolve, reject) => {
-    if (isPromise(thing)) return thing.then(resolve).catch(reject)
+    if (isPromise) return thing.then(resolve).catch(reject)
     return resolve(thing)
   })
     .then(res => [null, res])

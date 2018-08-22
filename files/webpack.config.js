@@ -270,7 +270,6 @@ module.exports = (env, argv) => ({
       new UglifyJsPlugin({
         uglifyOptions: { // https://goo.gl/3UaFRm
           ecma: 5,
-          warnings: true,
           output: {
             comments: false // https://goo.gl/wKzHJd
           }

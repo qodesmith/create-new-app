@@ -1,19 +1,15 @@
 /*
-  EXAMPLE USE CASE
-  ----------------
-
-  Imagine getting blog posts...
-
-  async function posts() {
-    const [error, posts] = await catchy(getPostsFromDB())
-
-    if (error) throw 'Error retrieving posts!'
-    return posts
-  }
+  Inspired by this article - https://goo.gl/9KnMYT
+  Catchify is also a great library for this - https://github.com/majgis/catchify
 */
 
-function catchy(promise) {
-  return promise
+const catchy = thing => {
+  const isPromise = ({}).toString.call(thing) === '[object Promise]'
+
+  return new Promise((resolve, reject) => {
+    if (isPromise(thing)) return thing.then(resolve).catch(reject)
+    return resolve(thing)
+  })
     .then(res => [null, res])
     .catch(err => [err])
 }

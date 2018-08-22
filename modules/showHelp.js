@@ -14,6 +14,10 @@ function showHelp() {
         -t, --title       sets the webpage title
         -f, --force       skips creating a new directory & installs in a pre-existing one
 
+      ${chalk.cyan.bold('App options:')}
+        -x, --redux       includes redux in your application, completely wired up
+        -r, --router      includes React Router ^4 in your application, completely wired up
+
       ${chalk.cyan.bold('package.json field options:')}
         --author          \\
         --description      \\  populates \`package.json\` field names of the same value
@@ -26,6 +30,9 @@ function showHelp() {
         -e, --express     sets up an Express api server for Webpack to proxy
         -m, --mongo       sets up an Express api server with MongoDB for Webpack to proxy
         -p, --port        sets the development server port
+
+      ${chalk.cyan.bold('Creating a sandbox project:')}
+        -s, --sandbox     simply creates index.html, styles.css, and main.js files
 
     Have an issue?  Help keep ${chalk.bold('create-new-app')} awesome by reporting it here:
       ${chalk.cyan('https://github.com/qodesmith/create-new-app/issues/new')}

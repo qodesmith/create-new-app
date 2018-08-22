@@ -4,9 +4,9 @@ const chalk = require('chalk')
 
 function checkDirExists({ appDir, appName, force }) {
   if (!existsSync(appDir)) return true
-  console.log(`The directory ${chalk.green(appName)} already exists.`)
+  if (force) return console.log('Force installing in pre-existing directory...'), true
 
-  if (force) return console.log('Force installing in pre-existing directory...') || true
+  console.log(`The directory ${chalk.green(appName)} already exists.`)
   console.log('Try a different name.')
 }
 

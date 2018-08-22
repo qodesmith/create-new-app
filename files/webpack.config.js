@@ -5,6 +5,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 console.log(`
@@ -261,6 +262,21 @@ module.exports = (env, argv) => ({
       Automatically resolve certain extensions without having to type them out.
     */
     extensions: ['.js', '.jsx', '.json', '.scss']
+  },
+
+  // https://goo.gl/bxPV7L
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: { // https://goo.gl/3UaFRm
+          ecma: 5,
+          warnings: true,
+          output: {
+            comments: false // https://goo.gl/wKzHJd
+          }
+        }
+      })
+    ]
   },
 
   // https://goo.gl/aDKWnb

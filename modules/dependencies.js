@@ -22,7 +22,7 @@ const dependencies = (mongo, redux, router) => {
     // https://cssnano.co/optimisations/ - list of plugins.
     'postcss-loader': '^2',
     postcss: '^6',
-    '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css here and not as a Webpack plugin.
+    '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always keep latest.
     'postcss-discard-comments': '^2',
     'css-mqpacker': '^6',
@@ -44,7 +44,8 @@ const dependencies = (mongo, redux, router) => {
     'file-loader': '^1',
     'sass-loader': '^6',
     'node-sass': '^4',
-    'style-loader': '^0', // Currently < 1
+    'style-loader': '^0', // Currently < 1,
+    'uglifyjs-webpack-plugin': '^1',
 
     // BABEL - https://goo.gl/ESXgmh
     'babel-loader': '^8.0.0-beta',

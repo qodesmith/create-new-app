@@ -2,7 +2,7 @@
 const { existsSync } = require('fs-extra')
 const chalk = require('chalk')
 
-function checkDirExists({ appDir, appName, force }) {
+function safeToCreateDir({ appDir, appName, force }) {
   if (!existsSync(appDir)) return true
   if (force) return console.log('Force installing in pre-existing directory...'), true
 
@@ -10,4 +10,4 @@ function checkDirExists({ appDir, appName, force }) {
   console.log('Try a different name.')
 }
 
-module.exports = checkDirExists
+module.exports = safeToCreateDir

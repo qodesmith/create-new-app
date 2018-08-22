@@ -20,7 +20,7 @@ const run = require('./modules/run')
 const isOnline = require('./modules/isOnline')
 const copyTree = require('./modules/copyTree')
 const { promptYN, promptQ } = require('./modules/prompts')
-const checkDirExists = require('./modules/checkDirExists')
+const safeToCreateDir = require('./modules/safeToCreateDir')
 const showVersion = require('./modules/showVersion')
 const showHelp = require('./modules/showHelp')
 const noName = require('./modules/noName')
@@ -199,7 +199,7 @@ function parseArgs(online) {
   // `cna -h` or `cna --help`
   if (help) return showHelp() || process.exit()
 
-  checkDirExists(options) || process.exit()
+  safeToCreateDir(options) || process.exit()
 
   if (sandbox) return { ...options, sandbox: true }
   if (!validation.validForNewPackages) return badName(appName, validation) || process.exit()
@@ -231,7 +231,7 @@ async function guidedProcess(online) {
     but we don't want the user to go through the whole process of answering
     these questions only to be rejected later. Reject as soon as possible.
   */
-  checkDirExists({ appDir, appName }) || process.exit()
+  safeToCreateDir({ appDir, appName }) || process.exit()
   const validation = validateName(appName)
   if (!validation.validForNewPackages) return badName(appName, validation) || process.exit()
 
@@ -302,7 +302,7 @@ function createProjectDirectory(options) {
   const boldName = chalk.green.bold(appName)
   const boldSandbox = chalk.bold(' sandbox')
 
-  checkDirExists(options) || (!sandbox && force) || process.exit()
+  safeToCreateDir(options) || (!sandbox && force) || process.exit()
   console.log(`\nCreating a new${sandbox ? boldSandbox : ''} app in ${greenDir}${boldName}.`)
 
   // Create the project directory.

@@ -12,9 +12,10 @@ const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/
   The idea is that there will be an admin-only section on the front end
   that will display this error data in a meaningful way.
 */
-const createError = (type = 'unknown', err = {}) => ({
+const createError = (type = 'unknown', { message, stack } = {}) => ({
   type,
-  ...JSON.parse(JSON.stringify(err)),
+  stack,
+  error: message,
   localDate: localDate(),
   date: Date.now()
 })

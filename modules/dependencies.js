@@ -74,7 +74,6 @@ const dependencies = (mongo, redux, router) => {
 
     // MONGO
     mongodb: mongo && '^3',
-    catchify: mongo && '^2',
     'connect-mongodb-session': mongo && '^2',
     'express-session': mongo && '^1',
   }

@@ -22,6 +22,7 @@ const dependencies = (mongo, redux, router) => {
     // https://cssnano.co/optimisations/ - list of plugins.
     'postcss-loader': '^2',
     postcss: '^6',
+    cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always keep latest.
     'postcss-discard-comments': '^2',

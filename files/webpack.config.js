@@ -177,7 +177,8 @@ module.exports = (env, argv) => ({
               // https://goo.gl/N9gaqc - List of Babel plugins.
               plugins: [
                 '@babel/plugin-proposal-object-rest-spread', // https://goo.gl/LCHWnP
-                '@babel/plugin-proposal-class-properties' // https://goo.gl/TE6TyG
+                '@babel/plugin-proposal-class-properties', // https://goo.gl/TE6TyG
+                '@babel/plugin-syntax-dynamic-import' // https://goo.gl/ho4CDh
               ]
             }
           }

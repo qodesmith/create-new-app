@@ -245,6 +245,25 @@ module.exports = (env, argv) => ({
             }
           }
         ]
+      },
+
+      /*
+        IMAGES
+        ------
+        * Copies fonts found within the `src` tree to the `dist` folder
+        * Keeps the original file name
+      */
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        include: path.resolve(__dirname, 'src/assets'),
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]'
+            }
+          }
+        ]
       }
     ]
   },

@@ -38,7 +38,8 @@ function webpackConfig(redux) {
 
   const aliasObject = [
     '{',
-    `${indent}components: path.resolve(__dirname, 'src/components')${redux ? ',' : ''}`,
+    `${indent}components: path.resolve(__dirname, 'src/components'),`,
+    `${indent}assets: path.resolve(__dirname, 'src/assets')${redux ? ',' : ''}`,
     redux && aliasReduxObject,
     `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
   ].filter(Boolean).join('\n')

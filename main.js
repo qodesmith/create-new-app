@@ -343,6 +343,7 @@ function createFiles(options) {
 
   // Depending on the options, Exclude certain files from being copied.
   const excludes = [
+    '.gitkeep',
     router && redux && 'appReducer.js',
     !router && redux && 'homeReducer.js',
     router && 'App.jsx'

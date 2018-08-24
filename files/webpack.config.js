@@ -142,6 +142,7 @@ module.exports = (env, argv) => ({
                 - @babel/preset-react
                 - @babel/plugin-proposal-object-rest-spread
                 - @babel/plugin-proposal-class-properties
+                - @babel/plugin-syntax-dynamic-import
             */
             loader: 'babel-loader',
             options: {
@@ -416,11 +417,12 @@ module.exports = (env, argv) => ({
     to be present in the consumer's environment.
 
     If you want to load 3rd party libraries via a CDN instead of bundling them,
-    include them here in addition to adding `<script>` tags to `index.html`.
+    include them here in addition to adding `<script>` tags to `index.ejs`.
   */
   // externals: {
   //   react: { root: 'react' },
-  //   'react-dom': { root: 'reactDOM' }
+  //   'react-dom': { root: 'reactDOM' },
+  //   // 'react-router-dom': { root: 'ReactRouterDOM' }
   // },
 
   /*

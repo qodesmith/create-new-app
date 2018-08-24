@@ -32,7 +32,6 @@ const dependencies = (mongo, redux, router) => {
     'postcss-colormin': '^4',
     'css-declaration-sorter': '^4',
 
-
     // WEBPACK
     webpack: '^4',
     'webpack-cli': '^3',
@@ -57,7 +56,6 @@ const dependencies = (mongo, redux, router) => {
     '@babel/plugin-proposal-class-properties': '^7.0.0-beta',
     '@babel/plugin-syntax-dynamic-import': '^7.0.0-rc.2',
     '@babel/polyfill': '^7.0.0-beta',
-
 
     // OTHER
     'cross-env': '^5',

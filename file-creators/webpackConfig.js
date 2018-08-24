@@ -21,14 +21,25 @@ function webpackConfig(redux) {
   const indent = ' '.repeat(line.search(/\S/) + 2)
 
   // Construct the appropriate webpack alias object for redux or not.
+  const aliasReduxObject = [
+    `actions: path.resolve(__dirname, 'src/utils/actions'),`,
+    `helpers: path.resolve(__dirname, 'src/utils/helpers'),`,
+    `middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
+    `reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
+    `utils: path.resolve(__dirname, 'src/utils'),`,
+    '/*',
+    '  To replace React with (P)react, run: `npm i -D preact preact-compat`',
+    '  Preact does not have <Fragment /> as part of its API yet:',
+    '    https://github.com/developit/preact/issues/946',
+    '*/',
+    `// react: 'preact-compat',`,
+    `// 'react-dom': 'preact-compat'`,
+  ].map(line => `${indent}${line}`).join('\n')
+
   const aliasObject = [
     '{',
     `${indent}components: path.resolve(__dirname, 'src/components')${redux ? ',' : ''}`,
-    redux && `${indent}actions: path.resolve(__dirname, 'src/utils/actions'),`,
-    redux && `${indent}helpers: path.resolve(__dirname, 'src/utils/helpers'),`,
-    redux && `${indent}middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
-    redux && `${indent}reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
-    redux && `${indent}utils: path.resolve(__dirname, 'src/utils')`,
+    redux && aliasReduxObject,
     `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
   ].filter(Boolean).join('\n')
 

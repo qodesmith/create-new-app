@@ -48,14 +48,14 @@ const dependencies = (mongo, redux, router) => {
     'uglifyjs-webpack-plugin': '^1',
 
     // BABEL - https://goo.gl/ESXgmh
-    'babel-loader': '^8.0.0-beta',
-    '@babel/core': '^7.0.0-beta',
-    '@babel/preset-env': '^7.0.0-beta',
-    '@babel/preset-react': '^7.0.0-beta',
-    '@babel/plugin-proposal-object-rest-spread': '^7.0.0-beta',
-    '@babel/plugin-proposal-class-properties': '^7.0.0-beta',
-    '@babel/plugin-syntax-dynamic-import': '^7.0.0-rc.2',
-    '@babel/polyfill': '^7.0.0-beta',
+    'babel-loader': '^8',
+    '@babel/core': '^7',
+    '@babel/preset-env': '^7',
+    '@babel/preset-react': '^7',
+    '@babel/plugin-proposal-object-rest-spread': '^7',
+    '@babel/plugin-proposal-class-properties': '^7',
+    '@babel/plugin-syntax-dynamic-import': '^7',
+    '@babel/polyfill': '^7',
 
     // OTHER
     'cross-env': '^5',

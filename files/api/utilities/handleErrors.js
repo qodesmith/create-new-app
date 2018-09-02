@@ -2,6 +2,7 @@ const mongo = require('./mongo')
 const isProd = process.env.NODE_ENV === 'production'
 
 /*
+  toLocaleString - https://goo.gl/obzAhL
   Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
   https://goo.gl/SkVvba
 */

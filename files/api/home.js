@@ -17,7 +17,7 @@ function home(req, res) {
       This can happen in you manually change
       the url to something non-existant
     */
-    res.sendStatus(404)
+    if (err) res.sendStatus(404)
   })
 }
 

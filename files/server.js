@@ -1,10 +1,3 @@
-/*
-  Express production best practices:
-  ----------------------------------
-
-  security - http://goo.gl/LBmJXK
-*/
-
 // Environment variables.
 const { appName, API_PORT, NODE_ENV } = process.env
 
@@ -27,7 +20,10 @@ const compression = require('compression') // Gzip! - https://goo.gl/ShNShk
 const bp = require('body-parser') // Makes `req.body` available - https://goo.gl/0UviQN
 const app = express()
 
-// Express middleware.
+/*
+  Express middleware.
+  Express security best practices - http://goo.gl/LBmJXK
+*/
 app.use(
   express.static(path.resolve(__dirname, 'dist')), // https://goo.gl/759KqP
   helmet(), // Headers security.
@@ -40,6 +36,7 @@ app.use(
   ADD YOUR CUSTOM ENDPOINTS HERE
   ------------------------------
 */
+// app.get('/my-endpoint', require('./api/my-endpoint'))
 
 
 /*

@@ -1,6 +1,3 @@
-// Environment variables.
-const { mongoURI, mongoSession, appName, secret, API_PORT, NODE_ENV } = process.env
-
 /*
   Please be sure to EXCLUDE the `.env` file from version control.
   In production, whatever host you use to deploy your server will
@@ -9,10 +6,11 @@ const { mongoURI, mongoSession, appName, secret, API_PORT, NODE_ENV } = process.
   Also for production, don't forget to change the start script in
   `package.json` to only start the API server in production mode!
 */
-if (NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load() // https://goo.gl/Cj8nKu
 }
 
+const { mongoURI, mongoSession, appName, secret, API_PORT } = process.env // Environment variables.
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x

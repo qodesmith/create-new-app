@@ -50,7 +50,7 @@ It couldn't be easier to use Create New App. Simply type `create-new-app` (or `c
 ### Manual Options
 
 Simplest example: `create-new-app <app-name>`<br>
-^^^ #Boom. Your app is running on `http://localhost:3000`.
+^^^ #Boom. Your app is running on `http://localhost:8080`.
 
 Want the full control of all the options? No problem:
 ```shell
@@ -68,7 +68,7 @@ Sometimes you simply want a quick sandbox project to test something real quick. 
 cna <app-name> --sandbox
 ```
 
-This will generate 3 empty files for you:
+This will generate 3 files for you, tied together in `index.html`:
 1. index.html
 2. main.js
 3. styles.css
@@ -234,7 +234,7 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--apiPort 5000</code>
         <br><code>--apiPort=5000</code>
       </td>
-      <td><code>8080</code></td>
+      <td><code>3000</code></td>
     </tr>
     <tr>
       <td><code>--devServerPort</code></td>
@@ -248,7 +248,7 @@ When you need a back end for your app, you need an API server. The purpose of an
         <br><code>--devServerPort 2000</code>
         <br><code>--devServerPort=2000</code>
       </td>
-      <td><code>3000</code></td>
+      <td><code>8080</code></td>
     </tr>
     <tr>
       <td><code>--express</code></td>

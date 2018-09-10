@@ -18,6 +18,8 @@ console.log(`
 
 `)
 
+@@__PLACEHOLDER_WEBPACK_LOG_PORTS__@@
+
 
 module.exports = (env, argv) => ({
   // https://goo.gl/R88FtY - new in Webpack 4.

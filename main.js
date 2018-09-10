@@ -332,7 +332,7 @@ function createFiles(options) {
   server && fs.copySync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
 
   // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig(redux || router), 'utf-8')
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, server }), 'utf-8')
 
   // `api` directory tree.
   mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)

@@ -50,7 +50,8 @@ function webpackConfig({ redux, server }) {
 
   // Construct a console.log that will tell where the application is running.
   const devServerLog = [
-    "console.log(`  💻 => Application running in browser at http://localhost:${DEV_SERVER_PORT}",
+    "if (NODE_ENV !== 'production') {\n",
+    "  console.log(`  💻 => Application running in browser at http://localhost:${DEV_SERVER_PORT}",
     server ? '' : '\\n\\n',
     '`)',
   ].join('')
@@ -58,7 +59,10 @@ function webpackConfig({ redux, server }) {
   // Construct the final console.log's that might also include the API port.
   const consoleLogs = [
     devServerLog,
-    server && "console.log(`  🌎 => API listening on port ${API_PORT}...\\n\\n`)"
+    server && "  console.log(`  🌎 => API listening on port ${API_PORT}...\\n\\n`)",
+    '} else {',
+    "  console.log('Building for production...\\n\\n'",
+    '}'
   ].filter(Boolean).join('\n')
 
   return (

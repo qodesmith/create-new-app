@@ -157,21 +157,12 @@ module.exports = (env, argv) => ({
 
                   https://goo.gl/sBmiwZ - A comment on the above post shows that we
                   can use `modules: false`.
-
-                  https://goo.gl/aAxYAq - `babel-preset-env` documentation.
                 */
                 [
                   '@babel/preset-env', // https://goo.gl/aAxYAq
                   {
-                    targets: {
-                      browsers: [
-                        // https://goo.gl/2uAdKL - avoid `last 2 versions`.
-                        '>0.25%',
-                        'not ie 11',
-                        'not op_mini all'
-                      ]
-                    },
-                    modules: false // Needed for tree shaking to work.
+                    modules: false, // Needed for tree shaking to work (see above).
+                    useBuiltIns: 'entry' // https://goo.gl/x16mAq
                   }
                 ],
                 '@babel/preset-react' // https://goo.gl/4aEFV3

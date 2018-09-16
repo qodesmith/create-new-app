@@ -61,7 +61,7 @@ function webpackConfig({ redux, server }) {
     devServerLog,
     server && "  console.log(`  🌎 => API listening on port ${API_PORT}...\\n\\n`)",
     '} else {',
-    "  console.log('Building for production...\\n\\n'",
+    "  console.log('Building for production...\\n\\n')",
     '}'
   ].filter(Boolean).join('\n')
 

@@ -137,7 +137,7 @@ module.exports = (env, argv) => ({
           {
             /*
               https://goo.gl/N6uJv3 - Babel loader.
-                - babel-loader@^8.0.0-beta
+                - babel-loader
                 - @babel/core
                 - @babel/polyfill (used in the entry.js file)
                 - @babel/preset-env

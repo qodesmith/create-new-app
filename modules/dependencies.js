@@ -13,22 +13,22 @@ const dependencies = (mongo, redux, router) => {
     react: '^16',
     'react-dom': '^16',
     sassyons: '^2',
-    redux: (redux || router) && '^3',
+    redux: (redux || router) && '^4',
     'react-redux': (redux || router) && '^5',
     'react-router-dom': router && '^4',
     history: router && '^4',
 
     // POSTCSS
     // https://cssnano.co/optimisations/ - list of plugins.
-    'postcss-loader': '^2',
-    postcss: '^6',
+    'postcss-loader': '^3',
+    postcss: '^7',
     cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always keep latest.
-    'postcss-discard-comments': '^2',
-    'css-mqpacker': '^6',
-    'postcss-combine-duplicated-selectors': '^5',
-    autoprefixer: '^8',
+    'postcss-discard-comments': '^4',
+    'css-mqpacker': '^7',
+    'postcss-combine-duplicated-selectors': '^6',
+    autoprefixer: '^9',
     'postcss-colormin': '^4',
     'css-declaration-sorter': '^4',
 
@@ -41,11 +41,11 @@ const dependencies = (mongo, redux, router) => {
     'html-webpack-plugin': '^3',
     'glob-all': 'latest', // Always keep latest
     'css-loader': '^1',
-    'file-loader': '^1',
-    'sass-loader': '^6',
+    'file-loader': '^2',
+    'sass-loader': '^7',
     'node-sass': '^4',
     'style-loader': '^0', // Currently < 1,
-    'uglifyjs-webpack-plugin': '^1',
+    'uglifyjs-webpack-plugin': '^2',
 
     // BABEL - https://goo.gl/ESXgmh
     'babel-loader': '^8',

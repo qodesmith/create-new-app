@@ -24,7 +24,7 @@
 
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
-[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included. And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
+[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, ~~but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included.~~ And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
 
 **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
 
@@ -110,7 +110,7 @@ Delivers super-sexy minified JavaScript without those dead branches! Your CSS is
 
 ### Babel
 
-Write ES6+ and beyond. Babel is integrated so you'll get ES5 once you run a build. Be sure to check out the `entry.js` file and see if you need `@babel/polyfill` or not.
+Write ES6+ and beyond. Babel 7 is integrated so you'll get ES5 once you run a build. Be sure to check out the `entry.js` file and see if you need `@babel/polyfill` or not.
 
 ### Postcss
 

@@ -25,6 +25,7 @@ const showHelp = require('./modules/showHelp')
 const noName = require('./modules/noName')
 const badName = require('./modules/badName')
 const portValidator = require('./modules/portValidator')
+const adjustPkgJson = require('./modules/adjustPkgJson')
 
 // Other.
 const cwd = process.cwd()
@@ -389,7 +390,7 @@ function createFiles(options) {
 }
 
 // STEP 5
-function installDependencies(options) {
+async function installDependencies(options) {
   const { appName, appDir, server, offline, redux, router } = options
   const forceOffline = offline ? ' --offline' : '' // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : ''
@@ -402,7 +403,17 @@ function installDependencies(options) {
   console.log(`Installing project dependencies via npm${cache}...\n`)
   run(`npm${forceOffline} i`)
 
+  // Adjust the package.json dependencies to show their installed version.
+  // E.x. - "react": "^16" => "react": "^16.6.1"
+  await adjustPkgJson(appDir)
 
+  // Initialize git.
+  try {
+    run('git init', true) // Don't display stdout.
+    console.log('Initialized a git repository.\n')
+  } catch (e) {}
+
+  // Display the final message.
   const cyanDir = chalk.cyan(appDir)
   const boldName = chalk.bold(appName)
   const serverMsg = server ? 'and Express servers' : 'server'

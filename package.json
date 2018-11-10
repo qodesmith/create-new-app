@@ -45,7 +45,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "command-line-args": "^4.0.7",
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^7.0.1",
     "validate-npm-package-name": "^3.0.0"
   },
   "engines": {

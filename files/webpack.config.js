@@ -325,12 +325,14 @@ module.exports = (env, argv) => ({
     /*
       https://goo.gl/xP7eDB
       A webpack plugin to remove/clean your build folder(s) before building.
-      Add any files you want to preserve to the exclude array below.
+      Since the build simply generates js & css bundles, we specify those globs
+      in the 1st argument and don't have to worry about listing everything
+      to whitelist in the `exclude` array. Feel free to change this.
     */
-    new CleanWebpackPlugin(['dist'], { // Directories to clean.
+    new CleanWebpackPlugin(['dist/*.js', 'dist/*.css'], { // Directories to clean.
       root: __dirname,
       verbose: true,
-      exclude: ['favicon.ico', 'robots.txt'] // Files to keep.
+      // exclude: ['favicon.ico', 'robots.txt'] // Files to keep.
     }),
 
     /*

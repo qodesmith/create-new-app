@@ -335,6 +335,9 @@ function createFiles(options) {
   // `webpack.config.js`
   fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, server }), 'utf-8')
 
+  // `after-compile-plugin.js`
+  fs.copySync(dir('files/after-compile-plugin.js'), `${appDir}/after-compile-plugin.js`)
+
   // `api` directory tree.
   mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
   if (express && !mongo) fs.copySync(dir('files/api/home.js'), `${appDir}/api/home.js`)

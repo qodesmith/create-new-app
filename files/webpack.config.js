@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const AfterCompilePlugin = require('./after-compile-plugin')
 
 
 console.log(`
@@ -18,8 +19,7 @@ console.log(`
 
 `)
 
-@@__PLACEHOLDER_WEBPACK_LOG_PORTS__@@
-
+if (NODE_ENV === 'production') console.log('Building for production...\n\n')
 
 module.exports = (env, argv) => ({
   // https://goo.gl/R88FtY - new in Webpack 4.
@@ -350,8 +350,20 @@ module.exports = (env, argv) => ({
         collapseWhitespace: true,
         removeComments: true
       }
+    }),
+
+    /*
+      A simple, custom Webpack plugin to run a function after each build.
+      You can see the code in `after-compile-plugin.js` in the project root dir.
+    */
+    !env.prod && new AfterCompilePlugin({
+      run: () => {
+        console.log('\n')
+        console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}`)
+        console.log(API ? `🌎  => API listening on port ${API_PORT}...\n\n` : '\n\n')
+      }
     })
-  ],
+  ].filter(Boolean),
 
   // https://goo.gl/HBnQlq
   devServer: {

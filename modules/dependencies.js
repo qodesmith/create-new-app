@@ -24,7 +24,7 @@ const dependencies = (mongo, redux, router) => {
     postcss: '^7',
     cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css *here* and not as a Webpack plugin.
-    'purgecss-whitelister': 'latest', // Always keep latest.
+    'purgecss-whitelister': 'latest', // Always install latest.
     'postcss-discard-comments': '^4',
     'css-mqpacker': '^7',
     'postcss-combine-duplicated-selectors': '^6',
@@ -39,12 +39,14 @@ const dependencies = (mongo, redux, router) => {
     'mini-css-extract-plugin': '^0', // Currently < 1
     'clean-webpack-plugin': '^0', // Currently < 1
     'html-webpack-plugin': '^3',
-    'glob-all': 'latest', // Always keep latest
-    'css-loader': '^1',
+    'glob-all': 'latest', // Always install latest.
     'file-loader': '^2',
+    'css-loader': '^1',
+    'fast-css-loader': '^1',
     'sass-loader': '^7',
+    'fast-sass-loader': '^1',
     'node-sass': '^4',
-    'style-loader': '^0', // Currently < 1,
+    'style-loader': '^0', // Currently < 1
     'uglifyjs-webpack-plugin': '^2',
 
     // BABEL - https://goo.gl/ESXgmh
@@ -59,8 +61,8 @@ const dependencies = (mongo, redux, router) => {
 
     // OTHER
     'cross-env': '^5',
-    'npm-run-all': 'latest', // Always keep latest.
-    'dotenv': 'latest' // Always keep latest.
+    'npm-run-all': 'latest', // Always install latest.
+    dotenv: 'latest' // Always install latest.
   }
 
   // These will only take effect if we're creating an app with a server.
@@ -71,7 +73,7 @@ const dependencies = (mongo, redux, router) => {
     helmet: '^3',
     compression: '^1',
     'body-parser': '^1',
-    nodemon: 'latest', // Always keep latest.
+    nodemon: 'latest', // Always install latest.
 
     // MONGO
     mongodb: mongo && '^3',

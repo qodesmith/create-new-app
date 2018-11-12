@@ -1,20 +1,17 @@
 const fs = require('fs')
 const path = require('path')
 
-function webpackConfig({ redux, server }) {
+function webpackConfig({ redux }) {
   const aliasPlaceholder = '@@__PLACEHOLDER_WEBPACK_ALIAS__@@'
-  const logPortsPlaceholder = '@@__PLACEHOLDER_WEBPACK_LOG_PORTS__@@'
   const filePath = path.resolve(__dirname, '../files/webpack.config.js')
   const config = fs.readFileSync(filePath, 'utf-8')
   const lines = config.split('\n')
 
   // Which line #'s' has the placeholders.
   const aliasLineNum = lines.findIndex(line => line.includes(aliasPlaceholder))
-  const logPortsNum = lines.findIndex(line => line.includes(logPortsPlaceholder))
 
   // The line contents.
   const aliasLine = lines[aliasLineNum]
-  const logPortsLine = lines[logPortsNum]
 
   /*
     https://goo.gl/DirJ71
@@ -48,28 +45,7 @@ function webpackConfig({ redux, server }) {
     `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
   ].filter(Boolean).join('\n')
 
-  // Construct a console.log that will tell where the application is running.
-  const devServerLog = [
-    "if (NODE_ENV !== 'production') {\n",
-    "  console.log(`  💻 => Application running in browser at http://localhost:${DEV_SERVER_PORT}",
-    server ? '' : '\\n\\n',
-    '`)',
-  ].join('')
-
-  // Construct the final console.log's that might also include the API port.
-  const consoleLogs = [
-    devServerLog,
-    server && "  console.log(`  🌎 => API listening on port ${API_PORT}...\\n\\n`)",
-    '} else {',
-    "  console.log('Building for production...\\n\\n')",
-    '}'
-  ].filter(Boolean).join('\n')
-
-  return (
-    config
-      .replace(aliasPlaceholder, aliasObject)
-      .replace(logPortsPlaceholder, consoleLogs)
-  )
+  return config.replace(aliasPlaceholder, aliasObject)
 }
 
 module.exports = webpackConfig

@@ -8,9 +8,14 @@ const middlewareList = []
 // Add all your reducers to this object.
 const rootReducer = combineReducers({ app })
 
-// https://goo.gl/XRLgX8
-// Using Redux DevTools extension? You should...
-const composeEnhancers = !__PROD__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose
+/*
+  https://goo.gl/XRLgX8
+  Using Redux DevTools extension? You should...
+  If we're connecting a mobile device to our local machine running the app,
+  then we may have an issue with Redux DevTools not being installed.
+  The below logic takes care of that.
+*/
+const composeEnhancers = !__PROD__ ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose) : compose
 
 // Create the Redux store in all its glory!
 const store = createStore(

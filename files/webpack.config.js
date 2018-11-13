@@ -5,7 +5,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
 
 
@@ -281,11 +281,14 @@ module.exports = (env, argv) => ({
   // https://goo.gl/bxPV7L
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: { // https://goo.gl/3UaFRm
+      // https://goo.gl/yWD5vm - List of reasons we're using Terser instead (Webpack is too!).
+      new TerserPlugin({ // https://goo.gl/YgdtKb
+        cache: true, // https://goo.gl/QVWRtq
+        parallel: true, //https://goo.gl/hUkvnK
+        terserOptions: { // https://goo.gl/y3psR1
           ecma: 5,
           output: {
-            comments: false // https://goo.gl/wKzHJd
+            comments: false
           }
         }
       })

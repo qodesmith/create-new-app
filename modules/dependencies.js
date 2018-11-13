@@ -47,7 +47,7 @@ const dependencies = (mongo, redux, router) => {
     'fast-sass-loader': '^1',
     'node-sass': '^4',
     'style-loader': '^0', // Currently < 1
-    'uglifyjs-webpack-plugin': '^2',
+    'terser-webpack-plugin': '^1',
 
     // BABEL - https://goo.gl/ESXgmh
     'babel-loader': '^8',

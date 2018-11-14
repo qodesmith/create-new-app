@@ -344,11 +344,10 @@ module.exports = (env, argv) => ({
     */
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.ejs'),
-      production: !!env.prod,
       title: 'JavaScript === Awesomeness',
       mobileThemeColor: '#000000',
       description: 'Awesome JavaScript project created with Create New App!',
-      polyfill: true,
+      polyfill: !!env.prod,
       minify: {
         collapseWhitespace: true,
         removeComments: true

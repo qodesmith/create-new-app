@@ -23,7 +23,11 @@ const app = express()
   Express security best practices - http://goo.gl/LBmJXK
 */
 app.use(
-  express.static(path.resolve(__dirname, 'dist')), // https://goo.gl/759KqP
+  express.static( // https://goo.gl/759KqP
+    path.resolve(__dirname, 'dist'),
+    // `no-cache` still caches but it checks with the server via etag to ensure the latest version.
+    { setHeaders: res => res.set('Cache-Control', 'no-cache') } // Cache static assets :)
+  ),
   helmet(), // Headers security.
   compression(), // GZIP
   bp.json(), // http://goo.gl/ixEWAa, https://goo.gl/Xp2pBC, https://goo.gl/g9V9AM

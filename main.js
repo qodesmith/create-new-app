@@ -404,7 +404,7 @@ async function installDependencies(options) {
   // Install the dependencies.
   offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
   console.log(`Installing project dependencies via npm${cache}...\n`)
-  run(`npm${forceOffline} i`)
+  run(`npm${forceOffline} i -s`)
 
   // Adjust the package.json dependencies to show their installed version.
   // E.x. - "react": "^16" => "react": "^16.6.1"

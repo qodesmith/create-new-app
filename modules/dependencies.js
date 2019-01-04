@@ -43,8 +43,8 @@ const dependencies = (mongo, redux, router) => {
     'file-loader': '^2',
     'css-loader': '^1', // Still included to allow users to choose.
     'fast-css-loader': '^1',
-    'sass-loader': '^7',
-    'fast-sass-loader': '^1', // Still included to allow users to choose.
+    'sass-loader': '^7', // Still included to allow users to choose.
+    'fast-sass-loader': '^1',
     'node-sass': '^4',
     'style-loader': '^0', // Currently < 1
     'terser-webpack-plugin': '^1',

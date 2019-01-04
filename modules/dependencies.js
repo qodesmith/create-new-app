@@ -37,14 +37,14 @@ const dependencies = (mongo, redux, router) => {
     'webpack-cli': '^3',
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^0', // Currently < 1
-    'clean-webpack-plugin': '^0', // Currently < 1
+    'clean-webpack-plugin': '^1',
     'html-webpack-plugin': '^3',
     'glob-all': 'latest', // Always install latest.
     'file-loader': '^2',
-    'css-loader': '^1',
+    'css-loader': '^1', // Still included to allow users to choose.
     'fast-css-loader': '^1',
     'sass-loader': '^7',
-    'fast-sass-loader': '^1',
+    'fast-sass-loader': '^1', // Still included to allow users to choose.
     'node-sass': '^4',
     'style-loader': '^0', // Currently < 1
     'terser-webpack-plugin': '^1',

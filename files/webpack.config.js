@@ -361,8 +361,8 @@ module.exports = (env, argv) => ({
     !env.prod && new AfterCompilePlugin({
       run: () => {
         console.log('\n')
-        console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}`)
-        console.log(API ? `🌎  => API listening on port ${API_PORT}...\n\n` : '\n\n')
+        API && console.log(`🌎  => API listening on port ${API_PORT}...`)
+        console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
       }
     })
   ].filter(Boolean),
@@ -424,7 +424,7 @@ module.exports = (env, argv) => ({
           */
 
           // Url / browser request - allow front end routing to handle all the things.
-          if (req.headers.accept.includes('html')) return '/'
+          if ((req.headers.accept || '').includes('html')) return '/'
 
           // Let the API server respond by implicitly returning here.
         }

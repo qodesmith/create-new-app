@@ -6,11 +6,12 @@
   Also for production, don't forget to change the start script in
   `package.json` to only start the API server in production mode!
 */
-if (process.env.NODE_ENV !== 'production') {
+const notProd = process.env.NODE_ENV !== 'production'
+if (notProd) {
   require('dotenv').load() // https://goo.gl/Cj8nKu
 }
 
-const { appName, API_PORT } = process.env // Environment variables.
+const { appName, API_PORT, DEV_SERVER_PORT } = process.env // Environment variables.
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
@@ -49,4 +50,6 @@ app.use(
 app.get('*', require('./api/home'))
 
 // And so it begins...
-app.listen(API_PORT, () => console.log(`API listening on port ${API_PORT}...`))
+app.listen(API_PORT, () => {
+  notProd && console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
+})

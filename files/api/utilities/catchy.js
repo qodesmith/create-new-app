@@ -3,15 +3,10 @@
   Catchify is also a great library for this - https://github.com/majgis/catchify
 */
 
-const catchy = thing => {
-  const isPromise = ({}).toString.call(thing) === '[object Promise]'
-
-  return new Promise((resolve, reject) => {
-    if (isPromise) return thing.then(resolve).catch(reject)
-    return resolve(thing)
-  })
+const catchy = value => (
+  Promise.resolve(value)
     .then(res => [null, res])
     .catch(err => [err])
-}
+)
 
 module.exports = catchy

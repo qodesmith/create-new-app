@@ -1,8 +1,8 @@
 // NPM Semver Calculator - https://semver.npmjs.com/
 
 const dependencyReducer = obj => (
-  Object.keys(obj).sort().reduce((acc, key) => {
-    if (obj[key]) acc[key] = obj[key]
+  Object.keys(obj).sort().reduce((acc, pkg) => {
+    if (obj[pkg]) acc[pkg] = obj[pkg]
     return acc
   }, {})
 )
@@ -14,8 +14,8 @@ const dependencies = (mongo, redux, router) => {
     'react-dom': '^16',
     sassyons: '^2',
     redux: (redux || router) && '^4',
-    'react-redux': (redux || router) && '^5',
-    'react-router-dom': router && '^4',
+    'react-redux': (redux || router) && '^5', // Wait to upgrade until hooks support is ironed out.
+    'react-router-dom': router && '^4.4.0-beta.6', // Beta version needed for hooks compatibility.
     history: router && '^4',
 
     // POSTCSS
@@ -27,7 +27,7 @@ const dependencies = (mongo, redux, router) => {
     'purgecss-whitelister': 'latest', // Always install latest.
     'postcss-discard-comments': '^4',
     'css-mqpacker': '^7',
-    'postcss-combine-duplicated-selectors': '^6',
+    'postcss-combine-duplicated-selectors': '^7',
     autoprefixer: '^9',
     'postcss-colormin': '^4',
     'css-declaration-sorter': '^4',
@@ -40,8 +40,8 @@ const dependencies = (mongo, redux, router) => {
     'clean-webpack-plugin': '^1',
     'html-webpack-plugin': '^3',
     'glob-all': 'latest', // Always install latest.
-    'file-loader': '^2',
-    'css-loader': '^1', // Still included to allow users to choose.
+    'file-loader': '^3',
+    'css-loader': '^2', // Still included to allow users to choose.
     'fast-css-loader': '^1',
     'sass-loader': '^7', // Still included to allow users to choose.
     'fast-sass-loader': '^1',
@@ -69,6 +69,7 @@ const dependencies = (mongo, redux, router) => {
   // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = {
     // SERVER
+    chalk: '^2',
     express: '^4',
     helmet: '^3',
     compression: '^1',
@@ -77,7 +78,7 @@ const dependencies = (mongo, redux, router) => {
 
     // MONGO
     mongodb: mongo && '^3',
-    'connect-mongodb-session': mongo && '^2',
+    'connect-mongo': '^2',
     'express-session': mongo && '^1',
   }
 

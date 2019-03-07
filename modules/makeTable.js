@@ -63,12 +63,4 @@ function makeTable(rows, options = {}) {
     .join('\n')
 }
 
-var rows = [
-  ['MONGO_URI', 'mongodb://localhost:<mongoPort>/<appName>'],
-  ['MONGO_URI_PROD', 'mongodb://localhost:<mongoPortProd>/<appName>'],
-  ['MONGO_USER', '<mongoUser>'],
-  ['MONGO_USER_PASSWORD', '<mongoUserPassword>'],
-  ['MONGO_SESSION_COLLECTION', '<appName>Sessions']
-]
-
 module.exports = makeTable

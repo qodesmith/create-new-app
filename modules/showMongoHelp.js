@@ -48,6 +48,10 @@ function showMongoHelp() {
     If you used the guided process, these variables will be blank.
     If you passed all your options to the cli, these will be filled:
         ${indentToNum(8, makeTable(tableRows, { colors, rounded: true }))}
+
+    When you're ready to deploy your app, make sure the above variables
+    have the appropriate values. Then copy the \`.env\` file over to your
+    remote server. ${chalk.bold('It is git-ignored and will not be in version control')}.
   `))
 }
 

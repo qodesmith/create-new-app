@@ -7,7 +7,8 @@ const tableRows = [
   ['MONGO_URI', 'mongodb://localhost:<mongoPort>/<appName>'],
   ['MONGO_URI_PROD', 'mongodb://localhost:<mongoPortProd>/<appName>'],
   ['MONGO_USER', '<mongoUser>'],
-  ['MONGO_USER_PASSWORD', '<mongoUserPassword>'],
+  ['MONGO_USER_PASSWORD', '<fill this value manually>'],
+  ['MONGO_AUTH_SOURCE', '<mongoAuthSource>'],
   ['MONGO_SESSION_COLLECTION', '<appName>Sessions']
 ]
 
@@ -17,8 +18,8 @@ function showMongoHelp() {
     When deploying apps using MongoDB in production,
     you'll want to ensure 2 main things:
 
-      1. You use a different port than the default port (27017)
-      2. You use authentication with a username and password to connect
+      1. You use a different port than the default port (27017).
+      2. You use authentication with a username and password to connect.
 
 
     Wherever you are running MongoDB in production you'll want to
@@ -44,8 +45,11 @@ function showMongoHelp() {
     See ${chalk.blue('https://goo.gl/T5Rpe6')} for more details.
 
 
-    Some mongo-specific variables will be setup in the \`.env\` file.
-    If you used the guided process, these variables will be blank.
+    Mongo-specific variables will be setup in the \`.env\` file.
+    If you used the guided process, these variables will contain the
+    ${chalk.bold('default values')} and ${chalk.bold('should be changed')} before deploying to production.
+    You will have to manually set the value to \`MONGO_USER_PASSWORD\`.
+
     If you passed all your options to the cli, these will be filled:
         ${indentToNum(8, makeTable(tableRows, { colors, rounded: true }))}
 

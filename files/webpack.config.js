@@ -1,5 +1,5 @@
-require('dotenv').load() // https://goo.gl/Cj8nKu
-const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT } = process.env
+require('dotenv').config() // https://goo.gl/Cj8nKu
+const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -281,7 +281,7 @@ module.exports = (env, argv) => ({
       Create aliases to import certain modules more easily.
       Eliminates having to type out ../../../ all the time.
     */
-    alias: @@__PLACEHOLDER_WEBPACK_ALIAS__@@
+    alias: __PLACEHOLDER_WEBPACK_ALIAS__,
 
     /*
       https://goo.gl/57vTmD
@@ -422,8 +422,8 @@ module.exports = (env, argv) => ({
       Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served `index.html` by `historyApiFallback` above.
     */
-    proxy: API ? {
-      [API]: {
+    proxy: API_WEBPACK ? {
+      [API_WEBPACK]: {
         target: `http://localhost:${API_PORT}`,
         bypass(req, res, proxyOptions) {
           // Direct all non-get requests to the API server.

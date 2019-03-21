@@ -28,10 +28,10 @@ process.on('uncaughtException', err => {
   It contains your sensitive data! Instead, when deploying to production,
   you should manually copy the `.env` file to your hosting provider.
 */
-require('dotenv').load() // https://goo.gl/Cj8nKu
+require('dotenv').config() // https://goo.gl/Cj8nKu
 
-const isProd = process.env.NODE_ENV === 'production'
-const { API, API_PORT, DEV_SERVER_PORT } = process.env // Environment variables.
+const { API, API_PORT, DEV_SERVER_PORT, NODE_ENV } = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x

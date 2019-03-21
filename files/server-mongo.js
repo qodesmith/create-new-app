@@ -28,10 +28,10 @@ process.on('uncaughtException', err => {
   It contains your sensitive data! Instead, when deploying to production,
   you should manually copy the `.env` file to your hosting provider.
 */
-require('dotenv').load() // https://goo.gl/Cj8nKu
+require('dotenv').config() // https://goo.gl/Cj8nKu
 
-const isProd = process.env.NODE_ENV === 'production'
-const { appName, secret, API_PORT, API, DEV_SERVER_PORT } = process.env // Environment variables.
+const { APP_NAME, SECRET, API_PORT, API, DEV_SERVER_PORT, MONGO_SESSION_COLLECTION, NODE_ENV } = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
@@ -45,6 +45,7 @@ const mongo = require('./api/utilities/mongo')
 const { sessionStoreErr } = require('./api/utilities/handleErrors')
 const MongoStore  = require('connect-mongo')(session)
 const store = new MongoStore({
+  collection: MONGO_SESSION_COLLECTION,
   dbPromise: mongo().then(([dbErr, client, db]) => {
     if (dbErr) {
       console.error('MONGO STORE CONNECTION ERROR:', dbErr)
@@ -74,10 +75,10 @@ app.use(
   bp.urlencoded({ extended: false }), // http://goo.gl/ixEWAa, https://goo.gl/jkPwBu
   session({
     store,
-    name: appName, // Needed if multiple apps running on same host.
+    name: APP_NAME, // Needed if multiple apps running on same host.
     resave: false, // Forces cookie to be resaved back to the session store even if no changes.
     saveUninitialized: true, // Forces a session that is uninitialized to be saved to the store.
-    secret, // The secret used to sign the session ID cookie.
+    secret: SECRET, // The secret used to sign the session ID cookie.
     cookie: {
       maxAge: null, // Default = `null` - closing browser removes cookie & session.
       httpOnly: true // Default = `true` - on the client, `document.cookie` will not be available.

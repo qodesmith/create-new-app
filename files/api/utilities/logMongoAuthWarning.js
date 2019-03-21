@@ -1,44 +1,47 @@
 const chalk = require('chalk')
 
-function logMongoAuthWarning(skipWarning) {
-  const lastSentence = 'add `mongoUser` and `mongoUserPassword` values to your environment variables.'
-  const dashes = '-'.repeat(lastSentence.length)
+function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
+  const dashes = '='.repeat(54)
   const warning = [
-    dashes,
     '',
-    'No Mongo credentials found.',
-    '**************************************************************',
-    '*                                                            *',
-    `*   ${chalk.bold.yellow('YOUR DATABASE WILL ALLOW UN-AUTHENTICATED CONNECTIONS!')}   *`,
-    '*                                                            *',
-    '**************************************************************',
+    !(MONGO_USER && MONGO_USER_PASSWORD)
+      ? chalk.red('No Mongo credentials found.')
+      : !MONGO_USER
+      ? chalk.red('No `MONGO_USER` value found.')
+      : chalk.red('No `MONGO_USER_PASSWORD` value found'),
+    chalk.bold.red('YOUR DATABASE WILL ALLOW UN-AUTHENTICATED CONNECTIONS!'),
     '',
     'Add a single user in the `admin` database and then',
-    lastSentence,
+    `ensure \`${chalk.bold('MONGO_USER')}\` and \`${chalk.bold('MONGO_USER_PASSWORD')}\` are added`,
+    'to your environment variables.',
     '',
     ''
   ].join('\n')
 
-  if (skipWarning) {
-    console.log(lastSentence.slice(0, 1).toUpperCase() + lastSentence.slice(1))
-  } else {
-    console.warn(warning)
-  }
+  console.warn(dashes) // START LOGGING.
+  console.warn(warning)
 
-  console.log('You can add a user to the `admin` database from the Mongo console like so:\n\n')
-  console.log(`${chalk.bold.yellow('use admin')}\n`)
-  console.log(chalk.bold.yellow('const user ='), chalk.bold.yellow(JSON.stringify({
-    user: 'myUserAdmin',
-    pw: 'abc123',
-    roles: [
-      { role: 'userAdminAnyDatabase', db: 'admin'},
-      'readWriteAnyDatabase'
-    ]
-  }, null, 2)))
-  console.log(`\n${chalk.bold.yellow('db.createUser(user)')}`)
+  ;[
+    chalk.bold('// Use the `admin` database.'),
+    chalk.cyan('use admin'),
+    '',
+    chalk.bold('// Create a user with the appropriate roles.'),
+    `${chalk.blue('const')} ${chalk.cyan('user')} = {`,
+    `  ${chalk.cyan('user:')} ${chalk.yellow(`'myUserName'`)}, ${chalk.gray('// Make sure to change this!')}`,
+    `  ${chalk.cyan('pw:')} ${chalk.yellow(`'myPassword'`)}, ${chalk.gray('// Make sure to change this!')}`,
+    `  ${chalk.cyan('roles:')} [`,
+    `    { ${chalk.cyan('role:')} ${chalk.yellow(`'userAdminAnyDatabase'`)}, ${chalk.cyan('db:')} ${chalk.yellow(`'admin'`)} },`,
+    `    ${chalk.yellow(`'readWriteAnyDatabase'`)}`,
+    '  ]',
+    '}',
+    '',
+    `${chalk.bold('// Save that user to the `admin` database.')}`,
+    `${chalk.cyan('db')}.${chalk.yellow('createUser')}(${chalk.cyan('user')})`
+  ].forEach(line => console.log(line))
 
   console.log(`\n\nSee ${chalk.bold.blue('https://goo.gl/T5Rpe6')} for more details.`)
-  console.log('\n' + dashes)
+  console.log('')
+  console.log(dashes) // FINISH LOGGING.
 }
 
 module.exports = logMongoAuthWarning

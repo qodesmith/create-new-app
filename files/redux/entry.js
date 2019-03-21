@@ -7,7 +7,7 @@ import '@babel/polyfill'
 import './styles/styles.scss'
 
 // Import React.
-import React from 'react'
+import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 
 // Import our store provider.
@@ -24,9 +24,15 @@ import store from './store'
 document.body.innerHTML = '<div id="app"></div>'
 document.body.className = 'bg-black-80 fw4 white-80'
 
+// Mount our app.
+// `StrictMode` is a tool for highlighting potential problems in React apps.
+// It doesn't affect production builds. 3rd party modules may trigger a lot of noise.
+// Read more here - https://goo.gl/fcaMYi
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>,
   document.querySelector('#app')
 )

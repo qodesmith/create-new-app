@@ -15,7 +15,7 @@ const dependencies = (mongo, redux, router) => {
     sassyons: '^2',
     redux: (redux || router) && '^4',
     'react-redux': (redux || router) && '^5', // Wait to upgrade until hooks support is ironed out.
-    'react-router-dom': router && '^4.4.0-beta.6', // Beta version needed for hooks compatibility.
+    'react-router-dom': router && '^5',
     history: router && '^4',
 
     // POSTCSS
@@ -62,7 +62,7 @@ const dependencies = (mongo, redux, router) => {
     // OTHER
     'cross-env': '^5',
     'npm-run-all': 'latest', // Always install latest.
-    dotenv: 'latest' // Always install latest.
+    dotenv: '^7'
   }
 
   // These will only take effect if we're creating an app with a server.

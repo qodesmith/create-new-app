@@ -9,11 +9,10 @@
 
   This module will read package.json, distill the package names & versions down to an array,
   read the actual versions of what's already been installed, and rewrite the file with the
-  actual versions, maintaining the ^ where applicable. This let's the user know what specific
-  versions of the packages are installed when they take a quick glance at package.json.
+  actual versions. This let's the user know what specific versions of the packages are installed
+  when they take a quick glance at package.json.
 */
 
-const { exec } = require('child_process')
 const { readJsonSync, writeFileSync } = require('fs-extra')
 
 function adjustPkgJson(appDir) {
@@ -21,6 +20,7 @@ function adjustPkgJson(appDir) {
   const deps = packageJson.dependencies
   const devDeps = packageJson.devDependencies
 
+  // Mutate the objects and write new values for the version.
   deps && transformVersion(deps, appDir)
   devDeps && transformVersion(devDeps, appDir)
 
@@ -28,12 +28,13 @@ function adjustPkgJson(appDir) {
   writeFileSync(`${appDir}/package.json`, finalData, 'utf-8')
 }
 
+// This function mutates the original object.
 function transformVersion(obj, appDir) {
-  Object.keys(obj).forEach(key => {
-    const location = `${appDir}/node_modules/${key}/package.json`
+  Object.keys(obj).forEach(pkg => {
+    const location = `${appDir}/node_modules/${pkg}/package.json`
     const { version } = readJsonSync(location)
 
-    obj[key] = `^${version}`
+    obj[pkg] = `^${version}`
   })
 }
 

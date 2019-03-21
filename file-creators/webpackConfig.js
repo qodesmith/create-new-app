@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 function webpackConfig({ redux }) {
-  const aliasPlaceholder = '@@__PLACEHOLDER_WEBPACK_ALIAS__@@'
+  const aliasPlaceholder = '__PLACEHOLDER_WEBPACK_ALIAS__'
   const filePath = path.resolve(__dirname, '../files/webpack.config.js')
   const config = fs.readFileSync(filePath, 'utf-8')
   const lines = config.split('\n')
@@ -26,14 +26,7 @@ function webpackConfig({ redux }) {
     `helpers: path.resolve(__dirname, 'src/utils/helpers'),`,
     `middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
     `reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
-    `utils: path.resolve(__dirname, 'src/utils'),`,
-    '/*',
-    '  To replace React with (P)react, run: `npm i -D preact preact-compat`',
-    '  Preact does not have <Fragment /> as part of its API yet:',
-    '    https://github.com/developit/preact/issues/946',
-    '*/',
-    `// react: 'preact-compat',`,
-    `// 'react-dom': 'preact-compat'`,
+    `utils: path.resolve(__dirname, 'src/utils')`
   ].map(line => `${indent}${line}`).join('\n')
 
   // Construct the final alias object, possible including `aliasReduxObject` from above.

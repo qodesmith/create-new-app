@@ -2,65 +2,90 @@ const thinTable = { h: '─', v: '│', tl: '┌', t: '┬', tr: '┐', l: '├'
 const thickTable = { h: '━', v: '┃', tl: '┏', t: '┳', tr: '┓', l: '┣', m: '╋', r: '┫', bl: '┗', b: '┻', br: '┛' }
 const curveCorners = { tl: '╭', tr: '╮', bl: '╰', br: '╯' }
 
+// For each column, find the widest length item.
 function getColumnWidths(rows) {
-  // For each column, find the widest length item.
-  const colWidths = []
-  for (let col = 0; col < rows[0].length; col++) {
-    for (let row = 0; row < rows.length; row++) {
-      const currentWidth = colWidths[col] || 0
-      const item = rows[row][col]
-      if (currentWidth < item.length) colWidths[col] = item.length
+  const columnWidths = []
+
+  // Iterate through each of the rows.
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+
+    // Iterate through each item for the current row.
+    for (let j = 0; j < row.length; j++) {
+      const existingColWidth = columnWidths[j] || 0
+      const currentColWidth = row[j].length
+
+      if (currentColWidth > existingColWidth) columnWidths[j] = currentColWidth
     }
   }
 
-  return colWidths
+  return columnWidths
 }
 
-  function makeRowContents(row, columnWidths, options) {
-  const { tableType, centered, colors = [] } = options
-  const { v } = tableType
+function createTableRow({ row, columnWidths, centered, colors, padding, tableType, makeTop }) {
+  const cells = row.map(r => Array.isArray(r) ? r : r.split('\n'))
+  const cellHeight = Math.max(...cells.map(line => line.length))
+  const { l, m, r, h, v } = tableType
+  const results = []
 
-  return v + columnWidths.map((w, j) => {
-    const colorizer = colors[j] || (x => x)
-    const item = row[j]
-    const coloredItem = colorizer(item)
-    const leftOver = w - item.length + 2
-    const leftPad = Math.floor(leftOver / 2)
-    const rightPad = Math.ceil(leftOver / 2)
+  // Cells may be multi-line.
+  // Iterate through each line for this single row of cells.
+  for (let i = 0; i < cellHeight; i++) {
+    const line = cells.map((cell, j) => {
+      const colorizer = colors[j] || (x => x)
+      const colWidth = columnWidths[j]
+      const currentLine = cell[i] || ''
+      const lineLength = currentLine.length
+      const lengthDiff = colWidth - lineLength
+      const leftPad = ' '.repeat(centered ? Math.floor((lengthDiff / 2) + padding) : padding)
+      const rightPad = ' '.repeat(centered ? Math.ceil((lengthDiff / 2) + padding) : padding + lengthDiff)
 
-    if (centered) {
-      return ' '.repeat(leftPad) + coloredItem + ' '.repeat(rightPad)
-    } else {
-      return ' ' + coloredItem + ' '.repeat(leftPad + rightPad - 1)
-    }
-  }).join(v) + v
+      return  leftPad + colorizer(currentLine) + rightPad
+    })
+
+    results.push(v + line.join(v) + v)
+  }
+
+  // Conditionally add the top border of the row.
+  if (makeTop) {
+    const top = l + columnWidths.map(w => h.repeat((padding * 2) + w)).join(m) + r
+    results.unshift(top)
+  }
+
+  return results
+}
+
+// Because `.flat()` isn't widely supported yet :/
+function flatten(arr) {
+  return arr
+    .reduce((acc, item) => (
+      Array.isArray(item)
+        ? [...acc, ...flatten(item)]
+        : [...acc, item]
+    ), [])
 }
 
 function makeTable(rows, options = {}) {
   const columnWidths = getColumnWidths(rows)
-  const { rounded, thick } = options
+  const { rounded, thick, centered, colors = [], padding = 1 } = options
   const tableType = rounded ? { ...thinTable, ...curveCorners } : thick ? thickTable : thinTable
-  const { h, tl, t, tr, l, m, r, bl, b, br } = tableType
+  const { h, tl, t, tr, bl, b, br } = tableType
+  const createTableTop = () => tl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(t) + tr
+  const createTableBottom = () => bl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(b) + br
 
-  return rows
-    .map((row, i) => {
-      const contents = makeRowContents(row, columnWidths, { tableType, ...options })
-      const top = l + columnWidths.map(w => h.repeat(w + 2)).join(m) + r
-
-      // 1st row.
-      if (!i) {
-        const top2 = tl + columnWidths.map(w => h.repeat(w + 2)).join(t) + tr
-        return ['', top2, contents].join('\n')
-
-      // Last row.
-      } else if (i === rows.length - 1) {
-        const bottom = bl + columnWidths.map(w => h.repeat(w + 2)).join(b) + br
-        return [top, contents, bottom].join('\n')
-      } else {
-        return [top, contents].join('\n')
-      }
-    })
-    .join('\n')
+  return [
+    createTableTop(),
+    ...flatten(rows.map((row, i) => createTableRow({
+      row,
+      columnWidths,
+      centered,
+      colors,
+      padding,
+      tableType,
+      makeTop: !!i
+    }))),
+    createTableBottom()
+  ].join('\n')
 }
 
 module.exports = makeTable

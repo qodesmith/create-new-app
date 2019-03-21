@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { changeColor } from 'actions'
 
 
 const Home = ({ color, randomizeColor }) => (
-  <Fragment>
+  <>
     <header className='pv5 bg-gold black-80 tc'>
       <h1 className='mt0 mb1'>Create New App</h1>
       <div className='ttc'>by Qodesmith</div>
@@ -20,7 +20,7 @@ const Home = ({ color, randomizeColor }) => (
         Random Color
       </div>
     </div>
-  </Fragment>
+  </>
 )
 
 const mapStateToProps = ({ home }) => home

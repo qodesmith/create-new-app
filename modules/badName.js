@@ -1,3 +1,8 @@
+/*
+  This module logs info to the console in the case where the user
+  has supplied an app name incompatible with npm naming rules.
+*/
+
 const chalk = require('chalk')
 
 function badName(name, validation) {

@@ -30,9 +30,11 @@ const noName = require('./modules/noName')
 const badName = require('./modules/badName')
 const portValidator = require('./modules/portValidator')
 const adjustPkgJson = require('./modules/adjustPkgJson')
+const adjustEntryFile = require('./modules/adjustEntryFile')
+const browserslist = require('./modules/browserslist')
 
 // Other.
-const cwd = process.cwd()
+const cwd = fs.realpathSync(process.cwd()) // https://goo.gl/B1U4TC - because symlinks.
 const dir = text => path.resolve(__dirname, text)
 
 // Option definitions.
@@ -63,11 +65,15 @@ const optionDefinitions = [
   { name: 'author', type: String, defaultValue: '' },
   { name: 'description', type: String, defaultValue: '' },
   { name: 'email', type: String, defaultValue: '' },
-  { name: 'keywords', type: String, multiple: true, defaultValue: [] },
+  { name: 'keywords', multiple: true, defaultValue: [] },
+  { name: 'browserslist', multiple: true, defaultValue: browserslist }, // https://goo.gl/2uAdKL - why you should avoid `last 2 versions`.
+  { name: 'bl', multiple: true, defaultValue: browserslist },
+  { name: 'repository', defaultValue: '' },
+  { name: 'repo', defaultValue: '' },
 
   // API / server / devServer options.
-  { name: 'devServerPort', type: val => portValidator(val, 'dev', 8080), defaultValue: 8080 },
-  { name: 'apiPort', type: val => portValidator(val, 'api', 3000), defaultValue: 3000 },
+  { name: 'devServerPort', type: val => portValidator(val, 8080), defaultValue: 8080 },
+  { name: 'apiPort', type: val => portValidator(val, 3000), defaultValue: 3000 },
   { name: 'api', type: String, defaultValue: null }, // No default from the command line, but defaulted in `dotEnv.js`.
   { name: 'express', alias: 'e', type: Boolean },
 
@@ -80,30 +86,34 @@ const optionDefinitions = [
   { name: 'mongoUser', type: String, defaultValue: '' },
   { name: 'mu', type: String, defaultValue: '' },
   { name: 'mongoAuthSource', type: String, defaultValue: 'admin' },
-  { name: 'mas', type: String, defaultValue: 'admin' }
+  { name: 'mas', type: String, defaultValue: 'admin' },
+
+  // Private options.
+  { name: 'noInstall', type: Boolean, defaultValue: false }
 ]
 
 
 // Let's go! Push the first dominoe.
 letsGo()
 async function letsGo() {
+  let options = cla(optionDefinitions, { partial: true })
+  const { noInstall, appName } = options
+
   // STEP 1 - check if we're online.
   const online = await isOnline()
 
   // STEP 2 - decide between a guided process or not.
-  let options
-
   // Guided process - called with no arguments.
-  if (process.argv.length === 2) {
+  if (process.argv.length === 2 || (noInstall && !appName)) {
     // Clear the console - https://goo.gl/KyrhG2
     readline.cursorTo(process.stdout, 0, 0)
     readline.clearScreenDown(process.stdout)
 
-    options = await guidedProcess(online)
+    options = await guidedProcess({ online, noInstall })
 
   // CLI process - called with 1 or more arguments.
   } else {
-    const parsedArgs = parseArgs(online)
+    const parsedArgs = parseArgs(online) // Runs `cla` internally.
     options = processUsersCommand(parsedArgs)
   }
 
@@ -175,12 +185,13 @@ function parseArgs(online) {
   safeToCreateDir(options) || process.exit()
 
   if (sandbox) return { ...options, sandbox: true }
+  if (appName === undefined) return noName() || process.exit()
   if (!validation.validForNewPackages) return badName(appName, validation) || process.exit()
   return options
 }
 
 // Creates an object choc full of properties via a series of prompts.
-async function guidedProcess(online) {
+async function guidedProcess({ online, noInstall }) {
   /*
     Questions asked during the guided process:
       1.  App name?
@@ -228,6 +239,9 @@ async function guidedProcess(online) {
     // Calculated properties.
     server: express || mongo,
     appDir,
+
+    // Private.
+    noInstall
   }
 }
 
@@ -241,11 +255,12 @@ function processUsersCommand(options) {
     mongo,
     devServerPort,
     sandbox,
-    api
+    api,
+    noInstall
   } = options
 
   // Not online.
-  if (!sandbox && (offline || !online)) {
+  if (!noInstall && !sandbox && (offline || !online)) {
     !online && console.log(chalk.yellow('You appear to be offline.'))
     console.log(chalk.yellow('Installing via local npm cache.'))
   }
@@ -289,17 +304,17 @@ function createProjectDirectory(options) {
 
 // STEP 4
 function createFiles(options) {
-  const { appDir, server, mongo, express, redux, router } = options
+  const { appDir, server, mongo, express, redux, router, title, description } = options
   const filter1 = { filter: file => !file.endsWith('.DS_Store') }
 
   // `.env`
-  fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf-8')
+  fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf8')
 
   // `.gitignore`
   fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
 
   // `package.json`
-  fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf-8')
+  fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')
 
   // `postcss.config.js`
   fs.copySync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`)
@@ -311,7 +326,7 @@ function createFiles(options) {
   server && fs.copySync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
 
   // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, server }), 'utf-8')
+  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, title, description }), 'utf8')
 
   // `after-compile-plugin.js`
   fs.copySync(dir('files/after-compile-plugin.js'), `${appDir}/after-compile-plugin.js`)
@@ -372,11 +387,22 @@ function createFiles(options) {
     fs.copySync(dir('files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
     fs.copySync(dir('files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
   }
+
+  /*
+    Add comment to top of `entry.js`.
+    Locations:
+      * ./files/src/entry.js
+      * ./files/redux/entry.js
+      * ./files/redux/entry-router.js
+      * ./files/router/entry.js
+  */
+  const entryFile = fs.readFileSync(`${appDir}/src/entry.js`, 'utf8')
+  fs.writeFileSync(`${appDir}/src/entry.js`, adjustEntryFile(entryFile), 'utf8')
 }
 
 // STEP 5
 async function installDependencies(options) {
-  const { appName, appDir, server, offline, mongo, force } = options
+  const { appName, appDir, server, offline, mongo, force, noInstall } = options
   const forceOffline = offline ? ' --offline' : '' // https://goo.gl/aZLDLk
   const cache = offline ? ' cache' : ''
 
@@ -384,29 +410,33 @@ async function installDependencies(options) {
   process.chdir(`${cwd}/${appName}`)
 
   // Install the dependencies.
-  offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
-  console.log(`Installing project dependencies via npm${cache}...\n`)
-  try {
-    run(`npm i${forceOffline}`)
-  } catch(e) {
-    console.log(`\n${chalk.yellow('An error occurred during the npm installation.')}`)
+  if (!noInstall) {
+    offline && console.log(`\nIt looks like you're offline or have a bad connection.`)
+    console.log(`Installing project dependencies via npm${cache}...\n`)
 
-    // Cleanup what was created *only* if we didn't force install.
-    if (!force) {
-      process.chdir(cwd)
-      run(`rm -rf ${cwd}/${appName}`)
-      console.log('Created directories and files have been removed.')
-      process.exit(1)
-    } else {
-      console.log('Refusing to remove created directories and files')
-      console.log('since they were created in a pre-existing location:')
-      console.log(`  ${chalk.cyan(cwd)}`)
+    try {
+      run(`npm i${forceOffline}`)
+    } catch(e) {
+      console.log(`\n${chalk.yellow('An error occurred during the npm installation.')}`)
+
+      // Cleanup what was created *only* if we didn't force install.
+      if (!force) {
+        process.chdir(cwd)
+        run(`rm -rf ${cwd}/${appName}`)
+        console.log('Created directories and files have been removed.')
+        process.exit(1)
+      } else {
+        console.log('Refusing to remove created directories and files')
+        console.log('since they were created in a pre-existing location:')
+        console.log(`  ${chalk.cyan(cwd)}`)
+      }
     }
   }
 
+
   // Adjust the package.json dependencies to show their installed version.
   // E.x. - "react": "^16" => "react": "^16.6.1"
-  adjustPkgJson(appDir)
+  !noInstall && adjustPkgJson(appDir)
 
   // Initialize git.
   try {
@@ -416,6 +446,8 @@ async function installDependencies(options) {
     console.log(`Tried to initialize a new ${chalk.bold('git')} repository but couldn't.`)
     console.log(`Do you have have ${chalk.bold('git')} installed?\n`)
   }
+
+  noInstall && console.log('No dependecies intalled. `package.json` will not reflect specific versions.')
 
   // Display the final message.
   const cyanDir = chalk.cyan(appDir)

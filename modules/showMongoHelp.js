@@ -1,3 +1,8 @@
+/*
+  This module logs MongoDB-specific help to the screen
+  when running `cna --mongoHelp`.
+*/
+
 const chalk = require('chalk')
 const indentFromZero = require('./indentFromZero')
 const indentToNum = require('./indentToNum')
@@ -51,7 +56,7 @@ function showMongoHelp() {
     You will have to manually set the value to \`MONGO_USER_PASSWORD\`.
 
     If you passed all your options to the cli, these will be filled:
-        ${indentToNum(8, makeTable(tableRows, { colors, rounded: true }))}
+        ${indentToNum(makeTable(tableRows, { colors, rounded: true }), 8)}
 
     When you're ready to deploy your app, make sure the above variables
     have the appropriate values. Then copy the \`.env\` file over to your

@@ -1,9 +1,9 @@
 /*
-  This helper function takes in a multi-line string
-  and indents each line by a certain amount.
+  This modules takes in a multi-line string and indents each line by a certain amount.
+  It always adds a newline character at the beginning.
 */
 
-function indentToNum(num = 0, str) {
+function indentToNum(str, num = 0) {
   return '\n' + str
     .split('\n')
     .map(line => `${' '.repeat(num)}${line}`)

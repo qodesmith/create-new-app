@@ -65,7 +65,7 @@ function dotEnv(options) {
     MONGO_URI_PROD: `mongodb://localhost:${mongoPortProd}/${appName}`,
     MONGO_USER: `${mongoUser}`,
     MONGO_USER_PASSWORD: '',
-    MONGO_AUTH_SOURCE: `${mongoAuthSource}`,
+    MONGO_AUTH_SOURCE: `${mongoAuthSource}`, // https://goo.gl/mrNeQr
     MONGO_SESSION_COLLECTION: `${appName}Sessions`,
     SECRET: `${uuid()}`
   }

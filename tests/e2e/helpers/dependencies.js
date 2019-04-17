@@ -1,0 +1,49 @@
+const cnaDeps = {
+  devDependencies: [
+    '@babel/core',
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-object-rest-spread',
+    '@babel/plugin-syntax-dynamic-import',
+    '@babel/preset-env',
+    '@babel/preset-react',
+    '@fullhuman/postcss-purgecss',
+    'autoprefixer',
+    'babel-loader',
+    'clean-webpack-plugin',
+    'core-js',
+    'cross-env',
+    'css-declaration-sorter',
+    'css-loader',
+    'css-mqpacker',
+    'cssnano',
+    'dotenv',
+    'fast-css-loader',
+    'fast-sass-loader',
+    'file-loader',
+    'glob-all',
+    'html-webpack-plugin',
+    'mini-css-extract-plugin',
+    'node-sass',
+    'npm-run-all',
+    'postcss',
+    'postcss-colormin',
+    'postcss-combine-duplicated-selectors',
+    'postcss-discard-comments',
+    'postcss-loader',
+    'purgecss-whitelister',
+    'react',
+    'react-dom',
+    'regenerator-runtime',
+    'sass-loader',
+    'sassyons',
+    'style-loader',
+    'terser-webpack-plugin',
+    'webpack',
+    'webpack-cli',
+    'webpack-dev-server'
+  ]
+}
+
+module.exports = {
+  cnaDeps
+}

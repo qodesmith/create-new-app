@@ -1,4 +1,5 @@
 const mongo = require('./mongo')
+const { errorToObject } = require('./errorUtil')
 const isProd = process.env.NODE_ENV === 'production'
 
 /*
@@ -13,10 +14,9 @@ const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/
   The idea is that there will be an admin-only section on the front end
   that will display this error data in a meaningful way.
 */
-const createError = (type = 'unknown', { message, stack } = {}) => ({
+const createError = (type = 'unknown', error = {}) => ({
+  ...errorToObject(error),
   type,
-  stack,
-  error: message,
   localDate: localDate(),
   date: Date.now()
 })
@@ -33,12 +33,11 @@ async function saveErrorToDb(err) {
 
 // Inserts, saves, etc. error's are handled with this function.
 function operationErr(err, operation, collection, req) {
-  const error = createError('db operation', err)
   const newError = {
+    ...createError('db operation', err),
     operation,
     collection,
     url: req.originalUrl,
-    ...error
   }
 
   saveErrorToDb(newError)
@@ -52,8 +51,7 @@ function sessionStoreErr(err) {
 
 // When Mongo can't connect.
 function noConnect(res, err) {
-  const error = createError('no connect', err)
-  res.status(500).send({ error })
+  res.status(500).send({ error: errorToObject(err) })
 }
 
 module.exports = {

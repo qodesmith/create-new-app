@@ -1,3 +1,8 @@
+/*
+  This module is used to create fancy tables that display
+  information when using the command `cna --mongoHelp`.
+*/
+
 const thinTable = { h: '─', v: '│', tl: '┌', t: '┬', tr: '┐', l: '├', m: '┼', r: '┤', bl: '└', b: '┴', br: '┘' }
 const thickTable = { h: '━', v: '┃', tl: '┏', t: '┳', tr: '┓', l: '┣', m: '╋', r: '┫', bl: '┗', b: '┻', br: '┛' }
 const curveCorners = { tl: '╭', tr: '╮', bl: '╰', br: '╯' }
@@ -13,7 +18,8 @@ function getColumnWidths(rows) {
     // Iterate through each item for the current row.
     for (let j = 0; j < row.length; j++) {
       const existingColWidth = columnWidths[j] || 0
-      const currentColWidth = row[j].length
+      const lengths = row[j].split('\n').map(text => text.length)
+      const currentColWidth = Math.max(...lengths)
 
       if (currentColWidth > existingColWidth) columnWidths[j] = currentColWidth
     }
@@ -24,7 +30,7 @@ function getColumnWidths(rows) {
 
 function createTableRow({ row, columnWidths, centered, colors, padding, tableType, makeTop }) {
   const cells = row.map(r => Array.isArray(r) ? r : r.split('\n'))
-  const cellHeight = Math.max(...cells.map(line => line.length))
+  const cellHeight = Math.max(...cells.map(cell => cell.length))
   const { l, m, r, h, v } = tableType
   const results = []
 
@@ -32,7 +38,7 @@ function createTableRow({ row, columnWidths, centered, colors, padding, tableTyp
   // Iterate through each line for this single row of cells.
   for (let i = 0; i < cellHeight; i++) {
     const line = cells.map((cell, j) => {
-      const colorizer = colors[j] || (x => x)
+      const colorizer = typeof colors[j] === 'function' ? colors[j] : (x => x)
       const colWidth = columnWidths[j]
       const currentLine = cell[i] || ''
       const lineLength = currentLine.length

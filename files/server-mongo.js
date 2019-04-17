@@ -23,12 +23,12 @@ process.on('uncaughtException', err => {
 })
 
 /*
-  Please DO NOT INCLUDE the `.env` file from version control.
+  Please DO NOT INCLUDE the `.env` file in version control.
   It is in the `.gitignore` file. Keep it that way.
   It contains your sensitive data! Instead, when deploying to production,
   you should manually copy the `.env` file to your hosting provider.
 */
-require('dotenv').config() // https://goo.gl/Cj8nKu
+require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
 
 const { APP_NAME, SECRET, API_PORT, API, DEV_SERVER_PORT, MONGO_SESSION_COLLECTION, NODE_ENV } = process.env // Environment variables.
 const isProd = NODE_ENV === 'production'

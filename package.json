@@ -39,7 +39,9 @@
     "url": "https://github.com/qodesmith/create-new-app"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "e2e": "npm run test ./tests/e2e",
+    "unit": "npm run test ./tests/unit",
     "preinstall": "node ./versionCheck.js"
   },
   "dependencies": {
@@ -50,5 +52,11 @@
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.7.1",
+    "jest-mock-console": "^0.4.2"
   }
 }

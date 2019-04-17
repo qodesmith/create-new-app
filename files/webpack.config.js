@@ -1,4 +1,4 @@
-require('dotenv').config() // https://goo.gl/Cj8nKu
+require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
 const webpack = require('webpack')
@@ -139,7 +139,6 @@ module.exports = (env, argv) => ({
               https://goo.gl/N6uJv3 - Babel loader.
                 - babel-loader
                 - @babel/core
-                - @babel/polyfill (used in the entry.js file)
                 - @babel/preset-env
                 - @babel/preset-react
                 - @babel/plugin-proposal-object-rest-spread
@@ -162,7 +161,11 @@ module.exports = (env, argv) => ({
                   '@babel/preset-env', // https://goo.gl/aAxYAq
                   {
                     modules: false, // Needed for tree shaking to work (see above).
-                    useBuiltIns: 'entry' // https://goo.gl/x16mAq
+                    useBuiltIns: 'entry', // https://goo.gl/7ugJ8K
+                    corejs: { // https://goo.gl/9Vfu6X
+                      version: 3,
+                      proposals: true
+                    }
                   }
                 ],
                 '@babel/preset-react' // https://goo.gl/4aEFV3
@@ -340,14 +343,15 @@ module.exports = (env, argv) => ({
     /*
       https://goo.gl/xP7eDB
       A webpack plugin to remove/clean your build folder(s) before building.
-      Since the build simply generates js & css bundles, we specify those globs
-      in the 1st argument and don't have to worry about listing everything
-      to whitelist in the `exclude` array. Feel free to change this.
+      The targeted folder is whatever is set above for `output.path`.
+      Since our build process generates a js, css, and html file, we'll only
+      clean those types. This allows you to put any other static assets in the
+      `dist` folder worry free, such as fonts, images, etc.
     */
-    new CleanWebpackPlugin(['dist/*.js', 'dist/*.css'], { // Directories to clean.
-      root: __dirname,
+    new CleanWebpackPlugin({
       verbose: true,
-      // exclude: ['favicon.ico', 'robots.txt'] // Files to keep.
+      cleanOnceBeforeBuildPatterns: ['*.js', '*.css', '*.html'],
+      cleanAfterEveryBuildPatterns: ['*.js', '*.css', '*.html']
     }),
 
     /*
@@ -356,10 +360,9 @@ module.exports = (env, argv) => ({
     */
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.ejs'),
-      title: 'JavaScript === Awesomeness',
+      title: __PLACEHOLDER_TITLE__,
       mobileThemeColor: '#000000',
-      description: 'Awesome JavaScript project created with Create New App!',
-      polyfill: !!env.prod,
+      description: __PLACEHOLDER_DESCRIPTION__,
       minify: {
         collapseWhitespace: true,
         removeComments: true

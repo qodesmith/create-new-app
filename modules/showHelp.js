@@ -1,3 +1,7 @@
+/*
+  This module logs help to the screen when running `cna --help`.
+*/
+
 const chalk = require('chalk')
 const indentFromZero = require('./indentFromZero')
 

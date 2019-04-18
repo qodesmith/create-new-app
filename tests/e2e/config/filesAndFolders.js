@@ -33,11 +33,68 @@ const cnaRouter = {
   './src/components': ['Home.jsx', 'NotFound.jsx'],
 }
 
-const cnaRouterRedux = {}
+const cnaRouterRedux = {
+  ...cnaRouter,
+  ...cnaRedux
+}
+
+const cnaExpress = {
+  ...cna,
+  './': [...cna['./'], 'server.js'],
+  './api': ['home.js'],
+  './api/utilities': ['catchy.js', 'errorUtil.js']
+}
+
+const cnaExpressRedux = {
+  ...cnaExpress,
+  ...cnaRedux
+}
+
+const cnaExpressRouter = {
+  ...cnaExpress,
+  ...cnaRouter
+}
+
+const cnaExpressRouterRedux = {
+  ...cnaExpress,
+  ...cnaRouter,
+  ...cnaRouterRedux
+}
+
+const cnaMongo = {
+  ...cnaExpress,
+  './api/utilities': ['catchy.js', 'errorUtil.js', 'handleErrors.js', 'logMongoAuthWraning.js', 'mongo.js']
+}
+
+const cnaMongoRedux = {
+  ...cnaExpressRedux,
+  ...cnaMongo
+}
+
+const cnaMongoRouter = {
+  ...cnaExpressRouter,
+  ...cnaMongo
+}
+
+const cnaMongoRouterRedux = {
+  ...cnaExpressRouterRedux,
+  ...cnaMongo
+}
 
 
 module.exports = {
   cna,
   cnaRedux,
-  cnaRouter
+  cnaRouter,
+  cnaRouterRedux,
+
+  cnaExpress,
+  cnaExpressRedux,
+  cnaExpressRouter,
+  cnaExpressRouterRedux,
+
+  cnaMongo,
+  cnaMongoRedux,
+  cnaMongoRouter,
+  cnaMongoRouterRedux
 }

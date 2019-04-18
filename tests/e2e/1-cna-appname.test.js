@@ -87,7 +87,7 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
 
       it('should populate `package.json` correctly', () => {
         const pkgJson = fs.readJSONSync(`${appPath}/package.json`)
-        const { devDependencies } = require('./helpers/dependencies').cnaDeps
+        const { devDependencies } = require('./config/dependencies').cnaDeps
         const hasSpecificVersions = Object.values(pkgJson.devDependencies).every(version => {
           return version.startsWith('^') && version.length === 6 // E.x. - ^1.2.3
         })

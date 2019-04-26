@@ -61,13 +61,10 @@ function foldersFromConfig(basePath, config = {}) {
   derived from a config object. Falsey values for keys === an ignored relative path.
 */
 function listIgnoredFoldersFromConfig(basePath, config) {
-  const relativePaths = Object
-    .keys(config)
-    .reduce((acc, key) => {
-      return config[key] ? acc : [...acc, key]
-    }, [])
+  const allFolders = Object.keys(config)
+  const ignoredFolders = allFolders.filter(folder => !config[folder])
 
-  return getAbsolutePaths(basePath, relativePaths)
+  return getAbsolutePaths(basePath, ignoredFolders)
 }
 
 module.exports = {

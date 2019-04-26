@@ -56,6 +56,10 @@ function foldersFromConfig(basePath, config = {}) {
   return listFoldersInTree(basePath, { ignores })
 }
 
+/*
+  Returns an array of absolute paths of folders to be ignored,
+  derived from a config object. Falsey values for keys === an ignored relative path.
+*/
 function listIgnoredFoldersFromConfig(basePath, config) {
   const relativePaths = Object
     .keys(config)

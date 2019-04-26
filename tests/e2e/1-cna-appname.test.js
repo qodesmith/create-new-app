@@ -2,7 +2,12 @@ const path = require('path')
 const fs = require('fs-extra')
 const run = require('../../modules/run')
 const indentFromZero = require('../../modules/indentFromZero')
-const listFolderContents = require('./helpers/listFolderContents')
+const filesAndFolders = require('./config/filesAndFolders')
+const {
+  listFoldersInTree,
+  foldersFromConfig,
+  listIgnoredFoldersFromConfig
+} = require('./helpers/folderFileHelper')
 
 
 describe('cna <appName> - creates a vanilla React project automatically', () => {
@@ -12,13 +17,14 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
+    // Mock out console.log so we don't see the generator puke in the console.
     console.log = jest.fn()
-    run(`node ${mainPath}/main.js ${appName}`, true)
+    run(`node ${mainPath}/main.js ${appName} --noInstall`, true)
   })
 
   // Remove the directory after all tests are complete.
   afterAll(() => {
-    // fs.removeSync(appPath)
+    fs.removeSync(appPath)
     console.log = originalConsoleLog
   })
 
@@ -26,18 +32,14 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
     expect(fs.existsSync(appPath)).toBe(true)
   })
 
-  it('should contain the correct folder structure', () => {
-    const folders = [
-      `${appPath}/.git`, // Hidden.
-      `${appPath}/dist`,
-      `${appPath}/node_modules`,
-      `${appPath}/src`,
-      `${appPath}/src/assets`,
-      `${appPath}/src/components`,
-      `${appPath}/src/styles`,
-    ]
+  it.only('should contain the expected folders and no others', () => {
+    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cna)
+    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cna)
+    const actualFolders = listFoldersInTree(appPath, { ignores })
 
-    folders.forEach(folder => expect(fs.existsSync(folder)).toBe(true))
+    originalConsoleLog('IGNORES:', ignores)
+
+    expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
 
   // Ensure that there aren't other folders aside from the correct ones.

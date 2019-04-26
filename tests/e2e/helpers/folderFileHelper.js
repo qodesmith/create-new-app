@@ -34,11 +34,11 @@ function getAbsolutePaths(basePath, folders = []) {
   Recursively calls itself.
   Used as a helper function in `listAllFoldersInTree`.
 */
-function listFoldersInTree(basePath, { ignores } = {}) {
+function listFoldersInTree(basePath, { ignores = [] } = {}) {
   return listFolderContents(basePath, { folders: true })
     .reduce((acc, folder) => {
       if (ignores.some(ignored => folder.startsWith(ignored))) return acc
-      return [...acc, folder, ...listFoldersInTree(folder, ignores)]
+      return [...acc, folder, ...listFoldersInTree(folder, { ignores })]
     }, [])
 }
 
@@ -56,7 +56,18 @@ function foldersFromConfig(basePath, config = {}) {
   return listFoldersInTree(basePath, { ignores })
 }
 
+function listIgnoredFoldersFromConfig(basePath, config) {
+  const relativePaths = Object
+    .keys(config)
+    .reduce((acc, key) => {
+      return config[key] ? acc : [...acc, key]
+    }, [])
+
+  return getAbsolutePaths(basePath, relativePaths)
+}
+
 module.exports = {
   foldersFromConfig,
-  listFoldersInTree
+  listFoldersInTree,
+  listIgnoredFoldersFromConfig
 }

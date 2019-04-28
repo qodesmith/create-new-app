@@ -13,20 +13,17 @@ const {
 
 
 describe('cna <appName> - creates a vanilla React project automatically', () => {
-  // const originalConsoleLog = console.log
   const appName = '1-cna-appname-test'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    // console.log = () => {} // So we don't see the generator puke in the console.
     run(`node ${mainPath}/main.js ${appName} ${noInstall}`)
   })
 
   // Remove the directory after all tests are complete.
   afterAll(() => {
     fs.removeSync(appPath)
-    // console.log = originalConsoleLog
   })
 
   it('should create a project in the <appName> directory', () => {

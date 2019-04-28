@@ -1,14 +1,21 @@
+/*
+  When testing locally and not wanting to actually do an `npm install`,
+  there won't be a `package-lock.json` file. Passing the `noInstall`
+  argument to the test runner will help us filter it out for tests.
+*/
+const noInstall = process.argv.includes('noInstall')
+
 const cna = {
   './': [
     '.env',
     '.gitignore',
     'after-compile-plugin.js',
     'package.json',
-    'package-lock.json',
+    !noInstall && 'package-lock.json', // Only available when `npm install` is run.
     'postcss.config.js',
     'README.md',
     'webpack.config.js'
-  ],
+  ].filter(Boolean),
   './.git': null,
   './dist': ['favicon.ico', 'robots.txt'],
   './node_modules': null,

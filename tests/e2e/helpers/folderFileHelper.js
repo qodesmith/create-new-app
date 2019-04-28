@@ -67,8 +67,25 @@ function listIgnoredFoldersFromConfig(basePath, config) {
   return getAbsolutePaths(basePath, ignoredFolders)
 }
 
+/*
+  Returns a config object with the keys being absolute paths,
+  filtering out any keys that had falsey values (folders we ignore).
+*/
+function absolutePathConfig(basePath, config = {}) {
+  return Object
+    .keys(config)
+    .reduce((acc, key) => {
+      if (!config[key]) return acc
+
+      const absolutePath = path.resolve(basePath, key)
+      return { ...acc, [absolutePath]: config[key] }
+    }, {})
+}
+
 module.exports = {
   foldersFromConfig,
   listFoldersInTree,
-  listIgnoredFoldersFromConfig
+  listIgnoredFoldersFromConfig,
+  absolutePathConfig,
+  listFolderContents
 }

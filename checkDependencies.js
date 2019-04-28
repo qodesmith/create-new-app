@@ -2,20 +2,30 @@ const chalk = require('chalk')
 const readline = require('readline')
 const run = require('./modules/run')
 const formDependencies = require('./modules/dependencies')
+const makeTable = require('./modules/makeTable')
+const removeAnsiChars = require('./modules/removeAnsiChars')
 const { devDependencies, serverDependencies } = formDependencies({ mongo: 1, redux: 1, router: 1, server: 1 })
 const fullList = { ...devDependencies, ...serverDependencies }
-const table = []
-const keys = Object.keys(fullList)
+let keys = Object.keys(fullList)
 const keysLength = keys.length
+const all = process.argv.some(arg => arg === '--all')
+const table = [[
+  chalk.bold('PACKAGE'),
+  chalk.bold('USED'),
+  chalk.bold('LATEST')
+]]
 
 keys.forEach((name, i) => {
   logInfo({ name, i })
 
-  const latest = run(`npm view ${name} version`, true).toString('utf-8').split('\n')[0]
+  const info = run(`npm view ${name}`, true).toString('utf-8')
+  const isDeprecated = info.includes('DEPRECATED')
+  const latest = removeAnsiChars(info).split('\n')[1].split(' ')[0].split('@').pop().split('.')[0]
   const usedVersion = fullList[name]
   const used = usedVersion.includes('^') ? usedVersion.slice(1) : usedVersion
+  name = isDeprecated ? `${chalk.bold.red('DEPRECATED:')} ${name}` : name
 
-  if (used[0] !== latest[0]) table.push({ package: name, used, latest })
+  if (all || isDeprecated ||  used !== latest) table.push([name, used, latest])
 })
 
 if (!table.length) {
@@ -34,7 +44,7 @@ function logInfo({ name, i, end }) {
 
   name && console.log(`${num} of ${length} - checking ${pkg}`)
   end && console.log(`Total of ${length} packages checked!`)
-  if (table.length) console.table(table)
+  if (table.length) console.log(makeTable(table, { centered: true }))
 }
 
 function clearConsole() {

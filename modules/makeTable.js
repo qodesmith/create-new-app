@@ -3,9 +3,11 @@
   information when using the command `cna --mongoHelp`.
 */
 
+const removeAnsiChars = require('./removeAnsiChars')
 const thinTable = { h: '─', v: '│', tl: '┌', t: '┬', tr: '┐', l: '├', m: '┼', r: '┤', bl: '└', b: '┴', br: '┘' }
 const thickTable = { h: '━', v: '┃', tl: '┏', t: '┳', tr: '┓', l: '┣', m: '╋', r: '┫', bl: '┗', b: '┻', br: '┛' }
 const curveCorners = { tl: '╭', tr: '╮', bl: '╰', br: '╯' }
+
 
 // For each column, find the widest length item.
 function getColumnWidths(rows) {
@@ -18,7 +20,7 @@ function getColumnWidths(rows) {
     // Iterate through each item for the current row.
     for (let j = 0; j < row.length; j++) {
       const existingColWidth = columnWidths[j] || 0
-      const lengths = row[j].split('\n').map(text => text.length)
+      const lengths = row[j].split('\n').map(text => removeAnsiChars(text).length)
       const currentColWidth = Math.max(...lengths)
 
       if (currentColWidth > existingColWidth) columnWidths[j] = currentColWidth
@@ -41,7 +43,7 @@ function createTableRow({ row, columnWidths, centered, colors, padding, tableTyp
       const colorizer = typeof colors[j] === 'function' ? colors[j] : (x => x)
       const colWidth = columnWidths[j]
       const currentLine = cell[i] || ''
-      const lineLength = currentLine.length
+      const lineLength = removeAnsiChars(currentLine).length
       const lengthDiff = colWidth - lineLength
       const leftPad = ' '.repeat(centered ? Math.floor((lengthDiff / 2) + padding) : padding)
       const rightPad = ' '.repeat(centered ? Math.ceil((lengthDiff / 2) + padding) : padding + lengthDiff)
@@ -76,11 +78,11 @@ function makeTable(rows, options = {}) {
   const { rounded, thick, centered, colors = [], padding = 1 } = options
   const tableType = rounded ? { ...thinTable, ...curveCorners } : thick ? thickTable : thinTable
   const { h, tl, t, tr, bl, b, br } = tableType
-  const createTableTop = () => tl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(t) + tr
-  const createTableBottom = () => bl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(b) + br
+  const createTableTopBorder = () => tl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(t) + tr
+  const createTableBottomBorder = () => bl + columnWidths.map(w => h.repeat(w + (padding * 2))).join(b) + br
 
   return [
-    createTableTop(),
+    createTableTopBorder(),
     ...flatten(rows.map((row, i) => createTableRow({
       row,
       columnWidths,
@@ -90,7 +92,7 @@ function makeTable(rows, options = {}) {
       tableType,
       makeTop: !!i
     }))),
-    createTableBottom()
+    createTableBottomBorder()
   ].join('\n')
 }
 

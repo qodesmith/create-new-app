@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate ".env" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate ".env" correctly 1`] = `
 "##########################################################
 #           THIS FILE WILL BE GIT IGNORED.               #
 #     DO NOT COMMIT THIS FILE INTO VERSION CONTROL!      #
@@ -15,12 +15,12 @@ exports[`cna <appName> - creates a vanilla React project automatically contents 
 
 
 
-APP_NAME=1-cna-appname-test
+APP_NAME=1-vanilla-react
 DEV_SERVER_PORT=8080
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
 "# The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -96,12 +96,12 @@ typings/
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate "README.md" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate "README.md" correctly 1`] = `
 "This project was created with [Create New App](https://github.com/qodesmith/create-new-app).
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
 "/*
   This is a custom Webpack plugin that simply runs a function after each build.
   In Create New App, this is used to console.log the urls to the application
@@ -130,7 +130,7 @@ module.exports = AfterCompilePlugin
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
 const globAll = require('glob-all')
@@ -174,7 +174,7 @@ module.exports = {
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
 "require('dotenv').config({ path: \`\${__dirname}/.env\` }) // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
@@ -659,11 +659,11 @@ module.exports = (env, argv) => ({
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
+exports[`cli - vanilla React project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
+exports[`cli - vanilla React project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /src should populate "entry.js" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - /src should populate "entry.js" correctly 1`] = `
 "/*
   https://goo.gl/mw8Ntd - \`@babel/polyfill\` has been deprecated.
   If you need to polyfill certain JS features, uncomment the two imports below.
@@ -693,7 +693,7 @@ ReactDOM.render(
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en-US\\">
 <head>
@@ -720,7 +720,7 @@ exports[`cna <appName> - creates a vanilla React project automatically contents 
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /src/components should populate "App.jsx" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - /src/components should populate "App.jsx" correctly 1`] = `
 "import React from 'react'
 
 const App = () => (
@@ -738,7 +738,7 @@ export default App
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
 "/*
   px <-> em: http://pxtoem.com/
 */
@@ -759,7 +759,7 @@ body {
 "
 `;
 
-exports[`cna <appName> - creates a vanilla React project automatically contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
+exports[`cli - vanilla React project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
 "/////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                             //
 //  This file will be the top-most entry point for all styles in the app.                      //

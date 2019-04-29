@@ -12,8 +12,8 @@ const {
 } = require('./helpers/folderFileHelper')
 
 
-describe('cna <appName> - creates a vanilla React project automatically', () => {
-  const appName = '1-cna-appname-test'
+describe('cli - vanilla React project', () => {
+  const appName = '1-vanilla-react'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
@@ -63,10 +63,17 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
     describe('package.json', () => {
       let pkgJson
       beforeAll(() => {
+        /*
+          Why is this in the `beforeAll` fxn?
+          -----------------------------------
+          Jest executes *all* `describe` functions before running any tests in them.
+          At the time of reading `describe`, the project hasn't been created yet
+          and `fs.readJSONSync` will throw an error. Placing it in here will
+          ensure it's read *after* the project was created. And doing it inside
+          a `beforeAll` vs a `beforeEach` will ensure it only happens once.
+        */
         pkgJson = fs.readJSONSync(`${appPath}/package.json`)
       })
-
-      const { devDependencies } = require('./config/dependencies').vanilla
 
       it('should have the correct fields and only those fields', () => {
         const fields = [
@@ -84,6 +91,9 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
+      })
+
+      it('should not have a "dependencies" field', () => {
         expect(pkgJson.dependencies).toBe(undefined)
       })
 
@@ -106,12 +116,35 @@ describe('cna <appName> - creates a vanilla React project automatically', () => 
       })
 
       it('should populate "devDependencies" correctly', () => {
-        const hasSpecificVersions = Object.values(pkgJson.devDependencies).every(version => {
-          return version.startsWith('^') && version.length >= 6 // E.x. - ^1.2.3
-        })
+        const deps = require('./config/dependencies')
+        const { devDependencies } = deps.vanilla
+        const { latestPackages } = deps
 
-        expect(Object.keys(pkgJson.devDependencies).sort()).toEqual(devDependencies.sort())
-        expect(hasSpecificVersions).toBe(!noInstall)
+        // 1. All the packages match.
+        const installedPackages = Object.keys(pkgJson.devDependencies)
+        const expectedPackages = Object.keys(devDependencies)
+        expect(installedPackages.sort()).toEqual(expectedPackages.sort())
+
+        // 2. All the package versions match.
+        installedPackages.forEach(pkg => {
+          const installedVersion = pkgJson.devDependencies[pkg]
+          const expectedVersion = devDependencies[pkg]
+
+          /*
+            `latest` packages should both be accounted for
+            and have an actual version installed (not 'latest').
+          */
+          if (expectedVersion === 'latest') {
+            expect(installedVersion).not.toBe('latest')
+            return expect(latestPackages.includes(pkg)).toBe(true)
+          }
+
+          if (noInstall) {
+            expect(installedVersion).toBe(expectedVersion)
+          } else {
+            expect(installedVersion).toStartWith(expectedVersion, pkg)
+          }
+        })
       })
     })
 

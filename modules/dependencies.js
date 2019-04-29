@@ -19,7 +19,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'react-dom': '^16',
     sassyons: '^2',
     redux: redux && '^4',
-    'react-redux': redux && '^5', // Wait to upgrade until hooks support is ironed out.
+    'react-redux': redux && '^7',
     'react-router-dom': router && '^5',
     history: router && '^4',
 

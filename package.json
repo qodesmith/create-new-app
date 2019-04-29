@@ -44,6 +44,11 @@
     "unit": "npm run test ./tests/unit",
     "preinstall": "node ./versionCheck.js"
   },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/e2e/config/extends.js"
+    ]
+  },
   "dependencies": {
     "chalk": "^2.4.1",
     "command-line-args": "^4.0.7",

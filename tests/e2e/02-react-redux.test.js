@@ -13,7 +13,7 @@ const {
 
 
 describe('cli - React + Redux project', () => {
-  const appName = '02-react-redux'
+  const appName = '02-react-redux-test'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 

@@ -13,7 +13,7 @@ const {
 
 
 describe('cli - vanilla React project', () => {
-  const appName = '1-vanilla-react'
+  const appName = '01-vanilla-react-test' // Ensure the folder ends in `test` to be git ignored.
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 

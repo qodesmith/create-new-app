@@ -13,7 +13,7 @@ const serverDevDeps = {
   'cross-env': '^5',
   'css-declaration-sorter': '^4',
   'css-loader': '^2',
-  'css-mqpacker': '^7', // DEPRECATED - needs to be replaced asap.
+  'css-mqpacker': '^7',
   'cssnano': '^4',
   'fast-css-loader': '^1',
   'fast-sass-loader': '^1',

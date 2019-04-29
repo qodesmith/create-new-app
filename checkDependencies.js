@@ -20,12 +20,15 @@ keys.forEach((name, i) => {
 
   const info = run(`npm view ${name}`, true).toString('utf-8')
   const isDeprecated = info.includes('DEPRECATED')
-  const latest = removeAnsiChars(info).split('\n')[1].split(' ')[0].split('@').pop().split('.')[0]
+  const latest = removeAnsiChars(info).split('\n')[1].split(' ')[0].split('@').pop()
+  const latestMajor = latest.split('.')[0]
   const usedVersion = fullList[name]
   const used = usedVersion.includes('^') ? usedVersion.slice(1) : usedVersion
   name = isDeprecated ? `${chalk.bold.red('DEPRECATED:')} ${name}` : name
 
-  if (all || isDeprecated ||  used !== latest) table.push([name, used, latest])
+  if (all || isDeprecated ||  used !== latestMajor) {
+    table.push([name, used, chalk.green(latest)])
+  }
 })
 
 if (!table.length) {

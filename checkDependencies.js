@@ -1,13 +1,10 @@
 const chalk = require('chalk')
-const readline = require('readline')
-const run = require('./modules/run')
 const formDependencies = require('./modules/dependencies')
 const makeTable = require('./modules/makeTable')
-const removeAnsiChars = require('./modules/removeAnsiChars')
 const { devDependencies, serverDependencies } = formDependencies({ mongo: 1, redux: 1, router: 1, server: 1 })
 const fullList = { ...devDependencies, ...serverDependencies }
-let keys = Object.keys(fullList)
-const keysLength = keys.length
+const packages = Object.keys(fullList)
+const keysLength = packages.length
 const all = process.argv.some(arg => arg === '--all')
 const table = [[
   chalk.bold('PACKAGE'),
@@ -15,42 +12,50 @@ const table = [[
   chalk.bold('LATEST')
 ]]
 
-keys.forEach((name, i) => {
-  logInfo({ name, i })
+const RegistryClient = require('npm-registry-client')
+const client = new RegistryClient()
+const uri = 'https://registry.npmjs.org'
+const params = { timeout: 1000 }
 
-  const info = run(`npm view ${name}`, true).toString('utf-8')
-  const isDeprecated = info.includes('DEPRECATED')
-  const latest = removeAnsiChars(info).split('\n')[1].split(' ')[0].split('@').pop()
-  const latestMajor = latest.split('.')[0]
-  const usedVersion = fullList[name]
-  const used = usedVersion.includes('^') ? usedVersion.slice(1) : usedVersion
-  name = isDeprecated ? `${chalk.bold.red('DEPRECATED:')} ${name}` : name
+const promises = packages.map((name, i) => {
+  return new Promise(resolve => {
+    const url = `${uri}/${name}/`
+    client.get(url, params, (error, data, raw, res) => {
+      if (error) {
+        table.push([`${chalk.yellow.bold('ERROR')} - ${name}`, '-', '-'])
+        return resolve(null)
+      }
 
-  if (all || isDeprecated ||  used !== latestMajor) {
-    table.push([name, used, chalk.green(latest)])
-  }
+      const usedVersion = fullList[name]
+      const latestVersion = data['dist-tags'].latest
+      const [latestMajor] = latestVersion.split('.')
+      const isDeprecated = !!data.versions[latestVersion].deprecated
+      const used = usedVersion.includes('^') ? usedVersion.slice(1) : usedVersion
+      name = isDeprecated ? `${chalk.bold.red('DEPRECATED:')} ${name}` : name
+
+      if (all || isDeprecated || used !== latestMajor) {
+        table.push([name, used, chalk.green(latestVersion)])
+      }
+
+      resolve(true)
+    })
+  })
 })
 
-if (!table.length) {
-  clearConsole()
-  console.log('All packages up to date!')
-} else {
-  logInfo({ end: true })
-}
+Promise.all(promises).then(results => {
+  // https://gist.github.com/KenanSulayman/4990953
+  console.log('\033c') // Clear the console. I believe this is the `ESC` ASCII character.
 
-function logInfo({ name, i, end }) {
-  clearConsole()
+  setTimeout(() => {
+    const totalChecked = results.filter(Boolean).length
+    const checked = chalk[totalChecked === keysLength ? 'green' : 'yellow'](totalChecked)
 
-  const num = chalk.yellow(i + 1)
-  const length = chalk.green(keysLength)
-  const pkg = chalk.blue(name)
-
-  name && console.log(`${num} of ${length} - checking ${pkg}`)
-  end && console.log(`Total of ${length} packages checked!`)
-  if (table.length) console.log(makeTable(table, { centered: true }))
-}
-
-function clearConsole() {
-  readline.cursorTo(process.stdout, 0, 0)
-  readline.clearScreenDown(process.stdout)
-}
+    if (!table.length) {
+      console.log('All packages up to date!')
+    } else {
+      const total = chalk.green(keysLength)
+      console.log(`${total} total packages, ${checked} checked!`)
+      console.log(makeTable(table, { centered: true }))
+    }
+  }, 100)
+})

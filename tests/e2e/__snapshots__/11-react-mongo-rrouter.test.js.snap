@@ -1,26 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cli - vanilla React project contents of files created Folder - / should populate ".env" correctly 1`] = `
-"##########################################################
-#           THIS FILE WILL BE GIT IGNORED.               #
-#     DO NOT COMMIT THIS FILE INTO VERSION CONTROL!      #
-# PLEASE KEEP ANY SENSITIVE DATA OUT OF VERSION CONTROL. #
-##########################################################
-
-
-### Production Notes ###
-
-# When deploying your app to production, you should copy this file
-# over to your remote machine. Make sure all values are correct & up to date.
-
-
-
-APP_NAME=01-vanilla-react-test
-DEV_SERVER_PORT=8080
-"
-`;
-
-exports[`cli - vanilla React project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
 "# The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -96,12 +76,12 @@ typings/
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - / should populate "README.md" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate "README.md" correctly 1`] = `
 "This project was created with [Create New App](https://github.com/qodesmith/create-new-app).
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
 "/*
   This is a custom Webpack plugin that simply runs a function after each build.
   In Create New App, this is used to console.log the urls to the application
@@ -130,7 +110,7 @@ module.exports = AfterCompilePlugin
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
 const globAll = require('glob-all')
@@ -174,7 +154,121 @@ module.exports = {
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate "server.js" correctly 1`] = `
+"const chalk = require('chalk')
+const { errorToObject } = require('./api/utilities/errorUtil')
+const lines = '-'.repeat(45)
+
+// 'unhandledRejection' => promise rejection
+process.on('unhandledRejection', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(\`Unhandled promise rejection at \${date}:\\\\n\`)
+
+  console.log(\`\\\\n\${lines}\`)
+  console.error(msg, errorToObject(err))
+  console.log(\`\${lines}\\\\n\`)
+})
+
+// 'uncaughtException' => application error
+process.on('uncaughtException', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(\`\\\\nUncaught exception at \${date}:\\\\n\`)
+
+  console.log(\`\\\\n\${lines}\`)
+  console.error(msg, errorToObject(err))
+  process.exit(1)
+})
+
+/*
+  Please DO NOT INCLUDE the \`.env\` file in version control.
+  It is in the \`.gitignore\` file. Keep it that way.
+  It contains your sensitive data! Instead, when deploying to production,
+  you should manually copy the \`.env\` file to your hosting provider.
+*/
+require('dotenv').config({ path: \`\${__dirname}/.env\` }) // https://goo.gl/Cj8nKu
+
+const { APP_NAME, SECRET, API_PORT, API, DEV_SERVER_PORT, MONGO_SESSION_COLLECTION, NODE_ENV } = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
+const path = require('path')
+const express = require('express')
+const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
+const compression = require('compression') // Gzip! - https://goo.gl/ShNShk
+const bp = require('body-parser') // Makes \`req.body\` available - https://goo.gl/0UviQN
+const session = require('express-session') // Save data across requests - https://goo.gl/GEFgyQ
+const app = express()
+const mongo = require('./api/utilities/mongo')
+
+// MongoDB
+const { sessionStoreErr } = require('./api/utilities/handleErrors')
+const MongoStore  = require('connect-mongo')(session)
+const store = new MongoStore({
+  collection: MONGO_SESSION_COLLECTION,
+  dbPromise: mongo().then(([dbErr, client, db]) => {
+    if (dbErr) {
+      console.error('MONGO STORE CONNECTION ERROR:', dbErr)
+      process.exit(1)
+    }
+
+    return db
+  })
+})
+
+// Catch & record store errors in the database.
+store.on('error', sessionStoreErr)
+
+/*
+  Express middleware.
+  Express security best practices - http://goo.gl/LBmJXK
+*/
+app.use(
+  express.static( // https://goo.gl/759KqP
+    path.resolve(__dirname, 'dist'),
+    // \`no-cache\` still caches but it checks with the server via etag to ensure the latest version.
+    { setHeaders: res => res.set('Cache-Control', 'no-cache') } // Cache static assets :)
+  ),
+  helmet(), // Headers security.
+  compression(), // GZIP
+  bp.json(), // http://goo.gl/ixEWAa, https://goo.gl/Xp2pBC, https://goo.gl/g9V9AM
+  bp.urlencoded({ extended: false }), // http://goo.gl/ixEWAa, https://goo.gl/jkPwBu
+  session({
+    store,
+    name: APP_NAME, // Needed if multiple apps running on same host.
+    resave: false, // Forces cookie to be resaved back to the session store even if no changes.
+    saveUninitialized: true, // Forces a session that is uninitialized to be saved to the store.
+    secret: SECRET, // The secret used to sign the session ID cookie.
+    cookie: {
+      maxAge: null, // Default = \`null\` - closing browser removes cookie & session.
+      httpOnly: true // Default = \`true\` - on the client, \`document.cookie\` will not be available.
+    }
+  })
+)
+
+/*
+  ADD YOUR CUSTOM ENDPOINTS HERE
+  ------------------------------
+*/
+// app.get(\`\${API}/my-endpoint\`, require('./api/my-endpoint'))
+
+
+/*
+  Catch-all endpoint which delivers \`index.html\` and let's
+  the front-end handle all the routing including 404's.
+  This should be the last chronological GET route.
+*/
+app.get('*', require('./api/home'))
+
+// And so it begins...
+app.listen(API_PORT, () => {
+  if (isProd) {
+    console.log(\`💻  => PRODUCTION: Application running on port \${API_PORT}\\\\n\\\\n\`)
+  } else {
+    console.log(\`💻  => Application running in browser at http://localhost:\${DEV_SERVER_PORT}\\\\n\\\\n\`)
+  }
+})
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
 "require('dotenv').config({ path: \`\${__dirname}/.env\` }) // https://goo.gl/Cj8nKu
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
@@ -659,11 +753,262 @@ module.exports = (env, argv) => ({
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api should populate "home.js" correctly 1`] = `
+"const path = require('path')
 
-exports[`cli - vanilla React project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
+/*
+  THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
+  NON-EXISTENT ROUTE. THE FRONT END SHOULD DIRECT TO A 404 ROUTE.
+*/
 
-exports[`cli - vanilla React project contents of files created Folder - /src should populate "entry.js" correctly 1`] = `
+function home(req, res) {
+  /*
+    This folder & file will exist after you have run \`npm run build\`.
+    While developing, the development server will serve \`index.html\`
+    from memory, avoiding any contact with this route in the first place.
+  */
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
+    /*
+      If the file wasn't found, send 404.
+      This can happen in you manually change
+      the url to something non-existant
+    */
+    if (err) res.sendStatus(404)
+  })
+}
+
+module.exports = home
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api/utilities should populate "catchy.js" correctly 1`] = `
+"/*
+  Inspired by this article - https://goo.gl/9KnMYT
+  Catchify is also a great library for this - https://github.com/majgis/catchify
+*/
+
+const catchy = value => (
+  Promise.resolve(value)
+    .then(res => [null, res])
+    .catch(err => [err])
+)
+
+module.exports = catchy
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api/utilities should populate "errorUtil.js" correctly 1`] = `
+"/*
+  Calling \`JSON.stringify(error)\` will result in '{}' if there is no
+  \`Error.prototype.toJSON\` (https://goo.gl/wsc2Jr). In order to
+  mitigate that, this helper function takes advantage of the 2nd argument
+  to \`JSON.stringify\` (https://goo.gl/XNHK2U) It ensures that we get back
+  a properly stringified object with keys & values.
+
+  Before:
+    JSON.stringify(error) => '{}'
+
+  After:
+    stringifyError(error) => '{ \\"stack\\": ..., \\"message\\": ..., \\"etc\\": ... }'
+*/
+
+const replacer = (k, value) => {
+  if (!(value instanceof Error)) return value
+
+  return Object
+    .getOwnPropertyNames(value)
+    .reduce((acc, key) => ({ ...acc, [key]: value[key] }), {})
+}
+
+const stringifyError = (err, spacing = 0) => JSON.stringify(err, replacer, spacing)
+
+const errorToObject = err => JSON.parse(stringifyError(err))
+
+module.exports = {
+  stringifyError,
+  errorToObject
+}
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api/utilities should populate "handleErrors.js" correctly 1`] = `
+"const mongo = require('./mongo')
+const { errorToObject } = require('./errorUtil')
+const isProd = process.env.NODE_ENV === 'production'
+
+/*
+  toLocaleString - https://goo.gl/obzAhL
+  Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
+  https://goo.gl/SkVvba
+*/
+const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+
+/*
+  This function is used to create error objects that will be stored in MongoDB.
+  The idea is that there will be an admin-only section on the front end
+  that will display this error data in a meaningful way.
+*/
+const createError = (type = 'unknown', error = {}) => ({
+  ...errorToObject(error),
+  type,
+  localDate: localDate(),
+  date: Date.now()
+})
+
+// A helper function that saves errors to the database.
+async function saveErrorToDb(err) {
+  if (!isProd) return console.log('ERROR CREATED FOR DB:', err)
+
+  const [dbErr, client, db] = await mongo()
+  if (dbErr) return
+  await db.collection('errors').insertOne(err)
+  client.close()
+}
+
+// Inserts, saves, etc. error's are handled with this function.
+function operationErr(err, operation, collection, req) {
+  const newError = {
+    ...createError('db operation', err),
+    operation,
+    collection,
+    url: req.originalUrl,
+  }
+
+  saveErrorToDb(newError)
+}
+
+// Errors happening from the session store which uses MongoDB.
+function sessionStoreErr(err) {
+  const error = createError('session store', err)
+  saveErrorToDb(error)
+}
+
+// When Mongo can't connect.
+function noConnect(res, err) {
+  res.status(500).send({ error: errorToObject(err) })
+}
+
+module.exports = {
+  operationErr,
+  sessionStoreErr,
+  noConnect
+}
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api/utilities should populate "logMongoAuthWarning.js" correctly 1`] = `
+"const chalk = require('chalk')
+
+function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
+  const dashes = '='.repeat(54)
+  const warning = [
+    '',
+    !(MONGO_USER && MONGO_USER_PASSWORD)
+      ? chalk.red('No Mongo credentials found.')
+      : !MONGO_USER
+      ? chalk.red('No \`MONGO_USER\` value found.')
+      : chalk.red('No \`MONGO_USER_PASSWORD\` value found'),
+    chalk.bold.red('YOUR DATABASE WILL ALLOW UN-AUTHENTICATED CONNECTIONS!'),
+    '',
+    'Add a single user in the \`admin\` database and then',
+    \`ensure \\\\\`\${chalk.bold('MONGO_USER')}\\\\\` and \\\\\`\${chalk.bold('MONGO_USER_PASSWORD')}\\\\\` are added\`,
+    'to your environment variables.',
+    '',
+    ''
+  ].join('\\\\n')
+
+  console.warn(dashes) // START LOGGING.
+  console.warn(warning)
+
+  ;[
+    chalk.bold('// Use the \`admin\` database.'),
+    chalk.cyan('use admin'),
+    '',
+    chalk.bold('// Create a user with the appropriate roles.'),
+    \`\${chalk.blue('const')} \${chalk.cyan('user')} = {\`,
+    \`  \${chalk.cyan('user:')} \${chalk.yellow(\`'myUserName'\`)}, \${chalk.gray('// Make sure to change this!')}\`,
+    \`  \${chalk.cyan('pw:')} \${chalk.yellow(\`'myPassword'\`)}, \${chalk.gray('// Make sure to change this!')}\`,
+    \`  \${chalk.cyan('roles:')} [\`,
+    \`    { \${chalk.cyan('role:')} \${chalk.yellow(\`'userAdminAnyDatabase'\`)}, \${chalk.cyan('db:')} \${chalk.yellow(\`'admin'\`)} },\`,
+    \`    \${chalk.yellow(\`'readWriteAnyDatabase'\`)}\`,
+    '  ]',
+    '}',
+    '',
+    \`\${chalk.bold('// Save that user to the \`admin\` database.')}\`,
+    \`\${chalk.cyan('db')}.\${chalk.yellow('createUser')}(\${chalk.cyan('user')})\`
+  ].forEach(line => console.log(line))
+
+  console.log(\`\\\\n\\\\nSee \${chalk.bold.blue('https://goo.gl/T5Rpe6')} for more details.\`)
+  console.log('')
+  console.log(dashes) // FINISH LOGGING.
+}
+
+module.exports = logMongoAuthWarning
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /api/utilities should populate "mongo.js" correctly 1`] = `
+"/*
+  The purpose of this module is to allow the use of async / await
+  when connecting to MongoDB throughout the app. An example:
+
+  async function example() {
+    const [dbErr, client, db] = await mongo()
+    const postsCollection = await db.collection('posts')
+
+    ...
+
+    client.close()
+  }
+*/
+
+const { MongoClient } = require('mongodb')
+const logMongoAuthWarning = require('./logMongoAuthWarning')
+const {
+  MONGO_URI,
+  MONGO_URI_PROD,
+  APP_NAME,
+  MONGO_USER,
+  MONGO_USER_PASSWORD,
+  MONGO_AUTH_SOURCE,
+  NODE_ENV
+} = process.env
+const isProd = NODE_ENV === 'production'
+const url = isProd ? MONGO_URI_PROD : MONGO_URI
+const options = { useNewUrlParser: true }
+
+if (isProd) {
+  if (MONGO_USER && MONGO_USER_PASSWORD) {
+    // Set the authentication credentials for the database.
+    options.auth = { user: MONGO_USER, password: MONGO_USER_PASSWORD }
+    options.authSource = MONGO_AUTH_SOURCE
+  } else {
+    // If no credentials found,
+    // log out some warnings and instructions on how to create them.
+    logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD })
+  }
+}
+
+/*
+  We default to connecting to a database named after the \`APP_NAME\`.
+  Users are still free to pass in their own custom name.
+  To set the db name globally, replace \`APP_NAME\` below with a string.
+*/
+const mongo = (databaseName = APP_NAME) => (
+  MongoClient.connect(url, options)
+    .then(client => [null, client, client.db(databaseName)])
+    .catch(err => [err])
+)
+
+module.exports = mongo
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src should populate "entry.js" correctly 1`] = `
 "/*
   https://goo.gl/mw8Ntd - \`@babel/polyfill\` has been deprecated.
   If you need to polyfill certain JS features, uncomment the two imports below.
@@ -679,21 +1024,31 @@ import './styles/styles.scss'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-// Import our top-level component.
-import App from 'components/App'
+// Import our components.
+import Home from 'components/Home'
+import NotFound from 'components/NotFound'
+
+// Import React Router things.
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
 
 // Top-level classes on the body. Feel free to remove / change.
 document.body.className = 'bg-black-80 fw4 white-80'
 
 // Mount our app.
 ReactDOM.render(
-  <App />,
+  <Router>
+    <Switch>
+      <Route exact path='/' component={Home} />
+      <Route component={NotFound} />
+    </Switch>
+  </Router>,
   document.querySelector('#app')
 )
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en-US\\">
 <head>
@@ -720,25 +1075,39 @@ exports[`cli - vanilla React project contents of files created Folder - /src sho
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - /src/components should populate "App.jsx" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src/components should populate "Home.jsx" correctly 1`] = `
 "import React from 'react'
 
-const App = () => (
+const Home = () => (
   <>
     <header className='pv5 bg-gold black-80'>
       <h1 className='mt0 mb1 tc'>Create New App</h1>
       <div className='tc ttc'>by the Qodesmith</div>
     </header>
     <div className='pt4 pb1 tc'>Go save the world with JavaScript</div>
-    <div className='tc'>and edit <code>src/components/<span className='b'>App.jsx</span></code>!</div>
+    <div className='tc'>and edit <code>src/components/<span className='b'>Home.jsx</span></code>!</div>
   </>
 )
 
-export default App
+export default Home
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src/components should populate "NotFound.jsx" correctly 1`] = `
+"import React from 'react'
+
+const NotFound = () => (
+  <>
+    <h2>Where's Waldo?</h2>
+    <p>More importantly, where are <span className='i'>you?</span> Because from the looks of it, you're lost, pal. Might wanna find a page that actually exists...</p>
+  </>
+)
+
+export default NotFound
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
 "/*
   px <-> em: http://pxtoem.com/
 */
@@ -759,7 +1128,7 @@ body {
 "
 `;
 
-exports[`cli - vanilla React project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
+exports[`cli - React + MongoDB + Express + React Router project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
 "/////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                             //
 //  This file will be the top-most entry point for all styles in the app.                      //

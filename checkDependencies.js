@@ -46,6 +46,7 @@ Promise.all(promises).then(results => {
   // https://gist.github.com/KenanSulayman/4990953
   console.log('\033c') // Clear the console. I believe this is the `ESC` ASCII character.
 
+  // Using a quick `setTimeout` here to ensure the console was cleared.
   setTimeout(() => {
     const totalChecked = results.filter(Boolean).length
     const checked = chalk[totalChecked === keysLength ? 'green' : 'yellow'](totalChecked)

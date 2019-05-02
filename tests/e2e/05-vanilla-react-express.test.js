@@ -12,13 +12,13 @@ const {
 } = require('./helpers/folderFileHelper')
 
 
-describe('cli - React + Redux project', () => {
-  const appName = '02-react-redux-test'
+describe('cli - React + Express project', () => {
+  const appName = '05-vanilla-react-express-test'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(`node ${mainPath}/main.js ${appName} --redux ${noInstall}`)
+    run(`node ${mainPath}/main.js ${appName} --express ${noInstall}`)
   })
 
   afterAll(() => {
@@ -30,15 +30,15 @@ describe('cli - React + Redux project', () => {
   })
 
   it('should contain the expected folders and no others', () => {
-    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaRedux)
-    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaRedux)
+    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaExpress)
+    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaExpress)
     const actualFolders = listFoldersInTree(appPath, { ignores })
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -52,7 +52,7 @@ describe('cli - React + Redux project', () => {
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -77,17 +77,15 @@ describe('cli - React + Redux project', () => {
           'license',
           'browserslist',
           'devDependencies',
-          'scripts'
+          'dependencies',
+          'scripts',
+          'main'
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
       })
 
-      it('should not have a "dependencies" field', () => {
-        expect(pkgJson.dependencies).toBe(undefined)
-      })
-
-      it('should have the correct field values (aside from "devDependencies")', () => {
+      it('should have the correct field values (aside from "devDependencies" / "dependencies")', () => {
         expect(pkgJson.name).toBe(appName)
         expect(pkgJson.version).toBe('0.1.0')
         expect(pkgJson.description).toBe('')
@@ -100,7 +98,11 @@ describe('cli - React + Redux project', () => {
 
         const scripts = {
           build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
-          start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
+          'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env.dev',
+          local: 'npm run server:api',
+          'server:dev': 'webpack-dev-server --mode development --env.dev --progress',
+          'server:api': 'nodemon server.js',
+          start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -108,7 +110,7 @@ describe('cli - React + Redux project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.vanillaRedux
+        const { devDependencies } = deps.express
         const { latestPackages } = deps
 
         // 1. All the packages match.
@@ -121,17 +123,37 @@ describe('cli - React + Redux project', () => {
           const installedVersion = pkgJson.devDependencies[pkg]
           const expectedVersion = devDependencies[pkg]
 
-          /*
-            `latest` packages should both be accounted for
-            and have an actual version installed (not 'latest').
-          */
-          if (expectedVersion === 'latest') {
+          if (noInstall) {
+            expect(installedVersion).toBe(expectedVersion)
+          } else if (expectedVersion === 'latest') {
             expect(installedVersion).not.toBe('latest')
-            return expect(latestPackages.includes(pkg)).toBe(true)
+            expect(latestPackages.includes(pkg)).toBe(true)
+          } else {
+            expect(installedVersion).toStartWith(expectedVersion, pkg)
           }
+        })
+      })
+
+      it('should populate "dependencies" correctly', () => {
+        const deps = require('./config/dependencies')
+        const { dependencies } = deps.express
+        const { latestPackages } = deps
+
+        // 1. All the packages match.
+        const installedPackages = Object.keys(pkgJson.dependencies)
+        const expectedPackages = Object.keys(dependencies)
+        expect(installedPackages.sort()).toEqual(expectedPackages.sort())
+
+        // 2. All the package versions match.
+        installedPackages.forEach(pkg => {
+          const installedVersion = pkgJson.dependencies[pkg]
+          const expectedVersion = dependencies[pkg]
 
           if (noInstall) {
             expect(installedVersion).toBe(expectedVersion)
+          } else if (expectedVersion === 'latest') {
+            expect(installedVersion).not.toBe('latest')
+            expect(latestPackages.includes(pkg)).toBe(true)
           } else {
             expect(installedVersion).toStartWith(expectedVersion, pkg)
           }

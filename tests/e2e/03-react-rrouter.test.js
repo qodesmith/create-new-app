@@ -12,13 +12,13 @@ const {
 } = require('./helpers/folderFileHelper')
 
 
-describe('cli - React + Redux project', () => {
-  const appName = '02-react-redux-test'
+describe('cli - React + React Router project', () => {
+  const appName = '03-react-rrouter-test'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(`node ${mainPath}/main.js ${appName} --redux ${noInstall}`)
+    run(`node ${mainPath}/main.js ${appName} --router ${noInstall}`)
   })
 
   afterAll(() => {
@@ -30,15 +30,15 @@ describe('cli - React + Redux project', () => {
   })
 
   it('should contain the expected folders and no others', () => {
-    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaRedux)
-    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaRedux)
+    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaRouter)
+    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaRouter)
     const actualFolders = listFoldersInTree(appPath, { ignores })
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouter)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -52,7 +52,7 @@ describe('cli - React + Redux project', () => {
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouter)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -108,7 +108,7 @@ describe('cli - React + Redux project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.vanillaRedux
+        const { devDependencies } = deps.vanillaRouter
         const { latestPackages } = deps
 
         // 1. All the packages match.

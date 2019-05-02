@@ -59,6 +59,7 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
+    "dotenv": "^7.0.0",
     "jest": "^24.7.1",
     "npm-registry-client": "^8.6.0"
   }

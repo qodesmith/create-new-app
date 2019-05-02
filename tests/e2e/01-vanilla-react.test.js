@@ -108,11 +108,12 @@ describe('cli - vanilla React project', () => {
         expect(pkgJson.license).toBe('ISC')
         expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
 
-        const buildScript = 'cross-env NODE_ENV=production webpack --mode production --env.prod'
-        const startScript = 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
-        expect(Object.keys(pkgJson.scripts).sort()).toEqual(['build', 'start'])
-        expect(pkgJson.scripts.build).toBe(buildScript)
-        expect(pkgJson.scripts.start).toBe(startScript)
+        const scripts = {
+          build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
+          start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
+        }
+
+        expect(pkgJson.scripts).toEqual(scripts)
       })
 
       it('should populate "devDependencies" correctly', () => {

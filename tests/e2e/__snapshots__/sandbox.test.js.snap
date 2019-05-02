@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cli - sandbox project should populate "index.html" correctly 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+  <meta charset=\\"UTF-8\\">
+  <title>Sandbox Project</title>
+  <link rel=\\"stylesheet\\" href=\\"./styles.css\\">
+</head>
+<body>
+  <script src=\\"./main.js\\"></script>
+</body>
+</html>
+"
+`;
+
+exports[`cli - sandbox project should populate "main.js" correctly 1`] = `
+"/*
+  This is a great way to quickly test things out!
+
+  Add all your JavaScript here.
+  Open the \`index.html\` file in Chrome, save changes here,
+  and simply refresh Chrome to see those changes.
+*/
+
+console.log('Loaded, bro.')
+"
+`;
+
+exports[`cli - sandbox project should populate "styles.css" correctly 1`] = `
+"/*
+  Add all your css styling here.
+*/
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+"
+`;

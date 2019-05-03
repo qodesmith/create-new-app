@@ -228,7 +228,7 @@ If you're developing a fullstack app we've got you covered with Express and Mong
       <td align="center">-</td>
       <td>String</td>
       <td>
-        Sets the key value to <code>devServer.proxy[api]</code> in <code>webpack.config.js</code>. Used when you have a local back-end you'd like to proxy requests to while developing. For example, set this to <code>/api</code> if your backend responds to calls at <code>/api/some-route</code>.
+        Sets the key value to <code>devServer.proxy[api]</code> in <code>webpack.config.js</code>. Used when you have a local back-end you'd like to proxy requests to while developing. For example, set this to <code>/api</code> if your backend responds to calls at <code>/api/some-endpoint</code>.
         <br><br>
         <em>Examples:</em>
         <br><code>--api /api</code>

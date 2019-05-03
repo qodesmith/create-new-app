@@ -353,7 +353,7 @@ If you're developing a fullstack app we've got you covered with Express and Mong
   </thead>
   <tbody>
     <tr>
-      <td width="150px"><code>--author</code></td>
+      <td width="160px"><code>--author</code></td>
       <td width="90px" align="center">-</td>
       <td>String</td>
       <td>Populates package.json field name of the same value.</td>
@@ -382,14 +382,14 @@ If you're developing a fullstack app we've got you covered with Express and Mong
     </tr>
     <tr>
       <td><code>--browserslist</code></td>
-      <td align="center"><code>--bl</code></td>
+      <td><code>--bl</code></td>
       <td>Array</td>
       <td>Populates package.json field name of the same value. This field is used by <a href="https://babeljs.io/docs/en/babel-preset-env#browserslist-integration">@babel/preset-env</a> and <a href="https://github.com/postcss/autoprefixer#browsers">autoprefixer</a>.The default value is aimed at supporting modern browsers only. Also, using <code>last 2 versions</code> <a href="https://goo.gl/2uAdKL">might not do what you think.</a></td>
       <td><code>['>0.25%', 'not ie 11', 'not op_mini all']</code></td>
     </tr>
     <tr>
       <td><code>--repository</code></td>
-      <td align="center"><code>--repo</code></td>
+      <td><code>--repo</code></td>
       <td>Array</td>
       <td>Populates package.json field name of the same value.</td>
       <td><code>''</code></td>

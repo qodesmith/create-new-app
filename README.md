@@ -110,7 +110,7 @@ Delivers super-sexy minified JavaScript without those dead branches! Your CSS is
 
 ### Babel / Polyfilling
 
-Write ES6+ and beyond. Babel 7 is integrated and CRA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](https://goo.gl/mw8Ntd), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
+Write ES6+ and beyond. Babel 7 is integrated and CNA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](https://goo.gl/mw8Ntd), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
 
 ### Postcss
 

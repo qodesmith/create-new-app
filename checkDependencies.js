@@ -6,7 +6,7 @@ const { devDependencies, serverDependencies } = formDependencies({ mongo: 1, red
 const fullList = { ...devDependencies, ...serverDependencies }
 const packages = Object.keys(fullList)
 const keysLength = packages.length
-const all = process.argv.some(arg => arg === '--all')
+const all = process.argv.some(arg => arg === '--all' || arg === 'all')
 
 const RegistryClient = require('npm-registry-client')
 const client = new RegistryClient()

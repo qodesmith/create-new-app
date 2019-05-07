@@ -1,6 +1,7 @@
 /*
   This module is used to create fancy tables that display
   information when using the command `cna --mongoHelp`.
+  It's also used internally for the `checkDependencies` module.
 */
 
 const removeAnsiChars = require('./removeAnsiChars')

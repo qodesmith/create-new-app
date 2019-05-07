@@ -23,7 +23,7 @@ function showHelp() {
 
       ${chalk.cyan.bold('App options:')}
         -x,  --redux      includes redux in your application, completely wired up
-        -r,  --router     includes React Router ^4 in your application, completely wired up
+        -r,  --router     includes React Router in your application, completely wired up
 
       ${chalk.cyan.bold('package.json field options:')}
         --author          \\
@@ -42,7 +42,6 @@ function showHelp() {
         --mp,  --mongoPort          sets the port MongoDB listens on
         --mpp, --mongoPortProd      sets the port MongoDB listens on (for production)
         --mu,  --mongoUser          sets the username for authentication (for production)
-        --mup, --mongoUserPassword  sets the password for authentication (for production)
         --mas, --mongoAuthSource    sets the collection name that contains the auth user (for production)
 
       ${chalk.cyan.bold('Creating a sandbox project:')}

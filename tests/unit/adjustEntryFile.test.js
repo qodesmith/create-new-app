@@ -14,8 +14,7 @@ const commentContents = [
 
 describe('adjustEntryFile', () => {
   it('should generated a multi-line comment at the top of the file', () => {
-    const allLinesTheSame = commentContents.every((line, i) => lines[i] === line)
-    expect(allLinesTheSame).toBe(true)
+    commentContents.forEach((line, i) => expect(lines[i]).toBe(line))
   })
 
   it('should indent the multi-line comment from 0.', () => {
@@ -23,6 +22,6 @@ describe('adjustEntryFile', () => {
   })
 
   it('should write the provided contents to the file', () => {
-    results.includes(providedContent)
+    expect(results.includes(providedContent)).toBe(true)
   })
 })

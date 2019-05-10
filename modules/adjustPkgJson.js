@@ -15,23 +15,23 @@
 
 const { readJsonSync, writeFileSync } = require('fs-extra')
 
-function adjustPkgJson(appDir) {
-  const packageJson = readJsonSync(`${appDir}/package.json`)
+function adjustPkgJson(folder) {
+  const packageJson = readJsonSync(`${folder}/package.json`)
   const deps = packageJson.dependencies
   const devDeps = packageJson.devDependencies
 
   // Mutate the objects and write new values for the version.
-  deps && transformVersion(deps, appDir)
-  devDeps && transformVersion(devDeps, appDir)
+  deps && transformVersion(deps, folder)
+  devDeps && transformVersion(devDeps, folder)
 
   const finalData = JSON.stringify(packageJson, null, 2)
-  writeFileSync(`${appDir}/package.json`, finalData, 'utf-8')
+  writeFileSync(`${folder}/package.json`, finalData, 'utf-8')
 }
 
 // This function mutates the original object.
-function transformVersion(obj, appDir) {
+function transformVersion(obj, folder) {
   Object.keys(obj).forEach(pkg => {
-    const location = `${appDir}/node_modules/${pkg}/package.json`
+    const location = `${folder}/node_modules/${pkg}/package.json`
     const { version } = readJsonSync(location)
 
     obj[pkg] = `^${version}`

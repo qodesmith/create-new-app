@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`adjustPkgJson should adjust \`package.json\` to have specific (^) versions 1`] = `
+"{
+  \\"dependencies\\": {
+    \\"dep1\\": \\"^1.0.1\\",
+    \\"dep2\\": \\"^2.6.9\\"
+  },
+  \\"devDependencies\\": {
+    \\"devDep1\\": \\"^3.1.0\\",
+    \\"devDep2\\": \\"^4.6.7\\"
+  }
+}"
+`;

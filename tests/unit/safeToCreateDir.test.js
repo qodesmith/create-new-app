@@ -5,17 +5,15 @@ const path = require('path')
 
 describe('safeToCreateDir', () => {
   const originalConsoleLog = console.log
+  console.log = jest.fn()
 
-  beforeEach(() => console.log = jest.fn())
-
-  afterEach(() => {
-    console.log = originalConsoleLog
-  })
+  beforeEach(() => console.log.mockReset())
+  afterAll(() => console.log = originalConsoleLog)
 
   it('should return true if a given directory does not exist', () => {
     const appDir = path.resolve(__dirname, '../does-not-exist')
 
-    expect(safeToCreateDir({ appDir }))
+    expect(safeToCreateDir({ appDir })).toBe(true)
     expect(console.log).not.toHaveBeenCalled()
   })
 

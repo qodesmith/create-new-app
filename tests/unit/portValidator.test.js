@@ -4,12 +4,10 @@ const chalk = require('chalk')
 
 describe('portValidator', () => {
   const originalConsoleLog = console.log
+  console.log = jest.fn()
 
-  beforeEach(() => console.log = jest.fn())
-
-  afterEach(() => {
-    console.log = originalConsoleLog
-  })
+  beforeEach(() => console.log.mockReset())
+  afterAll(() => console.log = originalConsoleLog)
 
   it(`should return the provided number when it's within range (1 - 65535)`, () => {
     expect(portValidator(1, 3000)).toBe(1)

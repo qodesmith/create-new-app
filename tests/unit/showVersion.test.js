@@ -1,17 +1,20 @@
 const showVersion = require('../../modules/showVersion')
+const fs = require('fs-extra')
+const path = require('path')
 
 
 describe('showVersion', () => {
   const originalConsoleLog = console.log
+  console.log = jest.fn()
 
-  beforeEach(() => console.log = jest.fn())
+  beforeEach(() => console.log.mockReset())
+  afterAll(() => console.log = originalConsoleLog)
 
-  afterEach(() => {
-    console.log = originalConsoleLog
-  })
+  it(`should log the CNA's version to the console`, () => {
+    const pkgJsonPath = path.resolve(__dirname, '../../')
+    const { version } = fs.readJsonSync(`${pkgJsonPath}/package.json`)
 
-  it('should log the librarys version to the console', () => {
     showVersion()
-    expect(console.log).toHaveBeenCalled()
+    expect(console.log).toHaveBeenCalledWith(version)
   })
 })

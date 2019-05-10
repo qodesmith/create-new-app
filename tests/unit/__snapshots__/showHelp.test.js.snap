@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`showHelp should log help to the screen, containing all the correct info 1`] = `
+"
+Usage: [1mcreate-new-app[22m [32m<project-directory>[39m [options]
+
+
+Options:
+
+  [36m[1mGeneral options:[22m[39m
+    -v,  --version    shows the version number
+    -h,  --help       shows what you're looking at now
+    -mh, --mongoHelp  shows help specific to MongoDB for production
+    -o,  --offline    forces the \`npm install\` to use local cache
+    -t,  --title      sets the webpage title
+    -f,  --force      skips creating a new directory & installs in a pre-existing one
+
+  [36m[1mApp options:[22m[39m
+    -x,  --redux      includes redux in your application, completely wired up
+    -r,  --router     includes React Router in your application, completely wired up
+
+  [36m[1mpackage.json field options:[22m[39m
+    --author          \\\\
+    --description      \\\\  populates \`package.json\` field names of the same value
+    --email            /
+    --keywords        /
+
+  [36m[1mAPI / server options:[22m[39m
+    --api             sets the \`devServer.proxy[api]\` key value
+    --apiport         sets the \`devServer.proxy[api]\` port value
+    -e, --express     sets up an Express api server for Webpack to proxy
+    -p, --port        sets the development server port
+
+  [36m[1mMongoDB options:[22m[39m
+    -m,    --mongo              sets up an Express api server with MongoDB for Webpack to proxy
+    --mp,  --mongoPort          sets the port MongoDB listens on
+    --mpp, --mongoPortProd      sets the port MongoDB listens on (for production)
+    --mu,  --mongoUser          sets the username for authentication (for production)
+    --mas, --mongoAuthSource    sets the collection name that contains the auth user (for production)
+
+  [36m[1mCreating a sandbox project:[22m[39m
+    -s, --sandbox     simply creates index.html, styles.css, and main.js files
+
+Using MongoDB with your app?  View some tips for production with this:
+  [1mcna --mongoHelp[22m
+
+Have an issue?  Help keep [1mcreate-new-app[22m awesome by reporting it here:
+  [36mhttps://github.com/qodesmith/create-new-app/issues/new[39m
+"
+`;

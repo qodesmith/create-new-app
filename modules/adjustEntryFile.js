@@ -16,14 +16,12 @@ function adjustEntryFile(entryFileContents) {
     // import 'regenerator-runtime/runtime' // Needed to polyfill async / await.
   `
 
-  // Remove the leading & trailing newline created by the template literal
-  const commentWithNoExtraLines = commentContents
+  // Remove the leading & trailing newline created by the template literal,
+  // ensuring the whole thing has 0 indentation.
+  const properlyIndentedComment = indentFromZero(commentContents)
     .split('\n')
-    .filter(line => line.trim())
+    .filter(Boolean)
     .join('\n')
-
-  // Ensure the whole thing has 0 indentation.
-  const properlyIndentedComment = indentFromZero(commentWithNoExtraLines)
 
   return entryFileContents.replace('__PLACEHOLDER_ENTRY_COMMENT__', properlyIndentedComment)
 }

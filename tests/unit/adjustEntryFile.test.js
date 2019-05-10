@@ -18,10 +18,11 @@ describe('adjustEntryFile', () => {
   })
 
   it('should indent the multi-line comment from 0.', () => {
-    expect(lines[0][0] !== ' ').toBe(true)
+    expect(lines[0]).toBe('/*')
   })
 
   it('should write the provided contents to the file', () => {
-    expect(results.includes(providedContent)).toBe(true)
+    const expectedResults = [...commentContents, providedContent].join('\n')
+    expect(results).toBe(expectedResults)
   })
 })

@@ -1,17 +1,37 @@
-/*
-  Please be sure to EXCLUDE the `.env` file from version control.
-  In production, whatever host you use to deploy your server will
-  give you options to set environment config variables. Be sure to
-  set the variables found in `.env` accordingly.
-  Also for production, don't forget to change the start script in
-  `package.json` to only start the API server in production mode!
-*/
-const notProd = process.env.NODE_ENV !== 'production'
-if (notProd) {
-  require('dotenv').load() // https://goo.gl/Cj8nKu
-}
+const chalk = require('chalk')
+const { errorToObject } = require('./api/utilities/errorUtil')
+const lines = '-'.repeat(45)
 
-const { appName, API_PORT, DEV_SERVER_PORT } = process.env // Environment variables.
+// 'unhandledRejection' => promise rejection
+process.on('unhandledRejection', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(`Unhandled promise rejection at ${date}:\n`)
+
+  console.log(`\n${lines}`)
+  console.error(msg, errorToObject(err))
+  console.log(`${lines}\n`)
+})
+
+// 'uncaughtException' => application error
+process.on('uncaughtException', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(`\nUncaught exception at ${date}:\n`)
+
+  console.log(`\n${lines}`)
+  console.error(msg, errorToObject(err))
+  process.exit(1)
+})
+
+/*
+  Please DO NOT INCLUDE the `.env` file in version control.
+  It is in the `.gitignore` file. Keep it that way.
+  It contains your sensitive data! Instead, when deploying to production,
+  you should manually copy the `.env` file to your hosting provider.
+*/
+require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
+
+const { API, API_PORT, DEV_SERVER_PORT, NODE_ENV } = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
@@ -39,7 +59,7 @@ app.use(
   ADD YOUR CUSTOM ENDPOINTS HERE
   ------------------------------
 */
-// app.get('/my-endpoint', require('./api/my-endpoint'))
+// app.get(`${API}/my-endpoint`, require('./api/my-endpoint'))
 
 
 /*
@@ -51,5 +71,9 @@ app.get('*', require('./api/home'))
 
 // And so it begins...
 app.listen(API_PORT, () => {
-  notProd && console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
+  if (isProd) {
+    console.log(`💻  => PRODUCTION: Application running on port ${API_PORT}\n\n`)
+  } else {
+    console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
+  }
 })

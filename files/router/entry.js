@@ -1,7 +1,4 @@
-// You may or may not need this depending on
-// what JavaScript features you're using - e.x. async / await.
-// Feel free to remove it and see what happens!
-import '@babel/polyfill'
+__PLACEHOLDER_ENTRY_COMMENT__
 
 // Import our top-level sass file.
 import './styles/styles.scss'
@@ -18,10 +15,10 @@ import NotFound from 'components/NotFound'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 
-// Create a single element for our app to live.
-document.body.innerHTML = '<div id="app"></div>'
+// Top-level classes on the body. Feel free to remove / change.
 document.body.className = 'bg-black-80 fw4 white-80'
 
+// Mount our app.
 ReactDOM.render(
   <Router>
     <Switch>

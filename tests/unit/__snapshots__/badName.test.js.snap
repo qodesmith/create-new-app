@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`badName should log a message with the failed app name, errors, & warnings 1`] = `
+Array [
+  Array [
+    "Could not create a project called [31m\\"nope! no way!\\"[39m because of npm naming restrictions:",
+  ],
+  Array [
+    "[31m  *  no bueno[39m",
+  ],
+  Array [
+    "[33m  *  naughty naughty[39m",
+  ],
+]
+`;

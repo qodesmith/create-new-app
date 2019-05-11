@@ -1,3 +1,9 @@
+/*
+  This module implements the question prompt functionality experienced
+  when the user goes through the guided process to generate an app.
+  Each question pauses for user input before proceeding to the next.
+*/
+
 const readline = require('readline')
 const chalk = require('chalk')
 

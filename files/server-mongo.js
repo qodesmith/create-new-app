@@ -1,16 +1,37 @@
-/*
-  Please be sure to EXCLUDE the `.env` file from version control.
-  In production, whatever host you use to deploy your server will
-  give you options to set environment config variables. Be sure to
-  set the variables found in `.env` accordingly.
-  Also for production, don't forget to change the start script in
-  `package.json` to only start the API server in production mode!
-*/
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load() // https://goo.gl/Cj8nKu
-}
+const chalk = require('chalk')
+const { errorToObject } = require('./api/utilities/errorUtil')
+const lines = '-'.repeat(45)
 
-const { mongoURI, mongoSession, appName, secret, API_PORT } = process.env // Environment variables.
+// 'unhandledRejection' => promise rejection
+process.on('unhandledRejection', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(`Unhandled promise rejection at ${date}:\n`)
+
+  console.log(`\n${lines}`)
+  console.error(msg, errorToObject(err))
+  console.log(`${lines}\n`)
+})
+
+// 'uncaughtException' => application error
+process.on('uncaughtException', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(`\nUncaught exception at ${date}:\n`)
+
+  console.log(`\n${lines}`)
+  console.error(msg, errorToObject(err))
+  process.exit(1)
+})
+
+/*
+  Please DO NOT INCLUDE the `.env` file in version control.
+  It is in the `.gitignore` file. Keep it that way.
+  It contains your sensitive data! Instead, when deploying to production,
+  you should manually copy the `.env` file to your hosting provider.
+*/
+require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
+
+const { APP_NAME, SECRET, API_PORT, API, DEV_SERVER_PORT, MONGO_SESSION_COLLECTION, NODE_ENV } = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
 const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
@@ -18,13 +39,21 @@ const compression = require('compression') // Gzip! - https://goo.gl/ShNShk
 const bp = require('body-parser') // Makes `req.body` available - https://goo.gl/0UviQN
 const session = require('express-session') // Save data across requests - https://goo.gl/GEFgyQ
 const app = express()
+const mongo = require('./api/utilities/mongo')
 
 // MongoDB
 const { sessionStoreErr } = require('./api/utilities/handleErrors')
-const MongoStore  = require('connect-mongodb-session')(require('express-session'))
+const MongoStore  = require('connect-mongo')(session)
 const store = new MongoStore({
-  uri: mongoURI,
-  collection: mongoSession
+  collection: MONGO_SESSION_COLLECTION,
+  dbPromise: mongo().then(([dbErr, client, db]) => {
+    if (dbErr) {
+      console.error('MONGO STORE CONNECTION ERROR:', dbErr)
+      process.exit(1)
+    }
+
+    return db
+  })
 })
 
 // Catch & record store errors in the database.
@@ -46,10 +75,10 @@ app.use(
   bp.urlencoded({ extended: false }), // http://goo.gl/ixEWAa, https://goo.gl/jkPwBu
   session({
     store,
-    name: appName, // Needed if multiple apps running on same host.
+    name: APP_NAME, // Needed if multiple apps running on same host.
     resave: false, // Forces cookie to be resaved back to the session store even if no changes.
     saveUninitialized: true, // Forces a session that is uninitialized to be saved to the store.
-    secret, // The secret used to sign the session ID cookie.
+    secret: SECRET, // The secret used to sign the session ID cookie.
     cookie: {
       maxAge: null, // Default = `null` - closing browser removes cookie & session.
       httpOnly: true // Default = `true` - on the client, `document.cookie` will not be available.
@@ -61,7 +90,7 @@ app.use(
   ADD YOUR CUSTOM ENDPOINTS HERE
   ------------------------------
 */
-// app.get('/my-endpoint', require('./api/my-endpoint'))
+// app.get(`${API}/my-endpoint`, require('./api/my-endpoint'))
 
 
 /*
@@ -72,4 +101,10 @@ app.use(
 app.get('*', require('./api/home'))
 
 // And so it begins...
-app.listen(API_PORT, () => console.log(`API listening on port ${API_PORT}...`))
+app.listen(API_PORT, () => {
+  if (isProd) {
+    console.log(`💻  => PRODUCTION: Application running on port ${API_PORT}\n\n`)
+  } else {
+    console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
+  }
+})

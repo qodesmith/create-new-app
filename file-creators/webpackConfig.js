@@ -1,10 +1,12 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 
-function webpackConfig({ redux }) {
-  const aliasPlaceholder = '@@__PLACEHOLDER_WEBPACK_ALIAS__@@'
+function webpackConfig({ redux, title, description }) {
+  const aliasPlaceholder = '__PLACEHOLDER_WEBPACK_ALIAS__'
+  const titlePlaceholder = '__PLACEHOLDER_TITLE__'
+  const descriptionPlaceholder = '__PLACEHOLDER_DESCRIPTION__'
   const filePath = path.resolve(__dirname, '../files/webpack.config.js')
-  const config = fs.readFileSync(filePath, 'utf-8')
+  const config = fs.readFileSync(filePath, 'utf8')
   const lines = config.split('\n')
 
   // Which line #'s' has the placeholders.
@@ -26,14 +28,7 @@ function webpackConfig({ redux }) {
     `helpers: path.resolve(__dirname, 'src/utils/helpers'),`,
     `middleware: path.resolve(__dirname, 'src/utils/middleware'),`,
     `reducers: path.resolve(__dirname, 'src/utils/reducers'),`,
-    `utils: path.resolve(__dirname, 'src/utils'),`,
-    '/*',
-    '  To replace React with (P)react, run: `npm i -D preact preact-compat`',
-    '  Preact does not have <Fragment /> as part of its API yet:',
-    '    https://github.com/developit/preact/issues/946',
-    '*/',
-    `// react: 'preact-compat',`,
-    `// 'react-dom': 'preact-compat'`,
+    `utils: path.resolve(__dirname, 'src/utils')`
   ].map(line => `${indent}${line}`).join('\n')
 
   // Construct the final alias object, possible including `aliasReduxObject` from above.
@@ -42,10 +37,13 @@ function webpackConfig({ redux }) {
     `${indent}components: path.resolve(__dirname, 'src/components'),`,
     `${indent}assets: path.resolve(__dirname, 'src/assets')${redux ? ',' : ''}`,
     redux && aliasReduxObject,
-    `${indent.slice(2)}},` // Closing bracket indented 2 spaces closer.
+    `${indent.slice(2)}}` // Closing bracket indented 2 spaces closer.
   ].filter(Boolean).join('\n')
 
-  return config.replace(aliasPlaceholder, aliasObject)
+  return config
+    .replace(aliasPlaceholder, aliasObject)
+    .replace(titlePlaceholder, `'${title}'`)
+    .replace(descriptionPlaceholder, `'${description}'`)
 }
 
 module.exports = webpackConfig

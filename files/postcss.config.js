@@ -11,11 +11,11 @@ const sorter = require('css-declaration-sorter')
 
 
 /*
-  NOTE:
-  We need to scope `purgeCss` to production.
-  During development, CSS assets may have been previously purged,
-  leaving incomplete classes to play with when changing your JavaScript.
-  You might try to add classes in JS and see no change. This avoids that.
+  Why we scope `purgeCss` to production only.
+  -------------------------------------------
+  During development, CSS assets may have been previously purged
+  from a webpack reload or initial load. You might try to add classes in JS
+  and see no change. This avoids that.
 */
 module.exports = {
   plugins: [

@@ -1,4 +1,4 @@
-// Runs commands as if typed into the cli.
+// This modules runs commands as if typed into the cli.
 
 const { execSync } = require('child_process')
 

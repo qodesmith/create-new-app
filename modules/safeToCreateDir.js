@@ -1,4 +1,8 @@
-// Check if the directory already exists.
+/*
+  This module checks if the directory we want to
+  install the app in already exists or not.
+*/
+
 const { existsSync } = require('fs-extra')
 const chalk = require('chalk')
 let shouldWarn = true // Scream only once.

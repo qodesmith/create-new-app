@@ -39,8 +39,15 @@
     "url": "https://github.com/qodesmith/create-new-app"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "e2e": "npm run test ./tests/e2e",
+    "unit": "npm run test ./tests/unit",
     "preinstall": "node ./versionCheck.js"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/e2e/config/extends.js"
+    ]
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -50,5 +57,10 @@
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^7.0.0",
+    "jest": "^24.7.1",
+    "npm-registry-client": "^8.6.0"
   }
 }

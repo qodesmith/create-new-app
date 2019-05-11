@@ -102,19 +102,19 @@ create-new-app awesomeness -m
 
 ### Development Server
 
-This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 3000. Make changes to your JS or SCSS files and let Webpack refresh that screen.
+This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 8080. Visit `http://localhost:8080`, make changes to your JS or SCSS files, and watch Webpack refresh that screen.
 
 ### Tree Shaking / Minification
 
 Delivers super-sexy minified JavaScript without those dead branches! Your CSS is purged & minified as well. #Bandwidth
 
-### Babel
+### Babel / Polyfilling
 
-Write ES6+ and beyond. Babel 7 is integrated so you'll get ES5 once you run a build. Be sure to check out the `entry.js` file and see if you need `@babel/polyfill` or not.
+Write ES6+ and beyond. Babel 7 is integrated and CNA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](https://goo.gl/mw8Ntd), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
 
 ### Postcss
 
-SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, [combining](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors) redudant selectors, [removing](https://github.com/ben-eb/postcss-discard-comments) comments, and [sorting](https://github.com/Siilwyn/css-declaration-sorter) properties for better gzip compression! It's also [purging](https://github.com/FullHuman/postcss-purgecss) unused css (see below).
+SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, [combining](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors) redudant selectors, [removing](https://github.com/ben-eb/postcss-discard-comments) comments, minifying [color names](https://www.npmjs.com/package/postcss-colormin), and [sorting](https://github.com/Siilwyn/css-declaration-sorter) properties for better gzip compression! It's also [purging](https://github.com/FullHuman/postcss-purgecss) unused css (see below).
 
 ### Purgecss
 
@@ -135,7 +135,7 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
 
 ## Options
 
-### Redux option
+### Redux
 
 <table>
   <thead>
@@ -165,7 +165,7 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
 </table>
 
 
-### React Router option
+### React Router
 
 <table>
   <thead>
@@ -195,9 +195,9 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
 </table>
 
 
-### API server options
+### Server - Express, MongoDB, API
 
-When you need a back end for your app, you need an API server. The purpose of an API server is to receive proxied requests from Webpack's development server. If you have a pre-existing api already, simply use the `--api` option. Otherwise, an Express server will be set up for you with either the `--express` or `--mongo` options.
+If you're developing a fullstack app we've got you covered with Express and MongoDB. If you _already have_ an existing server that you'd like to connect to - these options are for you too.
 
 <table>
   <thead>
@@ -211,51 +211,11 @@ When you need a back end for your app, you need an API server. The purpose of an
   </thead>
   <tbody>
     <tr>
-      <td width="165px"><code>--api</code></td>
-      <td align="center">-</td>
-      <td>String</td>
-      <td>
-        Sets the key value to <code>devServer.proxy[api]</code> in <code>webpack.config.js</code>. Used when you have a local back-end you'd like to proxy requests to while developing.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--api /api</code>
-        <br><code>--api=/api</code>
-      </td>
-      <td><code>/</code></td>
-    </tr>
-    <tr>
-      <td><code>--apiPort</code></td>
-      <td align="center">-</td>
-      <td>Number</td>
-      <td>
-        Port number to the api server.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--apiPort 5000</code>
-        <br><code>--apiPort=5000</code>
-      </td>
-      <td><code>3000</code></td>
-    </tr>
-    <tr>
-      <td><code>--devServerPort</code></td>
-      <td align="center">-</td>
-      <td>Number</td>
-      <td>
-        Port number to the development server.<br>
-        Note: The `apiPort` takes priority over the `devServerPort`. In the event that they are both the same, `devServerPort` will be incremented by 1.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--devServerPort 2000</code>
-        <br><code>--devServerPort=2000</code>
-      </td>
-      <td><code>8080</code></td>
-    </tr>
-    <tr>
-      <td><code>--express</code></td>
-      <td align="center"><code>-e</code></td>
+      <td width="180px"><code>--express</code></td>
+      <td width="80px" align="center"><code>-e</code></td>
       <td>Boolean</td>
       <td>
-        Set up a local Express api server with Node.
+        Set's up a Node server running Express.
         <br><br>
         <em>Examples:</em>
         <br><code>--express</code>
@@ -264,11 +224,24 @@ When you need a back end for your app, you need an API server. The purpose of an
       <td><code>false</code></td>
     </tr>
     <tr>
+      <td ><code>--api</code></td>
+      <td align="center">-</td>
+      <td>String</td>
+      <td>
+        Sets the key value to <code>devServer.proxy[api]</code> in <code>webpack.config.js</code>. Used when you have a local back-end you'd like to proxy requests to while developing. For example, set this to <code>/api</code> if your backend responds to calls at <code>/api/some-endpoint</code>.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--api /api</code>
+        <br><code>--api=/api</code>
+      </td>
+      <td><code>`null`</code></td>
+    </tr>
+    <tr>
       <td><code>--mongo</code></td>
       <td align="center"><code>-m</code></td>
       <td>Boolean</td>
       <td>
-        Set up MongoDB with a local Express api server on Node.
+        Set's up MongoDB with a Node server running Express, all wired up & ready to go! If you use this option, no need to also use `--express`.
         <br><br>
         <em>Examples:</em>
         <br><code>--mongo</code>
@@ -276,17 +249,163 @@ When you need a back end for your app, you need an API server. The purpose of an
       </td>
       <td><code>false</code></td>
     </tr>
+    <tr>
+      <td><code>--devServerPort</code></td>
+      <td align="center">-</td>
+      <td>Number</td>
+      <td>
+        Port number to the webpack development server. You'll visit the app locally at <code>http://localhost:&lt;devServerPort&gt;</code>.
+        <br>Note: <code>apiPort</code> takes priority over <code>devServerPort</code>. In the event they are both the same, <code>devServerPort</code> will automatically be adjusted.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--devServerPort 1234</code>
+        <br><code>--devServerPort=1234</code>
+      </td>
+      <td><code>8080</code></td>
+    </tr>
+    <tr>
+      <td><code>--apiPort</code></td>
+      <td align="center">-</td>
+      <td>Number</td>
+      <td>
+        Port number to the webpack development server. You'll visit the app locally at <code>http://localhost:&lt;devServerPort&gt;</code>.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--devServerPort 1234</code>
+        <br><code>--devServerPort=1234</code>
+      </td>
+      <td><code>3000</code></td>
+    </tr>
+    <tr>
+      <td><code>--mongoPort</code></td>
+      <td align="center"><code>--mp</code></td>
+      <td>Number</td>
+      <td>
+        Port number that MongoDB connects on. If you haven't <span style="font-style: italic;">specifically</span> set MongoDB's port when you installed it locally, simply leave this alone and use the default value.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--mongoPort 30123</code>
+        <br><code>--mongoPort=30123</code>
+        <br><code>--mp 30123</code>
+        <br><code>--mp=30123</code>
+      </td>
+      <td><code>27017</code></td>
+    </tr>
+    <tr>
+      <td><code>--mongoPortProd</code></td>
+      <td align="center"><code>--mpp</code></td>
+      <td>Number</td>
+      <td>
+        Port number that MongoDB connects to <span style="font-style: italic;"><strong>in production</strong></span>. This value <span style="font-style: italic;">should</span> be different than the default value when using MongoDB in production. It defaults to <code>27017</code> in case you didn't change the port in your production environment. But for security reasons, do yourself the favor and don't use the default value in production.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--mongoPortProd 30123</code>
+        <br><code>--mongoPortProd=30123</code>
+        <br><code>--mpp 30123</code>
+        <br><code>--mpp=30123</code>
+      </td>
+      <td><code>27017</code></td>
+    </tr>
+    <tr>
+      <td><code>--mongoUser</code></td>
+      <td align="center"><code>--mu</code></td>
+      <td>String</td>
+      <td>
+        CNA is set up to to use authentication in production with MongoDB. This sets the user value. You will also need to set a user password, but there's no cli option. Nobody should type a password into a cli! The variable <code>MONGO_USER_PASSWORD</code> will be available in the <code>.env</code> file, but will not be set. Set it manually. See <code>cna --mongoHelp</code> for more information.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--mongoUser mongo_master</code>
+        <br><code>--mongoUser=mongo_master</code>
+        <br><code>--mu mongo_master</code>
+        <br><code>--mu=mongo_master</code>
+      </td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><code>--mongoAuthSource</code></td>
+      <td align="center"><code>--mas</code></td>
+      <td>String</td>
+      <td>
+        CNA is set up to to use authentication in production with MongoDB. This sets the database name for MongoDB to authenticate against. See <code>cna --mongoHelp</code> for more information.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--mongoAuthSource admin</code>
+        <br><code>--mongoAuthSource=admin</code>
+        <br><code>--mas admin</code>
+        <br><code>--mas=admin</code>
+      </td>
+      <td>-</td>
+    </tr>
   </tbody>
 </table>
 
 ### package.json options
 
-| Option | Type | Description | Default |
-| ------ | ---- | ----------- | ------- |
-| `--author` | String | Populates package.json field name of the same value. | `''` |
-| `--description` | String | Populates package.json field name of the same value. | `''` |
-| `--email` | String | Populates package.json field name of the same value. | `''` |
-| `--keywords` | String | Populates package.json field name of the same value. | `[]` |
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Alias</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td width="160px"><code>--author</code></td>
+      <td width="90px" align="center">-</td>
+      <td>String</td>
+      <td>Populates package.json field name of the same value.</td>
+      <td><code>''</code></td>
+    </tr>
+    <tr>
+      <td><code>--description</code></td>
+      <td align="center">-</td>
+      <td>String</td>
+      <td>Populates package.json field name of the same value.</td>
+      <td><code>''</code></td>
+    </tr>
+    <tr>
+      <td><code>--email</code></td>
+      <td align="center">-</td>
+      <td>String</td>
+      <td>Populates package.json field name of the same value.</td>
+      <td><code>''</code></td>
+    </tr>
+    <tr>
+      <td><code>--keywords</code></td>
+      <td align="center">-</td>
+      <td>Array</td>
+      <td>Populates package.json field name of the same value.<br>Example:<br><code>--keywords one two three</code></td>
+      <td><code>[]</code></td>
+    </tr>
+    <tr>
+      <td><code>--browserslist</code></td>
+      <td><code>--bl</code></td>
+      <td>Array</td>
+      <td>Populates package.json field name of the same value. This field is used by <a href="https://babeljs.io/docs/en/babel-preset-env#browserslist-integration">@babel/preset-env</a> and <a href="https://github.com/postcss/autoprefixer#browsers">autoprefixer</a>.The default value is aimed at supporting modern browsers only. Also, using <code>last 2 versions</code> <a href="https://goo.gl/2uAdKL">might not do what you think.</a></td>
+      <td><code>['>0.25%', 'not ie 11', 'not op_mini all']</code></td>
+    </tr>
+    <tr>
+      <td><code>--repository</code></td>
+      <td><code>--repo</code></td>
+      <td>Array</td>
+      <td>Populates package.json field name of the same value.</td>
+      <td><code>''</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+### Information-only
+
+| Option | Alias | Description |
+| ------ | ----- | ----------- |
+| `--help` | `-h` | Outputs the help screen, showing all the above documented options. |
+| `--mongoHelp` | `--mh` | Outputs some helpful information about getting MongoDB prepared for production. |
+| `--version` | `-v` | Outputs the version of CNA that you're using to the terminal. |
+
 
 ### Other options
 
@@ -315,19 +434,17 @@ When you need a back end for your app, you need an API server. The purpose of an
       <td><code>false</code></td>
     </tr>
     <tr>
-      <td><code>--title</code></td>
-      <td><code>-t</code></td>
-      <td>String</td>
+      <td><code>--force</code></td>
+      <td><code>-f</code></td>
+      <td>Boolean</td>
       <td>
-        Sets the webpage title generated by Webpack's <code>HtmlWebpackPlugin</code>.
+        Want to install an app in a pre-existing folder? Use this. But be warned! There's a possibility you can overwrite files if the names conflict!
         <br><br>
         <em>Examples:</em>
-        <br><code>--title 'JavaScript Rules'</code>
-        <br><code>--title='JavaScript Rules'</code>
-        <br><code>-t 'JavaScript Rules'</code>
-        <br><code>-t='JavaScript Rules'</code>
+        <br><code>--force</code>
+        <br><code>-f</code>
       </td>
-      <td>Title-cased version of the app name.</td>
+      <td><code>false</code></td>
     </tr>
     <tr>
       <td><code>--sandbox</code></td>
@@ -348,14 +465,26 @@ When you need a back end for your app, you need an API server. The purpose of an
       </td>
       <td><code>false</code></td>
     </tr>
+    <tr>
+      <td><code>--title</code></td>
+      <td><code>-t</code></td>
+      <td>String</td>
+      <td>
+        Sets the webpage title generated by Webpack's <code>HtmlWebpackPlugin</code>.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--title 'JavaScript Rules'</code>
+        <br><code>--title='JavaScript Rules'</code>
+        <br><code>-t 'JavaScript Rules'</code>
+        <br><code>-t='JavaScript Rules'</code>
+      </td>
+      <td>Title-cased version of the app name.</td>
+    </tr>
   </tbody>
 </table>
 
 
 ## TODO's
 
-- [x] Include Redux as an option ~~(or default?)~~
-- [x] Include ~~`redux-first-router`~~ React Router as an option
 - [ ] Implement PWA's by default with CLI option to disable
-- [ ] Implement ~~Jest~~ [Cypress](https://www.cypress.io/) along with a test for the generated components
 - [ ] Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV

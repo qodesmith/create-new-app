@@ -1,20 +1,13 @@
-function packageJson(answers) {
-  const {
-    mongo,
-    redux,
-    router,
-    appName,
-    server,
-    description,
-    author,
-    email,
-    keywords = []
-  } = answers
+const browserslistDefault = require('../modules/browserslist')
+const dependenciesCreator = require('../modules/dependencies')
 
-  const {
-    devDependencies,
-    serverDependencies
-  } = require('../modules/dependencies')(mongo, redux, router)
+function packageJson(answers) {
+  const { appName, server, description, author, email, keywords, repository, repo } = answers
+  const { devDependencies, serverDependencies } = dependenciesCreator(answers)
+
+  // `--bl` takes precedence over `--browserslist` so long as the later is the default setting.
+  const isDefault = answers.browserslist.every((item, i) => item === browserslistDefault[i])
+  const browserslist = answers[isDefault ? 'bl' : 'browserslist']
 
   let packageJson = {
     name: appName,
@@ -23,9 +16,9 @@ function packageJson(answers) {
     keywords,
     author,
     email,
-
-    // https://goo.gl/2uAdKL - avoid `last 2 versions`.
-    browserslist: ['>0.25%', 'not ie 11', 'not op_mini all']
+    repository: repository || repo,
+    license: 'ISC', // Default `npm init -y` value.
+    browserslist // https://goo.gl/2uAdKL - why you should avoid `last 2 versions`.
   }
 
   if (server) {

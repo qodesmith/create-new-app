@@ -12,7 +12,7 @@ describe('showVersion', () => {
 
   it(`should log the CNA's version to the console`, () => {
     const pkgJsonPath = path.resolve(__dirname, '../../')
-    const { version } = fs.readJsonSync(`${pkgJsonPath}/package.json`)
+    const { version } = fs.readJSONSync(`${pkgJsonPath}/package.json`)
 
     showVersion()
     expect(console.log).toHaveBeenCalledWith(version)

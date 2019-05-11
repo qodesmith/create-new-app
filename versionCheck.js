@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 // Possible permissions errors? - https://goo.gl/mH9n3j
 
-const nodeVersion = +process.versions.node.split('.')[0]
-const spaces = ' '.repeat(43 - nodeVersion.length)
+let nodeVersion
 
-if (nodeVersion < 6) {
+try {
+  nodeVersion = +process.version.split('.')[0].slice(1)
+} catch (e) {}
+
+const spaces = ' '.repeat(38 - nodeVersion.toString().length)
+
+if (nodeVersion !== undefined && nodeVersion < 6) {
   const message = `
-    +-------------------------------------------------------------------+
-    |                                                                   |
-    |  Create New App requires Node >= 6 and npm >= 3.                  |
-    |  You're using version ${nodeVersion}.${spaces}|
-    |  Please upgrade. The easiest way is to use Node Version Manager:  |
-    |    https://github.com/creationix/nvm                              |
-    |                                                                   |
-    +-------------------------------------------------------------------+
+    ╭───────────────────────────────────────────────────────────────────╮
+    │                                                                   │
+    │  Create New App requires Node >= 6 and npm >= 3.                  │
+    │  You're using Node version ${nodeVersion}.${spaces}│
+    │  Please upgrade. The easiest way is to use Node Version Manager:  │
+    │    https://github.com/creationix/nvm                              │
+    │                                                                   │
+    ╰───────────────────────────────────────────────────────────────────╯
   `
 
   console.log(message)

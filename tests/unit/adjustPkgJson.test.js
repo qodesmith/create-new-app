@@ -31,7 +31,7 @@ describe('adjustPkgJson', () => {
 
   adjustPkgJson(tempFolder)
   const content = fs.readFileSync(`${tempFolder}/package.json`, 'utf8')
-  const { dependencies, devDependencies } = fs.readJsonSync(`${tempFolder}/package.json`)
+  const { dependencies, devDependencies } = fs.readJSONSync(`${tempFolder}/package.json`)
 
   // Remove all temporary files.
   fs.removeSync(tempFolder)

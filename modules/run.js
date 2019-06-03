@@ -7,6 +7,6 @@ module.exports = (command, silent) => {
     The silent option mute's the commands CLI output except for errors.
     This helps keep the CLI looking clean.
   */
-  const stdio = silent ? ['pipe', 'pipe', 2] : 'inherit' // https://goo.gl/QnaS5C
+  const stdio = silent ? ['pipe', 'pipe', 2] : 'inherit' // http://bit.ly/2Z8xzTF
   return execSync(command, { stdio })
 }

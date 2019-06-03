@@ -28,16 +28,16 @@ process.on('uncaughtException', err => {
   It contains your sensitive data! Instead, when deploying to production,
   you should manually copy the `.env` file to your hosting provider.
 */
-require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
+require('dotenv').config({ path: `${__dirname}/.env` }) // http://bit.ly/2WE8EJP
 
 const { APP_NAME, SECRET, API_PORT, API, DEV_SERVER_PORT, MONGO_SESSION_COLLECTION, NODE_ENV } = process.env // Environment variables.
 const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
-const helmet = require('helmet') // Sets various http headers - https://goo.gl/g7K98x
-const compression = require('compression') // Gzip! - https://goo.gl/ShNShk
-const bp = require('body-parser') // Makes `req.body` available - https://goo.gl/0UviQN
-const session = require('express-session') // Save data across requests - https://goo.gl/GEFgyQ
+const helmet = require('helmet') // Sets various http headers - http://bit.ly/2WylCJl
+const compression = require('compression') // Gzip! - http://bit.ly/2WylU2T
+const bp = require('body-parser') // Makes `req.body` available - http://bit.ly/2WE4r8X
+const session = require('express-session') // Save data across requests - http://bit.ly/2Kmc5OV
 const app = express()
 const mongo = require('./api/utilities/mongo')
 
@@ -61,18 +61,18 @@ store.on('error', sessionStoreErr)
 
 /*
   Express middleware.
-  Express security best practices - http://goo.gl/LBmJXK
+  Express security best practices - http://bit.ly/2KkcS2V
 */
 app.use(
-  express.static( // https://goo.gl/759KqP
+  express.static( // http://bit.ly/2Ko43Vy
     path.resolve(__dirname, 'dist'),
     // `no-cache` still caches but it checks with the server via etag to ensure the latest version.
     { setHeaders: res => res.set('Cache-Control', 'no-cache') } // Cache static assets :)
   ),
   helmet(), // Headers security.
   compression(), // GZIP
-  bp.json(), // http://goo.gl/ixEWAa, https://goo.gl/Xp2pBC, https://goo.gl/g9V9AM
-  bp.urlencoded({ extended: false }), // http://goo.gl/ixEWAa, https://goo.gl/jkPwBu
+  bp.json(), // http://bit.ly/2KpI7cL, http://bit.ly/2KkcVvD, http://bit.ly/2KmDSP3
+  bp.urlencoded({ extended: false }), // http://bit.ly/2KpI7cL, http://bit.ly/2Ko4f7e
   session({
     store,
     name: APP_NAME, // Needed if multiple apps running on same host.

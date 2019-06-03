@@ -16,7 +16,7 @@ function webpackConfig({ redux, title, description }) {
   const aliasLine = lines[aliasLineNum]
 
   /*
-    https://goo.gl/DirJ71
+    http://bit.ly/2XpC63A
     Figure out how many empty spaces there are for the indentation.
     Our object properties should be indented 2 more than that.
   */

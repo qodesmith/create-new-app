@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `${__dirname}/.env` }) // https://goo.gl/Cj8nKu
+require('dotenv').config({ path: `${__dirname}/.env` }) // http://bit.ly/2WE8EJP
 const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
 const webpack = require('webpack')
@@ -22,18 +22,18 @@ console.log(`
 if (NODE_ENV === 'production') console.log('Building for production...\n\n')
 
 module.exports = (env, argv) => ({
-  // https://goo.gl/R88FtY - new in Webpack 4.
+  // http://bit.ly/2w4ndaR - new in Webpack 4.
   mode: env.prod ? 'production' : 'development',
 
   /*
-    https://goo.gl/3FP7kM
+    http://bit.ly/2vZm5Ft
     The base directory, an absolute path, for resolving
     entry points and loaders from configuration.
   */
   context: path.resolve(__dirname, 'src'),
 
   /*
-    https://goo.gl/X8nHJZ
+    http://bit.ly/2w3Ahxa
     The point(s) to enter the application.
   */
   entry: [
@@ -41,7 +41,7 @@ module.exports = (env, argv) => ({
   ],
 
   /*
-    https://goo.gl/xvjXJd
+    http://bit.ly/2JojX2u
     The top-level output key contains set of options instructing webpack
     on how and where it should output your bundles, assets and anything else
     you bundle or load with webpack.
@@ -49,25 +49,25 @@ module.exports = (env, argv) => ({
   output: {
 
     /*
-      https://goo.gl/DsD2Nn
+      http://bit.ly/2KoIZP4
       This option determines the name of each output bundle.
     */
     filename: '[name].[hash].bundle.js',
 
     /*
-      https://goo.gl/bwR2sW
+      http://bit.ly/2KjYRSI
       The output directory as an absolute path.
     */
     path: path.resolve(__dirname, 'dist'),
 
     /*
-      https://goo.gl/d6Wq2G
+      http://bit.ly/2Kmdcy1
       Adds helpful info in development when reading the generated code.
     */
     pathinfo: !env.prod,
 
     /*
-      https://goo.gl/jvYGYt
+      http://bit.ly/2KpiF75
       The URL of your `output.path` from the view of the HTML page.
       The value of the option is prefixed to every URL created by the runtime or loaders.
     */
@@ -75,7 +75,7 @@ module.exports = (env, argv) => ({
   },
 
   /*
-    https://goo.gl/AENyuH
+    http://bit.ly/2KmfoWl
     These options determine how the different types of modules within a project will be treated.
   */
   module: {
@@ -87,10 +87,10 @@ module.exports = (env, argv) => ({
     */
     rules: [
       /*
-        https://goo.gl/aq8Jce
+        http://bit.ly/2KjZb3S
         A Rule can be separated into three parts — Conditions, Results and nested Rules.
 
-        Conditions (https://goo.gl/9wzXt9)
+        Conditions (http://bit.ly/2Ko8uja)
         ----------
         In a Rule the properties `test`, `include`, `exclude` and `resource` are
         matched with the resource and the property issuer is matched with the issuer.
@@ -128,15 +128,15 @@ module.exports = (env, argv) => ({
         include: path.resolve(__dirname, 'src'),
 
         /*
-          https://goo.gl/99S6sU
+          http://bit.ly/2KmGQDb
           Loaders will be applied from right to left.
           E.x.: loader3(loader2(loader1(data)))
         */
         use: [
-          // https://goo.gl/EXjzoG
+          // http://bit.ly/2KnMe9c
           {
             /*
-              https://goo.gl/N6uJv3 - Babel loader.
+              http://bit.ly/2KpNbOj - Babel loader.
                 - babel-loader
                 - @babel/core
                 - @babel/preset-env
@@ -151,31 +151,31 @@ module.exports = (env, argv) => ({
                 /*
                   To get tree shaking working, we need the `modules: false` below.
 
-                  https://goo.gl/4vZBSr - 2ality blog mentions that the issue is caused
+                  http://bit.ly/2KkhOVv - 2ality blog mentions that the issue is caused
                   by under-the-hood usage of `transform-es2015-modules-commonjs`.
 
-                  https://goo.gl/sBmiwZ - A comment on the above post shows that we
+                  http://bit.ly/2KnKtZN - A comment on the above post shows that we
                   can use `modules: false`.
                 */
                 [
-                  '@babel/preset-env', // https://goo.gl/aAxYAq
+                  '@babel/preset-env', // http://bit.ly/2KoqDxm
                   {
                     modules: false, // Needed for tree shaking to work (see above).
-                    useBuiltIns: 'entry', // https://goo.gl/7ugJ8K
-                    corejs: { // https://goo.gl/9Vfu6X
+                    useBuiltIns: 'entry', // http://bit.ly/2KkBZCu
+                    corejs: { // http://bit.ly/2KkC09w
                       version: 3,
                       proposals: true
                     }
                   }
                 ],
-                '@babel/preset-react' // https://goo.gl/4aEFV3
+                '@babel/preset-react' // http://bit.ly/2KpNOYb
               ],
 
-              // https://goo.gl/N9gaqc - List of Babel plugins.
+              // http://bit.ly/2KmgNfz - List of Babel plugins.
               plugins: [
-                '@babel/plugin-proposal-object-rest-spread', // https://goo.gl/LCHWnP
-                '@babel/plugin-proposal-class-properties', // https://goo.gl/TE6TyG
-                '@babel/plugin-syntax-dynamic-import' // https://goo.gl/ho4CDh
+                '@babel/plugin-proposal-object-rest-spread', // http://bit.ly/2KnLroT
+                '@babel/plugin-proposal-class-properties', // http://bit.ly/2KoJQPM
+                '@babel/plugin-syntax-dynamic-import' // http://bit.ly/2KoKcG6
               ]
             }
           }
@@ -193,10 +193,10 @@ module.exports = (env, argv) => ({
         test: /\.(scss|css)$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          MiniCssExtractPlugin.loader, // https://goo.gl/uUBr8G
+          MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
           {
             /*
-              https://goo.gl/L44Kxn
+              http://bit.ly/2WBprNT
               Using `fast-css-loader` combined with `fast-sass-loader` (below)
               produces about a 50% faster build. You'll notice it while developing.
               `css-loader` is still included so feel free to switch.
@@ -206,10 +206,10 @@ module.exports = (env, argv) => ({
               importLoaders: 2
             }
           },
-          'postcss-loader', // https://goo.gl/BCwCzg - needs to be *after* `css-loader`.
+          'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
           {
             /*
-              https://goo.gl/GtngkV
+              http://bit.ly/2WI1fcw
               Using `fast-sass-loader` combined with `fast-css-loader` (above)
               produces about a 50% faster build. You'll notice it while developing.
               `sass-loader` is still included so feel free to switch.
@@ -218,7 +218,7 @@ module.exports = (env, argv) => ({
             options: {
 
               /*
-                https://goo.gl/hVweJ7
+                http://bit.ly/2Wyqb6r
                 An array of paths that in which to attempt to resolve your
                 @import declarations made in your scss files.
               */
@@ -227,7 +227,7 @@ module.exports = (env, argv) => ({
               ],
 
               /*
-                https://goo.gl/xxBHk3
+                http://bit.ly/2WGndg4
                 Values: nested, expanded, compact, compressed
               */
               outputStyle: env.prod ? 'compressed' : 'expanded'
@@ -276,31 +276,31 @@ module.exports = (env, argv) => ({
     ]
   },
 
-  // https://goo.gl/NnR9ME
+  // http://bit.ly/2WGnFeg
   resolve: {
 
     /*
-      https://goo.gl/7HMoAb
+      http://bit.ly/2WyqhuP
       Create aliases to import certain modules more easily.
       Eliminates having to type out ../../../ all the time.
     */
     alias: __PLACEHOLDER_WEBPACK_ALIAS__,
 
     /*
-      https://goo.gl/57vTmD
+      http://bit.ly/2WI1BQo
       Automatically resolve certain extensions without having to type them out.
     */
     extensions: ['.js', '.jsx', '.json', '.scss']
   },
 
-  // https://goo.gl/bxPV7L
+  // http://bit.ly/2WH6fOH
   optimization: {
     minimizer: [
-      // https://goo.gl/yWD5vm - List of reasons we're using Terser instead (Webpack is too!).
-      new TerserPlugin({ // https://goo.gl/YgdtKb
-        cache: true, // https://goo.gl/QVWRtq
-        parallel: true, //https://goo.gl/hUkvnK
-        terserOptions: { // https://goo.gl/y3psR1
+      // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
+      new TerserPlugin({ // http://bit.ly/2WI3M6G
+        cache: true, // http://bit.ly/2WNdoNC
+        parallel: true, // http://bit.ly/2WJ6hWf
+        terserOptions: { // http://bit.ly/2WIWVK5
           ecma: 5,
           output: {
             comments: false
@@ -310,10 +310,10 @@ module.exports = (env, argv) => ({
     ]
   },
 
-  // https://goo.gl/aDKWnb
+  // http://bit.ly/2WOvpLv
   plugins: [
     /*
-      https://goo.gl/SZjjmC
+      http://bit.ly/2WEeBGF
       Make global variables available to the app.
       Needed in order to use the production-ready minified version of React.
     */
@@ -323,7 +323,7 @@ module.exports = (env, argv) => ({
       __PROD__: env.prod,
 
       /*
-        https://goo.gl/sB6d6b
+        http://bit.ly/2WBx4DZ
         Needed in order to use the production-ready minified version of React.
         Avoids warnings in the console.
       */
@@ -341,7 +341,7 @@ module.exports = (env, argv) => ({
     }),
 
     /*
-      https://goo.gl/xP7eDB
+      http://bit.ly/2WEalXF
       A webpack plugin to remove/clean your build folder(s) before building.
       The targeted folder is whatever is set above for `output.path`.
       Since our build process generates a js, css, and html file, we'll only
@@ -355,7 +355,7 @@ module.exports = (env, argv) => ({
     }),
 
     /*
-      https://goo.gl/pwnnmX, https://goo.gl/og4sNK
+      http://bit.ly/2WJ6pFd, http://bit.ly/2WBxaLR
       Generates the `index.html` file.
     */
     new HtmlWebpackPlugin({
@@ -382,10 +382,10 @@ module.exports = (env, argv) => ({
     })
   ].filter(Boolean),
 
-  // https://goo.gl/HBnQlq
+  // http://bit.ly/2WEpbgZ
   devServer: {
     /*
-      https://goo.gl/eFdUfe
+      http://bit.ly/2WHYfwO
       Tell the dev server where to serve content from.
       This is only necessary if you want to serve static files.
       Content not served from Webpack's devServer is served from here.
@@ -393,34 +393,34 @@ module.exports = (env, argv) => ({
     contentBase: path.resolve(__dirname, 'dist'),
 
     /*
-      https://goo.gl/mgQHiQ
+      http://bit.ly/2WFe8nS
       '...the index.html page will likely have to be served
       in place of any 404 responses.'
     */
     historyApiFallback: true,
 
     /*
-      https://goo.gl/A8ZvxG
+      http://bit.ly/2WOwJhr
       Want to view your site on your phone?
       Make sure your computer and phone are on the same wifi network,
       and navigate to your computer's ip addres: 192.1.2.3:<dev server port>
     */
     host: '0.0.0.0',
 
-    // https://goo.gl/fZ1Hff
+    // http://bit.ly/2WOx4kd
     open: true,
 
-    // https://goo.gl/EVMMyC
+    // http://bit.ly/2WFzCkq
     port: DEV_SERVER_PORT,
 
     /*
-      https://goo.gl/mrysGp, https://goo.gl/srfqLB
+      http://bit.ly/2WIXOSV, http://bit.ly/2WDMWpv
       Nobody wants to see 0.0.0.0 in the browser. This get's rid of that.
     */
     public: `http://localhost:${DEV_SERVER_PORT}`,
 
     /*
-      https://goo.gl/a6WW1p
+      http://bit.ly/2XlEOXN
       Redirect non-static asset calls to the backend API server.
       Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served `index.html` by `historyApiFallback` above.
@@ -448,14 +448,14 @@ module.exports = (env, argv) => ({
   },
 
   /*
-    https://goo.gl/K4eZeE
+    http://bit.ly/2WFerz2
     Seems to be the fastest one with accurate line numbers
     matching what you'd see in your editor.
   */
   devtool: !env.prod && 'cheap-module-eval-source-map',
 
   /*
-    https://goo.gl/ZisDCb
+    http://bit.ly/2WFA41T
     The externals configuration option provides a way of excluding dependencies
     from the output bundles. Instead, the created bundle relies on that dependency
     to be present in the consumer's environment.
@@ -470,7 +470,7 @@ module.exports = (env, argv) => ({
   // },
 
   /*
-    https://goo.gl/3mK5hF
+    http://bit.ly/2w55YpG
     `web` is default, but if you're making a 3rd party library
     consumed in Node, change this to `node`. There are others as well.
   */

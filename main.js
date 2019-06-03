@@ -34,7 +34,7 @@ const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
 
 // Other.
-const cwd = fs.realpathSync(process.cwd()) // https://goo.gl/B1U4TC - because symlinks.
+const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
 const dir = text => path.resolve(__dirname, text)
 
 // Option definitions.
@@ -66,7 +66,7 @@ const optionDefinitions = [
   { name: 'description', type: String, defaultValue: '' },
   { name: 'email', type: String, defaultValue: '' },
   { name: 'keywords', multiple: true, defaultValue: [] },
-  { name: 'browserslist', multiple: true, defaultValue: browserslist }, // https://goo.gl/2uAdKL - why you should avoid `last 2 versions`.
+  { name: 'browserslist', multiple: true, defaultValue: browserslist }, // http://bit.ly/2Z5pejA - why you should avoid `last 2 versions`.
   { name: 'bl', multiple: true, defaultValue: browserslist },
   { name: 'repository', defaultValue: '' },
   { name: 'repo', defaultValue: '' },
@@ -105,9 +105,8 @@ async function letsGo() {
   // STEP 2 - decide between a guided process or not.
   // Guided process - called with no arguments.
   if (process.argv.length === 2 || (noInstall && !appName)) {
-    // Clear the console - https://goo.gl/KyrhG2
-    readline.cursorTo(process.stdout, 0, 0)
-    readline.clearScreenDown(process.stdout)
+    // http://bit.ly/2Z7GZ1M - clear the console.
+    console.log('\x1Bc')
 
     options = await guidedProcess({ online, noInstall })
 
@@ -403,7 +402,7 @@ function createFiles(options) {
 // STEP 5
 async function installDependencies(options) {
   const { appName, appDir, server, offline, mongo, force, noInstall } = options
-  const forceOffline = offline ? ' --offline' : '' // https://goo.gl/aZLDLk
+  const forceOffline = offline ? ' --offline' : '' // http://bit.ly/2Z2Ht9c
   const cache = offline ? ' cache' : ''
 
   // Change into the projects directory.

@@ -47,7 +47,7 @@ function showMongoHelp() {
         ${chalk.bold('// Save that user to the `admin` database.')}
         ${chalk.cyan('db')}.${chalk.yellow('createUser')}(${chalk.cyan('user')})
 
-    See ${chalk.blue('https://goo.gl/T5Rpe6')} for more details.
+    See ${chalk.blue('http://bit.ly/2UTn484')} for more details.
 
 
     Mongo-specific variables will be setup in the \`.env\` file.
@@ -64,7 +64,7 @@ function showMongoHelp() {
   `))
 }
 
-// https://goo.gl/SoTnCf
+// http://bit.ly/2Z6SeXV
 // Remove ANSI color characters (this is a bold cyan "hello"):
 // '\u001b[1m\u001b[36mhello\u001b[39m\u001b[22m'.replace(/\u001b\[.*?m/g, '')
 

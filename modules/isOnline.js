@@ -1,12 +1,12 @@
 /*
   This module checks if the user is online.
-  If it takes more than 3.5s, it will assume a bad connection
-  and the process will proceed as if the user is offline.
+  If it takes more than 3.5s (you can change that), it will assume a
+  bad connection and the process will proceed as if the user is offline.
 
   Alternative packages:
-    * https://goo.gl/UEDXEt - `is-online`
-    * https://goo.gl/CcNBxw - `is-reachable`
-    * https://goo.gl/3zxtLa - `connectivity`
+    * http://bit.ly/2YZBWQA - `is-online`
+    * http://bit.ly/2Z4uNhY - `is-reachable`
+    * http://bit.ly/2YXGEyu - `connectivity`
 */
 
 const dns = require('dns')

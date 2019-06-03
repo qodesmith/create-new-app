@@ -1,6 +1,5 @@
-// https://goo.gl/MrXVRS - micro UUID!
+// http://bit.ly/2Xmuwqf - micro UUID!
 const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
-
 
 // Filters out values that are null or undefined.
 function objToDotEnvVars(comments, obj) {
@@ -65,7 +64,7 @@ function dotEnv(options) {
     MONGO_URI_PROD: `mongodb://localhost:${mongoPortProd}/${appName}`,
     MONGO_USER: `${mongoUser}`,
     MONGO_USER_PASSWORD: '',
-    MONGO_AUTH_SOURCE: `${mongoAuthSource}`, // https://goo.gl/mrNeQr
+    MONGO_AUTH_SOURCE: `${mongoAuthSource}`, // http://bit.ly/2XkUWZn
     MONGO_SESSION_COLLECTION: `${appName}Sessions`,
     SECRET: `${uuid()}`
   }

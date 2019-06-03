@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Possible permissions errors? - https://goo.gl/mH9n3j
+// Possible permissions errors? - http://bit.ly/2Z5PKsZ
 
 let nodeVersion
 

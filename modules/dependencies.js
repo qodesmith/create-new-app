@@ -28,7 +28,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'postcss-loader': '^3',
     postcss: '^7',
     cssnano: '^4',
-    '@fullhuman/postcss-purgecss': '^1', // https://goo.gl/igXRk6 - why we're using purge-css *here* and not as a Webpack plugin.
+    '@fullhuman/postcss-purgecss': '^1', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install latest.
     'postcss-discard-comments': '^4',
     'css-mqpacker': '^7', // DEPRECATED - needs to be replaced asap.
@@ -54,7 +54,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'style-loader': '^0', // Currently < 1
     'terser-webpack-plugin': '^1',
 
-    // BABEL - https://goo.gl/ESXgmh
+    // BABEL - http://bit.ly/2IdVyKe
     'babel-loader': '^8',
     '@babel/core': '^7',
     '@babel/preset-env': '^7',
@@ -62,7 +62,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     '@babel/plugin-proposal-object-rest-spread': '^7',
     '@babel/plugin-proposal-class-properties': '^7',
     '@babel/plugin-syntax-dynamic-import': '^7',
-    'core-js': '^3', //              \  https://goo.gl/mw8Ntd
+    'core-js': '^3', //              \  http://bit.ly/2DTXGpe
     'regenerator-runtime': '^0', //  /  These two packages combined now replace `@babel/polyfill`.
 
     // OTHER

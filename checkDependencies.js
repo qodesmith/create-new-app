@@ -49,8 +49,8 @@ Promise.all(promises).then(results => {
       return [...acc, [name, used, latestVersion]]
     }, [[chalk.bold('PACKAGE'), chalk.bold('USED'), chalk.bold('LATEST')]])
 
-  // https://gist.github.com/KenanSulayman/4990953
-  console.log('\033c') // Clear the console. I believe this is the `ESC` ASCII character.
+  // http://bit.ly/2Z7GZ1M - clear the console.
+  console.log('\x1Bc')
 
   // Using a quick `setTimeout` here to ensure the console was cleared.
   setTimeout(() => {

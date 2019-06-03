@@ -19,7 +19,7 @@ const sorter = require('css-declaration-sorter')
 */
 module.exports = {
   plugins: [
-    // https://goo.gl/igXRk6 - explains why we're using purge-css here and not as a Webpack plugin.
+    // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
     isProd && purgeCss({
       // Optionally whitelist 3rd party libraries:
       // whitelist: whitelister('./node_modules/some-library/styles.css'),
@@ -28,7 +28,7 @@ module.exports = {
         './src/**/*.jsx',
         './src/index.ejs'
       ], { absolute: true }),
-      keyframes: false // https://goo.gl/18L7bj
+      keyframes: false // http://bit.ly/2Xnsqq2
     }),
     noComment(),
     mqPacker({ sort: true }),

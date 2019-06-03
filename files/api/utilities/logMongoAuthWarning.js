@@ -39,7 +39,7 @@ function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
     `${chalk.cyan('db')}.${chalk.yellow('createUser')}(${chalk.cyan('user')})`
   ].forEach(line => console.log(line))
 
-  console.log(`\n\nSee ${chalk.bold.blue('https://goo.gl/T5Rpe6')} for more details.`)
+  console.log(`\n\nSee ${chalk.bold.blue('http://bit.ly/2UTn484')} for more details.`)
   console.log('')
   console.log(dashes) // FINISH LOGGING.
 }

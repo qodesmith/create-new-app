@@ -1,7 +1,4 @@
-/*
-  Inspired by this article - https://goo.gl/9KnMYT
-  Catchify is also a great library for this - https://github.com/majgis/catchify
-*/
+// Catchify is also a great library for this - https://github.com/majgis/catchify
 
 const catchy = value => (
   Promise.resolve(value)

@@ -3,9 +3,9 @@ const { errorToObject } = require('./errorUtil')
 const isProd = process.env.NODE_ENV === 'production'
 
 /*
-  toLocaleString - https://goo.gl/obzAhL
+  toLocaleString - https://mzl.la/2XhWh3j
   Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
-  https://goo.gl/SkVvba
+  http://bit.ly/2Xp3SwW
 */
 const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
 

@@ -1,8 +1,8 @@
 /*
   Calling `JSON.stringify(error)` will result in '{}' if there is no
-  `Error.prototype.toJSON` (https://goo.gl/wsc2Jr). In order to
+  `Error.prototype.toJSON` (http://bit.ly/2XmFBYl). In order to
   mitigate that, this helper function takes advantage of the 2nd argument
-  to `JSON.stringify` (https://goo.gl/XNHK2U) It ensures that we get back
+  to `JSON.stringify` (https://mzl.la/2XvU18w) It ensures that we get back
   a properly stringified object with keys & values.
 
   Before:

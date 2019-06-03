@@ -9,7 +9,7 @@ const middlewareList = []
 const rootReducer = combineReducers({ app })
 
 /*
-  https://goo.gl/XRLgX8
+  http://bit.ly/2XqEeYM
   Using Redux DevTools extension? You should...
   If we're connecting a mobile device to our local machine running the app,
   then we may have an issue with Redux DevTools not being installed.

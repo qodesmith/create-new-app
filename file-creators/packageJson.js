@@ -18,7 +18,7 @@ function packageJson(answers) {
     email,
     repository: repository || repo,
     license: 'ISC', // Default `npm init -y` value.
-    browserslist // https://goo.gl/2uAdKL - why you should avoid `last 2 versions`.
+    browserslist // http://bit.ly/2XpC23Q - why you should avoid `last 2 versions`.
   }
 
   if (server) {
@@ -47,7 +47,7 @@ function packageJson(answers) {
     }
   }
 
-  // https://goo.gl/vldff
+  // https://mzl.la/2Xn1ua7
   return JSON.stringify(packageJson, null, 2)
 }
 

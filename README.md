@@ -110,7 +110,7 @@ Delivers super-sexy minified JavaScript without those dead branches! Your CSS is
 
 ### Babel / Polyfilling
 
-Write ES6+ and beyond. Babel 7 is integrated and CNA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](https://goo.gl/mw8Ntd), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
+Write ES6+ and beyond. Babel 7 is integrated and CNA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](http://bit.ly/2DTXGpe), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
 
 ### Postcss
 
@@ -122,15 +122,15 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
 
 ### CleanWebpackPlugin
 
-[CleanWebpackPlugin](https://goo.gl/xP7eDB) is used to clean the `dist` folder when running a build. It's the folder that will contain your app's bundled assets.
+[CleanWebpackPlugin](http://bit.ly/2WEalXF) is used to clean the `dist` folder when running a build. It's the folder that will contain your app's bundled assets.
 
 ### MiniCssExtractPlugin
 
-[MiniCssExtractPlugin](https://goo.gl/pvSAek) removes the CSS data that's in the JS bundle and extracts it into a CSS file. This is the recommended plugin to use instead of the old [extract text webpack plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin).
+[MiniCssExtractPlugin](http://bit.ly/2YYiAvg) removes the CSS data that's in the JS bundle and extracts it into a CSS file. This is the recommended plugin to use instead of the old [extract text webpack plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin).
 
 ### HtmlWebpackPlugin
 
-[HtmlWebpackPlugin](https://goo.gl/og4sNK) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
+[HtmlWebpackPlugin](http://bit.ly/2WBxaLR) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
 
 
 ## Options
@@ -384,7 +384,7 @@ If you're developing a fullstack app we've got you covered with Express and Mong
       <td><code>--browserslist</code></td>
       <td><code>--bl</code></td>
       <td>Array</td>
-      <td>Populates package.json field name of the same value. This field is used by <a href="https://babeljs.io/docs/en/babel-preset-env#browserslist-integration">@babel/preset-env</a> and <a href="https://github.com/postcss/autoprefixer#browsers">autoprefixer</a>.The default value is aimed at supporting modern browsers only. Also, using <code>last 2 versions</code> <a href="https://goo.gl/2uAdKL">might not do what you think.</a></td>
+      <td>Populates package.json field name of the same value. This field is used by <a href="https://babeljs.io/docs/en/babel-preset-env#browserslist-integration">@babel/preset-env</a> and <a href="https://github.com/postcss/autoprefixer#browsers">autoprefixer</a>.The default value is aimed at supporting modern browsers only. Also, using <code>last 2 versions</code> <a href="http://bit.ly/2Z5pejA">might not do what you think.</a></td>
       <td><code>['>0.25%', 'not ie 11', 'not op_mini all']</code></td>
     </tr>
     <tr>
@@ -487,4 +487,4 @@ If you're developing a fullstack app we've got you covered with Express and Mong
 ## TODO's
 
 - [ ] Implement PWA's by default with CLI option to disable
-- [ ] Create `man` documentation for use in `package.json` - https://goo.gl/64HeiV
+- [ ] Create `man` documentation for use in `package.json` - http://bit.ly/2Z5tCiy

@@ -8,7 +8,7 @@ const indentFromZero = require('./indentFromZero')
 function adjustEntryFile(entryFileContents) {
   const commentContents = `
     /*
-      https://goo.gl/mw8Ntd - \`@babel/polyfill\` has been deprecated.
+      http://bit.ly/2DTXGpe - \`@babel/polyfill\` has been deprecated.
       If you need to polyfill certain JS features, uncomment the two imports below.
       Be sure to adjust the \`browserslist\` field in your \`package.json\` file.
     */

@@ -42,7 +42,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'webpack-cli': '^3',
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^0', // Currently < 1
-    'clean-webpack-plugin': '^2',
+    'clean-webpack-plugin': '^3',
     'html-webpack-plugin': '^3',
     'glob-all': 'latest', // Always install latest.
     'file-loader': '^3',
@@ -68,7 +68,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     // OTHER
     'cross-env': '^5',
     'npm-run-all': 'latest', // Always install latest.
-    dotenv: !server && '^7' // This is also below in `serverDependencies`.
+    dotenv: !server && '^8' // This is also below in `serverDependencies`.
   }
 
   // These will only take effect if we're creating an app with a server.

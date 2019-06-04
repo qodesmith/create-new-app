@@ -3,7 +3,7 @@ const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
@@ -438,7 +438,10 @@ module.exports = (env, argv) => ({
             For all others, let the API server respond.
           */
 
-          // Url / browser request - allow front end routing to handle all the things.
+          /*
+            http://bit.ly/2XlEOXN
+            Url / browser request - allow front end routing to handle all the things.
+          */
           if ((req.headers.accept || '').includes('html')) return '/'
 
           // Let the API server respond by implicitly returning here.

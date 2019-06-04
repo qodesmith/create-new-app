@@ -44,7 +44,7 @@ const plainDevDeps = {
   'webpack-cli': '^3',
   'webpack-dev-server': '^3',
   'mini-css-extract-plugin': '^0',
-  'clean-webpack-plugin': '^2',
+  'clean-webpack-plugin': '^3',
   'html-webpack-plugin': '^3',
   'glob-all': 'latest',
   'file-loader': '^3',
@@ -73,7 +73,7 @@ const plainDevDeps = {
 
   // This is also below in `serverDependencies`.
   // It does not get included here when the user requires a server.
-  dotenv: /* !server && */ '^7'
+  dotenv: /* !server && */ '^8'
 }
 
 const plainServerDeps = {
@@ -84,7 +84,7 @@ const plainServerDeps = {
   compression: '^1',
   'body-parser': '^1',
   nodemon: 'latest', // Always install latest.
-  dotenv: '^7' // This is also conditionally above in `devDependencies`.
+  dotenv: '^8' // This is also conditionally above in `devDependencies`.
 }
 
 const plainMongoDeps = {

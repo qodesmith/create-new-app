@@ -40,8 +40,8 @@
   },
   "scripts": {
     "test": "jest",
-    "e2e": "npm run test ./tests/e2e",
-    "unit": "npm run test ./tests/unit",
+    "e2e": "jest ./tests/e2e",
+    "unit": "jest ./tests/unit",
     "preinstall": "node ./versionCheck.js"
   },
   "jest": {

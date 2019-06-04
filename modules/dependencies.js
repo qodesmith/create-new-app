@@ -81,7 +81,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     compression: '^1',
     'body-parser': '^1',
     nodemon: 'latest', // Always install latest.
-    dotenv: '^7', // This is also conditionally above in `devDependencies`.
+    dotenv: '^8', // This is also conditionally above in `devDependencies`.
 
     // MONGO
     mongodb: mongo && '^3',

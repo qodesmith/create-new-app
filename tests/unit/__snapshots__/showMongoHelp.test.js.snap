@@ -31,7 +31,7 @@ and you can add a user from the Mongo console like so:
     [1m// Save that user to the \`admin\` database.[22m
     [36mdb[39m.[33mcreateUser[39m([36muser[39m)
 
-See [34mhttps://goo.gl/T5Rpe6[39m for more details.
+See [34mhttp://bit.ly/2UTn484[39m for more details.
 
 
 Mongo-specific variables will be setup in the \`.env\` file.

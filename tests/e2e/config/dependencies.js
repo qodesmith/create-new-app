@@ -8,7 +8,7 @@ const serverDevDeps = {
   '@fullhuman/postcss-purgecss': '^1',
   'autoprefixer': '^9',
   'babel-loader': '^8',
-  'clean-webpack-plugin': '^2',
+  'clean-webpack-plugin': '^3',
   'core-js': '^3',
   'cross-env': '^5',
   'css-declaration-sorter': '^4',
@@ -40,7 +40,7 @@ const serverDevDeps = {
   'webpack-cli': '^3',
   'webpack-dev-server': '^3'
 }
-const devDeps = { ...serverDevDeps, 'dotenv': '^7' }
+const devDeps = { ...serverDevDeps, 'dotenv': '^8' }
 const reduxDeps = { 'redux': '^4', 'react-redux': '^7' }
 const routerDeps = { 'react-router-dom': '^5', 'history': '^4' }
 const serverDeps = {
@@ -50,7 +50,7 @@ const serverDeps = {
   'compression': '^1',
   'body-parser': '^1',
   'nodemon': 'latest',
-  'dotenv': '^7'
+  'dotenv': '^8'
 }
 const mongoDeps = {
   ...serverDeps,

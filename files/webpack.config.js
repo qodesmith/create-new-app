@@ -224,13 +224,7 @@ module.exports = (env, argv) => ({
               */
               includePaths: [
                 'node_modules/sassyons'
-              ],
-
-              /*
-                http://bit.ly/2WGndg4
-                Values: nested, expanded, compact, compressed
-              */
-              outputStyle: env.prod ? 'compressed' : 'expanded'
+              ]
             }
           }
         ]

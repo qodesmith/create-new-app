@@ -114,12 +114,11 @@ exports[`cli - React + MongoDB + Express + Redux project contents of files creat
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
 const globAll = require('glob-all')
-const noComment = require('postcss-discard-comments')
-const mqPacker = require('css-mqpacker')
+const extractMediaQuery = require('postcss-extract-media-query')
 const combineSelectors = require('postcss-combine-duplicated-selectors')
 const autoprefixer = require('autoprefixer')
-const colormin = require('postcss-colormin').default
 const sorter = require('css-declaration-sorter')
+const nano = require('cssnano')
 // const whitelister = require('purgecss-whitelister')
 
 
@@ -131,9 +130,9 @@ const sorter = require('css-declaration-sorter')
   and see no change. This avoids that.
 */
 module.exports = {
-  plugins: [
+  plugins: isProd ? [
     // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
-    isProd && purgeCss({
+    purgeCss({
       // Optionally whitelist 3rd party libraries:
       // whitelist: whitelister('./node_modules/some-library/styles.css'),
       content: globAll.sync([
@@ -143,13 +142,16 @@ module.exports = {
       ], { absolute: true }),
       keyframes: false // http://bit.ly/2Xnsqq2
     }),
-    noComment(),
-    mqPacker({ sort: true }),
+    extractMediaQuery({ // http://bit.ly/2Z6BrUX - Replaces \`mq-packer\`.
+      output: {
+        path: null
+      }
+    }),
     combineSelectors({ removeDuplicatedProperties: true }),
     autoprefixer(),
-    colormin(),
-    sorter()
-  ].filter(Boolean)
+    sorter(),
+    nano()
+  ] : []
 }
 "
 `;
@@ -495,13 +497,7 @@ module.exports = (env, argv) => ({
               */
               includePaths: [
                 'node_modules/sassyons'
-              ],
-
-              /*
-                http://bit.ly/2WGndg4
-                Values: nested, expanded, compact, compressed
-              */
-              outputStyle: env.prod ? 'compressed' : 'expanded'
+              ]
             }
           }
         ]

@@ -30,11 +30,9 @@ const dependencies = ({ mongo, redux, router, server }) => {
     cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^1', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install latest.
-    'postcss-discard-comments': '^4',
-    'css-mqpacker': '^7', // DEPRECATED - needs to be replaced asap.
+    'postcss-extract-media-query': '^1',
     'postcss-combine-duplicated-selectors': '^7',
     autoprefixer: '^9',
-    'postcss-colormin': '^4',
     'css-declaration-sorter': '^4',
 
     // WEBPACK

@@ -13,7 +13,7 @@ const {
 
 
 describe('cli - React + MongoDB + Express + React Router + Redux project', () => {
-  const appName = '12-react-mongo-rrouter-redux'
+  const appName = '12-react-mongo-rrouter-redux-test'
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 

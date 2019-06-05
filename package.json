@@ -1,6 +1,6 @@
 {
   "name": "create-new-app",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "Easily generate a new fully-equiped React project, optionally with Express & MongoDB.",
   "keywords": [
     "react",

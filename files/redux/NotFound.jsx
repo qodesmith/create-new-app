@@ -2,8 +2,10 @@ import React from 'react'
 
 const NotFound = () => (
   <>
-    <h2>Where's Waldo?</h2>
-    <p>More importantly, where are <span className='i'>you?</span> Because from the looks of it, you're lost, pal. Might wanna find a page that actually exists...</p>
+    <h1>Looking for something?</h1>
+    <p>
+      <span className="i">{window.location.href}</span> doesn't exist.
+    </p>
   </>
 )
 

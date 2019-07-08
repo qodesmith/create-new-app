@@ -24,7 +24,7 @@ const plainDevDeps = {
   // MAIN
   react: '^16',
   'react-dom': '^16',
-  sassyons: '^2',
+  sassyons: '^3',
 
   // POSTCSS
   'postcss-loader': '^3',

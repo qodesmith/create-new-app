@@ -1,6 +1,11 @@
 /*
   This module contains all the dependencies and devDependencies for the
   generated app. They are returned as objects to be consumed later down the line.
+
+  When updating a dependency, be sure to update the following:
+    * This file, lolz.
+    * tests/unit/dependencies.test.js
+    * tests/e2e/config/dependencies.js
 */
 
 // NPM Semver Calculator - https://semver.npmjs.com/
@@ -17,7 +22,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     // MAIN
     react: '^16',
     'react-dom': '^16',
-    sassyons: '^2',
+    sassyons: '^3',
     redux: redux && '^4',
     'react-redux': redux && '^7',
     'react-router-dom': router && '^5',
@@ -30,7 +35,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^1', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install latest.
-    'postcss-extract-media-query': '^1',
+    'postcss-extract-media-query': '^1', // http://bit.ly/2Z6BrUX - not used to actually extract, only to combine.
     'postcss-combine-duplicated-selectors': '^7',
     autoprefixer: '^9',
     'css-declaration-sorter': '^4',

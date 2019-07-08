@@ -1035,7 +1035,7 @@ document.body.className = 'bg-black-80 fw4 white-80'
 ReactDOM.render(
   <Router>
     <Switch>
-      <Route exact path='/' component={Home} />
+      <Route exact path=\\"/\\" component={Home} />
       <Route component={NotFound} />
     </Switch>
   </Router>,
@@ -1076,12 +1076,12 @@ exports[`cli - React + MongoDB + Express + React Router project contents of file
 
 const Home = () => (
   <>
-    <header className='pv5 bg-gold black-80'>
-      <h1 className='mt0 mb1 tc'>Create New App</h1>
-      <div className='tc ttc'>by the Qodesmith</div>
+    <header className=\\"pv5 bg-gold black-80\\">
+      <h1 className=\\"mt0 mb1 tc\\">Create New App</h1>
+      <div className=\\"tc ttc\\">by the Qodesmith</div>
     </header>
-    <div className='pt4 pb1 tc'>Go save the world with JavaScript</div>
-    <div className='tc'>and edit <code>src/components/<span className='b'>Home.jsx</span></code>!</div>
+    <div className=\\"pt4 pb1 tc\\">Go save the world with JavaScript</div>
+    <div className=\\"tc\\">and edit <code>src/components/<span className=\\"b\\">Home.jsx</span></code>!</div>
   </>
 )
 
@@ -1094,8 +1094,10 @@ exports[`cli - React + MongoDB + Express + React Router project contents of file
 
 const NotFound = () => (
   <>
-    <h2>Where's Waldo?</h2>
-    <p>More importantly, where are <span className='i'>you?</span> Because from the looks of it, you're lost, pal. Might wanna find a page that actually exists...</p>
+    <h1>Looking for something?</h1>
+    <p>
+      <span className=\\"i\\">{window.location.href}</span> doesn't exist.
+    </p>
   </>
 )
 

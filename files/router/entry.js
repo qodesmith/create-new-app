@@ -22,7 +22,7 @@ document.body.className = 'bg-black-80 fw4 white-80'
 ReactDOM.render(
   <Router>
     <Switch>
-      <Route exact path='/' component={Home} />
+      <Route exact path="/" component={Home} />
       <Route component={NotFound} />
     </Switch>
   </Router>,

@@ -2,6 +2,15 @@
   "name": "create-new-app",
   "version": "4.2.0",
   "description": "Easily generate a new fully-equiped React project, optionally with Express & MongoDB.",
+  "scripts": {
+    "test": "jest ; node removeTestFolders.js",
+    "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
+    "e2e": "jest ./tests/e2e ; node removeTestFolders.js",
+    "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
+    "unit": "jest ./tests/unit",
+    "preinstall": "node ./versionCheck.js",
+    "prepublish": "npm run test"
+  },
   "keywords": [
     "react",
     "redux",
@@ -37,12 +46,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/qodesmith/create-new-app"
-  },
-  "scripts": {
-    "test": "jest",
-    "e2e": "jest ./tests/e2e",
-    "unit": "jest ./tests/unit",
-    "preinstall": "node ./versionCheck.js"
   },
   "jest": {
     "setupFilesAfterEnv": [

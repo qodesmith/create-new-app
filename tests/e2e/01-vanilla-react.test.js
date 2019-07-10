@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const noInstall = process.argv.includes('noInstall') ? '--noInstall' : ''
 const run = require('../../modules/run')
 const filesAndFolders = require('./config/filesAndFolders')
+const jsFilesAreValid = require('./helpers/jsFilesAreValid')
 const {
   listFoldersInTree,
   foldersFromConfig,
@@ -23,7 +24,7 @@ describe('cli - vanilla React project', () => {
 
   // Remove the directory after all tests are complete.
   afterAll(() => {
-    fs.removeSync(appPath)
+    !process.env.REMAIN && fs.removeSync(appPath)
   })
 
   it('should create a project in the <appName> directory', () => {
@@ -49,6 +50,10 @@ describe('cli - vanilla React project', () => {
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
     })
+  })
+
+  it('should produce valid JavaScript files with no parsing errors', () => {
+    expect(jsFilesAreValid(appPath, 'cna')).toBe(true)
   })
 
   describe('contents of files created', () => {
@@ -131,17 +136,11 @@ describe('cli - vanilla React project', () => {
           const installedVersion = pkgJson.devDependencies[pkg]
           const expectedVersion = devDependencies[pkg]
 
-          /*
-            `latest` packages should both be accounted for
-            and have an actual version installed (not 'latest').
-          */
-          if (expectedVersion === 'latest') {
-            expect(installedVersion).not.toBe('latest')
-            return expect(latestPackages.includes(pkg)).toBe(true)
-          }
-
           if (noInstall) {
             expect(installedVersion).toBe(expectedVersion)
+          } else if (expectedVersion === 'latest') {
+            expect(installedVersion).not.toBe('latest')
+            expect(latestPackages.includes(pkg)).toBe(true)
           } else {
             expect(installedVersion).toStartWith(expectedVersion, pkg)
           }

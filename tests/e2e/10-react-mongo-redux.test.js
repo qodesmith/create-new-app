@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const noInstall = process.argv.includes('noInstall') ? '--noInstall' : ''
 const run = require('../../modules/run')
 const filesAndFolders = require('./config/filesAndFolders')
+const jsFilesAreValid = require('./helpers/jsFilesAreValid')
 const {
   listFoldersInTree,
   foldersFromConfig,
@@ -22,7 +23,7 @@ describe('cli - React + MongoDB + Express + Redux project', () => {
   })
 
   afterAll(() => {
-    fs.removeSync(appPath)
+    !process.env.REMAIN && fs.removeSync(appPath)
   })
 
   it('should create a project in the <appName> directory', () => {
@@ -48,6 +49,10 @@ describe('cli - React + MongoDB + Express + Redux project', () => {
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
     })
+  })
+
+  it('should produce valid JavaScript files with no parsing errors', () => {
+    expect(jsFilesAreValid(appPath, 'cnaMongoRedux')).toBe(true)
   })
 
   describe('contents of files created', () => {

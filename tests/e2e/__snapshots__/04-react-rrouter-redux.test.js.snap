@@ -460,11 +460,10 @@ module.exports = (env, argv) => ({
     alias: {
       components: path.resolve(__dirname, 'src/components'),
       assets: path.resolve(__dirname, 'src/assets'),
-      actions: path.resolve(__dirname, 'src/utils/actions'),
-      helpers: path.resolve(__dirname, 'src/utils/helpers'),
-      middleware: path.resolve(__dirname, 'src/utils/middleware'),
-      reducers: path.resolve(__dirname, 'src/utils/reducers'),
-      utils: path.resolve(__dirname, 'src/utils')
+      helpers: path.resolve(__dirname, 'src/helpers'),
+      actions: path.resolve(__dirname, 'src/redux/actions'),
+      middleware: path.resolve(__dirname, 'src/redux/middleware'),
+      reducers: path.resolve(__dirname, 'src/redux/reducers')
     },
 
     /*
@@ -667,7 +666,7 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
 
 exports[`cli - React + React Router + Redux project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src should populate "entry.js" correctly 1`] = `
+exports[`cli - React + React Router + Redux project contents of files created Folder - /src should populate "entry.jsx" correctly 1`] = `
 "/*
   http://bit.ly/2DTXGpe - \`@babel/polyfill\` has been deprecated.
   If you need to polyfill certain JS features, uncomment the two imports below.
@@ -818,6 +817,75 @@ export default NotFound
 "
 `;
 
+exports[`cli - React + React Router + Redux project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
+"export const cn = (...args) => {
+  const classNames = args.reduce((arr, thing) => {
+    if (typeof thing === 'string') return [...arr, thing] // Strings.
+    if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
+
+    return Object
+      .keys(thing)
+      .reduce((arr2, key) => (thing[key] ? [...arr2, key] : arr2), arr)
+  }, [])
+
+  // Avoid duplicate names.
+  return [...new Set(classNames)].join(' ')
+}
+
+// http://bit.ly/2Xmuwqf - micro UUID!
+export const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
+
+export const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+
+// Simple email validation :)
+export const isEmail = email => {
+  return [
+    email.includes('@'), // Has the @ sybmol.
+    email.trim().split('@')[0].length, // Has characters before the @ symbol.
+    email.split('@').pop().includes('.'), // Has a period after the @ symbol.
+    !email.trim().includes(' '), // Doesn't contain spaces.
+    email.length > 5, // At least 6 chars long => a@b.co
+
+    // Ensure at least 2 characters in the \`.com\` portion.
+    email.trim().split('@').pop().split('.').pop().length > 1
+  ].every(Boolean)
+}
+
+const letters = 'abcdef'
+const numbers = '0123456789'
+export const randomHexColor = () => (
+  letters.split('').reduce(hex => {
+    const set = randomNum(0, 1) ? letters : numbers
+    const index = randomNum(0, set.length - 1)
+    return \`\${hex}\${set[index]}\`
+  }, '#')
+)
+"
+`;
+
+exports[`cli - React + React Router + Redux project contents of files created Folder - /src/redux/actions should populate "index.js" correctly 1`] = `
+"export const changeColor = () => ({ type: 'CHANGE_COLOR' })
+"
+`;
+
+exports[`cli - React + React Router + Redux project contents of files created Folder - /src/redux/reducers should populate "homeReducer.js" correctly 1`] = `
+"import { randomHexColor } from 'helpers'
+
+const initialState = { color: '#ffd700' }
+
+const homeReducer = (state = initialState, action = {}) => {
+  switch (action.type) {
+    case 'CHANGE_COLOR':
+      return { ...state, color: randomHexColor() }
+    default:
+      return state
+  }
+}
+
+export default homeReducer
+"
+`;
+
 exports[`cli - React + React Router + Redux project contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
 "/*
   px <-> em: http://pxtoem.com/
@@ -880,46 +948,5 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
   @import each of them in reverse-priority order (bottom = highest priority).
 */
 @import 'global';
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/utils/actions should populate "index.js" correctly 1`] = `
-"export const changeColor = () => ({ type: 'CHANGE_COLOR' })
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/utils/helpers should populate "index.js" correctly 1`] = `
-"// http://bit.ly/2Xmuwqf - micro UUID!
-export const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
-
-export const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
-
-const letters = 'abcdef'
-const numbers = '0123456789'
-export const randomHexColor = () => (
-  letters.split('').reduce(hex => {
-    const set = randomNum(0, 1) ? letters : numbers
-    const index = randomNum(0, set.length - 1)
-    return \`\${hex}\${set[index]}\`
-  }, '#')
-)
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/utils/reducers should populate "homeReducer.js" correctly 1`] = `
-"import { randomHexColor } from 'helpers'
-
-const initialState = { color: '#ffd700' }
-
-const homeReducer = (state = initialState, action = {}) => {
-  switch (action.type) {
-    case 'CHANGE_COLOR':
-      return { ...state, color: randomHexColor() }
-    default:
-      return state
-  }
-}
-
-export default homeReducer
 "
 `;

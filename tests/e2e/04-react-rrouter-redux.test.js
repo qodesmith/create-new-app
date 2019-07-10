@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
-const noInstall = process.argv.includes('noInstall') ? '--noInstall' : ''
+const noInstall = process.env.NO_INSTALL ? '--noInstall' : ''
 const run = require('../../modules/run')
 const filesAndFolders = require('./config/filesAndFolders')
 const jsFilesAreValid = require('./helpers/jsFilesAreValid')

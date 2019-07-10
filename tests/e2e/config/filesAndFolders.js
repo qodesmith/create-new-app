@@ -3,7 +3,7 @@
   there won't be a `package-lock.json` file. Passing the `noInstall`
   argument to the test runner will help us filter it out for tests.
 */
-const noInstall = process.argv.includes('noInstall')
+const noInstall = process.env.NO_INSTALL
 
 const cna = {
   './': [

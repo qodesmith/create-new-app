@@ -22,6 +22,9 @@
 
 # Create New App &middot; [![npm version](https://badge.fury.io/js/create-new-app.svg)](https://badge.fury.io/js/create-new-app)
 
+Create full-stack React applications! All the tech you've come to know and love - React, Redux, Express, & MongoDB. Use some, use none, but _always_ use React ;)
+
+## The Why
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
 [Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, ~~but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included.~~ And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?

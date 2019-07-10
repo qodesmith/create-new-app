@@ -37,7 +37,7 @@ module.exports = (env, argv) => ({
     The point(s) to enter the application.
   */
   entry: [
-    path.resolve(__dirname, 'src/entry.js')
+    path.resolve(__dirname, 'src/entry.jsx')
   ],
 
   /*

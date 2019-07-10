@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest ; node removeTestFolders.js",
     "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
+    "test:remain": "REMAIN=true npm run test",
     "e2e": "jest ./tests/e2e ; node removeTestFolders.js",
     "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
     "unit": "jest ./tests/unit",
@@ -63,6 +64,8 @@
   },
   "devDependencies": {
     "dotenv": "^7.0.0",
+    "eslint": "^6.0.1",
+    "eslint-plugin-react": "^7.14.2",
     "jest": "^24.7.1",
     "npm-registry-client": "^8.6.0"
   }

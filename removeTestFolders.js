@@ -14,6 +14,11 @@ const path = require('path')
 const dir = path.resolve()
 const removedFolders = []
 
+if (process.env.REMAIN) {
+  console.log('\nKeeping project folders!\n')
+  process.exit(0)
+}
+
 
 fs.readdirSync(dir).forEach(item => {
   const fullPath = `${dir}/${item}`

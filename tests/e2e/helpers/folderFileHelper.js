@@ -1,5 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
+const noInstall = process.env.NO_INSTALL
 
 
 /*

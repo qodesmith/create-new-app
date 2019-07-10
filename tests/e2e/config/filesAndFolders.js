@@ -3,7 +3,7 @@
   there won't be a `package-lock.json` file. Passing the `noInstall`
   argument to the test runner will help us filter it out for tests.
 */
-const noInstall = process.argv.includes('noInstall')
+const noInstall = process.env.NO_INSTALL
 
 const cna = {
   './': [
@@ -19,20 +19,20 @@ const cna = {
   './.git': null,
   './dist': ['favicon.ico', 'robots.txt'],
   './node_modules': null,
-  './src': ['entry.js', 'index.ejs'],
+  './src': ['entry.jsx', 'index.ejs'],
   './src/assets': [],
+  './src/helpers': ['index.js'],
   './src/components': ['App.jsx'],
   './src/styles': ['_global.scss', 'styles.scss']
 }
 
 const cnaRedux = {
   ...cna,
-  './src': ['entry.js', 'index.ejs', 'store.js'],
-  './src/utils': [],
-  './src/utils/actions': ['index.js'],
-  './src/utils/helpers': ['index.js'],
-  './src/utils/middleware': [],
-  './src/utils/reducers': ['appReducer.js'],
+  './src': ['entry.jsx', 'index.ejs', 'store.js'],
+  './src/redux': [],
+  './src/redux/actions': ['index.js'],
+  './src/redux/middleware': [],
+  './src/redux/reducers': ['appReducer.js'],
 }
 
 const cnaRouter = {
@@ -43,8 +43,8 @@ const cnaRouter = {
 const cnaRouterRedux = {
   ...cnaRedux,
   ...cnaRouter,
-  './src': ['entry.js', 'index.ejs', 'store.js'],
-  './src/utils/reducers': ['homeReducer.js']
+  './src': ['entry.jsx', 'index.ejs', 'store.js'],
+  './src/redux/reducers': ['homeReducer.js']
 }
 
 const cnaExpress = {
@@ -57,7 +57,7 @@ const cnaExpress = {
 const cnaExpressRedux = {
   ...cnaRedux,
   ...cnaExpress,
-  './src': ['entry.js', 'index.ejs', 'store.js']
+  './src': ['entry.jsx', 'index.ejs', 'store.js']
 }
 
 const cnaExpressRouter = {
@@ -80,7 +80,7 @@ const cnaMongo = {
 const cnaMongoRedux = {
   ...cnaExpressRedux,
   ...cnaMongo,
-  './src': ['entry.js', 'index.ejs', 'store.js']
+  './src': ['entry.jsx', 'index.ejs', 'store.js']
 }
 
 const cnaMongoRouter = {

@@ -34,6 +34,7 @@ function webpackConfig({ redux, title, description }) {
     '{',
     `${indent}components: path.resolve(__dirname, 'src/components'),`,
     `${indent}assets: path.resolve(__dirname, 'src/assets'),`,
+    `${indent}hooks: path.resolve(__dirname, 'src/hooks'),`,
     `${indent}helpers: path.resolve(__dirname, 'src/helpers')${redux ? ',' : ''}`,
     redux && aliasReduxObject,
     `${indent.slice(2)}}` // Closing bracket indented 2 spaces closer.

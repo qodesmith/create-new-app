@@ -38,5 +38,16 @@ module.exports = {
     autoprefixer(),
     sorter(),
     nano()
-  ] : []
+  ] : [
+    /*
+      During development, ensure that media queries are
+      combined and ordered properly so classes have the correct effect!
+    */
+    extractMediaQuery({ // http://bit.ly/2Z6BrUX - Replaces `mq-packer`.
+      output: {
+        path: null
+      }
+    }),
+    sorter()
+  ]
 }

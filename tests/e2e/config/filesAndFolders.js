@@ -22,6 +22,7 @@ const cna = {
   './src': ['entry.jsx', 'index.ejs'],
   './src/assets': [],
   './src/helpers': ['index.js'],
+  './src/hooks': [],
   './src/components': ['App.jsx'],
   './src/styles': ['_global.scss', 'styles.scss']
 }

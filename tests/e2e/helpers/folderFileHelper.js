@@ -1,6 +1,5 @@
 const fs = require('fs-extra')
 const path = require('path')
-const noInstall = process.env.NO_INSTALL
 
 
 /*
@@ -8,16 +7,16 @@ const noInstall = process.env.NO_INSTALL
   Can optionally list only folders, only files,
   and / or return only the names without the preceding paths.
 */
-function listFolderContents(folderPath, { folders, files, namesOnly } = {}) {
+function listFolderContents(directory, { folders, files, namesOnly } = {}) {
   return contents = fs
-    .readdirSync(folderPath, { withFileTypes: true })
+    .readdirSync(directory, { withFileTypes: true })
     .filter(dirent => { // https://nodejs.org/api/fs.html#fs_class_fs_dirent
       // https://stackoverflow.com/a/15630832/2525633
       if (folders) return dirent.isDirectory()
       if (files) return dirent.isFile()
       return true
     })
-    .map(dirent => namesOnly ? dirent.name : `${folderPath}/${dirent.name}`)
+    .map(dirent => namesOnly ? dirent.name : `${directory}/${dirent.name}`)
 }
 
 /*
@@ -50,11 +49,11 @@ function listFoldersInTree(basePath, { ignores = [] } = {}) {
   Ignored folders are those in the object that have falsey values.
 */
 function foldersFromConfig(basePath, config = {}) {
-  const allFolders = Object.keys(config)
-  const ignoredFolders = allFolders.filter(folder => !config[folder])
-  const ignores = getAbsolutePaths(basePath, ignoredFolders)
+  const folders = Object.keys(config)
+    .filter(folder => config[folder])
 
-  return listFoldersInTree(basePath, { ignores })
+  return getAbsolutePaths(basePath, folders)
+    .filter(folder => folder !== basePath)
 }
 
 /*

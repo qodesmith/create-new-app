@@ -1,3 +1,10 @@
+/*
+  When updating a dependency, be sure to update the following:
+    * This file, lolz.
+    * modules/dependencies.js
+    * tests/unit/dependencies.test.js
+*/
+
 const serverDevDeps = {
   '@babel/core': '^7',
   '@babel/plugin-proposal-class-properties': '^7',

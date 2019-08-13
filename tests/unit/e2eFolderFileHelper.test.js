@@ -1,8 +1,6 @@
 const path = require('path')
 const {
   listFolderContents,
-  getAbsolutePaths,
-  listFoldersInTree,
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
   absolutePathConfig
@@ -20,28 +18,36 @@ describe('E2E `folderFileHelper` functions', () => {
     './ignored/one': null,
     './ignored/two/much/longer': null
   }
-  const sampleFolderContents = [
-    'a',
-    'a/a-a',
-    'a/a-b',
-    'a/a-b-a',
-    'a/a-b-a/empty.html',
-    'b',
-    'b/b-a',
-    'b/b-a-a',
-    'b/b-a-a/empty.css',
-    '.a-dot-file',
-    'empty.js'
-  ]
+
+  /*
+    Contents in the sample folder:
+    [
+      'a',
+      'a/index.js'
+      'a/a-a',
+      'a/a-b',
+      'a/a-b/a-b-a',
+      'a/a-b/a-b-a/empty.html',
+      'b',
+      'b/b-a',
+      'b/b-a/b-a-a',
+      'b/b-a/b-a-a/empty.css',
+      '.a-dot-file',
+      'empty.js'
+    ]
+  */
 
   describe('listFolderContents', () => {
     const basePath = path.resolve(__dirname, './sample-folder-dont-delete')
 
     it('should list all files and folders as absolute paths', () => {
-      const expectedResults = ['a', 'b', '.a-dot-file', 'empty.js'].map(file => `${basePath}/${file}`).sort()
-      const actualResults = listFolderContents(basePath).sort()
+      const expectedResults1 = ['a', 'b', '.a-dot-file', 'empty.js'].map(file => `${basePath}/${file}`).sort()
+      const expectedResults2 = ['index.js', 'a-a', 'a-b'].map(file => `${basePath}/a/${file}`).sort()
+      const actualResults1 = listFolderContents(basePath).sort()
+      const actualResults2 = listFolderContents(`${basePath}/a`).sort()
 
-      expect(expectedResults).toEqual(actualResults)
+      expect(expectedResults1).toEqual(actualResults1)
+      expect(expectedResults2).toEqual(actualResults2)
     })
 
     it('should list only folders when given the `folders` options', () => {
@@ -78,15 +84,6 @@ describe('E2E `folderFileHelper` functions', () => {
 
       expect(expectedResults).toEqual(actualResults)
     })
-  })
-
-  describe('getAbsolutePaths', () => {
-    it('should return a an array of absolute paths', () => {})
-  })
-
-  describe('listFoldersInTree', () => {
-    it('should list all the folders in a given directory', () => {})
-    it('should list all the folders in a given directory minus those in `ignored`', () => {})
   })
 
   describe('foldersFromConfig', () => {

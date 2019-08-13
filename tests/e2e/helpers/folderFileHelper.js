@@ -28,21 +28,6 @@ function getAbsolutePaths(basePath, folders = []) {
 }
 
 /*
-  Returns an array of absolute paths for folders within a directory.
-  `ignores` is an array of strings to ignore. If a match is found that begins
-  with anything in the `ignores` array, those matches will be ignore.
-  Recursively calls itself.
-  Used as a helper function in `listAllFoldersInTree`.
-*/
-function listFoldersInTree(basePath, { ignores = [] } = {}) {
-  return listFolderContents(basePath, { folders: true })
-    .reduce((acc, folder) => {
-      if (ignores.some(ignored => folder.startsWith(ignored))) return acc
-      return [...acc, folder, ...listFoldersInTree(folder, { ignores })]
-    }, [])
-}
-
-/*
   Returns an array of absolute paths of folders derived from a config object.
   Uses `config` to derive which folders to ignore.
   Each folder corresponds to a key in `config`.
@@ -84,7 +69,6 @@ function absolutePathConfig(basePath, config = {}) {
 
 module.exports = {
   foldersFromConfig,
-  listFoldersInTree,
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
   listFolderContents

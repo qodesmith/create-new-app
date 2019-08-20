@@ -207,26 +207,14 @@ module.exports = (env, argv) => ({
             }
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
-          {
-            /*
-              http://bit.ly/2WI1fcw
-              Using `fast-sass-loader` combined with `fast-css-loader` (above)
-              produces about a 50% faster build. You'll notice it while developing.
-              `sass-loader` is still included so feel free to switch.
-            */
-            loader: 'fast-sass-loader',
-            options: {
 
-              /*
-                http://bit.ly/2Wyqb6r
-                An array of paths that in which to attempt to resolve your
-                @import declarations made in your scss files.
-              */
-              includePaths: [
-                'node_modules/sassyons'
-              ]
-            }
-          }
+          /*
+            http://bit.ly/2WI1fcw
+            Using `fast-sass-loader` combined with `fast-css-loader` (above)
+            produces about a 50% faster build. You'll notice it while developing.
+            `sass-loader` is still included so feel free to switch.
+          */
+          'fast-sass-loader'
         ]
       },
 

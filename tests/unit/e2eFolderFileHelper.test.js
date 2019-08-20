@@ -3,7 +3,8 @@ const {
   listFolderContents,
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
-  absolutePathConfig
+  absolutePathConfig,
+  listFoldersInTree
 } = require('../e2e/helpers/folderFileHelper')
 const dir = txt => `${__dirname}/${txt}`
 
@@ -23,7 +24,7 @@ describe('E2E `folderFileHelper` functions', () => {
     Contents in the sample folder:
     [
       'a',
-      'a/index.js'
+      'a/index.js',
       'a/a-a',
       'a/a-b',
       'a/a-b/a-b-a',
@@ -117,6 +118,27 @@ describe('E2E `folderFileHelper` functions', () => {
 
       expect(expectedResults1).toEqual(actualResults1)
       expect(expectedResults1).toEqual(actualResults2)
+    })
+  })
+
+  describe('listFoldersInTree', () => {
+    const basePath = path.resolve(__dirname, './sample-folder-dont-delete')
+    const baseMap = folder => `${basePath}/${folder}`
+    const expectedResults1 = ['a', 'a/a-a', 'a/a-b', 'a/a-b/a-b-a', 'b', 'b/b-a', 'b/b-a/b-a-a'].map(baseMap).sort()
+    const expectedResults2 = ['a', 'a/a-a', 'b', 'b/b-a', 'b/b-a/b-a-a'].map(baseMap).sort()
+    const expectedResults3 = ['b', 'b/b-a', 'b/b-a/b-a-a'].map(baseMap).sort()
+
+    const actualResults1 = listFoldersInTree(basePath).sort()
+    const actualResults2 = listFoldersInTree(basePath, { ignores: ['a/a-b'].map(baseMap) }).sort()
+    const actualResults3 = listFoldersInTree(basePath, { ignores: ['a'].map(baseMap) }).sort()
+
+    it('should list all the folders in a tree with absolute paths', () => {
+      expect(expectedResults1).toEqual(actualResults1)
+    })
+
+    it('should list all the folders in a tree with absolute paths, ignoring the `ignores`', () => {
+      expect(expectedResults2).toEqual(actualResults2)
+      expect(expectedResults3).toEqual(actualResults3)
     })
   })
 })

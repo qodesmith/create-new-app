@@ -733,16 +733,18 @@ exports[`cli - React + React Router project contents of files created Folder - /
 exports[`cli - React + React Router project contents of files created Folder - /src/components should populate "Home.jsx" correctly 1`] = `
 "import React from 'react'
 
-const Home = () => (
-  <>
-    <header className=\\"pv5 bg-gold black-80\\">
-      <h1 className=\\"mt0 mb1 tc\\">Create New App</h1>
-      <div className=\\"tc ttc\\">by the Qodesmith</div>
-    </header>
-    <div className=\\"pt4 pb1 tc\\">Go save the world with JavaScript</div>
-    <div className=\\"tc\\">and edit <code>src/components/<span className=\\"b\\">Home.jsx</span></code>!</div>
-  </>
-)
+const Home = () => {
+  return (
+    <>
+      <header className=\\"pv5 bg-gold black-80\\">
+        <h1 className=\\"mt0 mb1 tc\\">Create New App</h1>
+        <div className=\\"tc ttc\\">by the Qodesmith</div>
+      </header>
+      <div className=\\"pt4 pb1 tc\\">Go save the world with JavaScript</div>
+      <div className=\\"tc\\">and edit <code>src/components/<span className=\\"b\\">Home.jsx</span></code>!</div>
+    </>
+  )
+}
 
 export default Home
 "
@@ -751,14 +753,16 @@ export default Home
 exports[`cli - React + React Router project contents of files created Folder - /src/components should populate "NotFound.jsx" correctly 1`] = `
 "import React from 'react'
 
-const NotFound = () => (
-  <>
-    <h1>Looking for something?</h1>
-    <p>
-      <span className=\\"i\\">{window.location.href}</span> doesn't exist.
-    </p>
-  </>
-)
+const NotFound = () => {
+  return (
+    <>
+      <h1>Looking for something?</h1>
+      <p>
+        <span className=\\"i\\">{window.location.href}</span> doesn't exist.
+      </p>
+    </>
+  )
+}
 
 export default NotFound
 "

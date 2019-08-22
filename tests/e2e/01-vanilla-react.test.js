@@ -148,14 +148,35 @@ describe('cli - vanilla React project', () => {
       })
     })
 
+    describe('webpack.config.js', () => {
+      // let webpackConfig
+      // beforeAll(() => {
+      //   /*
+      //     Why is this in the `beforeAll` fxn?
+      //     -----------------------------------
+      //     Jest executes *all* `describe` functions before running any tests in them.
+      //     At the time of reading `describe`, the project hasn't been created yet
+      //     and `fs.readJSONSync` will throw an error. Placing it in here will
+      //     ensure it's read *after* the project was created. And doing it inside
+      //     a `beforeAll` vs a `beforeEach` will ensure it only happens once.
+      //   */
+      //   webpackConfig = require(`${appPath}/webpack.config`)
+      // })
+
+      // it('should do something', () => {
+      //   const x = webpackConfig({})
+      //   console.log('WHAT IS THIS:', x)
+      // })
+    })
+
     // http://bit.ly/2DzX08c - `describe.each`
     describe.each(folderNames)('%s', () => {
       const folderPath = folderPaths[i++]
       const files = config[folderPath]
 
       files.forEach(file => {
-        // `package.json` is tested separately.
-        if (file === 'package.json') return
+        // These files are tested separately.
+        if (file === 'package.json' || file === 'webpack.config.js') return
 
         // We don't test this file.
         if (file === 'package-lock.json') return

@@ -975,7 +975,10 @@ const {
 } = process.env
 const isProd = NODE_ENV === 'production'
 const url = isProd ? MONGO_URI_PROD : MONGO_URI
-const options = { useNewUrlParser: true }
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true // http://bit.ly/2Zpn4PD
+}
 
 if (isProd) {
   if (MONGO_USER && MONGO_USER_PASSWORD) {

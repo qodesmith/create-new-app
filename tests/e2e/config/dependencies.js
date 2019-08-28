@@ -60,6 +60,7 @@ const serverDeps = {
 const mongoDeps = {
   ...serverDeps,
   'mongodb': '^3',
+  'saslprep': '^1',
   'connect-mongo': '^2',
   'express-session': '^1'
 }

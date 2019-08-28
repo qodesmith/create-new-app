@@ -87,6 +87,7 @@ const plainServerDeps = {
 
 const plainMongoDeps = {
   mongodb: '^3',
+  saslprep: '^1',
   'connect-mongo': '^2',
   'express-session': '^1'
 }

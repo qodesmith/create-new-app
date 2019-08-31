@@ -65,6 +65,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     '@babel/plugin-proposal-object-rest-spread': '^7',
     '@babel/plugin-proposal-class-properties': '^7',
     '@babel/plugin-syntax-dynamic-import': '^7',
+    '@babel/plugin-proposal-optional-chaining': '^7',
     'core-js': '^3', //              \  http://bit.ly/2DTXGpe
     'regenerator-runtime': '^0', //  /  These two packages combined now replace `@babel/polyfill`.
 

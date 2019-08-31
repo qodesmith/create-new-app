@@ -144,6 +144,7 @@ module.exports = (env, argv) => ({
                 - @babel/plugin-proposal-object-rest-spread
                 - @babel/plugin-proposal-class-properties
                 - @babel/plugin-syntax-dynamic-import
+                - @babel/plugin-proposal-optional-chaining
             */
             loader: 'babel-loader',
             options: {
@@ -175,7 +176,8 @@ module.exports = (env, argv) => ({
               plugins: [
                 '@babel/plugin-proposal-object-rest-spread', // http://bit.ly/2KnLroT
                 '@babel/plugin-proposal-class-properties', // http://bit.ly/2KoJQPM
-                '@babel/plugin-syntax-dynamic-import' // http://bit.ly/2KoKcG6
+                '@babel/plugin-syntax-dynamic-import', // http://bit.ly/2KoKcG6
+                '@babel/plugin-proposal-optional-chaining' // http://bit.ly/2ZDuBdB
               ]
             }
           }

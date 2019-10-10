@@ -301,6 +301,9 @@ module.exports = (env, argv) => ({
   // http://bit.ly/2w4ndaR - new in Webpack 4.
   mode: env.prod ? 'production' : 'development',
 
+  // http://bit.ly/2IEFVfK - fail on errors when building for production.
+  bail: !!env.prod,
+
   /*
     http://bit.ly/2vZm5Ft
     The base directory, an absolute path, for resolving
@@ -331,6 +334,11 @@ module.exports = (env, argv) => ({
     filename: '[name].[hash].bundle.js',
 
     /*
+      http://bit.ly/2MtdylV
+    */
+    chunkFilename: '[name].[hash].chunk.js',
+
+    /*
       http://bit.ly/2KjYRSI
       The output directory as an absolute path.
     */
@@ -347,7 +355,15 @@ module.exports = (env, argv) => ({
       The URL of your \`output.path\` from the view of the HTML page.
       The value of the option is prefixed to every URL created by the runtime or loaders.
     */
-    publicPath: '/'
+    publicPath: '/',
+
+    /*
+      http://bit.ly/2IFBbGL
+      http://bit.ly/33nRRub - PR in React codebase.
+      The default global object is 'window'. To allow module chunks to work with
+      web workers, a value of 'this' is used instead.
+    */
+    globalObject: 'this'
   },
 
   /*
@@ -560,15 +576,25 @@ module.exports = (env, argv) => ({
 
   // http://bit.ly/2WH6fOH
   optimization: {
+    minimize: !!env.prod,
     minimizer: [
       // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
       new TerserPlugin({ // http://bit.ly/2WI3M6G
         cache: true, // http://bit.ly/2WNdoNC
         parallel: true, // http://bit.ly/2WJ6hWf
         terserOptions: { // http://bit.ly/2WIWVK5
-          ecma: 5,
+          compress: {
+            ecma: 5,
+            comparisons: false, // http://bit.ly/2MtqwQv
+            inline: 2 // http://bit.ly/2IDJXFg
+          },
+          mangle: {
+            safari10: true // http://bit.ly/2MsRTdv
+          },
           output: {
-            comments: false
+            ecma: 5,
+            comments: false,
+            ascii_only: true // Helps minimize regex and emoji's correctly.
           }
         }
       })

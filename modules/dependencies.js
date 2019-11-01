@@ -54,7 +54,6 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'sass-loader': '^7', // Still included to allow users to choose.
     'fast-sass-loader': '^1',
     'node-sass': '^4',
-    'style-loader': '^0', // Currently < 1
     'terser-webpack-plugin': '^1',
 
     // BABEL - http://bit.ly/2IdVyKe

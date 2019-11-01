@@ -51,7 +51,6 @@ const plainDevDeps = {
   'sass-loader': '^7',
   'fast-sass-loader': '^1',
   'node-sass': '^4',
-  'style-loader': '^0',
   'terser-webpack-plugin': '^1',
 
   // BABEL

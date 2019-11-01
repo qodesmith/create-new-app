@@ -11,8 +11,7 @@
     "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
     "e2e:update:noinstall": "NO_INSTALL=1 npm run e2e:update",
     "unit": "jest ./tests/unit",
-    "preinstall": "node ./versionCheck.js",
-    "prepublishOnly": "PUBLISHING_TO_NPM=1 npm run test"
+    "preinstall": "node ./versionCheck.js"
   },
   "keywords": [
     "react",

@@ -1116,7 +1116,7 @@ export default App
 exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
 "export const cn = (...args) => {
   const classNames = args.reduce((arr, thing) => {
-    if (typeof thing === 'string') return [...arr, thing] // Strings.
+    if (typeof thing === 'string') return [...arr, ...thing.split(' ')] // Strings.
     if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
 
     return Object

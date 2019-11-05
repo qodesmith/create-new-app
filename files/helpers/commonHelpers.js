@@ -1,6 +1,6 @@
 export const cn = (...args) => {
   const classNames = args.reduce((arr, thing) => {
-    if (typeof thing === 'string') return [...arr, thing] // Strings.
+    if (typeof thing === 'string') return [...arr, ...thing.split(' ')] // Strings.
     if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
 
     return Object

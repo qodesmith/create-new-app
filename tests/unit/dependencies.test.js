@@ -62,6 +62,7 @@ const plainDevDeps = {
   '@babel/plugin-proposal-class-properties': '^7',
   '@babel/plugin-syntax-dynamic-import': '^7',
   '@babel/plugin-proposal-optional-chaining': '^7',
+  '@babel/plugin-proposal-nullish-coalescing-operator': '^7',
   'core-js': '^3',
   'regenerator-runtime': '^0',
 

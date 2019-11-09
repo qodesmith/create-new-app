@@ -11,6 +11,7 @@ const serverDevDeps = {
   '@babel/plugin-proposal-object-rest-spread': '^7',
   '@babel/plugin-syntax-dynamic-import': '^7',
   '@babel/plugin-proposal-optional-chaining': '^7',
+  '@babel/plugin-proposal-nullish-coalescing-operator': '^7',
   '@babel/preset-env': '^7',
   '@babel/preset-react': '^7',
   '@fullhuman/postcss-purgecss': '^1',

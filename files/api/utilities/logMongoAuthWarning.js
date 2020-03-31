@@ -11,9 +11,12 @@ function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
       : chalk.red('No `MONGO_USER_PASSWORD` value found'),
     chalk.bold.red('YOUR DATABASE WILL ALLOW UN-AUTHENTICATED CONNECTIONS!'),
     '',
-    'Add a single user in the `admin` database and then',
-    `ensure \`${chalk.bold('MONGO_USER')}\` and \`${chalk.bold('MONGO_USER_PASSWORD')}\` are added`,
-    'to your environment variables.',
+    `To fix this, you'll need to open the mongo shell on`,
+    'your server and add a singe user in the `admin` database.',
+    `You'll then need to ensure \`${chalk.bold('MONGO_USER')}\` and \`${chalk.bold('MONGO_USER_PASSWORD')}\``,
+    'values are added to your environment variables.',
+    '',
+    `Here's and example of how you can do that from the mongo shell:`,
     '',
     ''
   ].join('\n')
@@ -40,7 +43,7 @@ function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
   ].forEach(line => console.log(line))
 
   console.log(`\n\nSee ${chalk.bold.blue('http://bit.ly/2UTn484')} for more details.`)
-  console.log('')
+  console.log('\n')
   console.log(dashes) // FINISH LOGGING.
 }
 

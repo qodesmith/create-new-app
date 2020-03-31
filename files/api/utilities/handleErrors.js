@@ -1,6 +1,7 @@
 const mongo = require('./mongo')
 const { errorToObject } = require('./errorUtil')
 const isProd = process.env.NODE_ENV === 'production'
+const catchy = require('./catchy')
 
 /*
   toLocaleString - https://mzl.la/2XhWh3j
@@ -27,8 +28,7 @@ async function saveErrorToDb(err) {
 
   const [dbErr, client, db] = await mongo()
   if (dbErr) return
-  await db.collection('errors').insertOne(err)
-  client.close()
+  await catchy(db.collection('errors').insertOne(err))
 }
 
 // Inserts, saves, etc. error's are handled with this function.

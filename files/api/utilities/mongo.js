@@ -5,10 +5,6 @@
   async function example() {
     const [dbErr, client, db] = await mongo()
     const postsCollection = await db.collection('posts')
-
-    ...
-
-    client.close()
   }
 */
 
@@ -25,6 +21,7 @@ const {
 } = process.env
 const isProd = NODE_ENV === 'production'
 const url = isProd ? MONGO_URI_PROD : MONGO_URI
+const data = { client: null, db: null }
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true // http://bit.ly/2Zpn4PD
@@ -37,20 +34,31 @@ if (isProd) {
     options.authSource = MONGO_AUTH_SOURCE
   } else {
     // If no credentials found,
-    // log out some warnings and instructions on how to create them.
+    // log some warnings and instructions on how to create them.
     logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD })
   }
 }
 
-/*
-  We default to connecting to a database named after the `APP_NAME`.
-  Users are still free to pass in their own custom name.
-  To set the db name globally, replace `APP_NAME` below with a string.
-*/
-const mongo = (databaseName = APP_NAME) => (
-  MongoClient.connect(url, options)
-    .then(client => [null, client, client.db(databaseName)])
+// `clientOnly` is only used when creating the MongoStore in `server.js`.
+const mongo = clientOnly => {
+  if (data.client) {
+    return Promise.resolve(
+      clientOnly
+        ? data.client
+        : [null, data.client, data.client.db(APP_NAME)]
+    )
+  }
+
+  return MongoClient.connect(url, options)
+    .then(client => {
+      // Store references to the results to avoid future calls to MongoClient.
+      data.client = client
+      data.db = client.db(APP_NAME)
+
+      // Return the appropriate results.
+      return clientOnly ? client : [null, client, client.db(APP_NAME)]
+    })
     .catch(err => [err])
-)
+}
 
 module.exports = mongo

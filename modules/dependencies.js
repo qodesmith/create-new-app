@@ -4,8 +4,8 @@
 
   When updating a dependency, be sure to update the following:
     * This file, lolz.
-    * tests/unit/dependencies.test.js
     * tests/e2e/config/dependencies.js
+    * tests/unit/dependencies.test.js
 */
 
 // NPM Semver Calculator - https://semver.npmjs.com/
@@ -33,12 +33,12 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'postcss-loader': '^3',
     postcss: '^7',
     cssnano: '^4',
-    '@fullhuman/postcss-purgecss': '^1', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
+    '@fullhuman/postcss-purgecss': '^2', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install latest.
-    'postcss-extract-media-query': '^1', // http://bit.ly/2Z6BrUX - not used to actually extract, only to combine.
-    'postcss-combine-duplicated-selectors': '^7',
+    'postcss-combine-media-query': '^1',
+    'postcss-combine-duplicated-selectors': '^8',
     autoprefixer: '^9',
-    'css-declaration-sorter': '^4',
+    'css-declaration-sorter': '^5',
 
     // WEBPACK
     webpack: '^4',
@@ -46,15 +46,15 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^0', // Currently < 1
     'clean-webpack-plugin': '^3',
-    'html-webpack-plugin': '^3',
+    'html-webpack-plugin': '^4',
     'glob-all': 'latest', // Always install latest.
-    'file-loader': '^3',
-    'css-loader': '^2', // Still included to allow users to choose.
+    'file-loader': '^6',
+    'css-loader': '^3', // Still included to allow users to choose.
     'fast-css-loader': '^1',
-    'sass-loader': '^7', // Still included to allow users to choose.
+    'sass-loader': '^8', // Still included to allow users to choose.
     'fast-sass-loader': '^1',
     'node-sass': '^4',
-    'terser-webpack-plugin': '^1',
+    'terser-webpack-plugin': '^2',
 
     // BABEL - http://bit.ly/2IdVyKe
     'babel-loader': '^8',
@@ -70,7 +70,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'regenerator-runtime': '^0', //  /  These two packages combined now replace `@babel/polyfill`.
 
     // OTHER
-    'cross-env': '^5',
+    'cross-env': '^7',
     'npm-run-all': 'latest', // Always install latest.
     dotenv: !server && '^8' // This is also below in `serverDependencies`.
   }
@@ -79,7 +79,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
   // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = {
     // SERVER
-    chalk: '^2',
+    chalk: '^3',
     express: '^4',
     helmet: '^3',
     compression: '^1',
@@ -90,7 +90,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     // MONGO
     mongodb: mongo && '^3',
     saslprep: mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
-    'connect-mongo': mongo && '^2',
+    'connect-mongo': mongo && '^3',
     'express-session': mongo && '^1',
   }
 

@@ -477,6 +477,6 @@ async function installDependencies(options) {
   }
 
   console.log(`\nGet started by typing:\n`)
-  console.log(`  ${chalk.cyan('cd')} ${appName}`)
-  console.log(`  ${chalk.cyan('npm start')}\n`)
+  console.log(`  ${chalk.cyan.bold('cd')} ${boldName}`)
+  console.log(`  ${chalk.cyan.bold('npm start')}\n`)
 }

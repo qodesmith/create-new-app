@@ -30,12 +30,12 @@ const plainDevDeps = {
   'postcss-loader': '^3',
   postcss: '^7',
   cssnano: '^4',
-  '@fullhuman/postcss-purgecss': '^1',
+  '@fullhuman/postcss-purgecss': '^2',
   'purgecss-whitelister': 'latest',
-  'postcss-extract-media-query': '^1',
-  'postcss-combine-duplicated-selectors': '^7',
+  'postcss-combine-media-query': '^1',
+  'postcss-combine-duplicated-selectors': '^8',
   autoprefixer: '^9',
-  'css-declaration-sorter': '^4',
+  'css-declaration-sorter': '^5',
 
   // WEBPACK
   webpack: '^4',
@@ -43,15 +43,15 @@ const plainDevDeps = {
   'webpack-dev-server': '^3',
   'mini-css-extract-plugin': '^0',
   'clean-webpack-plugin': '^3',
-  'html-webpack-plugin': '^3',
+  'html-webpack-plugin': '^4',
   'glob-all': 'latest',
-  'file-loader': '^3',
-  'css-loader': '^2',
+  'file-loader': '^6',
+  'css-loader': '^3',
   'fast-css-loader': '^1',
-  'sass-loader': '^7',
+  'sass-loader': '^8',
   'fast-sass-loader': '^1',
   'node-sass': '^4',
-  'terser-webpack-plugin': '^1',
+  'terser-webpack-plugin': '^2',
 
   // BABEL
   'babel-loader': '^8',
@@ -67,7 +67,7 @@ const plainDevDeps = {
   'regenerator-runtime': '^0',
 
   // OTHER
-  'cross-env': '^5',
+  'cross-env': '^7',
   'npm-run-all': 'latest',
 
   // This is also below in `serverDependencies`.
@@ -77,7 +77,7 @@ const plainDevDeps = {
 
 const plainServerDeps = {
   // SERVER
-  chalk: '^2',
+  chalk: '^3',
   express: '^4',
   helmet: '^3',
   compression: '^1',
@@ -89,7 +89,7 @@ const plainServerDeps = {
 const plainMongoDeps = {
   mongodb: '^3',
   saslprep: '^1',
-  'connect-mongo': '^2',
+  'connect-mongo': '^3',
   'express-session': '^1'
 }
 

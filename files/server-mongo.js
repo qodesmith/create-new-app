@@ -45,15 +45,9 @@ const mongo = require('./api/utilities/mongo')
 const { sessionStoreErr } = require('./api/utilities/handleErrors')
 const MongoStore  = require('connect-mongo')(session)
 const store = new MongoStore({
+  dbName: APP_NAME,
   collection: MONGO_SESSION_COLLECTION,
-  dbPromise: mongo().then(([dbErr, client, db]) => {
-    if (dbErr) {
-      console.error('MONGO STORE CONNECTION ERROR:', dbErr)
-      process.exit(1)
-    }
-
-    return db
-  })
+  clientPromise: mongo(true) // `true` flag to retrieve ONLY the client.
 })
 
 // Catch & record store errors in the database.

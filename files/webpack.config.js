@@ -39,9 +39,15 @@ module.exports = (env, argv) => ({
     http://bit.ly/2w3Ahxa
     The point(s) to enter the application.
   */
-  entry: [
-    path.resolve(__dirname, 'src/entry.jsx')
-  ],
+  entry: {
+    /*
+      This will produce a <srcipt src="main.js"> tag in the html.
+      If you want to produce other separate tags, add them here.
+      To order these script tags, see the `chunks` option of
+      `HtmlWebpackPlugin` down below in the plugins section.
+    */
+    main: path.resolve(__dirname, 'src/entry.jsx')
+  },
 
   /*
     http://bit.ly/2JojX2u
@@ -378,7 +384,11 @@ module.exports = (env, argv) => ({
       minify: {
         collapseWhitespace: true,
         removeComments: true
-      }
+      },
+
+      // Order the different entry points found at the top of this file.
+      chunks: ['main'],
+      chunksSortMode: 'manual'
     }),
 
     /*

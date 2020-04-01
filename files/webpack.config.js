@@ -331,6 +331,13 @@ module.exports = (env, argv) => ({
   // http://bit.ly/2WOvpLv
   plugins: [
     /*
+      https://bit.ly/3bHu78O
+      Makes webpack's [hash] accesible globally in client code
+      via the `__webpack_hash__` variable.
+    */
+    new webpack.ExtendedAPIPlugin(),
+
+    /*
       http://bit.ly/2WEeBGF
       Make global variables available to the app.
       Needed in order to use the production-ready minified version of React.

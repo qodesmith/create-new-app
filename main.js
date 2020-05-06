@@ -116,12 +116,14 @@ async function letsGo() {
     options = processUsersCommand(parsedArgs)
   }
 
+  
+  
   // STEP 3 - create project directory or sandbox project.
   if (options.sandbox) return createSandbox(options) // Calls `createProjectDirectory`.
   createProjectDirectory(options)
 
   // STEP 4 - create project files & folders.
-  createFiles(options)
+  return createFiles(options)
 
   // STEP 5 - install dependecies.
   installDependencies(options)
@@ -307,13 +309,18 @@ function createFiles(options) {
   const filter1 = { filter: file => !file.endsWith('.DS_Store') }
 
   // `.env`
-  fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf8')
+  const envPath = `${appDir}/.env`
+  const envContents = dotEnv({ options, destinationPath: envPath })
+  fs.writeFileSync(envPath, envContents, 'utf8')
+  return console.log('DONE')
 
   // `.gitignore`
-  fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
+  // fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
+  // copyOrAppend(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
 
   // `package.json`
-  fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')
+  // fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')
+  return console.log(packageJson(options))
 
   // `postcss.config.js`
   fs.copySync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`)

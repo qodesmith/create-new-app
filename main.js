@@ -312,13 +312,12 @@ function createFiles(options) {
   // `.env`
   const envPath = `${appDir}/.env`
   const envContents = dotEnv({ options, destinationPath: envPath })
-  fs.writeFileSync(envPath, envContents, 'utf8')
+  // fs.writeFileSync(envPath, envContents, 'utf8')
   
   // `.gitignore`
   const gitignorePath = `${appDir}/.gitignore`
-  // fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
-  // copyOrAppend(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
-  // const gitignore(gitignorePath)
+  const gitignoreContents = gitignore({ destinationPath: gitignorePath })
+  // fs.writeFileSync(gitignorePath, gitignoreContents, 'utf8')
   return console.log('DONE')
 
   // `package.json`

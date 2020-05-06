@@ -14,6 +14,7 @@ const cla = require('command-line-args')
 
 // File creators.
 const dotEnv = require('./file-creators/dotEnv')
+const gitignore = require('./file-creators/gitignore')
 const packageJson = require('./file-creators/packageJson')
 const webpackConfig = require('./file-creators/webpackConfig')
 const helpersIndex = require('./file-creators/helpersIndex')
@@ -312,11 +313,13 @@ function createFiles(options) {
   const envPath = `${appDir}/.env`
   const envContents = dotEnv({ options, destinationPath: envPath })
   fs.writeFileSync(envPath, envContents, 'utf8')
-  return console.log('DONE')
-
+  
   // `.gitignore`
+  const gitignorePath = `${appDir}/.gitignore`
   // fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
   // copyOrAppend(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
+  // const gitignore(gitignorePath)
+  return console.log('DONE')
 
   // `package.json`
   // fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')

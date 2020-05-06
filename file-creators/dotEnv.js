@@ -1,5 +1,5 @@
 /*
-  This module will create contents for the `.env` file.
+  This module will create CONTENTS for the `.env` file.
   If the user used the --force option, this module will prepend the existing contents.
 */
 
@@ -33,14 +33,11 @@ function dotEnv({ options, destinationPath }) {
     force
   } = options
 
-  /*
-    Create the file in the destination path if it doesn't already exist.
-    If it does exist this will not modify it at all.
-  */
-  if (destinationPath) fs.ensureFileSync(destinationPath)
-
   // Read the files contents - in the case it already existed, we'll append new contents to it.
-  const currentContents = destinationPath ? fs.readFileSync(destinationPath, 'utf8') : ''
+  let currentContents = ''
+  try {
+    currentContents = fs.readFileSync(destinationPath, 'utf8')
+  } catch (e) {}
 
   // Create the leading content of the file.
   const previousContents = !currentContents ? '' : [

@@ -16,6 +16,7 @@ const cla = require('command-line-args')
 const dotEnv = require('./file-creators/dotEnv')
 const gitignore = require('./file-creators/gitignore')
 const packageJson = require('./file-creators/packageJson')
+const postcssConfig = require('./file-creators/postcssConfig')
 const webpackConfig = require('./file-creators/webpackConfig')
 const helpersIndex = require('./file-creators/helpersIndex')
 
@@ -33,6 +34,7 @@ const portValidator = require('./modules/portValidator')
 const adjustPkgJson = require('./modules/adjustPkgJson')
 const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
+const { config } = require('process')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
@@ -117,8 +119,8 @@ async function letsGo() {
     options = processUsersCommand(parsedArgs)
   }
 
-  
-  
+
+
   // STEP 3 - create project directory or sandbox project.
   if (options.sandbox) return createSandbox(options) // Calls `createProjectDirectory`.
   createProjectDirectory(options)
@@ -313,22 +315,30 @@ function createFiles(options) {
   const envPath = `${appDir}/.env`
   const envContents = dotEnv({ options, destinationPath: envPath })
   // fs.writeFileSync(envPath, envContents, 'utf8')
-  
+
   // `.gitignore`
   const gitignorePath = `${appDir}/.gitignore`
   const gitignoreContents = gitignore({ destinationPath: gitignorePath })
   // fs.writeFileSync(gitignorePath, gitignoreContents, 'utf8')
-  return console.log('DONE')
 
   // `package.json`
-  // fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')
-  return console.log(packageJson(options))
+  const pkgJsonPath = `${appDir}/package.json`
+  const pkgJsonContents = packageJson({ options, destinationPath: pkgJsonPath })
+  // fs.writeFileSync(pkgJsonPath, pkgJsonContents, 'utf8')
 
   // `postcss.config.js`
-  fs.copySync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`)
+  const postcssConfigPath = `${appDir}/postcss.config.js`
+  const postcssConfigContents = postcssConfig({
+    destinationPath: postcssConfigPath,
+    newContentPath: dir('files/postcss.config.js'),
+  })
+  // fs.writeFileSync(postcssConfigPath, postcssConfigContents, 'utf8')
 
   // `README.md`
-  fs.copySync(dir('files/README.md'), `${appDir}/README.md`)
+  if (!fs.existsSync(`${appDir}/README.md`)) {
+    fs.copySync(dir('files/README.md'), `${appDir}/README.md`)
+  }
+  return console.log('DONE')
 
   // `server.js` (with or without MongoDB options)
   server && fs.copySync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)

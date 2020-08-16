@@ -351,13 +351,23 @@ function createFiles(options) {
       fs.copySync(dir(serverJsSource), serverJsPath)
     }
   }
-  return console.log('DONE')
 
   // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, title, description }), 'utf8')
+  const webpackConfigPath = `${appDir}/webpack.config.js`
+  const webpackConfigContents = keepOldFileContent({
+    destinationPath: webpackConfigPath,
+    newContent: webpackConfig({ redux, title, description }),
+  })
+  // fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
   // `after-compile-plugin.js`
-  fs.copySync(dir('files/after-compile-plugin.js'), `${appDir}/after-compile-plugin.js`)
+  const afterCompilePluginPath = `${appDir}/after-compile-plugin.js`
+  const afterCompileContents = keepOldFileContent({
+    destinationPath: afterCompilePluginPath,
+    newContentPath: dir('files/after-compile-plugin.js'),
+  })
+  fs.writeFileSync(afterCompilePluginPath, afterCompileContents, 'utf8')
+  return console.log('DONE')
 
   // `api` directory tree.
   mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)

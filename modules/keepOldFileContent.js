@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 
 
-function keepOldFileContent({ destinationPath, newContentPath }) {
+function keepOldFileContent({ destinationPath, newContentPath, newContent }) {
   const cautionMessage = [
     '///////////////////////////////////////////////////////////////////',
     '//        The contents of this file have been modified by        //',
@@ -29,12 +29,12 @@ function keepOldFileContent({ destinationPath, newContentPath }) {
       .join('\n')
   } catch (e) {}
 
-  const newContent = fs.readFileSync(newContentPath, 'utf8')
+  const finalContent = newContent ?? fs.readFileSync(newContentPath, 'utf8')
 
   if (originalContent) {
     return [
       cautionMessage,
-      newContent,
+      finalContent,
       '\n\n',
       `/${'*'.repeat(78)}/`,
       `/${'*'.repeat(26)} ORIGINAL CONTENTS BELOW ${'*'.repeat(27)}/`,
@@ -44,7 +44,7 @@ function keepOldFileContent({ destinationPath, newContentPath }) {
     ].join('\n')
   }
 
-  return newContent
+  return finalContent
 }
 
 module.exports = keepOldFileContent

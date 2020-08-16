@@ -16,7 +16,6 @@ const cla = require('command-line-args')
 const dotEnv = require('./file-creators/dotEnv')
 const gitignore = require('./file-creators/gitignore')
 const packageJson = require('./file-creators/packageJson')
-const postcssConfig = require('./file-creators/postcssConfig')
 const webpackConfig = require('./file-creators/webpackConfig')
 const helpersIndex = require('./file-creators/helpersIndex')
 
@@ -34,6 +33,7 @@ const portValidator = require('./modules/portValidator')
 const adjustPkgJson = require('./modules/adjustPkgJson')
 const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
+const keepOldFileContent = require('./modules/keepOldFileContent')
 const { config } = require('process')
 
 // Other.
@@ -118,8 +118,6 @@ async function letsGo() {
     const parsedArgs = parseArgs(online) // Runs `cla` internally.
     options = processUsersCommand(parsedArgs)
   }
-
-
 
   // STEP 3 - create project directory or sandbox project.
   if (options.sandbox) return createSandbox(options) // Calls `createProjectDirectory`.
@@ -328,20 +326,32 @@ function createFiles(options) {
 
   // `postcss.config.js`
   const postcssConfigPath = `${appDir}/postcss.config.js`
-  const postcssConfigContents = postcssConfig({
+  const postcssConfigContents = keepOldFileContent({
     destinationPath: postcssConfigPath,
     newContentPath: dir('files/postcss.config.js'),
   })
   // fs.writeFileSync(postcssConfigPath, postcssConfigContents, 'utf8')
 
-  // `README.md`
+  // `README.md` - only create this file if it doesn't already exist (in the case of using the `--force` option).
   if (!fs.existsSync(`${appDir}/README.md`)) {
     fs.copySync(dir('files/README.md'), `${appDir}/README.md`)
   }
-  return console.log('DONE')
 
   // `server.js` (with or without MongoDB options)
-  server && fs.copySync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
+  const serverJsPath = `${appDir}/server.js`
+  const serverJsSource = `files/server${mongo ? '-mongo' : ''}.js`
+  if (server) {
+    if (fs.existsSync(serverJsPath)) {
+      const serverJsContents = keepOldFileContent({
+        destinationPath: serverJsPath,
+        newContentPath: dir(serverJsSource),
+      })
+      fs.writeFileSync(serverJsPath, serverJsContents, 'utf8')
+    } else {
+      fs.copySync(dir(serverJsSource), serverJsPath)
+    }
+  }
+  return console.log('DONE')
 
   // `webpack.config.js`
   fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, title, description }), 'utf8')

@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 
 
-function postcssConfig({ destinationPath, newContentPath }) {
+function keepOldFileContent({ destinationPath, newContentPath }) {
   const cautionMessage = [
     '///////////////////////////////////////////////////////////////////',
     '//        The contents of this file have been modified by        //',
@@ -18,9 +18,9 @@ function postcssConfig({ destinationPath, newContentPath }) {
   ].join('\n')
 
   // Check for the original file & comment out existing content.
-  let postcssOriginalContent = ''
+  let originalContent = ''
   try {
-    postcssOriginalContent = fs.readFileSync(destinationPath, 'utf8')
+    originalContent = fs.readFileSync(destinationPath, 'utf8')
       .split('\n')
       .map((lineContent, i, arr) => {
         if (i === arr.length - 1 && !lineContent.trim()) return '' // Avoid commenting out a blank last line.
@@ -31,20 +31,20 @@ function postcssConfig({ destinationPath, newContentPath }) {
 
   const newContent = fs.readFileSync(newContentPath, 'utf8')
 
-  if (postcssOriginalContent) {
+  if (originalContent) {
     return [
       cautionMessage,
       newContent,
       '\n\n',
-      '/////////////////////////////',
-      '// ORIGINAL CONTENTS BELOW //',
-      '/////////////////////////////',
+      `/${'*'.repeat(78)}/`,
+      `/${'*'.repeat(26)} ORIGINAL CONTENTS BELOW ${'*'.repeat(27)}/`,
+      `/${'*'.repeat(78)}/`,
       '\n',
-      postcssOriginalContent,
+      originalContent,
     ].join('\n')
   }
 
   return newContent
 }
 
-module.exports = postcssConfig
+module.exports = keepOldFileContent

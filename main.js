@@ -308,13 +308,6 @@ function createProjectDirectory(options) {
 // STEP 4
 function createFiles(options) {
   const { appDir, server, mongo, express, redux, router, title, description } = options
-  const filter11 = { filter: file => !file.endsWith('.DS_Store') }
-  const filter1 = {
-    filter: (src, dest) => {
-      if (src.endsWith('.DS_Store')) return false
-      return true
-    }
-  }
 
   // `.env`
   const envPath = `${appDir}/.env`
@@ -388,10 +381,13 @@ function createFiles(options) {
       destinationPath: `${appDir}/api/utilities/catchy.js`,
     })
   }
-  return console.log('DONE')
 
   // `dist` directory tree.
-  fs.copySync(dir('./files/dist'), `${appDir}/dist`, filter1)
+  fs.copySync(dir('./files/dist'), `${appDir}/dist`, {
+    overwrite: false,
+    filter: (src, dest) => !src.endsWith('.DS_Store'),
+  })
+  return console.log('DONE')
 
   // Depending on the options, exclude certain files from being copied.
   const excludedFiles = [

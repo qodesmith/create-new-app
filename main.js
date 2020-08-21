@@ -387,7 +387,6 @@ function createFiles(options) {
     overwrite: false,
     filter: (src, dest) => !src.endsWith('.DS_Store'),
   })
-  return console.log('DONE')
 
   // Depending on the options, exclude certain files from being copied.
   const excludedFiles = [
@@ -396,17 +395,18 @@ function createFiles(options) {
     !router && redux && 'homeReducer.js',
     router && 'App.jsx'
   ].filter(Boolean)
-  const filter2 = { filter: file => excludedFiles.every(f => !file.includes(f)) }
+  const copySyncReducer = { filter: file => excludedFiles.every(f => !file.includes(f)) }
 
   // `src` directory tree.
-  fs.copySync(dir('./files/src'), `${appDir}/src`, filter2)
+  fs.copySync(dir('./files/src'), `${appDir}/src`, copySyncReducer)
+  return console.log('DONE')
 
   if (router && redux) {
     // Store.
     fs.copySync(dir('./files/redux/store-router.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, filter2)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncReducer)
 
     // Entry file.
     fs.copySync(dir('./files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
@@ -419,7 +419,7 @@ function createFiles(options) {
     fs.copySync(dir('./files/redux/store.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, filter2)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncReducer)
 
     // Entry file.
     fs.copySync(dir('./files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)

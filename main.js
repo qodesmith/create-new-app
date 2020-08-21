@@ -34,6 +34,7 @@ const adjustPkgJson = require('./modules/adjustPkgJson')
 const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
+const copySafeDirAndContents = require('./modules/copySafeDirAndContents')
 const { config } = require('process')
 
 // Other.
@@ -287,7 +288,7 @@ function createSandbox(options) {
   }
 
   createProjectDirectory(options)
-  fs.copySync(dir('files/sandbox'), options.appDir)
+  fs.copySync(dir('./files/sandbox'), options.appDir)
 }
 
 // STEP 3
@@ -307,7 +308,13 @@ function createProjectDirectory(options) {
 // STEP 4
 function createFiles(options) {
   const { appDir, server, mongo, express, redux, router, title, description } = options
-  const filter1 = { filter: file => !file.endsWith('.DS_Store') }
+  const filter11 = { filter: file => !file.endsWith('.DS_Store') }
+  const filter1 = {
+    filter: (src, dest) => {
+      if (src.endsWith('.DS_Store')) return false
+      return true
+    }
+  }
 
   // `.env`
   const envPath = `${appDir}/.env`
@@ -327,8 +334,8 @@ function createFiles(options) {
   // `postcss.config.js`
   const postcssConfigPath = `${appDir}/postcss.config.js`
   const postcssConfigContents = keepOldFileContent({
+    sourcePath: dir('./files/postcss.config.js'),
     destinationPath: postcssConfigPath,
-    newContentPath: dir('files/postcss.config.js'),
   })
   // fs.writeFileSync(postcssConfigPath, postcssConfigContents, 'utf8')
 
@@ -338,19 +345,12 @@ function createFiles(options) {
   }
 
   // `server.js` (with or without MongoDB options)
-  const serverJsPath = `${appDir}/server.js`
-  const serverJsSource = `files/server${mongo ? '-mongo' : ''}.js`
-  if (server) {
-    if (fs.existsSync(serverJsPath)) {
-      const serverJsContents = keepOldFileContent({
-        destinationPath: serverJsPath,
-        newContentPath: dir(serverJsSource),
-      })
-      fs.writeFileSync(serverJsPath, serverJsContents, 'utf8')
-    } else {
-      fs.copySync(dir(serverJsSource), serverJsPath)
-    }
-  }
+  const serverJsDestPath = `${appDir}/server.js`
+  const serverJsContents = keepOldFileContent({
+    sourcePath: dir(`./files/server${mongo ? '-mongo' : ''}.js`),
+    destinationPath: serverJsDestPath,
+  })
+  // server && fs.writeFileSync(serverJsDestPath, serverJsContents, 'utf8')
 
   // `webpack.config.js`
   const webpackConfigPath = `${appDir}/webpack.config.js`
@@ -361,20 +361,22 @@ function createFiles(options) {
   // fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
   // `after-compile-plugin.js`
-  const afterCompilePluginPath = `${appDir}/after-compile-plugin.js`
-  const afterCompileContents = keepOldFileContent({
-    destinationPath: afterCompilePluginPath,
-    newContentPath: dir('files/after-compile-plugin.js'),
+  copySafeDirAndContents({
+    sourceFile: dir('./files/after-compile-plugin.js'),
+    destinationPath: `${appDir}/after-compile-plugin.js`,
   })
-  fs.writeFileSync(afterCompilePluginPath, afterCompileContents, 'utf8')
-  return console.log('DONE')
 
   // `api` directory tree.
-  mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
+  // mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
+  mongo && copySafeDirAndContents({
+    sourcePath: dir('./files/api'),
+    destinationPath: `${appDir}/api`,
+  }, true)
+  return console.log('DONE')
   if (express && !mongo) {
-    fs.copySync(dir('files/api/home.js'), `${appDir}/api/home.js`)
-    fs.copySync(dir('files/api/utilities/errorUtil.js'), `${appDir}/api/utilities/errorUtil.js`)
-    fs.copySync(dir('files/api/utilities/catchy.js'), `${appDir}/api/utilities/catchy.js`)
+    fs.copySync(dir('./files/api/home.js'), `${appDir}/api/home.js`)
+    fs.copySync(dir('./files/api/utilities/errorUtil.js'), `${appDir}/api/utilities/errorUtil.js`)
+    fs.copySync(dir('./files/api/utilities/catchy.js'), `${appDir}/api/utilities/catchy.js`)
   }
 
   // `dist` directory tree.
@@ -394,36 +396,36 @@ function createFiles(options) {
 
   if (router && redux) {
     // Store.
-    fs.copySync(dir('files/redux/store-router.js'), `${appDir}/src/store.js`)
+    fs.copySync(dir('./files/redux/store-router.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('files/redux/redux'), `${appDir}/src/redux`, filter2)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, filter2)
 
     // Entry file.
-    fs.copySync(dir('files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
+    fs.copySync(dir('./files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
 
     // Components.
-    fs.copySync(dir('files/redux/RouterHome.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    fs.copySync(dir('./files/redux/RouterHome.jsx'), `${appDir}/src/components/Home.jsx`)
+    fs.copySync(dir('./files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
   } else if (redux) {
     // Store.
-    fs.copySync(dir('files/redux/store.js'), `${appDir}/src/store.js`)
+    fs.copySync(dir('./files/redux/store.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('files/redux/redux'), `${appDir}/src/redux`, filter2)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, filter2)
 
     // Entry file.
-    fs.copySync(dir('files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)
+    fs.copySync(dir('./files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)
 
     // Components.
-    fs.copySync(dir('files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
+    fs.copySync(dir('./files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
   } else if (router) {
     // Entry file.
-    fs.copySync(dir('files/router/entry.jsx'), `${appDir}/src/entry.jsx`)
+    fs.copySync(dir('./files/router/entry.jsx'), `${appDir}/src/entry.jsx`)
 
     // Components.
-    fs.copySync(dir('files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    fs.copySync(dir('./files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
+    fs.copySync(dir('./files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
   }
 
   // `/src/helpers/index.js`

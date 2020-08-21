@@ -361,10 +361,14 @@ function createFiles(options) {
   // fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
   // `after-compile-plugin.js`
-  copySafeDirAndContents({
-    sourceFile: dir('./files/after-compile-plugin.js'),
-    destinationPath: `${appDir}/after-compile-plugin.js`,
+  const afterCompilePluginDestPath = `${appDir}/after-compile-plugin.js`
+  const afterCompilePluginContents = keepOldFileContent({
+    sourcePath: dir('./files/after-compile-plugin.js'),
+    destinationPath: afterCompilePluginDestPath,
   })
+  // fs.writeFileSync(afterCompilePluginDestPath, afterCompilePluginContents, 'utf8')
+  return console.log('DONE')
+
 
   // `api` directory tree.
   // mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
@@ -372,7 +376,6 @@ function createFiles(options) {
     sourcePath: dir('./files/api'),
     destinationPath: `${appDir}/api`,
   }, true)
-  return console.log('DONE')
   if (express && !mongo) {
     fs.copySync(dir('./files/api/home.js'), `${appDir}/api/home.js`)
     fs.copySync(dir('./files/api/utilities/errorUtil.js'), `${appDir}/api/utilities/errorUtil.js`)

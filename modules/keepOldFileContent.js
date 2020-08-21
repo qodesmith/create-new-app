@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 
 
-function keepOldFileContent({ destinationPath, sourcePath, newContent }) {
+function keepOldFileContent({ sourcePath, destinationPath, newContent }) {
   const cautionMessage = [
     '///////////////////////////////////////////////////////////////////',
     '//        The contents of this file have been modified by        //',
@@ -18,7 +18,7 @@ function keepOldFileContent({ destinationPath, sourcePath, newContent }) {
   ].join('\n')
 
   // Check for the original file & comment out existing content.
-  let originalContent = ''
+  let originalContent = null
   try {
     originalContent = fs.readFileSync(destinationPath, 'utf8')
       .split('\n')

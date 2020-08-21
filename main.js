@@ -367,20 +367,28 @@ function createFiles(options) {
     destinationPath: afterCompilePluginDestPath,
   })
   // fs.writeFileSync(afterCompilePluginDestPath, afterCompilePluginContents, 'utf8')
-  return console.log('DONE')
 
 
   // `api` directory tree.
-  // mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
   mongo && copySafeDirAndContents({
     sourcePath: dir('./files/api'),
     destinationPath: `${appDir}/api`,
-  }, true)
+  })
   if (express && !mongo) {
-    fs.copySync(dir('./files/api/home.js'), `${appDir}/api/home.js`)
-    fs.copySync(dir('./files/api/utilities/errorUtil.js'), `${appDir}/api/utilities/errorUtil.js`)
-    fs.copySync(dir('./files/api/utilities/catchy.js'), `${appDir}/api/utilities/catchy.js`)
+    copySafeDirAndContents({
+      sourcePath: dir('./files/api/home.js'),
+      destinationPath: `${appDir}/api/home.js`,
+    })
+    copySafeDirAndContents({
+      sourcePath: dir('./files/api/utilities/errorUtil.js'),
+      destinationPath: `${appDir}/api/utilities/errorUtil.js`,
+    })
+    copySafeDirAndContents({
+      sourcePath: dir('./files/api/utilities/catchy.js'),
+      destinationPath: `${appDir}/api/utilities/catchy.js`,
+    })
   }
+  return console.log('DONE')
 
   // `dist` directory tree.
   fs.copySync(dir('./files/dist'), `${appDir}/dist`, filter1)

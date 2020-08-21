@@ -1,7 +1,13 @@
 /*
-  This module will create CONTENTS for the `postcss-config.js` file.
-  If the user used the --force option, this module will prepend the existing contents
-  commented out to avoid potential conflict.
+  This module will create CONTENTS for a given source path, including existing
+  content the target file exists already.
+
+  It looks to see if the file exists, comments out all that content, prepends
+  a message at the top of the file saying it did so, then write the new
+  content below the prepended message.
+
+  All this kicks in if the user used the `--force` option.
+  We don't want to overwrite user data.
 */
 
 const fs = require('fs-extra')

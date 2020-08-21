@@ -1,9 +1,14 @@
+/*
+  This module will either safely copy a file or a directory and all it's contents.
+  It uses the `keepOldFileContent` module to ensure no existing data is overwritten.
+*/
+
 const fs = require('fs-extra')
 const path = require('path')
 const keepOldFileContent = require('./keepOldFileContent')
 
 
-function copySafeDirAndContents({ sourcePath, destinationPath }) {
+function copySafe({ sourcePath, destinationPath }) {
   const stats = fs.statSync(sourcePath)
   const isDirectory = stats.isDirectory()
 
@@ -18,7 +23,7 @@ function copySafeDirAndContents({ sourcePath, destinationPath }) {
     // Call this function recursively on the contents of this directory.
     dirContents.forEach(item => {
       console.log('ITEM:', item)
-      copySafeDirAndContents({
+      copySafe({
         sourcePath: `${sourcePath}/${item}`,
         destinationPath: `${destinationPath}/${item}`,
       })
@@ -35,4 +40,4 @@ function copySafeDirAndContents({ sourcePath, destinationPath }) {
   }
 }
 
-module.exports = copySafeDirAndContents
+module.exports = copySafe

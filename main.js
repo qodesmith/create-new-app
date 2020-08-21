@@ -34,7 +34,7 @@ const adjustPkgJson = require('./modules/adjustPkgJson')
 const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
-const copySafeDirAndContents = require('./modules/copySafeDirAndContents')
+const copySafe = require('./modules/copySafe')
 const { config } = require('process')
 
 // Other.
@@ -363,20 +363,20 @@ function createFiles(options) {
 
 
   // `api` directory tree.
-  mongo && copySafeDirAndContents({
+  mongo && copySafe({
     sourcePath: dir('./files/api'),
     destinationPath: `${appDir}/api`,
   })
   if (express && !mongo) {
-    copySafeDirAndContents({
+    copySafe({
       sourcePath: dir('./files/api/home.js'),
       destinationPath: `${appDir}/api/home.js`,
     })
-    copySafeDirAndContents({
+    copySafe({
       sourcePath: dir('./files/api/utilities/errorUtil.js'),
       destinationPath: `${appDir}/api/utilities/errorUtil.js`,
     })
-    copySafeDirAndContents({
+    copySafe({
       sourcePath: dir('./files/api/utilities/catchy.js'),
       destinationPath: `${appDir}/api/utilities/catchy.js`,
     })

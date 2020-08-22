@@ -8,7 +8,7 @@ const path = require('path')
 const keepOldFileContent = require('./keepOldFileContent')
 
 
-function copySafe({ sourcePath, destinationPath }) {
+function copySafe({ sourcePath, destinationPath, excludedFiles = [] }) {
   const stats = fs.statSync(sourcePath)
   const isDirectory = stats.isDirectory()
 
@@ -22,16 +22,21 @@ function copySafe({ sourcePath, destinationPath }) {
 
     // Call this function recursively on the contents of this directory.
     dirContents.forEach(item => {
-      console.log('ITEM:', item)
       copySafe({
         sourcePath: `${sourcePath}/${item}`,
         destinationPath: `${destinationPath}/${item}`,
+        excludedFiles,
       })
     })
 
   // FILES
   } else {
-    if (sourcePath.endsWith('.DS_Store')) return // Ignore `.DS_Store` files.
+    // Ignore `.DS_Store` and excluded files.
+    if (
+      sourcePath.endsWith('.DS_Store') ||
+      excludedFiles.some(excludedFile => sourcePath.endsWith(excludedFile))
+    ) return
+
     const newFileContents = keepOldFileContent({ sourcePath, destinationPath })
     const destinationDir = path.resolve(destinationPath, '..')
 

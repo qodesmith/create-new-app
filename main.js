@@ -325,12 +325,10 @@ function createFiles(options) {
   // fs.writeFileSync(pkgJsonPath, pkgJsonContents, 'utf8')
 
   // `postcss.config.js`
-  const postcssConfigPath = `${appDir}/postcss.config.js`
-  const postcssConfigContents = keepOldFileContent({
+  copySafe({
     sourcePath: dir('./files/postcss.config.js'),
-    destinationPath: postcssConfigPath,
+    destinationPath: `${appDir}/postcss.config.js`,
   })
-  // fs.writeFileSync(postcssConfigPath, postcssConfigContents, 'utf8')
 
   // `README.md` - only create this file if it doesn't already exist (in the case of using the `--force` option).
   if (!fs.existsSync(`${appDir}/README.md`)) {
@@ -338,12 +336,10 @@ function createFiles(options) {
   }
 
   // `server.js` (with or without MongoDB options)
-  const serverJsDestPath = `${appDir}/server.js`
-  const serverJsContents = keepOldFileContent({
+  copySafe({
     sourcePath: dir(`./files/server${mongo ? '-mongo' : ''}.js`),
-    destinationPath: serverJsDestPath,
+    destinationPath: `${appDir}/server.js`,
   })
-  // server && fs.writeFileSync(serverJsDestPath, serverJsContents, 'utf8')
 
   // `webpack.config.js`
   const webpackConfigPath = `${appDir}/webpack.config.js`
@@ -354,13 +350,10 @@ function createFiles(options) {
   // fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
   // `after-compile-plugin.js`
-  const afterCompilePluginDestPath = `${appDir}/after-compile-plugin.js`
-  const afterCompilePluginContents = keepOldFileContent({
+  copySafe({
     sourcePath: dir('./files/after-compile-plugin.js'),
-    destinationPath: afterCompilePluginDestPath,
+    destinationPath: `${appDir}/after-compile-plugin.js`,
   })
-  // fs.writeFileSync(afterCompilePluginDestPath, afterCompilePluginContents, 'utf8')
-
 
   // `api` directory tree.
   mongo && copySafe({
@@ -382,7 +375,7 @@ function createFiles(options) {
     })
   }
 
-  // `dist` directory tree.
+  // `dist` directory tree - only copy files that don't exist.
   fs.copySync(dir('./files/dist'), `${appDir}/dist`, {
     overwrite: false,
     filter: (src, dest) => !src.endsWith('.DS_Store'),
@@ -395,10 +388,14 @@ function createFiles(options) {
     !router && redux && 'homeReducer.js',
     router && 'App.jsx'
   ].filter(Boolean)
-  const copySyncReducer = { filter: file => excludedFiles.every(f => !file.includes(f)) }
+  const copySyncOptions = { filter: file => console.log(excludedFiles.every(f => !file.endsWith(f)), 'FILE:', file) || excludedFiles.every(f => !file.endsWith(f)) }
 
   // `src` directory tree.
-  fs.copySync(dir('./files/src'), `${appDir}/src`, copySyncReducer)
+  copySafe({
+    sourcePath: dir('./files/src'),
+    destinationPath: `${appDir}/src`,
+    excludedFiles,
+  })
   return console.log('DONE')
 
   if (router && redux) {
@@ -406,7 +403,7 @@ function createFiles(options) {
     fs.copySync(dir('./files/redux/store-router.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncReducer)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncOptions)
 
     // Entry file.
     fs.copySync(dir('./files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
@@ -419,7 +416,7 @@ function createFiles(options) {
     fs.copySync(dir('./files/redux/store.js'), `${appDir}/src/store.js`)
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncReducer)
+    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncOptions)
 
     // Entry file.
     fs.copySync(dir('./files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)

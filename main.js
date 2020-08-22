@@ -388,53 +388,95 @@ function createFiles(options) {
     !router && redux && 'homeReducer.js',
     router && 'App.jsx'
   ].filter(Boolean)
-  const copySyncOptions = { filter: file => console.log(excludedFiles.every(f => !file.endsWith(f)), 'FILE:', file) || excludedFiles.every(f => !file.endsWith(f)) }
 
   // `src` directory tree.
   copySafe({
     sourcePath: dir('./files/src'),
     destinationPath: `${appDir}/src`,
-    excludedFiles,
+
+    // Prevent writing to `entry.jsx` multiple times.
+    excludedFiles: excludedFiles.concat(router || redux ? 'entry.jsx' : [])
   })
-  return console.log('DONE')
 
   if (router && redux) {
     // Store.
-    fs.copySync(dir('./files/redux/store-router.js'), `${appDir}/src/store.js`)
+    copySafe({
+      sourcePath: dir('./files/redux/store-router.js'),
+      destinationPath: `${appDir}/src/store.js`,
+    })
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncOptions)
+    copySafe({
+      sourcePath: dir('./files/redux/redux'),
+      destinationPath: `${appDir}/src/redux`,
+      excludedFiles,
+    })
 
     // Entry file.
-    fs.copySync(dir('./files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/entry-router.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('./files/redux/RouterHome.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('./files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/RouterHome.jsx'),
+      destinationPath: `${appDir}/src/components/Home.jsx`,
+    })
+    copySafe({
+      sourcePath: dir('./files/redux/NotFound.jsx'),
+      destinationPath: `${appDir}/src/components/NotFound.jsx`,
+    })
   } else if (redux) {
     // Store.
-    fs.copySync(dir('./files/redux/store.js'), `${appDir}/src/store.js`)
+    copySafe({
+      sourcePath: dir('./files/redux/store.js'),
+      destinationPath: `${appDir}/src/store.js`,
+    })
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('./files/redux/redux'), `${appDir}/src/redux`, copySyncOptions)
+    copySafe({
+      sourcePath: dir('./files/redux/redux'),
+      destinationPath: `${appDir}/src/redux`,
+      excludedFiles,
+    })
 
     // Entry file.
-    fs.copySync(dir('./files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/entry.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('./files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/ReduxApp.jsx'),
+      destinationPath: `${appDir}/src/components/App.jsx`,
+    })
   } else if (router) {
     // Entry file.
-    fs.copySync(dir('./files/router/entry.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/router/entry.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('./files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('./files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    copySafe({
+      sourcePath: dir('./files/router/Home.jsx'),
+      destinationPath: `${appDir}/src/components/Home.jsx`,
+    })
+    copySafe({
+      sourcePath: dir('./files/router/NotFound.jsx'),
+      destinationPath: `${appDir}/src/components/NotFound.jsx`,
+    })
   }
 
   // `/src/helpers/index.js`
   fs.mkdirpSync(`${appDir}/src/helpers`)
-  fs.writeFileSync(`${appDir}/src/helpers/index.js`, helpersIndex({ redux }), 'utf8')
+  const helpersIndexcontent = keepOldFileContent({
+    destinationPath: `${appDir}/src/helpers/index.js`,
+    newContent: helpersIndex({ redux }),
+  })
+  fs.writeFileSync(`${appDir}/src/helpers/index.js`, helpersIndexcontent, 'utf8')
 
   /*
     Add comment to top of `entry.jsx`.
@@ -444,8 +486,9 @@ function createFiles(options) {
       * ./files/redux/entry-router.jsx
       * ./files/router/entry.jsx
   */
-  const entryFile = fs.readFileSync(`${appDir}/src/entry.jsx`, 'utf8')
-  fs.writeFileSync(`${appDir}/src/entry.jsx`, adjustEntryFile(entryFile), 'utf8')
+  const currentEntryFileContents = fs.readFileSync(`${appDir}/src/entry.jsx`, 'utf8')
+  fs.writeFileSync(`${appDir}/src/entry.jsx`, adjustEntryFile(currentEntryFileContents), 'utf8')
+  return console.log('DONE')
 }
 
 // STEP 5

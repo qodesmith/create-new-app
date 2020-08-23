@@ -312,17 +312,17 @@ function createFiles(options) {
   // `.env`
   const envPath = `${appDir}/.env`
   const envContents = dotEnv({ options, destinationPath: envPath })
-  // fs.writeFileSync(envPath, envContents, 'utf8')
+  fs.writeFileSync(envPath, envContents, 'utf8')
 
   // `.gitignore`
   const gitignorePath = `${appDir}/.gitignore`
   const gitignoreContents = gitignore({ destinationPath: gitignorePath })
-  // fs.writeFileSync(gitignorePath, gitignoreContents, 'utf8')
+  fs.writeFileSync(gitignorePath, gitignoreContents, 'utf8')
 
   // `package.json`
   const pkgJsonPath = `${appDir}/package.json`
   const pkgJsonContents = packageJson({ options, destinationPath: pkgJsonPath })
-  // fs.writeFileSync(pkgJsonPath, pkgJsonContents, 'utf8')
+  fs.writeFileSync(pkgJsonPath, pkgJsonContents, 'utf8')
 
   // `postcss.config.js`
   copySafe({
@@ -347,7 +347,7 @@ function createFiles(options) {
     destinationPath: webpackConfigPath,
     newContent: webpackConfig({ redux, title, description }),
   })
-  // fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
+  fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
   // `after-compile-plugin.js`
   copySafe({
@@ -488,7 +488,6 @@ function createFiles(options) {
   */
   const currentEntryFileContents = fs.readFileSync(`${appDir}/src/entry.jsx`, 'utf8')
   fs.writeFileSync(`${appDir}/src/entry.jsx`, adjustEntryFile(currentEntryFileContents), 'utf8')
-  return console.log('DONE')
 }
 
 // STEP 5

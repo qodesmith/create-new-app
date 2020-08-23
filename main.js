@@ -336,7 +336,7 @@ function createFiles(options) {
   }
 
   // `server.js` (with or without MongoDB options)
-  copySafe({
+  server && copySafe({
     sourcePath: dir(`./files/server${mongo ? '-mongo' : ''}.js`),
     destinationPath: `${appDir}/server.js`,
   })

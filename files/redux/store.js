@@ -15,7 +15,9 @@ const rootReducer = combineReducers({ app })
   then we may have an issue with Redux DevTools not being installed.
   The below logic takes care of that.
 */
-const composeEnhancers = !__PROD__ ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose) : compose
+const composeEnhancers = !__PROD__
+  ? (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
+  : compose
 
 // Create the Redux store in all its glory!
 const store = createStore(

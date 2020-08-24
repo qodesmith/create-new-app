@@ -495,6 +495,7 @@ async function installDependencies(options) {
   const { appName, appDir, server, offline, mongo, force, noInstall } = options
   const forceOffline = offline ? ' --offline' : '' // http://bit.ly/2Z2Ht9c
   const cache = offline ? ' cache' : ''
+  let npmInstallFailed = false
 
   // Change into the projects directory.
   process.chdir(`${cwd}/${appName}`)
@@ -507,6 +508,7 @@ async function installDependencies(options) {
     try {
       run(`npm i${forceOffline}`)
     } catch(e) {
+      npmInstallFailed = true
       console.log(`\n${chalk.yellow('An error occurred during the npm installation.')}`)
 
       // Cleanup what was created *only* if we didn't force install.
@@ -537,7 +539,9 @@ async function installDependencies(options) {
     console.log(`Do you have have ${chalk.bold('git')} installed?\n`)
   }
 
-  noInstall && console.log('No dependecies intalled. `package.json` will not reflect specific versions.')
+  if (noInstall || npmInstallFailed) {
+    console.log('No dependecies intalled. `package.json` will not reflect specific versions.')
+  }
 
   // Display the final message.
   const cyanDir = chalk.cyan(appDir)

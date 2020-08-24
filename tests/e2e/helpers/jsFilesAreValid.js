@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const Linter = require('eslint').Linter
+const { Linter } = require('eslint')
 const linter = new Linter()
 const filesAndFolders = require('../config/filesAndFolders')
 const { absolutePathConfig, listFolderContents } = require('./folderFileHelper')

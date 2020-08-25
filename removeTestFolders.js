@@ -9,7 +9,7 @@
   Another thing to note is that folders that end with `test` are git-ignored.
 */
 
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const dir = path.resolve()
 const removedFolders = []

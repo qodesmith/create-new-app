@@ -11,17 +11,17 @@
 */
 
 const fs = require('fs-extra')
-const cautionMessage = [
-  '///////////////////////////////////////////////////////////////////',
-  '//        The contents of this file have been modified by        //',
-  '// create-new-app (https://github.com/qodesmith/create-new-app). //',
-  '//      The original contents have been commented out below.     //',
-  '///////////////////////////////////////////////////////////////////',
-  '\n'
-].join('\n')
 
 
 function keepOldFileContent({ sourcePath, destinationPath, newContent }) {
+  const cautionMessage = [
+    '///////////////////////////////////////////////////////////////////',
+    '//        The contents of this file have been modified by        //',
+    '// create-new-app (https://github.com/qodesmith/create-new-app). //',
+    '//      The original contents have been commented out below.     //',
+    '///////////////////////////////////////////////////////////////////',
+    '\n'
+  ].join('\n')
 
   // Check for the original file & comment out existing content.
   let originalContent = null
@@ -53,7 +53,4 @@ function keepOldFileContent({ sourcePath, destinationPath, newContent }) {
   return finalContent
 }
 
-module.exports = {
-  keepOldFileContent,
-  cautionMessage,
-}
+module.exports = keepOldFileContent

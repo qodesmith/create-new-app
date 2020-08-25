@@ -5,7 +5,7 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const keepOldFileContent = require('./keepOldFileContent')
+const { keepOldFileContent } = require('./keepOldFileContent')
 
 
 function copySafe({ sourcePath, destinationPath, excludedFiles = [] }) {

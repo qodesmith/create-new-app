@@ -33,7 +33,7 @@ const portValidator = require('./modules/portValidator')
 const adjustPkgJson = require('./modules/adjustPkgJson')
 const adjustEntryFile = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
-const keepOldFileContent = require('./modules/keepOldFileContent')
+const { keepOldFileContent } = require('./modules/keepOldFileContent')
 const copySafe = require('./modules/copySafe')
 const { config } = require('process')
 

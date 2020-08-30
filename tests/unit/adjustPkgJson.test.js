@@ -15,28 +15,32 @@ const pkgJson = JSON.stringify({
 
 
 describe('adjustPkgJson', () => {
-  // Create temporary folders & files to play with.
-  fs.ensureFileSync(`${tempFolder}/package.json`)
-  fs.ensureFileSync(`${tempFolder}/node_modules/dep1/package.json`)
-  fs.ensureFileSync(`${tempFolder}/node_modules/dep2/package.json`)
-  fs.ensureFileSync(`${tempFolder}/node_modules/devDep1/package.json`)
-  fs.ensureFileSync(`${tempFolder}/node_modules/devDep2/package.json`)
+  it('should adjust `package.json` to have specific (^) versions', async () => {
+    // Create temporary folders & files to play with.
+    await Promise.all([
+      fs.ensureFile(`${tempFolder}/package.json`),
+      fs.ensureFile(`${tempFolder}/node_modules/dep1/package.json`),
+      fs.ensureFile(`${tempFolder}/node_modules/dep2/package.json`),
+      fs.ensureFile(`${tempFolder}/node_modules/devDep1/package.json`),
+      fs.ensureFile(`${tempFolder}/node_modules/devDep2/package.json`),
+    ])
 
-  // Write the contents of the files.
-  fs.writeFileSync(`${tempFolder}/package.json`, pkgJson, 'utf8')
-  fs.writeFileSync(`${tempFolder}/node_modules/dep1/package.json`, JSON.stringify({ version: '1.0.1'}), 'utf8')
-  fs.writeFileSync(`${tempFolder}/node_modules/dep2/package.json`, JSON.stringify({ version: '2.6.9'}), 'utf8')
-  fs.writeFileSync(`${tempFolder}/node_modules/devDep1/package.json`, JSON.stringify({ version: '3.1.0'}), 'utf8')
-  fs.writeFileSync(`${tempFolder}/node_modules/devDep2/package.json`, JSON.stringify({ version: '4.6.7'}), 'utf8')
+    // Write the contents of the files.
+    await Promise.all([
+      fs.writeFile(`${tempFolder}/package.json`, pkgJson, 'utf8'),
+      fs.writeFile(`${tempFolder}/node_modules/dep1/package.json`, JSON.stringify({ version: '1.0.1'}), 'utf8'),
+      fs.writeFile(`${tempFolder}/node_modules/dep2/package.json`, JSON.stringify({ version: '2.6.9'}), 'utf8'),
+      fs.writeFile(`${tempFolder}/node_modules/devDep1/package.json`, JSON.stringify({ version: '3.1.0'}), 'utf8'),
+      fs.writeFile(`${tempFolder}/node_modules/devDep2/package.json`, JSON.stringify({ version: '4.6.7'}), 'utf8'),
+    ])
 
-  adjustPkgJson(tempFolder)
-  const content = fs.readFileSync(`${tempFolder}/package.json`, 'utf8')
-  const { dependencies, devDependencies } = fs.readJSONSync(`${tempFolder}/package.json`)
+    adjustPkgJson(tempFolder)
+    const content = fs.readFileSync(`${tempFolder}/package.json`, 'utf8')
+    const { dependencies, devDependencies } = fs.readJSONSync(`${tempFolder}/package.json`)
 
-  // Remove all temporary files.
-  fs.removeSync(tempFolder)
+    // Remove all temporary files.
+    fs.removeSync(tempFolder)
 
-  it('should adjust `package.json` to have specific (^) versions', () => {
     expect(content).toMatchSnapshot()
     expect(dependencies.dep1).toBe('^1.0.1')
     expect(dependencies.dep2).toBe('^2.6.9')

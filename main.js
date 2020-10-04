@@ -125,7 +125,7 @@ async function letsGo() {
   createProjectDirectory(options)
 
   // STEP 4 - create project files & folders.
-  return createFiles(options)
+  createFiles(options)
 
   // STEP 5 - install dependecies.
   installDependencies(options)
@@ -525,7 +525,6 @@ async function installDependencies(options) {
     }
   }
 
-
   // Adjust the package.json dependencies to show their installed version.
   // E.x. - "react": "^16" => "react": "^16.6.1"
   !noInstall && adjustPkgJson(appDir)
@@ -536,7 +535,8 @@ async function installDependencies(options) {
     console.log('Initialized a git repository.\n')
   } catch (e) {
     console.log(`Tried to initialize a new ${chalk.bold('git')} repository but couldn't.`)
-    console.log(`Do you have have ${chalk.bold('git')} installed?\n`)
+    console.log(`Do you have have ${chalk.bold('git')} installed?`)
+    console.log('  * https://git-scm.com/downloads\n')
   }
 
   if (noInstall || npmInstallFailed) {

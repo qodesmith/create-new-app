@@ -1,12 +1,7 @@
 /*
   This module will create CONTENTS for the `package.json` file.
   If the user used the --force option, this module will be as non-destructive as possible.
-  Some original fields that can't be easily merged will stored under `_old_<original field>`.
-  
-
-  Data that is truly lost as a result of the --force option:
-    * Command line provided fields:
-      - (description, author, email, repository) - will overwrite these existing values.
+  Some original fields that can't be easily merged will be stored under `<original field name>_<date number>`.
 */
 
 const fs = require('fs-extra')
@@ -20,13 +15,12 @@ function mergeDependencies(newDeps, oldDeps) {
   return Object
     .keys(unsortedDeps)
     .sort()
-    .reduce((acc, pkg) => ({ ...acc, [pkg]: acc[pkg] }), {})
+    .reduce((acc, pkg) => ({ ...acc, [pkg]: unsortedDeps[pkg] }), {})
 }
 
-// { prop: '123' } => { _old_prop: '123 }
-function storeOldProp({ prop, original, newObj }) {
-  const originalValue = original[prop]
-  const oldPropName = `_old_${prop}`
+// { author: 'Qodesmith' } => { author_1598530391059: 'Qodesmith' }
+function storeOldProp({ prop, originalValue, newObj }) {
+  const oldPropName = `${prop}_${Date.now()}`
 
   // Do nothing if there's no original value in question.
   if (originalValue == null) return
@@ -45,7 +39,7 @@ function storeOldProp({ prop, original, newObj }) {
       return acc
     }, {})
 
-    // Only store `old_scripts: { ... }` if there's any conflicting old scripts to store!
+    // Only store `scripts_<date number>: { ... }` if there's any conflicting old scripts to store!
     if (Object.keys(oldScriptConflictingValues).length) newObj[oldPropName] = oldScriptConflictingValues
 
   // All other properties.
@@ -63,10 +57,7 @@ function packageJson({ options, destinationPath }) {
   const browserslist = options[isDefault ? 'bl' : 'browserslist']
 
   // --force option - in the case this file already exists, read its contents so we can merge the data later.
-  let originalPkgJson = {}
-  try {
-    originalPkgJson = JSON.parse(fs.readFileSync(destinationPath, 'utf8'))
-  } catch (e) {}
+  const originalPkgJson = fs.readJsonSync(destinationPath, { throws: false }) || {}
 
   let packageJson = {
     // First start with the original contents to capture any properties that we might not process...
@@ -83,6 +74,23 @@ function packageJson({ options, destinationPath }) {
     license: originalPkgJson.license || 'ISC', // 'ISC' is the default `npm init -y` value.
     browserslist: originalPkgJson.browserslist || browserslist // http://bit.ly/2XpC23Q - why you should avoid `last 2 versions`.
   }
+
+  // Preserve other properties.
+  ;[
+    'name',
+    'version',
+    'description',
+    'keywords',
+    'author',
+    'email',
+    'repository',
+    'licence',
+    'browserslist',
+  ].forEach(prop => storeOldProp({
+    prop,
+    originalValue: originalPkgJson[prop],
+    newObj: packageJson,
+  }))
 
   if (server) {
     const packageJsonServer = {
@@ -104,8 +112,8 @@ function packageJson({ options, destinationPath }) {
     }
 
     // Store the original prop values if they existed.
-    storeOldProp({ prop: 'main', original: originalPkgJson, newObj: packageJson })
-    storeOldProp({ prop: 'scripts', original: originalPkgJson, newObj: packageJson })
+    storeOldProp({ prop: 'main', originalValue: originalPkgJson, newObj: packageJson })
+    storeOldProp({ prop: 'scripts', originalValue: originalPkgJson, newObj: packageJson })
 
     packageJson = { ...packageJson, ...packageJsonServer }
   } else {
@@ -123,7 +131,7 @@ function packageJson({ options, destinationPath }) {
       This will NOT store the entire old scripts obj. It's smarter than that.
       It only stores properties that conflict.
     */
-    storeOldProp({prop: 'scripts', original: originalPkgJson, newObj: packageJson})
+    storeOldProp({ prop: 'scripts', originalValue: originalPkgJson, newObj: packageJson })
   }
 
   // https://mzl.la/2Xn1ua7

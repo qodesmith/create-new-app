@@ -6,7 +6,6 @@
     "test": "jest ; node removeTestFolders.js",
     "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
     "test:remain": "REMAIN=true npm run test",
-    "test:single": "jest",
     "e2e": "jest ./tests/e2e ; node removeTestFolders.js",
     "e2e:noinstall": "NO_INSTALL=1 npm run e2e",
     "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",

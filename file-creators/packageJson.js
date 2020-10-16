@@ -19,8 +19,9 @@ function mergeDependencies(newDeps, oldDeps) {
 }
 
 // { author: 'Qodesmith' } => { author_1598530391059: 'Qodesmith' }
-function storeOldProp({ prop, originalValue, newObj }) {
-  const oldPropName = `${prop}_${Date.now()}`
+function storeOldProp({ prop, oldObj, newObj }) {
+  const datedPropName = `${prop}_${Date.now()}`
+  const originalValue = oldObj[prop]
 
   // Do nothing if there's no original value in question.
   if (originalValue == null) return
@@ -29,9 +30,9 @@ function storeOldProp({ prop, originalValue, newObj }) {
     For scripts, we don't want to blindly store the entire old value.
     Instead, we want to store only those particular scripts that may have been overwritten.
   */
-  if (prop === 'scripts') {
-    const oldScriptConflictingValues = Object.keys(originalValue).reduce((acc, key) => {
-      const oldScript = original.scripts[key]
+  if (prop === 'scripts' && oldObj.scripts) {
+    const oldScriptConflictingValues = Object.keys(oldObj).reduce((acc, key) => {
+      const oldScript = oldObj.scripts[key]
 
       // Only store old scripts that were overwritten and aren't the same.
       if (oldScript !== newObj.scripts[key]) acc[key] = oldScript
@@ -40,11 +41,11 @@ function storeOldProp({ prop, originalValue, newObj }) {
     }, {})
 
     // Only store `scripts_<date number>: { ... }` if there's any conflicting old scripts to store!
-    if (Object.keys(oldScriptConflictingValues).length) newObj[oldPropName] = oldScriptConflictingValues
+    if (Object.keys(oldScriptConflictingValues).length) newObj[datedPropName] = oldScriptConflictingValues
 
   // All other properties.
   } else {
-    newObj[oldPropName] = originalValue
+    newObj[datedPropName] = originalValue
   }
 }
 
@@ -88,7 +89,7 @@ function packageJson({ options, destinationPath }) {
     'browserslist',
   ].forEach(prop => storeOldProp({
     prop,
-    originalValue: originalPkgJson[prop],
+    oldObj: originalPkgJson,
     newObj: packageJson,
   }))
 
@@ -112,8 +113,8 @@ function packageJson({ options, destinationPath }) {
     }
 
     // Store the original prop values if they existed.
-    storeOldProp({ prop: 'main', originalValue: originalPkgJson, newObj: packageJson })
-    storeOldProp({ prop: 'scripts', originalValue: originalPkgJson, newObj: packageJson })
+    storeOldProp({ prop: 'main', oldObj: originalPkgJson, newObj: packageJson })
+    storeOldProp({ prop: 'scripts', oldObj: originalPkgJson, newObj: packageJson })
 
     packageJson = { ...packageJson, ...packageJsonServer }
   } else {
@@ -131,7 +132,7 @@ function packageJson({ options, destinationPath }) {
       This will NOT store the entire old scripts obj. It's smarter than that.
       It only stores properties that conflict.
     */
-    storeOldProp({ prop: 'scripts', originalValue: originalPkgJson, newObj: packageJson })
+    storeOldProp({ prop: 'scripts', oldObj: originalPkgJson, newObj: packageJson })
   }
 
   // https://mzl.la/2Xn1ua7

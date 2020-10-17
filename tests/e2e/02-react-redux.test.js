@@ -138,6 +138,48 @@ describe('cli - React + Redux project', () => {
       })
     })
 
+    describe('webpack.config.js', () => {
+      let wpConfigDev
+      let wpConfigProd
+
+      beforeAll(() => {
+        /*
+          Why is this in the `beforeAll` fxn?
+          -----------------------------------
+          Jest executes *all* `describe` functions before running any tests in them.
+          At the time of reading `describe`, the project hasn't been created yet
+          and `fs.readJSONSync` will throw an error. Placing it in here will
+          ensure it's read *after* the project was created. And doing it inside
+          a `beforeAll` vs a `beforeEach` will ensure it only happens once.
+        */
+        const webpackConfig = require(`${appPath}/webpack.config`)
+        wpConfigDev = webpackConfig({prod: false})
+        wpConfigProd = webpackConfig({prod: true})
+      })
+
+      it('should have the correct top-level properties and file contents', () => {
+        const keys = [
+          'mode',
+          'bail',
+          'context',
+          'entry', // Not a primative value.
+          'output', // Not a primative value.
+          'module', // Not a primative value.
+          'resolve', // Not a primative value.
+          'optimization', // Not a primative value.
+          'plugins', // Not a primative value.
+          'devServer', // Not a primative value.
+          'devtool',
+          'target',
+        ]
+
+        expect(Object.keys(wpConfigDev).sort()).toEqual(keys.sort())
+        expect(Object.keys(wpConfigProd).sort()).toEqual(keys.sort())
+        expect(wpConfigDev).toMatchSnapshot()
+        expect(wpConfigProd).toMatchSnapshot()
+      })
+    })
+
     // http://bit.ly/2DzX08c - `describe.each`
     describe.each(folderNames)('%s', () => {
       const folderPath = folderPaths[i++]

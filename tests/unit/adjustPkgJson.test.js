@@ -5,7 +5,7 @@ const tempFolder = path.resolve(__dirname, 'temp-adjust-pkg-json-test')
 
 
 describe('adjustPkgJson', () => {
-  it('should adjust `package.json` to have specific (^) versions', async () => {
+  it('should adjust `package.json` to have specific (^) versions', () => {
     const dep1 = '1'
     const dep2 = '2'
     const devDep1 = '3'

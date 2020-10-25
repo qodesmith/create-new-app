@@ -40,7 +40,7 @@
     "email": "theqodesmith@gmail.com"
   },
   "license": "MIT",
-  "author": "Qodesmith <theqodesmith@gmail.com> (http://aaroncordova.xyz)",
+  "author": "Qodesmith <theqodesmith@gmail.com> (https://github.com/qodesmith/create-new-app)",
   "main": "main.js",
   "bin": {
     "create-new-app": "./main.js",

@@ -3,7 +3,7 @@
   content the target file exists already.
 
   It looks to see if the file exists, comments out all that content, prepends
-  a message at the top of the file saying it did so, then write the new
+  a message at the top of the file saying it did so, then writes the new
   content below the prepended message.
 
   All this kicks in if the user used the `--force` option.

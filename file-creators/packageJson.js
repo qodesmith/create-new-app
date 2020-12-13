@@ -50,7 +50,7 @@ function storeOldProp({ prop, oldObj, newObj }) {
 }
 
 function packageJson({ options, destinationPath }) {
-  const { appName, server, description, author, email, keywords, repository, repo } = options
+  const { appName, server, description, author, email, keywords, repository, repo, version, license } = options
   const { devDependencies, serverDependencies } = dependenciesCreator(options)
 
   // `--bl` takes precedence over `--browserslist` so long as the later is the default setting.
@@ -66,13 +66,13 @@ function packageJson({ options, destinationPath }) {
 
     // ...then process the properties we do care about, preferring the old value over the new in most cases.
     name: originalPkgJson.name || appName,
-    version: originalPkgJson.version || '0.1.0',
+    version: originalPkgJson.version || version || '0.1.0',
     description: description || originalPkgJson.description || '', // Prefer new.
     keywords: [...new Set(keywords.concat(originalPkgJson.keywords || []))].sort(), // Merge old and new, sorted.
     author: author || originalPkgJson.author || '', // Prefer new.
     email: email || originalPkgJson.email || '', // Prefer new.
     repository: repository || repo || originalPkgJson.repository || '', // Prefer new.
-    license: originalPkgJson.license || 'ISC', // 'ISC' is the default `npm init -y` value.
+    license: originalPkgJson.license || license ||  'ISC', // 'ISC' is the default `npm init -y` value.
     browserslist: originalPkgJson.browserslist || browserslist // http://bit.ly/2XpC23Q - why you should avoid `last 2 versions`.
   }
 

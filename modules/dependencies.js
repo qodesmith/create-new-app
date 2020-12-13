@@ -22,7 +22,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     // MAIN
     react: '^16',
     'react-dom': '^16',
-    sassyons: '^3',
+    sassyons: '^4',
     redux: redux && '^4',
     'react-redux': redux && '^7',
     'react-router-dom': router && '^5',

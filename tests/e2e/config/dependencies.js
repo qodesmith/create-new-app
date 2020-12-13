@@ -40,7 +40,7 @@ const serverDevDeps = {
   'react-dom': '^16',
   'regenerator-runtime': '^0',
   'sass-loader': '^8',
-  'sassyons': '^3',
+  'sassyons': '^4',
   'terser-webpack-plugin': '^2',
   'webpack': '^4',
   'webpack-cli': '^3',

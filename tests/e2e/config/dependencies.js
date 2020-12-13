@@ -61,7 +61,7 @@ const serverDeps = {
 const mongoDeps = {
   ...serverDeps,
   'mongodb': '^3',
-  'saslprep': '^1',
+  'saslprep': '^1', // This was added to stop MongoClient warnings.
   'connect-mongo': '^3',
   'express-session': '^1'
 }
@@ -81,7 +81,7 @@ const expressRouterRedux = {
   dependencies: serverDeps
 }
 
-// Mongo.
+// Mongo (always includes Express).
 const mongo = { devDependencies: serverDevDeps, dependencies: mongoDeps }
 const mongoRedux = { devDependencies: { ...serverDevDeps, ...reduxDeps }, dependencies: mongoDeps }
 const mongoRouter = { devDependencies: { ...serverDevDeps, ...routerDeps }, dependencies: mongoDeps }

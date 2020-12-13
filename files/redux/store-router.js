@@ -10,7 +10,9 @@ const rootReducer = combineReducers({ home })
 
 // http://bit.ly/2XqEeYM
 // Using Redux DevTools extension? You should...
-const composeEnhancers = !__PROD__ ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose) : compose
+const composeEnhancers = !__PROD__
+  ? (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
+  : compose
 
 // Create the Redux store in all its glory!
 const store = createStore(

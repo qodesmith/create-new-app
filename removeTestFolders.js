@@ -9,7 +9,7 @@
   Another thing to note is that folders that end with `test` are git-ignored.
 */
 
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const dir = path.resolve()
 const removedFolders = []
@@ -20,10 +20,10 @@ if (process.env.REMAIN) {
 }
 
 
-fs.readdirSync(dir).forEach(item => {
+fs.readdirSync(dir, { withFileTypes: true }).forEach(dirent => {
+  const item = dirent.name
   const fullPath = `${dir}/${item}`
-  const stat = fs.statSync(fullPath)
-  const isDirectory = stat.isDirectory()
+  const isDirectory = dirent.isDirectory()
 
   if (isDirectory && item.endsWith('test')) {
     removedFolders.push(fullPath)

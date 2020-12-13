@@ -1,3 +1,11 @@
+/*
+  This module will create CONTENTS for the `.env` file.
+  If the user used the --force option, this module will prepend the existing contents.
+*/
+
+const fs = require('fs-extra')
+
+
 // http://bit.ly/2Xmuwqf - micro UUID!
 const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
 
@@ -10,7 +18,7 @@ function objToDotEnvVars(comments, obj) {
     }, comments)
 }
 
-function dotEnv(options) {
+function dotEnv({ options, destinationPath }) {
   const {
     appName,
     devServerPort,
@@ -21,8 +29,25 @@ function dotEnv(options) {
     mongoPortProd,
     mongoUser,
     mongoAuthSource,
-    server
+    server,
+    force
   } = options
+
+  // Read the files contents - in the case it already existed, we'll append new contents to it.
+  let currentContents = ''
+  try {
+    currentContents = fs.readFileSync(destinationPath, 'utf8')
+  } catch (e) {}
+
+  // Create the leading content of the file.
+  const previousContents = !currentContents ? '' : [
+    currentContents,
+    '\n',
+    '###########################################################################',
+    '########## THE CONTENT BELOW HAS BEEN APPENDED BY CREATE-NEW-APP ##########',
+    '###########################################################################',
+    '\n\n'
+  ].join('\n')
 
   const mongoWarning = [
     '\n# A few things to note about MongoDB:',
@@ -69,13 +94,17 @@ function dotEnv(options) {
     SECRET: `${uuid()}`
   }
 
-  if (mongo) {
-    return objToDotEnvVars(warning, { ...contents, ...serverContents, ...mongoContents })
-  } else if (server) {
-    return objToDotEnvVars(warning, { ...contents, ...serverContents })
-  } else {
-    return objToDotEnvVars(warning, contents)
-  }
+  const newDotEnvContents = (() => {
+    if (mongo) {
+      return objToDotEnvVars(warning, { ...contents, ...serverContents, ...mongoContents })
+    } else if (server) {
+      return objToDotEnvVars(warning, { ...contents, ...serverContents })
+    } else {
+      return objToDotEnvVars(warning, contents)
+    }
+  })()
+
+  return `${previousContents}${newDotEnvContents}`
 }
 
 module.exports = dotEnv

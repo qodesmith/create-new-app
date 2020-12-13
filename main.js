@@ -14,6 +14,7 @@ const cla = require('command-line-args')
 
 // File creators.
 const dotEnv = require('./file-creators/dotEnv')
+const gitignore = require('./file-creators/gitignore')
 const packageJson = require('./file-creators/packageJson')
 const webpackConfig = require('./file-creators/webpackConfig')
 const helpersIndex = require('./file-creators/helpersIndex')
@@ -30,8 +31,11 @@ const noName = require('./modules/noName')
 const badName = require('./modules/badName')
 const portValidator = require('./modules/portValidator')
 const adjustPkgJson = require('./modules/adjustPkgJson')
-const adjustEntryFile = require('./modules/adjustEntryFile')
+const { adjustEntryFile } = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
+const keepOldFileContent = require('./modules/keepOldFileContent')
+const copySafe = require('./modules/copySafe')
+const { config } = require('process')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
@@ -284,7 +288,7 @@ function createSandbox(options) {
   }
 
   createProjectDirectory(options)
-  fs.copySync(dir('files/sandbox'), options.appDir)
+  fs.copySync(dir('./files/sandbox'), options.appDir)
 }
 
 // STEP 3
@@ -304,42 +308,78 @@ function createProjectDirectory(options) {
 // STEP 4
 function createFiles(options) {
   const { appDir, server, mongo, express, redux, router, title, description } = options
-  const filter1 = { filter: file => !file.endsWith('.DS_Store') }
 
   // `.env`
-  fs.writeFileSync(`${appDir}/.env`, dotEnv(options), 'utf8')
+  const envPath = `${appDir}/.env`
+  const envContents = dotEnv({ options, destinationPath: envPath })
+  fs.writeFileSync(envPath, envContents, 'utf8')
 
   // `.gitignore`
-  fs.copySync(dir('files/gitignore.txt'), `${appDir}/.gitignore`)
+  const gitignorePath = `${appDir}/.gitignore`
+  const gitignoreContents = gitignore({ destinationPath: gitignorePath })
+  fs.writeFileSync(gitignorePath, gitignoreContents, 'utf8')
 
   // `package.json`
-  fs.writeFileSync(`${appDir}/package.json`, packageJson(options), 'utf8')
+  const pkgJsonPath = `${appDir}/package.json`
+  const pkgJsonContents = packageJson({ options, destinationPath: pkgJsonPath })
+  fs.writeFileSync(pkgJsonPath, pkgJsonContents, 'utf8')
 
   // `postcss.config.js`
-  fs.copySync(dir('files/postcss.config.js'), `${appDir}/postcss.config.js`)
+  copySafe({
+    sourcePath: dir('./files/postcss.config.js'),
+    destinationPath: `${appDir}/postcss.config.js`,
+  })
 
-  // `README.md`
-  fs.copySync(dir('files/README.md'), `${appDir}/README.md`)
-
-  // `server.js` (with or without MongoDB options)
-  server && fs.copySync(dir(`files/server${mongo ? '-mongo' : ''}.js`), `${appDir}/server.js`)
-
-  // `webpack.config.js`
-  fs.writeFileSync(`${appDir}/webpack.config.js`, webpackConfig({ redux, title, description }), 'utf8')
-
-  // `after-compile-plugin.js`
-  fs.copySync(dir('files/after-compile-plugin.js'), `${appDir}/after-compile-plugin.js`)
-
-  // `api` directory tree.
-  mongo && fs.copySync(dir('./files/api'), `${appDir}/api`, filter1)
-  if (express && !mongo) {
-    fs.copySync(dir('files/api/home.js'), `${appDir}/api/home.js`)
-    fs.copySync(dir('files/api/utilities/errorUtil.js'), `${appDir}/api/utilities/errorUtil.js`)
-    fs.copySync(dir('files/api/utilities/catchy.js'), `${appDir}/api/utilities/catchy.js`)
+  // `README.md` - only create this file if it doesn't already exist (in the case of using the `--force` option).
+  if (!fs.existsSync(`${appDir}/README.md`)) {
+    fs.copySync(dir('files/README.md'), `${appDir}/README.md`)
   }
 
-  // `dist` directory tree.
-  fs.copySync(dir('./files/dist'), `${appDir}/dist`, filter1)
+  // `server.js` (with or without MongoDB options)
+  server && copySafe({
+    sourcePath: dir(`./files/server${mongo ? '-mongo' : ''}.js`),
+    destinationPath: `${appDir}/server.js`,
+  })
+
+  // `webpack.config.js`
+  const webpackConfigPath = `${appDir}/webpack.config.js`
+  const webpackConfigContents = keepOldFileContent({
+    destinationPath: webpackConfigPath,
+    newContent: webpackConfig({ redux, title, description }),
+  })
+  fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
+
+  // `after-compile-plugin.js`
+  copySafe({
+    sourcePath: dir('./files/after-compile-plugin.js'),
+    destinationPath: `${appDir}/after-compile-plugin.js`,
+  })
+
+  // `api` directory tree.
+  mongo && copySafe({
+    sourcePath: dir('./files/api'),
+    destinationPath: `${appDir}/api`,
+  })
+  if (express && !mongo) {
+    copySafe({
+      sourcePath: dir('./files/api/home.js'),
+      destinationPath: `${appDir}/api/home.js`,
+    })
+    copySafe({
+      sourcePath: dir('./files/api/utilities/errorUtil.js'),
+      destinationPath: `${appDir}/api/utilities/errorUtil.js`,
+    })
+    copySafe({
+      sourcePath: dir('./files/api/utilities/catchy.js'),
+      destinationPath: `${appDir}/api/utilities/catchy.js`,
+    })
+  }
+
+  // `dist` directory tree - only copy files that don't exist.
+  fs.copySync(dir('./files/dist'), `${appDir}/dist`, {
+    overwrite: false,
+    filter: (src, dest) => !src.endsWith('.DS_Store'),
+  })
 
   // Depending on the options, exclude certain files from being copied.
   const excludedFiles = [
@@ -348,48 +388,95 @@ function createFiles(options) {
     !router && redux && 'homeReducer.js',
     router && 'App.jsx'
   ].filter(Boolean)
-  const filter2 = { filter: file => excludedFiles.every(f => !file.includes(f)) }
 
   // `src` directory tree.
-  fs.copySync(dir('./files/src'), `${appDir}/src`, filter2)
+  copySafe({
+    sourcePath: dir('./files/src'),
+    destinationPath: `${appDir}/src`,
+
+    // Prevent writing to `entry.jsx` multiple times.
+    excludedFiles: excludedFiles.concat(router || redux ? 'entry.jsx' : [])
+  })
 
   if (router && redux) {
     // Store.
-    fs.copySync(dir('files/redux/store-router.js'), `${appDir}/src/store.js`)
+    copySafe({
+      sourcePath: dir('./files/redux/store-router.js'),
+      destinationPath: `${appDir}/src/store.js`,
+    })
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('files/redux/redux'), `${appDir}/src/redux`, filter2)
+    copySafe({
+      sourcePath: dir('./files/redux/redux'),
+      destinationPath: `${appDir}/src/redux`,
+      excludedFiles,
+    })
 
     // Entry file.
-    fs.copySync(dir('files/redux/entry-router.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/entry-router.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('files/redux/RouterHome.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('files/redux/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/RouterHome.jsx'),
+      destinationPath: `${appDir}/src/components/Home.jsx`,
+    })
+    copySafe({
+      sourcePath: dir('./files/redux/NotFound.jsx'),
+      destinationPath: `${appDir}/src/components/NotFound.jsx`,
+    })
   } else if (redux) {
     // Store.
-    fs.copySync(dir('files/redux/store.js'), `${appDir}/src/store.js`)
+    copySafe({
+      sourcePath: dir('./files/redux/store.js'),
+      destinationPath: `${appDir}/src/store.js`,
+    })
 
     // Redux utilities (actions, helpers, middleware, reducers).
-    fs.copySync(dir('files/redux/redux'), `${appDir}/src/redux`, filter2)
+    copySafe({
+      sourcePath: dir('./files/redux/redux'),
+      destinationPath: `${appDir}/src/redux`,
+      excludedFiles,
+    })
 
     // Entry file.
-    fs.copySync(dir('files/redux/entry.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/entry.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('files/redux/ReduxApp.jsx'), `${appDir}/src/components/App.jsx`)
+    copySafe({
+      sourcePath: dir('./files/redux/ReduxApp.jsx'),
+      destinationPath: `${appDir}/src/components/App.jsx`,
+    })
   } else if (router) {
     // Entry file.
-    fs.copySync(dir('files/router/entry.jsx'), `${appDir}/src/entry.jsx`)
+    copySafe({
+      sourcePath: dir('./files/router/entry.jsx'),
+      destinationPath: `${appDir}/src/entry.jsx`,
+    })
 
     // Components.
-    fs.copySync(dir('files/router/Home.jsx'), `${appDir}/src/components/Home.jsx`)
-    fs.copySync(dir('files/router/NotFound.jsx'), `${appDir}/src/components/NotFound.jsx`)
+    copySafe({
+      sourcePath: dir('./files/router/Home.jsx'),
+      destinationPath: `${appDir}/src/components/Home.jsx`,
+    })
+    copySafe({
+      sourcePath: dir('./files/router/NotFound.jsx'),
+      destinationPath: `${appDir}/src/components/NotFound.jsx`,
+    })
   }
 
   // `/src/helpers/index.js`
   fs.mkdirpSync(`${appDir}/src/helpers`)
-  fs.writeFileSync(`${appDir}/src/helpers/index.js`, helpersIndex({ redux }), 'utf8')
+  const helpersIndexcontent = keepOldFileContent({
+    destinationPath: `${appDir}/src/helpers/index.js`,
+    newContent: helpersIndex({ redux }),
+  })
+  fs.writeFileSync(`${appDir}/src/helpers/index.js`, helpersIndexcontent, 'utf8')
 
   /*
     Add comment to top of `entry.jsx`.
@@ -399,8 +486,8 @@ function createFiles(options) {
       * ./files/redux/entry-router.jsx
       * ./files/router/entry.jsx
   */
-  const entryFile = fs.readFileSync(`${appDir}/src/entry.jsx`, 'utf8')
-  fs.writeFileSync(`${appDir}/src/entry.jsx`, adjustEntryFile(entryFile), 'utf8')
+  const currentEntryFileContents = fs.readFileSync(`${appDir}/src/entry.jsx`, 'utf8')
+  fs.writeFileSync(`${appDir}/src/entry.jsx`, adjustEntryFile(currentEntryFileContents), 'utf8')
 }
 
 // STEP 5
@@ -408,6 +495,7 @@ async function installDependencies(options) {
   const { appName, appDir, server, offline, mongo, force, noInstall } = options
   const forceOffline = offline ? ' --offline' : '' // http://bit.ly/2Z2Ht9c
   const cache = offline ? ' cache' : ''
+  let npmInstallFailed = false
 
   // Change into the projects directory.
   process.chdir(`${cwd}/${appName}`)
@@ -420,6 +508,7 @@ async function installDependencies(options) {
     try {
       run(`npm i${forceOffline}`)
     } catch(e) {
+      npmInstallFailed = true
       console.log(`\n${chalk.yellow('An error occurred during the npm installation.')}`)
 
       // Cleanup what was created *only* if we didn't force install.
@@ -436,7 +525,6 @@ async function installDependencies(options) {
     }
   }
 
-
   // Adjust the package.json dependencies to show their installed version.
   // E.x. - "react": "^16" => "react": "^16.6.1"
   !noInstall && adjustPkgJson(appDir)
@@ -447,10 +535,13 @@ async function installDependencies(options) {
     console.log('Initialized a git repository.\n')
   } catch (e) {
     console.log(`Tried to initialize a new ${chalk.bold('git')} repository but couldn't.`)
-    console.log(`Do you have have ${chalk.bold('git')} installed?\n`)
+    console.log(`Do you have have ${chalk.bold('git')} installed?`)
+    console.log('  * https://git-scm.com/downloads\n')
   }
 
-  noInstall && console.log('No dependecies intalled. `package.json` will not reflect specific versions.')
+  if (noInstall || npmInstallFailed) {
+    console.log('No dependecies intalled. `package.json` will not reflect specific versions.')
+  }
 
   // Display the final message.
   const cyanDir = chalk.cyan(appDir)

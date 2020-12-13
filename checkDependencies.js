@@ -1,3 +1,9 @@
+/*
+  This file is a way for me to check the versions of dependencies
+  that Create New App uses to create React applications.
+  It's simply for maintenance reasons concerning this library.
+*/
+
 const chalk = require('chalk')
 const formDependencies = require('./modules/dependencies')
 const makeTable = require('./modules/makeTable')

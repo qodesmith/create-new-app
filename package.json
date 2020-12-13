@@ -11,7 +11,8 @@
     "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
     "e2e:update:noinstall": "NO_INSTALL=1 npm run e2e:update",
     "unit": "jest ./tests/unit",
-    "preinstall": "node ./versionCheck.js"
+    "preinstall": "node ./versionCheck.js",
+    "jest": "jest"
   },
   "keywords": [
     "react",
@@ -39,7 +40,7 @@
     "email": "theqodesmith@gmail.com"
   },
   "license": "MIT",
-  "author": "Qodesmith <theqodesmith@gmail.com> (http://aaroncordova.xyz)",
+  "author": "Qodesmith <theqodesmith@gmail.com> (https://github.com/qodesmith/create-new-app)",
   "main": "main.js",
   "bin": {
     "create-new-app": "main.js",
@@ -65,9 +66,9 @@
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-plugin-react": "^7.14.2",
-    "jest": "^25.2.4"
+    "jest": "^26.5.3"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   }
 }

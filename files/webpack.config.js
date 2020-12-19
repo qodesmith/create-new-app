@@ -192,7 +192,10 @@ module.exports = (env, argv) => ({
                     }
                   }
                 ],
-                '@babel/preset-react' // http://bit.ly/2KpNOYb
+                [
+                  '@babel/preset-react', // http://bit.ly/2KpNOYb, https://bit.ly/38lOGri
+                  {runtime: 'automatic'}
+                ]
               ],
 
               // http://bit.ly/2KmgNfz - List of Babel plugins.

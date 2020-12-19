@@ -22,8 +22,8 @@ const allServerCombos = nonMongoServerCombos.concat(mongoServerCombos)
 
 const plainDevDeps = {
   // MAIN
-  react: '^16',
-  'react-dom': '^16',
+  react: '^17',
+  'react-dom': '^17',
   sassyons: '^4',
 
   // POSTCSS

@@ -20,8 +20,8 @@ const dependencyReducer = obj => (
 const dependencies = ({ mongo, redux, router, server }) => {
   const devDependencies = {
     // MAIN
-    react: '^16',
-    'react-dom': '^16',
+    react: '^17',
+    'react-dom': '^17',
     sassyons: '^4',
     redux: redux && '^4',
     'react-redux': redux && '^7',

@@ -193,8 +193,8 @@ module.exports = (env, argv) => ({
                   }
                 ],
                 [
-                  '@babel/preset-react', // http://bit.ly/2KpNOYb, https://bit.ly/38lOGri
-                  {runtime: 'automatic'}
+                  '@babel/preset-react', // http://bit.ly/2KpNOYb
+                  {runtime: 'automatic'} // https://bit.ly/38lOGri
                 ]
               ],
 

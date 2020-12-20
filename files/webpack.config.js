@@ -297,7 +297,6 @@ module.exports = (env, argv) => ({
     minimizer: [
       // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
       new TerserPlugin({ // http://bit.ly/2WI3M6G
-        cache: true, // http://bit.ly/2WNdoNC
         parallel: true, // http://bit.ly/2WJ6hWf
         terserOptions: { // http://bit.ly/2WIWVK5
           compress: {

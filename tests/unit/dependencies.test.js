@@ -40,6 +40,7 @@ const plainDevDeps = {
   // WEBPACK
   webpack: '^5',
   'webpack-cli': '^4',
+  'webpack-dev-server': '^3',
   'mini-css-extract-plugin': '^1',
   'clean-webpack-plugin': '^3',
   'html-webpack-plugin': '^5.0.0-beta',

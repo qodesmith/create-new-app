@@ -224,26 +224,13 @@ module.exports = (env, argv) => ({
         use: [
           MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
           {
-            /*
-              http://bit.ly/2WBprNT
-              Using `fast-css-loader` combined with `fast-sass-loader` (below)
-              produces about a 50% faster build. You'll notice it while developing.
-              `css-loader` is still included so feel free to switch.
-            */
-            loader: 'fast-css-loader',
+            loader: 'css-loader',
             options: {
               importLoaders: 2
             }
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
-
-          /*
-            http://bit.ly/2WI1fcw
-            Using `fast-sass-loader` combined with `fast-css-loader` (above)
-            produces about a 50% faster build. You'll notice it while developing.
-            `sass-loader` is still included so feel free to switch.
-          */
-          'fast-sass-loader'
+          'sass-loader'
         ]
       },
 

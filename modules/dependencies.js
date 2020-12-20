@@ -49,10 +49,8 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'html-webpack-plugin': '^4',
     'glob-all': 'latest', // Always install latest.
     'file-loader': '^6',
-    'css-loader': '^3', // Still included to allow users to choose.
-    'fast-css-loader': '^1',
-    'sass-loader': '^8', // Still included to allow users to choose.
-    'fast-sass-loader': '^1',
+    'css-loader': '^3',
+    'sass-loader': '^8',
     'node-sass': '^4',
     'terser-webpack-plugin': '^2',
 

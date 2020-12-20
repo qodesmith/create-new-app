@@ -61,12 +61,12 @@ module.exports = (env, argv) => ({
       http://bit.ly/2KoIZP4
       This option determines the name of each output bundle.
     */
-    filename: '[name].[hash].bundle.js',
+    filename: '[name].[fullhash].bundle.js',
 
     /*
       http://bit.ly/2MtdylV
     */
-    chunkFilename: '[name].[hash].chunk.js',
+    chunkFilename: '[name].[fullhash].chunk.js',
 
     /*
       http://bit.ly/2KjYRSI
@@ -321,13 +321,6 @@ module.exports = (env, argv) => ({
   // http://bit.ly/2WOvpLv
   plugins: [
     /*
-      https://bit.ly/3bHu78O
-      Makes webpack's [hash] accesible globally in client code
-      via the `__webpack_hash__` variable.
-    */
-    new webpack.ExtendedAPIPlugin(),
-
-    /*
       http://bit.ly/2WEeBGF
       Make global variables available to the app.
       Needed in order to use the production-ready minified version of React.
@@ -351,7 +344,7 @@ module.exports = (env, argv) => ({
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // Both options are optional.
-      filename: '[name].[hash].css',
+      filename: '[name].[fullhash].css',
       chunkFilename: '[id].css'
     }),
 
@@ -470,11 +463,10 @@ module.exports = (env, argv) => ({
   },
 
   /*
-    http://bit.ly/2WFerz2
-    Seems to be the fastest one with accurate line numbers
-    matching what you'd see in your editor.
+    https://bit.ly/3rdPV4o
+    Only certain values work with TerserPlugin.
   */
-  devtool: !env.prod && 'cheap-module-eval-source-map',
+  devtool: !env.prod && 'source-map',
 
   /*
     http://bit.ly/2WFA41T

@@ -11,7 +11,7 @@ try {
 
 const spaces = ' '.repeat(38 - nodeVersion.toString().length)
 
-if (nodeVersion !== undefined && nodeVersion < 10) {
+if (nodeVersion !== undefined && nodeVersion < 10.13) {
   const message = `
     ╭───────────────────────────────────────────────────────────────────╮
     │                                                                   │

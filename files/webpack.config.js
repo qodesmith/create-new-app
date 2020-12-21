@@ -22,7 +22,7 @@ console.log(`
 if (NODE_ENV === 'production') console.log('Building for production...\n\n')
 
 module.exports = (env, argv) => ({
-  // http://bit.ly/2w4ndaR - new in Webpack 4.
+  // https://bit.ly/3awbwiG
   mode: env.prod ? 'production' : 'development',
 
   // http://bit.ly/2IEFVfK - fail on errors when building for production.
@@ -61,12 +61,12 @@ module.exports = (env, argv) => ({
       http://bit.ly/2KoIZP4
       This option determines the name of each output bundle.
     */
-    filename: '[name].[hash].bundle.js',
+    filename: '[name].[fullhash].bundle.js',
 
     /*
       http://bit.ly/2MtdylV
     */
-    chunkFilename: '[name].[hash].chunk.js',
+    chunkFilename: '[name].[fullhash].chunk.js',
 
     /*
       http://bit.ly/2KjYRSI
@@ -192,7 +192,10 @@ module.exports = (env, argv) => ({
                     }
                   }
                 ],
-                '@babel/preset-react' // http://bit.ly/2KpNOYb
+                [
+                  '@babel/preset-react', // http://bit.ly/2KpNOYb
+                  {runtime: 'automatic'} // https://bit.ly/38lOGri
+                ]
               ],
 
               // http://bit.ly/2KmgNfz - List of Babel plugins.
@@ -221,26 +224,13 @@ module.exports = (env, argv) => ({
         use: [
           MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
           {
-            /*
-              http://bit.ly/2WBprNT
-              Using `fast-css-loader` combined with `fast-sass-loader` (below)
-              produces about a 50% faster build. You'll notice it while developing.
-              `css-loader` is still included so feel free to switch.
-            */
-            loader: 'fast-css-loader',
+            loader: 'css-loader',
             options: {
               importLoaders: 2
             }
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
-
-          /*
-            http://bit.ly/2WI1fcw
-            Using `fast-sass-loader` combined with `fast-css-loader` (above)
-            produces about a 50% faster build. You'll notice it while developing.
-            `sass-loader` is still included so feel free to switch.
-          */
-          'fast-sass-loader'
+          'sass-loader'
         ]
       },
 
@@ -307,7 +297,6 @@ module.exports = (env, argv) => ({
     minimizer: [
       // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
       new TerserPlugin({ // http://bit.ly/2WI3M6G
-        cache: true, // http://bit.ly/2WNdoNC
         parallel: true, // http://bit.ly/2WJ6hWf
         terserOptions: { // http://bit.ly/2WIWVK5
           compress: {
@@ -330,13 +319,6 @@ module.exports = (env, argv) => ({
 
   // http://bit.ly/2WOvpLv
   plugins: [
-    /*
-      https://bit.ly/3bHu78O
-      Makes webpack's [hash] accesible globally in client code
-      via the `__webpack_hash__` variable.
-    */
-    new webpack.ExtendedAPIPlugin(),
-
     /*
       http://bit.ly/2WEeBGF
       Make global variables available to the app.
@@ -361,7 +343,7 @@ module.exports = (env, argv) => ({
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // Both options are optional.
-      filename: '[name].[hash].css',
+      filename: '[name].[fullhash].css',
       chunkFilename: '[id].css'
     }),
 
@@ -480,11 +462,10 @@ module.exports = (env, argv) => ({
   },
 
   /*
-    http://bit.ly/2WFerz2
-    Seems to be the fastest one with accurate line numbers
-    matching what you'd see in your editor.
+    https://bit.ly/3rdPV4o
+    Only certain values work with TerserPlugin.
   */
-  devtool: !env.prod && 'cheap-module-eval-source-map',
+  devtool: !env.prod && 'source-map',
 
   /*
     http://bit.ly/2WFA41T

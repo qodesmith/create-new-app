@@ -114,8 +114,8 @@ describe('cli - vanilla React project', () => {
         expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
 
         const scripts = {
-          build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
-          start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
+          build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
+          start: 'cross-env NODE_ENV=development webpack serve --mode development --progress'
         }
 
         expect(pkgJson.scripts).toEqual(scripts)

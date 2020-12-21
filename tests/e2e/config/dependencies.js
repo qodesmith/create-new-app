@@ -14,41 +14,39 @@ const serverDevDeps = {
   '@babel/plugin-proposal-nullish-coalescing-operator': '^7',
   '@babel/preset-env': '^7',
   '@babel/preset-react': '^7',
-  '@fullhuman/postcss-purgecss': '^2',
-  'autoprefixer': '^9',
+  '@fullhuman/postcss-purgecss': '^3',
+  'autoprefixer': '^10',
   'babel-loader': '^8',
   'clean-webpack-plugin': '^3',
   'core-js': '^3',
   'cross-env': '^7',
-  'css-declaration-sorter': '^5',
-  'css-loader': '^3',
+  'css-declaration-sorter': '^6',
+  'css-loader': '^5',
   'cssnano': '^4',
-  'fast-css-loader': '^1',
-  'fast-sass-loader': '^1',
   'file-loader': '^6',
   'glob-all': 'latest',
-  'html-webpack-plugin': '^4',
-  'mini-css-extract-plugin': '^0',
-  'node-sass': '^4',
+  'html-webpack-plugin': '^5.0.0-beta',
+  'mini-css-extract-plugin': '^1',
   'npm-run-all': 'latest',
-  'postcss': '^7',
-  'postcss-combine-duplicated-selectors': '^8',
+  'postcss': '^8',
+  'postcss-combine-duplicated-selectors': '^10',
   'postcss-combine-media-query': '^1',
-  'postcss-loader': '^3',
+  'postcss-loader': '^4',
   'purgecss-whitelister': 'latest',
-  'react': '^16',
-  'react-dom': '^16',
+  'react': '^17',
+  'react-dom': '^17',
   'regenerator-runtime': '^0',
-  'sass-loader': '^8',
-  'sassyons': '^4',
-  'terser-webpack-plugin': '^2',
-  'webpack': '^4',
-  'webpack-cli': '^3',
+  'sass': '^1',
+  'sass-loader': '^10',
+  'sassyons': 'latest',
+  'terser-webpack-plugin': '^5',
+  'webpack': '^5',
+  'webpack-cli': '^4',
   'webpack-dev-server': '^3'
 }
 const devDeps = { ...serverDevDeps, 'dotenv': '^8' }
 const reduxDeps = { 'redux': '^4', 'react-redux': '^7' }
-const routerDeps = { 'react-router-dom': '^5', 'history': '^4' }
+const routerDeps = { 'react-router-dom': '^5', 'history': '^5' }
 const serverDeps = {
   'chalk': '^3',
   'express': '^4',
@@ -91,7 +89,13 @@ const mongoRouterRedux = {
 }
 
 // Latest.
-const latestPackages = [ 'glob-all', 'npm-run-all', 'purgecss-whitelister', 'nodemon' ]
+const latestPackages = [devDeps, reduxDeps, routerDeps, mongoDeps].reduce((acc, obj) => {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === 'latest') acc.push(key)
+  })
+
+  return acc
+}, [])
 
 
 module.exports = {

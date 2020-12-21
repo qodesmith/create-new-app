@@ -22,36 +22,34 @@ const allServerCombos = nonMongoServerCombos.concat(mongoServerCombos)
 
 const plainDevDeps = {
   // MAIN
-  react: '^16',
-  'react-dom': '^16',
-  sassyons: '^4',
+  react: '^17',
+  'react-dom': '^17',
+  sassyons: 'latest',
 
   // POSTCSS
-  'postcss-loader': '^3',
-  postcss: '^7',
+  'postcss-loader': '^4',
+  postcss: '^8',
   cssnano: '^4',
-  '@fullhuman/postcss-purgecss': '^2',
+  '@fullhuman/postcss-purgecss': '^3',
   'purgecss-whitelister': 'latest',
   'postcss-combine-media-query': '^1',
-  'postcss-combine-duplicated-selectors': '^8',
-  autoprefixer: '^9',
-  'css-declaration-sorter': '^5',
+  'postcss-combine-duplicated-selectors': '^10',
+  autoprefixer: '^10',
+  'css-declaration-sorter': '^6',
 
   // WEBPACK
-  webpack: '^4',
-  'webpack-cli': '^3',
+  webpack: '^5',
+  'webpack-cli': '^4',
   'webpack-dev-server': '^3',
-  'mini-css-extract-plugin': '^0',
+  'mini-css-extract-plugin': '^1',
   'clean-webpack-plugin': '^3',
-  'html-webpack-plugin': '^4',
+  'html-webpack-plugin': '^5.0.0-beta',
   'glob-all': 'latest',
   'file-loader': '^6',
-  'css-loader': '^3',
-  'fast-css-loader': '^1',
-  'sass-loader': '^8',
-  'fast-sass-loader': '^1',
-  'node-sass': '^4',
-  'terser-webpack-plugin': '^2',
+  'css-loader': '^5',
+  'sass': '^1',
+  'sass-loader': '^10',
+  'terser-webpack-plugin': '^5',
 
   // BABEL
   'babel-loader': '^8',

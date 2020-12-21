@@ -20,41 +20,39 @@ const dependencyReducer = obj => (
 const dependencies = ({ mongo, redux, router, server }) => {
   const devDependencies = {
     // MAIN
-    react: '^16',
-    'react-dom': '^16',
-    sassyons: '^4',
+    react: '^17',
+    'react-dom': '^17',
+    sassyons: 'latest', // Always install the latest.
     redux: redux && '^4',
     'react-redux': redux && '^7',
     'react-router-dom': router && '^5',
-    history: router && '^4',
+    history: router && '^5',
 
     // POSTCSS
     // https://cssnano.co/optimisations/ - list of plugins.
-    'postcss-loader': '^3',
-    postcss: '^7',
+    'postcss-loader': '^4',
+    postcss: '^8',
     cssnano: '^4',
-    '@fullhuman/postcss-purgecss': '^2', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
-    'purgecss-whitelister': 'latest', // Always install latest.
+    '@fullhuman/postcss-purgecss': '^3', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
+    'purgecss-whitelister': 'latest', // Always install the latest.
     'postcss-combine-media-query': '^1',
-    'postcss-combine-duplicated-selectors': '^8',
-    autoprefixer: '^9',
-    'css-declaration-sorter': '^5',
+    'postcss-combine-duplicated-selectors': '^10',
+    autoprefixer: '^10',
+    'css-declaration-sorter': '^6',
 
     // WEBPACK
-    webpack: '^4',
-    'webpack-cli': '^3',
+    webpack: '^5',
+    'webpack-cli': '^4',
     'webpack-dev-server': '^3',
-    'mini-css-extract-plugin': '^0', // Currently < 1
+    'mini-css-extract-plugin': '^1',
     'clean-webpack-plugin': '^3',
-    'html-webpack-plugin': '^4',
-    'glob-all': 'latest', // Always install latest.
+    'html-webpack-plugin': '^5.0.0-beta',
+    'glob-all': 'latest', // Always install the latest.
     'file-loader': '^6',
-    'css-loader': '^3', // Still included to allow users to choose.
-    'fast-css-loader': '^1',
-    'sass-loader': '^8', // Still included to allow users to choose.
-    'fast-sass-loader': '^1',
-    'node-sass': '^4',
-    'terser-webpack-plugin': '^2',
+    'css-loader': '^5',
+    'sass': '^1',
+    'sass-loader': '^10',
+    'terser-webpack-plugin': '^5',
 
     // BABEL - http://bit.ly/2IdVyKe
     'babel-loader': '^8',
@@ -71,7 +69,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
 
     // OTHER
     'cross-env': '^7',
-    'npm-run-all': 'latest', // Always install latest.
+    'npm-run-all': 'latest', // Always install the latest.
     dotenv: !server && '^8' // This is also below in `serverDependencies`.
   }
 
@@ -84,7 +82,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     helmet: '^3',
     compression: '^1',
     'body-parser': '^1',
-    nodemon: 'latest', // Always install latest.
+    nodemon: 'latest', // Always install the latest.
     dotenv: '^8', // This is also conditionally above in `devDependencies`.
 
     // MONGO

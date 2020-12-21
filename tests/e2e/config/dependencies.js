@@ -36,12 +36,12 @@ const serverDevDeps = {
   'react': '^17',
   'react-dom': '^17',
   'regenerator-runtime': '^0',
-  'sass': '^4',
+  'sass': '^1',
   'sass-loader': '^10',
-  'sassyons': '^4',
+  'sassyons': 'latest',
   'terser-webpack-plugin': '^5',
-  'webpack': '^4',
-  'webpack-cli': '^3',
+  'webpack': '^5',
+  'webpack-cli': '^4',
   'webpack-dev-server': '^3'
 }
 const devDeps = { ...serverDevDeps, 'dotenv': '^8' }
@@ -89,7 +89,13 @@ const mongoRouterRedux = {
 }
 
 // Latest.
-const latestPackages = [ 'glob-all', 'npm-run-all', 'purgecss-whitelister', 'nodemon' ]
+const latestPackages = [devDeps, reduxDeps, routerDeps, mongoDeps].reduce((acc, obj) => {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === 'latest') acc.push(key)
+  })
+
+  return acc
+}, [])
 
 
 module.exports = {

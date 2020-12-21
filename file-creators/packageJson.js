@@ -103,10 +103,10 @@ function packageJson({ options, destinationPath }) {
         ...originalPkgJson.scripts,
 
         // ...then possibly overwrite with the new scripts. We'll retain the entirety of the old scripts down below.
-        build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
-        'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env.dev',
+        build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
+        'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env dev',
         local: 'npm run server:api',
-        'server:dev': 'webpack serve --mode development --progress',
+        'server:dev': 'webpack serve --mode development --progress --env dev',
         'server:api': 'nodemon server.js',
         start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
       }
@@ -123,8 +123,8 @@ function packageJson({ options, destinationPath }) {
       devDependencies: mergeDependencies(devDependencies, originalPkgJson.devDependencies),
       scripts: {
         ...originalPkgJson.scripts, // Merge in any original scripts.
-        build: 'cross-env NODE_ENV=production webpack --mode production --env.prod',
-        start: 'cross-env NODE_ENV=development webpack-dev-server --mode development --env.dev --progress'
+        build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
+        start: 'cross-env NODE_ENV=development webpack serve --mode development --progress'
       }
     }
 

@@ -22,7 +22,7 @@ console.log(`
 if (NODE_ENV === 'production') console.log('Building for production...\n\n')
 
 module.exports = (env, argv) => ({
-  // http://bit.ly/2w4ndaR - new in Webpack 4.
+  // https://bit.ly/3awbwiG
   mode: env.prod ? 'production' : 'development',
 
   // http://bit.ly/2IEFVfK - fail on errors when building for production.

@@ -47,7 +47,7 @@ module.exports = (env, argv) => ({
       To order these script tags, see the `chunks` option of
       `HtmlWebpackPlugin` down below in the plugins section.
     */
-    main: path.resolve(__dirname, 'src/entry.jsx')
+    main: path.resolve(__dirname, 'src/entry.jsx'),
   },
 
   /*
@@ -94,7 +94,7 @@ module.exports = (env, argv) => ({
       The default global object is 'window'. To allow module chunks to work with
       web workers, a value of 'this' is used instead.
     */
-    globalObject: 'this'
+    globalObject: 'this',
   },
 
   /*
@@ -189,14 +189,14 @@ module.exports = (env, argv) => ({
                     useBuiltIns: 'entry', // http://bit.ly/2KkBZCu
                     corejs: { // http://bit.ly/2KkC09w
                       version: 3,
-                      proposals: true
-                    }
-                  }
+                      proposals: true,
+                    },
+                  },
                 ],
                 [
                   '@babel/preset-react', // http://bit.ly/2KpNOYb
-                  {runtime: 'automatic'} // https://bit.ly/38lOGri
-                ]
+                  {runtime: 'automatic'}, // https://bit.ly/38lOGri
+                ],
               ],
 
               // http://bit.ly/2KmgNfz - List of Babel plugins.
@@ -207,10 +207,10 @@ module.exports = (env, argv) => ({
                 '@babel/plugin-proposal-optional-chaining', // http://bit.ly/2ZDuBdB
                 '@babel/plugin-proposal-nullish-coalescing-operator', // http://bit.ly/2CvleQ4
                 !env.prod && 'react-refresh/babel',
-              ].filter(Boolean)
-            }
-          }
-        ]
+              ].filter(Boolean),
+            },
+          },
+        ],
       },
 
       /*
@@ -228,12 +228,12 @@ module.exports = (env, argv) => ({
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 2
-            }
+              importLoaders: 2,
+            },
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
 
       /*
@@ -249,10 +249,10 @@ module.exports = (env, argv) => ({
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]'
-            }
-          }
-        ]
+              name: '[name].[ext]',
+            },
+          },
+        ],
       },
 
       /*
@@ -268,12 +268,12 @@ module.exports = (env, argv) => ({
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]'
-            }
-          }
-        ]
-      }
-    ]
+              name: '[name].[ext]',
+            },
+          },
+        ],
+      },
+    ],
   },
 
   // http://bit.ly/2WGnFeg
@@ -290,7 +290,7 @@ module.exports = (env, argv) => ({
       http://bit.ly/2WI1BQo
       Automatically resolve certain extensions without having to type them out.
     */
-    extensions: ['.js', '.jsx', '.json', '.scss']
+    extensions: ['.js', '.jsx', '.json', '.scss'],
   },
 
   // http://bit.ly/2WH6fOH
@@ -304,19 +304,19 @@ module.exports = (env, argv) => ({
           compress: {
             ecma: 5,
             comparisons: false, // http://bit.ly/2MtqwQv
-            inline: 2 // http://bit.ly/2IDJXFg
+            inline: 2, // http://bit.ly/2IDJXFg
           },
           mangle: {
-            safari10: true // http://bit.ly/2MsRTdv
+            safari10: true, // http://bit.ly/2MsRTdv
           },
           output: {
             ecma: 5,
             comments: false,
-            ascii_only: true // Helps minimize regex and emoji's correctly.
-          }
-        }
-      })
-    ]
+            ascii_only: true, // Helps minimize regex and emoji's correctly.
+          },
+        },
+      }),
+    ],
   },
 
   // http://bit.ly/2WOvpLv
@@ -349,8 +349,8 @@ module.exports = (env, argv) => ({
         Avoids warnings in the console.
       */
       'process.env': {
-        NODE_ENV: JSON.stringify(env.prod ? 'production' : 'development')
-      }
+        NODE_ENV: JSON.stringify(env.prod ? 'production' : 'development'),
+      },
     }),
 
     // This must be used in conjunction with the associated scss module rule.
@@ -358,7 +358,7 @@ module.exports = (env, argv) => ({
       // Options similar to the same options in webpackOptions.output
       // Both options are optional.
       filename: '[name].[fullhash].css',
-      chunkFilename: '[id].css'
+      chunkFilename: '[id].css',
     }),
 
     /*
@@ -372,7 +372,7 @@ module.exports = (env, argv) => ({
     new CleanWebpackPlugin({
       verbose: true,
       cleanOnceBeforeBuildPatterns: ['*.js', '*.css', '*.html'],
-      cleanAfterEveryBuildPatterns: ['*.js', '*.css', '*.html']
+      cleanAfterEveryBuildPatterns: ['*.js', '*.css', '*.html'],
     }),
 
     /*
@@ -386,12 +386,12 @@ module.exports = (env, argv) => ({
       description: __PLACEHOLDER_DESCRIPTION__,
       minify: {
         collapseWhitespace: true,
-        removeComments: true
+        removeComments: true,
       },
 
       // Order the different entry points found at the top of this file.
       chunks: ['main'],
-      chunksSortMode: 'manual'
+      chunksSortMode: 'manual',
     }),
 
     // Necessary for the new React Fast Refresh functionality.
@@ -407,8 +407,8 @@ module.exports = (env, argv) => ({
         console.log('\n')
         API && console.log(`🌎  => API listening on port ${API_PORT}...`)
         console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
-      }
-    })
+      },
+    }),
   ].filter(Boolean),
 
   // http://bit.ly/2WEpbgZ
@@ -474,8 +474,8 @@ module.exports = (env, argv) => ({
           if ((req.headers.accept || '').includes('html')) return '/'
 
           // Let the API server respond by implicitly returning here.
-        }
-      }
+        },
+      },
     } : {},
 
     // https://bit.ly/3nM4mL0
@@ -520,5 +520,5 @@ module.exports = (env, argv) => ({
     `web` is default, but if you're making a 3rd party library
     consumed in Node, change this to `node`. There are others as well.
   */
-  target: 'web'
+  target: 'web',
 })

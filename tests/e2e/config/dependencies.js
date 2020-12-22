@@ -15,6 +15,7 @@ const serverDevDeps = {
   '@babel/preset-env': '^7',
   '@babel/preset-react': '^7',
   '@fullhuman/postcss-purgecss': '^3',
+  '@pmmmwh/react-refresh-webpack-plugin': '^0',
   'autoprefixer': '^10',
   'babel-loader': '^8',
   'clean-webpack-plugin': '^3',

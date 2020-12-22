@@ -50,6 +50,7 @@ const plainDevDeps = {
   'sass': '^1',
   'sass-loader': '^10',
   'terser-webpack-plugin': '^5',
+  '@pmmmwh/react-refresh-webpack-plugin': '^0',
 
   // BABEL
   'babel-loader': '^8',

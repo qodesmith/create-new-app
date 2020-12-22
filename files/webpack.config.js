@@ -7,6 +7,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 
 console.log(`
@@ -204,8 +205,9 @@ module.exports = (env, argv) => ({
                 '@babel/plugin-proposal-class-properties', // http://bit.ly/2KoJQPM
                 '@babel/plugin-syntax-dynamic-import', // http://bit.ly/2KoKcG6
                 '@babel/plugin-proposal-optional-chaining', // http://bit.ly/2ZDuBdB
-                '@babel/plugin-proposal-nullish-coalescing-operator' // http://bit.ly/2CvleQ4
-              ]
+                '@babel/plugin-proposal-nullish-coalescing-operator', // http://bit.ly/2CvleQ4
+                !env.prod && 'react-refresh/babel',
+              ].filter(Boolean)
             }
           }
         ]
@@ -325,9 +327,21 @@ module.exports = (env, argv) => ({
       Needed in order to use the production-ready minified version of React.
     */
     new webpack.DefinePlugin({
-      // Convenience variables.
-      __DEV__: !env.prod,
-      __PROD__: env.prod,
+      /*
+        https://bit.ly/3mB98cM - Convenience variables.
+        Note that because the plugin does a direct text replacement,
+        the value given to it must include actual quotes inside of the string itself.
+        Typically, this is done either with alternate quotes, such as '"production"',
+        or by using JSON.stringify('production').
+      */
+     __DEV__: !env.prod,
+     __PROD__: env.prod,
+
+     /*
+       You can use this variable on the front end to prefix all fetch requests.
+         fetch(`/${__API__}/my-route`)
+     */
+     __API__: JSON.stringify(API),
 
       /*
         http://bit.ly/2WBx4DZ
@@ -379,6 +393,10 @@ module.exports = (env, argv) => ({
       chunks: ['main'],
       chunksSortMode: 'manual'
     }),
+
+    // Necessary for the new React Fast Refresh functionality.
+    !env.prod && new webpack.HotModuleReplacementPlugin(),
+    !env.prod && new ReactRefreshWebpackPlugin(),
 
     /*
       A simple, custom Webpack plugin to run a function after each build.
@@ -458,7 +476,22 @@ module.exports = (env, argv) => ({
           // Let the API server respond by implicitly returning here.
         }
       }
-    } : {}
+    } : {},
+
+    // https://bit.ly/3nM4mL0
+    watchContentBase: true,
+
+    // https://bit.ly/2WQBndb
+    hot: true,
+
+    // https://bit.ly/3mIacvB
+    inline: true,
+
+    // https://bit.ly/37EzOVO
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
   },
 
   /*

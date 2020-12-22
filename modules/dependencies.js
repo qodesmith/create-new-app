@@ -53,6 +53,7 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'sass': '^1',
     'sass-loader': '^10',
     'terser-webpack-plugin': '^5',
+    '@pmmmwh/react-refresh-webpack-plugin': '^0',
 
     // BABEL - http://bit.ly/2IdVyKe
     'babel-loader': '^8',

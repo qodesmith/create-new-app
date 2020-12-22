@@ -275,6 +275,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 
 console.log(\`
@@ -472,8 +473,9 @@ module.exports = (env, argv) => ({
                 '@babel/plugin-proposal-class-properties', // http://bit.ly/2KoJQPM
                 '@babel/plugin-syntax-dynamic-import', // http://bit.ly/2KoKcG6
                 '@babel/plugin-proposal-optional-chaining', // http://bit.ly/2ZDuBdB
-                '@babel/plugin-proposal-nullish-coalescing-operator' // http://bit.ly/2CvleQ4
-              ]
+                '@babel/plugin-proposal-nullish-coalescing-operator', // http://bit.ly/2CvleQ4
+                !env.prod && 'react-refresh/babel',
+              ].filter(Boolean)
             }
           }
         ]
@@ -598,9 +600,21 @@ module.exports = (env, argv) => ({
       Needed in order to use the production-ready minified version of React.
     */
     new webpack.DefinePlugin({
-      // Convenience variables.
-      __DEV__: !env.prod,
-      __PROD__: env.prod,
+      /*
+        https://bit.ly/3mB98cM - Convenience variables.
+        Note that because the plugin does a direct text replacement,
+        the value given to it must include actual quotes inside of the string itself.
+        Typically, this is done either with alternate quotes, such as '\\"production\\"',
+        or by using JSON.stringify('production').
+      */
+     __DEV__: !env.prod,
+     __PROD__: env.prod,
+
+     /*
+       You can use this variable on the front end to prefix all fetch requests.
+         fetch(\`/\${__API__}/my-route\`)
+     */
+     __API__: JSON.stringify(API),
 
       /*
         http://bit.ly/2WBx4DZ
@@ -652,6 +666,10 @@ module.exports = (env, argv) => ({
       chunks: ['main'],
       chunksSortMode: 'manual'
     }),
+
+    // Necessary for the new React Fast Refresh functionality.
+    !env.prod && new webpack.HotModuleReplacementPlugin(),
+    !env.prod && new ReactRefreshWebpackPlugin(),
 
     /*
       A simple, custom Webpack plugin to run a function after each build.
@@ -731,7 +749,22 @@ module.exports = (env, argv) => ({
           // Let the API server respond by implicitly returning here.
         }
       }
-    } : {}
+    } : {},
+
+    // https://bit.ly/3nM4mL0
+    watchContentBase: true,
+
+    // https://bit.ly/2WQBndb
+    hot: true,
+
+    // https://bit.ly/3mIacvB
+    inline: true,
+
+    // https://bit.ly/37EzOVO
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
   },
 
   /*
@@ -1057,7 +1090,13 @@ Object {
     "contentBase": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
+    "hot": true,
+    "inline": true,
     "open": true,
+    "overlay": Object {
+      "errors": true,
+      "warnings": true,
+    },
     "port": "8080",
     "proxy": Object {
       "/api": Object {
@@ -1066,6 +1105,7 @@ Object {
       },
     },
     "public": "http://localhost:8080",
+    "watchContentBase": true,
   },
   "devtool": "source-map",
   "entry": Object {
@@ -1087,6 +1127,7 @@ Object {
                 "@babel/plugin-syntax-dynamic-import",
                 "@babel/plugin-proposal-optional-chaining",
                 "@babel/plugin-proposal-nullish-coalescing-operator",
+                "react-refresh/babel",
               ],
               "presets": Array [
                 Array [
@@ -1193,6 +1234,7 @@ Object {
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
+        "__API__": "\\"/api\\"",
         "__DEV__": true,
         "__PROD__": false,
         "process.env": Object {
@@ -1253,6 +1295,20 @@ Object {
       },
       "version": 5,
     },
+    HotModuleReplacementPlugin {
+      "options": Object {},
+    },
+    ReactRefreshPlugin {
+      "options": Object {
+        "exclude": /node_modules/i,
+        "include": /\\\\\\.\\(\\[jt\\]sx\\?\\|flow\\)\\$/i,
+        "overlay": Object {
+          "entry": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
+          "module": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
+          "sockIntegration": "wds",
+        },
+      },
+    },
     AfterCompilePlugin {
       "run": [Function],
     },
@@ -1283,7 +1339,13 @@ Object {
     "contentBase": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
+    "hot": true,
+    "inline": true,
     "open": true,
+    "overlay": Object {
+      "errors": true,
+      "warnings": true,
+    },
     "port": "8080",
     "proxy": Object {
       "/api": Object {
@@ -1292,6 +1354,7 @@ Object {
       },
     },
     "public": "http://localhost:8080",
+    "watchContentBase": true,
   },
   "devtool": false,
   "entry": Object {
@@ -1419,6 +1482,7 @@ Object {
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
+        "__API__": "\\"/api\\"",
         "__DEV__": false,
         "__PROD__": true,
         "process.env": Object {

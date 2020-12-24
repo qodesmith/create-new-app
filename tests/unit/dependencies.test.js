@@ -44,11 +44,11 @@ const plainDevDeps = {
   'mini-css-extract-plugin': '^1',
   'clean-webpack-plugin': '^3',
   'html-webpack-plugin': '^5.0.0-beta',
-  'glob-all': 'latest',
   'file-loader': '^6',
   'css-loader': '^5',
   'sass': '^1',
   'sass-loader': '^10',
+  'style-loader': '^2',
   'terser-webpack-plugin': '^5',
   '@pmmmwh/react-refresh-webpack-plugin': '^0',
 

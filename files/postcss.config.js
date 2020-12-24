@@ -1,11 +1,11 @@
 const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
-const globAll = require('glob-all')
 const combineMediaQuery = require('postcss-combine-media-query')
 const combineSelectors = require('postcss-combine-duplicated-selectors')
 const autoprefixer = require('autoprefixer')
 const sorter = require('css-declaration-sorter')
 const nano = require('cssnano')
+const path = require('path')
 // const whitelister = require('purgecss-whitelister')
 
 
@@ -22,24 +22,17 @@ module.exports = {
     purgeCss({
       // Optionally whitelist 3rd party libraries:
       // whitelist: whitelister('./node_modules/some-library/styles.css'),
-      content: globAll.sync([
-        './src/**/*.js',
-        './src/**/*.jsx',
-        './src/index.ejs'
-      ], { absolute: true }),
-      keyframes: false // http://bit.ly/2Xnsqq2
+      content: [
+        path.resolve(path.resolve(), './src/**/*.js'),
+        path.resolve(path.resolve(), './src/**/*.jsx'),
+        path.resolve(path.resolve(), './src/index.ejs'),
+      ],
+      keyframes: false, // http://bit.ly/2Xnsqq2
     }),
     combineSelectors({ removeDuplicatedProperties: true }),
     combineMediaQuery(),
     autoprefixer(),
     sorter(),
-    nano()
-  ] : [
-    /*
-      During development, ensure that media queries are
-      combined and ordered properly so classes have the correct effect!
-    */
-    combineMediaQuery(),
-    sorter()
-  ]
+    nano(),
+  ]: [],
 }

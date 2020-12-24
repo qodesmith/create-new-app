@@ -224,15 +224,23 @@ module.exports = (env, argv) => ({
         test: /\.(scss|css)$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
+          !env.prod
+            ? 'style-loader' // https://bit.ly/3aK3qTL
+            : MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 2,
+              importLoaders: 2, // https://bit.ly/2WGQ9CZ
+              sourceMap: false,
             },
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: false,
+            },
+          },
         ],
       },
 

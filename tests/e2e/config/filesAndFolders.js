@@ -24,7 +24,7 @@ const cna = {
   './src/helpers': ['index.js'],
   './src/hooks': [],
   './src/components': ['App.jsx'],
-  './src/styles': ['_global.scss', 'styles.scss']
+  './src/styles': ['global.scss', 'styles.scss']
 }
 
 const cnaRedux = {

@@ -133,12 +133,12 @@ module.exports = AfterCompilePlugin
 exports[`cli - React + Redux project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
-const globAll = require('glob-all')
 const combineMediaQuery = require('postcss-combine-media-query')
 const combineSelectors = require('postcss-combine-duplicated-selectors')
 const autoprefixer = require('autoprefixer')
 const sorter = require('css-declaration-sorter')
 const nano = require('cssnano')
+const path = require('path')
 // const whitelister = require('purgecss-whitelister')
 
 
@@ -155,26 +155,19 @@ module.exports = {
     purgeCss({
       // Optionally whitelist 3rd party libraries:
       // whitelist: whitelister('./node_modules/some-library/styles.css'),
-      content: globAll.sync([
-        './src/**/*.js',
-        './src/**/*.jsx',
-        './src/index.ejs'
-      ], { absolute: true }),
-      keyframes: false // http://bit.ly/2Xnsqq2
+      content: [
+        path.resolve(path.resolve(), './src/**/*.js'),
+        path.resolve(path.resolve(), './src/**/*.jsx'),
+        path.resolve(path.resolve(), './src/index.ejs'),
+      ],
+      keyframes: false, // http://bit.ly/2Xnsqq2
     }),
     combineSelectors({ removeDuplicatedProperties: true }),
     combineMediaQuery(),
     autoprefixer(),
     sorter(),
-    nano()
-  ] : [
-    /*
-      During development, ensure that media queries are
-      combined and ordered properly so classes have the correct effect!
-    */
-    combineMediaQuery(),
-    sorter()
-  ]
+    nano(),
+  ]: [],
 }
 "
 `;
@@ -406,15 +399,23 @@ module.exports = (env, argv) => ({
         test: /\\\\.(scss|css)$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
+          !env.prod
+            ? 'style-loader' // https://bit.ly/3aK3qTL
+            : MiniCssExtractPlugin.loader, // http://bit.ly/2Kme3id
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 2,
+              importLoaders: 2, // https://bit.ly/2WGQ9CZ
+              sourceMap: false,
             },
           },
           'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* \`css-loader\`.
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: false,
+            },
+          },
         ],
       },
 
@@ -866,22 +867,49 @@ export default connect(mapStateToProps, mapDispatchToProps)(App)
 /******************************************************************************/
 
 
-// import React from 'react'
+// import {useEffect, useState} from 'react'
 // 
-// const App = () => {
+// export default function App() {
+//   // An example of using React hooks to maintain local state.
+//   const [date, setDate] = useState(() => new Date())
+// 
+//   // Data we need for our updated time in the UI.
+//   const hours = date.getHours()
+//   const hour = hours % 12 || 12
+//   const minutes = date.getMinutes().toString().padStart(2, '0')
+//   const seconds = date.getSeconds().toString().padStart(2, '0')
+//   const amPm = hours >= 12 ? 'pm' : 'am'
+// 
+//   // An example of using \`useEffect\` to update the DOM with the latest time.
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       setDate(new Date())
+//     }, 250)
+// 
+//     // This \\"clean up\\" function will run if and when this component unmounts.
+//     return () => {
+//       clearInterval(interval)
+//     }
+//   }, [])
+// 
 //   return (
-//     <>
-//       <header className=\\"pv5 bg-gold black-80\\">
-//         <h1 className=\\"mt0 mb1 tc\\">Create New App</h1>
-//         <div className=\\"tc ttc\\">by the Qodesmith</div>
+//     <div className=\\"df flex-col vh-100\\">
+//       <header className=\\"pv24 bg-gold black-80 tc\\">
+//         <h1 className=\\"mt0 mb0\\">Create New App</h1>
+//         <div>By The Qodesmith</div>
 //       </header>
-//       <div className=\\"pt4 pb1 tc\\">Go save the world with JavaScript</div>
-//       <div className=\\"tc\\">and edit <code>src/components/<span className=\\"b\\">App.jsx</span></code>!</div>
-//     </>
+// 
+//       <section className=\\"flex-grow-1 bg-black-80 fw4 white-80 tc pt24\\">
+//         <div>Your application starts in the <code>src/<span className=\\"b white\\">entry.jsx</span></code> file.</div>
+//         <div>The component you're looking here at can be found in <code>src/components/<span className=\\"b white\\">App.jsx</span></code></div>
+//         <div>Now go! Save the world with <span className=\\"gold\\">JavaScript</span>!</div>
+//         <div className=\\"pa16 f-1-5em\\">
+//           {hour}:{minutes}:{seconds}<span className=\\"f-initial pl4\\">{amPm}</span>
+//         </div>
+//       </section>
+//     </div>
 //   )
 // }
-// 
-// export default App
 "
 `;
 
@@ -954,13 +982,20 @@ export default appReducer
 "
 `;
 
-exports[`cli - React + Redux project contents of files created Folder - /src/styles should populate "_global.scss" correctly 1`] = `
+exports[`cli - React + Redux project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
 "/*
-  px <-> em: http://pxtoem.com/
+  Add your custom global styles here.
+  The styles provided below are a minimal suggested starting point.
 */
 
-* {
+// https://bit.ly/3aI9YSD - universal box-sizing with inheritance.
+html {
   box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 html,
@@ -970,42 +1005,23 @@ body {
 
   // https://mzl.la/2KnTfHh
   // size/line-height | family
-  font: 16px/1 'Open Sans', Arial, Helvetica, sans-serif;
+  font: 16px 'Open Sans', Arial, Helvetica, sans-serif;
 }
 "
 `;
 
 exports[`cli - React + Redux project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
-"/////////////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                             //
-//  This file will be the top-most entry point for all styles in the app.                      //
-//  Any dependant styles should be explicitly imported here.                                   //
-//                                                                                             //
-//  Using \`~\` - http://bit.ly/2KmElRj                                                          //
-//  \\"The sass-loader uses node-sass' custom importer feature to pass all queries               //
-//  to the webpack resolving engine. Thus you can import your Sass modules from node_modules.  //
-//  Just prepend them with a ~ to tell webpack that this is not a relative import.\\"            //
-//  Think of \`~\` as a way of saying \`node_modules\`.                                            //
-//                                                                                             //
-//  Importing CSS files - include the extension:                                               //
-//  @import '~my-library/styles.css'                                                           //
-//  @import 'path/to/my/library/styles.css'                                                    //
-//                                                                                             //
-/////////////////////////////////////////////////////////////////////////////////////////////////
+"/*
+  This file will be the top-most entry point for all styles in the app.
+  Any dependant styles should be explicitly imported here.
 
-
-/*
-  Sassyons
-  --------
-
-  PSA - Sassyons is a utility library that is NOT meant to be bundled as a whole into your project.
-  There are an obnoxious amount of classes that give you, the developer, full control
-  over styling your project. HOWEVER, the Webpack bundle included with this project
-  uses \`purgecss\` to strip out unused styles, so you need not be concered!
-
-  Read more - https://github.com/qodesmith/sassyons
+  Import files from the \`node_modules\` folder by prepending them with \\"~\\".
+  To import CSS files from \`node_modules\`, make sure to include the file extension.
 */
-@import '~sassyons/scss/sassyons';
+
+
+// https://github.com/qodesmith/sassyons
+@import '~sassyons/dist/sassyons.css';
 
 
 /*
@@ -1088,15 +1104,21 @@ Object {
         "include": "/Users/qodesmith/repos/create-new-app/02-react-redux-test/src",
         "test": /\\\\\\.\\(scss\\|css\\)\\$/,
         "use": Array [
-          "/Users/qodesmith/repos/create-new-app/02-react-redux-test/node_modules/mini-css-extract-plugin/dist/loader.js",
+          "style-loader",
           Object {
             "loader": "css-loader",
             "options": Object {
               "importLoaders": 2,
+              "sourceMap": false,
             },
           },
           "postcss-loader",
-          "sass-loader",
+          Object {
+            "loader": "sass-loader",
+            "options": Object {
+              "sourceMap": false,
+            },
+          },
         ],
       },
       Object {
@@ -1339,10 +1361,16 @@ Object {
             "loader": "css-loader",
             "options": Object {
               "importLoaders": 2,
+              "sourceMap": false,
             },
           },
           "postcss-loader",
-          "sass-loader",
+          Object {
+            "loader": "sass-loader",
+            "options": Object {
+              "sourceMap": false,
+            },
+          },
         ],
       },
       Object {

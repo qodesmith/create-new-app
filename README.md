@@ -237,7 +237,7 @@ If you're developing a fullstack app we've got you covered with Express and Mong
         <br><code>--api /api</code>
         <br><code>--api=/api</code>
       </td>
-      <td><code>`null`</code></td>
+      <td><code>"/api"</code></td>
     </tr>
     <tr>
       <td><code>--mongo</code></td>

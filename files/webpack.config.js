@@ -348,7 +348,7 @@ module.exports = (env, argv) => ({
 
       /*
         You can use this variable on the front end to prefix all fetch requests:
-          fetch(`/${__API__}/my-route`)
+          fetch(`${__API__}/my-route`)
       */
       __API__: JSON.stringify(API),
 
@@ -437,6 +437,8 @@ module.exports = (env, argv) => ({
       Want to view your site on your phone?
       Make sure your computer and phone are on the same wifi network,
       and navigate to your computer's ip addres: 192.1.2.3:<dev server port>
+      The actual url will be printed to the console in development thanks to the
+      `AfterCompilePlugin`.
     */
     host: '0.0.0.0',
 

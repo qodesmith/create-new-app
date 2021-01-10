@@ -22,23 +22,23 @@ const allServerCombos = nonMongoServerCombos.concat(mongoServerCombos)
 
 const plainDevDeps = {
   // MAIN
-  react: '^17',
+  'react': '^17',
   'react-dom': '^17',
-  sassyons: 'latest',
+  'sassyons': 'latest',
 
   // POSTCSS
   'postcss-loader': '^4',
-  postcss: '^8',
-  cssnano: '^4',
+  'postcss': '^8',
+  'cssnano': '^4',
   '@fullhuman/postcss-purgecss': '^3',
   'purgecss-whitelister': 'latest',
   'postcss-combine-media-query': '^1',
   'postcss-combine-duplicated-selectors': '^10',
-  autoprefixer: '^10',
+  'autoprefixer': '^10',
   'css-declaration-sorter': '^6',
 
   // WEBPACK
-  webpack: '^5',
+  'webpack': '^5',
   'webpack-cli': '^4',
   'webpack-dev-server': '^3',
   'mini-css-extract-plugin': '^1',
@@ -66,30 +66,32 @@ const plainDevDeps = {
   'regenerator-runtime': '^0',
 
   // OTHER
+  'chalk': '^4',
   'cross-env': '^7',
-  'npm-run-all': 'latest',
+  'npm-run-all': '^4',
 
   // This is also below in `serverDependencies`.
   // It does not get included here when the user requires a server.
-  dotenv: /* !server && */ '^8'
+  'dotenv': /* !server && */ '^8',
 }
 
 const plainServerDeps = {
   // SERVER
-  chalk: '^3',
-  express: '^4',
-  helmet: '^3',
-  compression: '^1',
+  'chalk': '^4',
+  'express': '^4',
+  'helmet': '^3',
+  'compression': '^1',
   'body-parser': '^1',
-  nodemon: 'latest', // Always install latest.
-  dotenv: '^8' // This is also conditionally above in `devDependencies`.
+  'nodemon': '^2',
+  'dotenv': '^8', // This is also conditionally above in `devDependencies`.
 }
 
 const plainMongoDeps = {
-  mongodb: '^3',
-  saslprep: '^1',
+  'chalk': '^4',
+  'mongodb': '^3',
+  'saslprep': '^1',
   'connect-mongo': '^3',
-  'express-session': '^1'
+  'express-session': '^1',
 }
 
 
@@ -109,30 +111,6 @@ describe('dependencies', () => {
     })
   })
 
-  /*
-    Explicitly check the `dotenv` package since it flip-flops between
-    being included in `devDependencies` or `serverDependencies`.
-  */
-  describe('dotenv package', () => {
-    it('should be included in `devDependencies` for all non-server combinations', () => {
-      nonServerCombos.forEach(({ devDependencies }) => {
-        expect(devDependencies.dotenv).toBeTruthy()
-      })
-    })
-
-    it('should be included in `serverDependencies` for all server combinations', () => {
-      allServerCombos.forEach(({ serverDependencies }) => {
-        expect(serverDependencies.dotenv).toBeTruthy()
-      })
-    })
-
-    it('should not be included in `devDependencies` for all server combinations', () => {
-      allServerCombos.forEach(({ devDependencies }) => {
-        expect(devDependencies.dotenv).not.toBeTruthy()
-      })
-    })
-  })
-
   describe('non-server combos', () => {
     it('should export `serverDependencies` as an empty object for all non-server combinations', () => {
       nonServerCombos.forEach(({ serverDependencies }) => {
@@ -141,155 +119,79 @@ describe('dependencies', () => {
     })
 
     describe('no options', () => {
-      it('should export the correct `devDependencies`', () => {
-        expect(noOptions.devDependencies).toEqual(plainDevDeps)
-      })
-
-      it('should not export any of the redux or react-router packages in `devDependencies`', () => {
-        expect(noOptions.devDependencies.redux).not.toBeTruthy()
-        expect(noOptions.devDependencies['react-redux']).not.toBeTruthy()
-        expect(noOptions.devDependencies['react-router-dom']).not.toBeTruthy()
-      })
-
-      it('should export `serverDependencies` as an empty object', () => {
-        expect(noOptions.serverDependencies).toEqual({})
+      it('should export the correct data', () => {
+        expect(noOptions).toMatchSnapshot()
       })
     })
 
     describe('redux', () => {
-      it('should include the `redux` package in `devDependencies`', () => {
-        expect(redux.devDependencies.redux).toBeTruthy()
-      })
-
-      it('should include the `react-redux` package in `devDependencies`', () => {
-        expect(redux.devDependencies['react-redux']).toBeTruthy()
-      })
-
-      it('should not include `react-router-dom` in `devDependencies`', () => {
-        expect(redux.devDependencies['react-router-dom']).not.toBeTruthy()
+      it('should export the correct data', () => {
+        expect(redux).toMatchSnapshot()
       })
     })
 
     describe('router', () => {
-      it('should include `react-router-dom` in `devDependencies`', () => {
-        expect(router.devDependencies['react-router-dom']).toBeTruthy()
-      })
-
-      it('should not include `redux` in `devDependencies`', () => {
-        expect(router.devDependencies.redux).not.toBeTruthy()
-      })
-
-      it('should not include `react-redux` in `devDependencies`', () => {
-        expect(router.devDependencies['react-redux']).not.toBeTruthy()
+      it('should export the correct data', () => {
+        expect(router).toMatchSnapshot()
       })
     })
 
     describe('redux & router', () => {
-      it('should include the `redux` package in `devDependencies`', () => {
-        expect(reduxRouter.devDependencies.redux).toBeTruthy()
-      })
-
-      it('should include the `react-redux` package in `devDependencies`', () => {
-        expect(reduxRouter.devDependencies['react-redux']).toBeTruthy()
-      })
-
-      it('should include the `react-router-dom` package in `devDependencies`', () => {
-        expect(reduxRouter.devDependencies['react-router-dom']).toBeTruthy()
+      it('should export the correct data', () => {
+        expect(reduxRouter).toMatchSnapshot()
       })
     })
   })
 
   describe('server combos', () => {
     describe('non-mongo options', () => {
-      it('should not export any mongo-related packages in `serverDependencies`', () => {
-        nonMongoServerCombos.forEach(({ serverDependencies }) => {
-          expect(serverDependencies.hasOwnProperty('mongodb')).toBe(false)
-          expect(serverDependencies.hasOwnProperty('connect-mongo')).toBe(false)
-          expect(serverDependencies.hasOwnProperty('express-session')).toBe(false)
-        })
-      })
-
-      it('should export the correct `serverDependencies`', () => {
-        nonMongoServerCombos.forEach(({ serverDependencies }) => {
-          expect(serverDependencies).toEqual(plainServerDeps)
-        })
-      })
-
       describe('server', () => {
-        it('should export the same `devDepencies` as "no options" (minus dotenv)', () => {
-          const { dotenv, ...deps } = noOptions.devDependencies
-          expect(server.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(server).toMatchSnapshot()
         })
       })
 
       describe('serverRedux', () => {
-        it('should export the same `devDepencies` as "redux" (minus dotenv)', () => {
-          const { dotenv, ...deps } = redux.devDependencies
-          expect(serverRedux.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(serverRedux).toMatchSnapshot()
         })
       })
 
       describe('serverRouter', () => {
-        it('should export the same `devDepencies` as "router" (minus dotenv)', () => {
-          const { dotenv, ...deps } = router.devDependencies
-          expect(serverRouter.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(serverRouter).toMatchSnapshot()
         })
       })
 
       describe('serverReduxRouter', () => {
-        it('should export the same `devDepencies` as "redux & router" (minus dotenv)', () => {
-          const { dotenv, ...deps } = reduxRouter.devDependencies
-          expect(serverReduxRouter.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(serverReduxRouter).toMatchSnapshot()
         })
       })
     })
 
     describe('mongo-options', () => {
-      it('should export all mongo-related packages in `serverDependencies`', () => {
-        mongoServerCombos.forEach(({ serverDependencies }) => {
-          expect(serverDependencies.hasOwnProperty('mongodb')).toBe(true)
-          expect(serverDependencies.hasOwnProperty('connect-mongo')).toBe(true)
-          expect(serverDependencies.hasOwnProperty('express-session')).toBe(true)
-
-          expect(serverDependencies.mongodb).toBe(plainMongoDeps.mongodb)
-          expect(serverDependencies['connect-mongo']).toBe(plainMongoDeps['connect-mongo'])
-          expect(serverDependencies['express-session']).toBe(plainMongoDeps['express-session'])
-        })
-      })
-
-      it('should export the correct `serverDependencies`', () => {
-        const allMongoServerDeps = { ...plainServerDeps, ...plainMongoDeps }
-
-        mongoServerCombos.forEach(({ serverDependencies }) => {
-          expect(serverDependencies).toEqual(allMongoServerDeps)
-        })
-      })
-
       describe('mongo', () => {
-        it('should export the same `devDepencies` as "no options" (minus dotenv)', () => {
-          const { dotenv, ...deps } = noOptions.devDependencies
-          expect(mongo.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(mongo).toMatchSnapshot()
         })
       })
 
       describe('mongoRedux', () => {
-        it('should export the same `devDepencies` as "redux" (minus dotenv)', () => {
-          const { dotenv, ...deps } = redux.devDependencies
-          expect(mongoRedux.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(mongoRedux).toMatchSnapshot()
         })
       })
 
       describe('mongoRouter', () => {
-        it('should export the same `devDepencies` as "router" (minus dotenv)', () => {
-          const { dotenv, ...deps } = router.devDependencies
-          expect(mongoRouter.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(mongoRouter).toMatchSnapshot()
         })
       })
 
       describe('mongoReduxRouter', () => {
-        it('should export the same `devDepencies` as "redux & router" (minus dotenv)', () => {
-          const { dotenv, ...deps } = reduxRouter.devDependencies
-          expect(mongoReduxRouter.devDependencies).toEqual(deps)
+        it('should export the correct data', () => {
+          expect(mongoReduxRouter).toMatchSnapshot()
         })
       })
     })

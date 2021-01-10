@@ -1,4 +1,5 @@
 const { DEV_SERVER_PORT, API, API_PORT } = process.env
+const chalk = require('chalk')
 const os = require('os')
 
 
@@ -7,16 +8,30 @@ const os = require('os')
   In Create New App, this is used to console.log the urls to the application
   in the browser as well as (conditionally) the api server url.
 */
+
 class AfterCompilePlugin {
   constructor({ run } = {}) {
     this.run = run
   }
 
   defaultRun() {
-    API && console.log(`🌎  => API listening on port ${API_PORT}...`)
-    console.log('💻  => Application running in browser at:')
-    console.log(`         • Local:            http://localhost:${DEV_SERVER_PORT}`)
-    console.log(`         • On your network:  http://${getLocalIpAddress()}:${DEV_SERVER_PORT}\n\n`)
+    console.log('\x1Bc') // http://bit.ly/2Z7GZ1M - clear the console.
+    console.log(chalk.greenBright('Webpack compiled successfully!\n'))
+
+    if (API) {
+      const fetchMsg = `${chalk.yellow('fetch')}(${chalk.keyword('orange')(`'${API}/<your-endpoint>'`)})`
+      const thenMsg = `.${chalk.yellow('then')}(...)`
+      const fetchExample = `${fetchMsg}${thenMsg}`
+
+      console.log(`🌎  => API listening on port ${chalk.blue.bold(API_PORT)}...`)
+      console.log('       You can make fetch requests to your API from the browser:')
+      console.log(`           ${chalk.italic(fetchExample)}\n`)
+      console.log(chalk.dim('────────────────────────────────────────────────────────────────────\n'))
+    }
+
+    console.log('💻  => Application being served at...')
+    console.log(`         • ${chalk.bold('Browser:')}                     http://localhost:${chalk.blue.bold(DEV_SERVER_PORT)}`)
+    console.log(`         • ${chalk.bold('Any device on your network:')}  http://${getLocalIpAddress()}:${chalk.blue.bold(DEV_SERVER_PORT)}`)
   }
 
   apply(compiler) {
@@ -26,27 +41,16 @@ class AfterCompilePlugin {
       const errors = compilation.errors
 
       /*
-        Using `setTimeout` here simply bumps running `this.run()`
-        to *after* Webpack has spewed a ton of stuff into the console.
-        The idea is to have the url's mentioned above logged at the
-        very last moment so they're the last thing the user sees.
+        Using `setTimeout` here simply bumps running `this.run()` to *after*
+        Webpack has spewed a ton of stuff into the console. The idea is to have
+        the url's mentioned above logged at the very last moment so they're the
+        last thing the user sees.
       */
       setTimeout(() => {
-        // console.log('????????', stats)
+        // 1. If we have errors, do nothing.
+        if (!!errors.length) return
 
-        // 1. Determine if we have an error in the build.
-        const hasErrors = !!errors.length
-
-        // 2a. If no error, clear the screen.
-        if (!hasErrors) {
-          // http://bit.ly/2Z7GZ1M - clear the console.
-          console.log('\x1Bc')
-        }
-
-        // 3a. If error, do nothing.
-        if (hasErrors) return
-
-        // 3. Print the url's to the console.
+        // 2. Print the url's to the console.
         this.defaultRun()
         this.run && this.run()
       }, 0)
@@ -55,9 +59,9 @@ class AfterCompilePlugin {
 }
 
 /*
-  Get the local IP address for this computer.
-  We want to print this to the console instead of 'localhost' since this address
-  can be used to connect other mobile devices on the same network for testing.
+  Gets the local IP address for your computer.
+  This address, as opposed to 'localhost', is what other devices on the same
+  network would use to connect to the development site.
 */
 function getLocalIpAddress() {
   const obj = Object

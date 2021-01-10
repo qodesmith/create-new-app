@@ -34,5 +34,5 @@ module.exports = {
     autoprefixer(),
     sorter(),
     nano(),
-  ]: [],
+  ] : [],
 }

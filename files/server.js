@@ -71,9 +71,8 @@ app.get('*', require('./api/home'))
 
 // And so it begins...
 app.listen(API_PORT, () => {
-  if (isProd) {
-    console.log(`💻  => PRODUCTION: Application running on port ${API_PORT}\n\n`)
-  } else {
-    console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
+  if (!isProd) {
+    // This is simply to provide haptic feedback during development.
+    console.log('Node server listening...')
   }
 })

@@ -270,11 +270,15 @@ function processUsersCommand(options) {
 
   // The apiPort takes prescedence over the devServerPort.
   if ((express || mongo || api) && devServerPort === apiPort) {
+    console.log(chalk.yellow(`You provided equal values for ${chalk.bold('apiPort')} and ${chalk.bold('devServerPort')}.`))
+
     if (apiPort === 65535) {
       options.devServerPort--
     } else {
       options.devServerPort++
     }
+
+    console.log(`${chalk.yellow(`Changing ${chalk.bold('devServerPort')} to`)} ${chalk.green(options.devServerPort)}.`)
   }
 
   return options

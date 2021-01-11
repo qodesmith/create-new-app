@@ -20,28 +20,28 @@ const dependencyReducer = obj => (
 const dependencies = ({ mongo, redux, router, server }) => {
   const devDependencies = {
     // MAIN
-    react: '^17',
+    'react': '^17',
     'react-dom': '^17',
-    sassyons: 'latest', // Always install the latest.
-    redux: redux && '^4',
+    'sassyons': 'latest', // Always install the latest.
+    'redux': redux && '^4',
     'react-redux': redux && '^7',
     'react-router-dom': router && '^5',
-    history: router && '^5',
+    'history': router && '^5',
 
     // POSTCSS
     // https://cssnano.co/optimisations/ - list of plugins.
     'postcss-loader': '^4',
-    postcss: '^8',
-    cssnano: '^4',
+    'postcss': '^8',
+    'cssnano': '^4',
     '@fullhuman/postcss-purgecss': '^3', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install the latest.
     'postcss-combine-media-query': '^1',
     'postcss-combine-duplicated-selectors': '^10',
-    autoprefixer: '^10',
+    'autoprefixer': '^10',
     'css-declaration-sorter': '^6',
 
     // WEBPACK
-    webpack: '^5',
+    'webpack': '^5',
     'webpack-cli': '^4',
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^1',
@@ -69,33 +69,34 @@ const dependencies = ({ mongo, redux, router, server }) => {
     'regenerator-runtime': '^0', //  /  These two packages combined now replace `@babel/polyfill`.
 
     // OTHER
+    'chalk': !server && '^4', // This is also below in `serverDependencies`.
     'cross-env': '^7',
-    'npm-run-all': 'latest', // Always install the latest.
-    dotenv: !server && '^8' // This is also below in `serverDependencies`.
+    'dotenv': !server && '^8', // This is also below in `serverDependencies`.
+    'npm-run-all': '^4',
   }
 
   // These will only take effect if we're creating an app with a server.
   // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = {
     // SERVER
-    chalk: '^3',
-    express: '^4',
-    helmet: '^3',
-    compression: '^1',
+    'chalk': '^4', // This is also conditionally above in `devDependencies`.
+    'express': '^4',
+    'helmet': '^3',
+    'compression': '^1',
     'body-parser': '^1',
-    nodemon: 'latest', // Always install the latest.
-    dotenv: '^8', // This is also conditionally above in `devDependencies`.
+    'nodemon': '^2',
+    'dotenv': '^8', // This is also conditionally above in `devDependencies`.
 
     // MONGO
-    mongodb: mongo && '^3',
-    saslprep: mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
+    'mongodb': mongo && '^3',
+    'saslprep': mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
     'connect-mongo': mongo && '^3',
     'express-session': mongo && '^1',
   }
 
   return {
     devDependencies: dependencyReducer(devDependencies),
-    serverDependencies: (mongo || server) ? dependencyReducer(serverDependencies) : {}
+    serverDependencies: (mongo || server) ? dependencyReducer(serverDependencies) : {},
   }
 }
 

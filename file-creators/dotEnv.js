@@ -9,9 +9,10 @@ const fs = require('fs-extra')
 // http://bit.ly/2Xmuwqf - micro UUID!
 const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
 
-// Filters out values that are null or undefined.
+// Filters out values that are null or undefined, sorts the keys.
 function objToDotEnvVars(comments, obj) {
   return Object.keys(obj)
+    .sort()
     .reduce((acc, key) => {
       const value = obj[key]
       return value == null ? acc : `${acc}${key}=${value}\n`

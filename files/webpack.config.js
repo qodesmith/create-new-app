@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const os = require('os')
 
 
 console.log(`
@@ -234,14 +235,14 @@ module.exports = (env, argv) => ({
               sourceMap: false,
             },
           },
-          'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
+          env.prod && 'postcss-loader', // http://bit.ly/2WOusTr - needs to be *after* `css-loader`.
           {
             loader: 'sass-loader',
             options: {
               sourceMap: false,
             },
           },
-        ],
+        ].filter(Boolean),
       },
 
       /*
@@ -342,14 +343,14 @@ module.exports = (env, argv) => ({
         Typically, this is done either with alternate quotes, such as '"production"',
         or by using JSON.stringify('production').
       */
-     __DEV__: !env.prod,
-     __PROD__: env.prod,
+      __DEV__: !env.prod,
+      __PROD__: env.prod,
 
-     /*
-       You can use this variable on the front end to prefix all fetch requests.
-         fetch(`/${__API__}/my-route`)
-     */
-     __API__: JSON.stringify(API),
+      /*
+        You can use this variable on the front end to prefix all fetch requests:
+          fetch(`${__API__}/my-route`)
+      */
+      __API__: JSON.stringify(API),
 
       /*
         http://bit.ly/2WBx4DZ
@@ -408,15 +409,10 @@ module.exports = (env, argv) => ({
 
     /*
       A simple, custom Webpack plugin to run a function after each build.
+      It will log url info to the console for the API and browser.
       You can see the code in `after-compile-plugin.js` in the project root dir.
     */
-    !env.prod && new AfterCompilePlugin({
-      run: () => {
-        console.log('\n')
-        API && console.log(`🌎  => API listening on port ${API_PORT}...`)
-        console.log(`💻  => Application running in browser at http://localhost:${DEV_SERVER_PORT}\n\n`)
-      },
-    }),
+    !env.prod && new AfterCompilePlugin(),
   ].filter(Boolean),
 
   // http://bit.ly/2WEpbgZ
@@ -441,6 +437,8 @@ module.exports = (env, argv) => ({
       Want to view your site on your phone?
       Make sure your computer and phone are on the same wifi network,
       and navigate to your computer's ip addres: 192.1.2.3:<dev server port>
+      The actual url will be printed to the console in development thanks to the
+      `AfterCompilePlugin`.
     */
     host: '0.0.0.0',
 
@@ -495,10 +493,14 @@ module.exports = (env, argv) => ({
     // https://bit.ly/3mIacvB
     inline: true,
 
-    // https://bit.ly/37EzOVO
+    /*
+      https://bit.ly/37EzOVO
+      We disable both of these because the ReactRefresh plugin will put a
+      verbose error on the screen showing where the error occured.
+    */
     overlay: {
-      warnings: true,
-      errors: true,
+      warnings: false,
+      errors: false,
     },
   },
 

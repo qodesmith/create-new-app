@@ -43,26 +43,26 @@ const serverDevDeps = {
   'terser-webpack-plugin': '^5',
   'webpack': '^5',
   'webpack-cli': '^4',
-  'webpack-dev-server': '^3'
+  'webpack-dev-server': '^3',
 }
-const devDeps = { ...serverDevDeps, 'dotenv': '^8' }
+const devDeps = { ...serverDevDeps, 'dotenv': '^8', 'chalk': '^4' }
 const reduxDeps = { 'redux': '^4', 'react-redux': '^7' }
 const routerDeps = { 'react-router-dom': '^5', 'history': '^5' }
 const serverDeps = {
-  'chalk': '^3',
+  'chalk': '^4',
   'express': '^4',
   'helmet': '^3',
   'compression': '^1',
   'body-parser': '^1',
-  'nodemon': 'latest',
-  'dotenv': '^8'
+  'nodemon': '^2',
+  'dotenv': '^8',
 }
 const mongoDeps = {
   ...serverDeps,
   'mongodb': '^3',
   'saslprep': '^1', // This was added to stop MongoClient warnings.
   'connect-mongo': '^3',
-  'express-session': '^1'
+  'express-session': '^1',
 }
 
 // Vanilla.
@@ -77,7 +77,7 @@ const expressRedux = { devDependencies: { ...serverDevDeps, ...reduxDeps }, depe
 const expressRouter = { devDependencies: { ...serverDevDeps, ...routerDeps }, dependencies: serverDeps }
 const expressRouterRedux = {
   devDependencies: { ...serverDevDeps, ...routerDeps, ...reduxDeps },
-  dependencies: serverDeps
+  dependencies: serverDeps,
 }
 
 // Mongo (always includes Express).
@@ -86,7 +86,7 @@ const mongoRedux = { devDependencies: { ...serverDevDeps, ...reduxDeps }, depend
 const mongoRouter = { devDependencies: { ...serverDevDeps, ...routerDeps }, dependencies: mongoDeps }
 const mongoRouterRedux = {
   devDependencies: { ...serverDevDeps, ...routerDeps, ...reduxDeps },
-  dependencies: mongoDeps
+  dependencies: mongoDeps,
 }
 
 // Latest.
@@ -115,5 +115,5 @@ module.exports = {
   mongoRouter,
   mongoRouterRedux,
 
-  latestPackages
+  latestPackages,
 }

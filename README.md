@@ -485,9 +485,3 @@ If you're developing a fullstack app we've got you covered with Express and Mong
     </tr>
   </tbody>
 </table>
-
-
-## TODO's
-
-- [ ] Implement PWA's by default with CLI option to disable
-- [ ] Create `man` documentation for use in `package.json` - http://bit.ly/2Z5tCiy

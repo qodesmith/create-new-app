@@ -8,7 +8,8 @@ process.on('unhandledRejection', err => {
   const msg = chalk.red.bold(`Unhandled promise rejection at ${date}:\n`)
 
   console.log(`\n${lines}`)
-  console.error(msg, errorToObject(err))
+  console.error(msg)
+  console.error(errorToObject(err))
   console.log(`${lines}\n`)
 })
 
@@ -18,7 +19,8 @@ process.on('uncaughtException', err => {
   const msg = chalk.red.bold(`\nUncaught exception at ${date}:\n`)
 
   console.log(`\n${lines}`)
-  console.error(msg, errorToObject(err))
+  console.error(msg)
+  console.error(errorToObject(err))
   process.exit(1)
 })
 

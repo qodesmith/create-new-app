@@ -11,26 +11,27 @@
 */
 
 const fs = require('fs-extra')
+const createBorderedCenteredComment = require('./createBorderedCenteredComment')
 
-
-function keepOldFileContent({ sourcePath, destinationPath, newContent }) {
-  const cautionMessage = [
-    '///////////////////////////////////////////////////////////////////',
-    '//        The contents of this file have been modified by        //',
-    '// create-new-app (https://github.com/qodesmith/create-new-app). //',
-    '//      The original contents have been commented out below.     //',
-    '///////////////////////////////////////////////////////////////////',
-    '\n'
-  ].join('\n')
+function keepOldFileContent({sourcePath, destinationPath, newContent}) {
+  const isJsFile = destinationPath.endsWith('.js')
+  const commentChar = isJsFile ? '//' : '#'
+  const comments = [
+    'The contents of this file have been modified by',
+    'create-new-app (https://github.com/qodesmith/create-new-app).',
+    'The original contents have been commented out below.',
+  ]
+  const cautionMessage = createBorderedCenteredComment(comments, commentChar)
 
   // Check for the original file & comment out existing content.
   let originalContent = null
   try {
-    originalContent = fs.readFileSync(destinationPath, 'utf8')
+    originalContent = fs
+      .readFileSync(destinationPath, 'utf8')
       .split('\n')
       .map((lineContent, i, arr) => {
         if (i === arr.length - 1 && !lineContent.trim()) return '' // Avoid commenting out a blank last line.
-        return `// ${lineContent}`
+        return `${commentChar} ${lineContent}`
       })
       .join('\n')
   } catch (e) {}
@@ -40,11 +41,10 @@ function keepOldFileContent({ sourcePath, destinationPath, newContent }) {
   if (originalContent) {
     return [
       cautionMessage,
+      '\n',
       finalContent,
       '\n\n',
-      `/${'*'.repeat(78)}/`,
-      `/${'*'.repeat(26)} ORIGINAL CONTENTS BELOW ${'*'.repeat(27)}/`,
-      `/${'*'.repeat(78)}/`,
+      createBorderedCenteredComment(['ORIGINAL CONTENTS BELOW'], commentChar),
       '\n',
       originalContent,
     ].join('\n')

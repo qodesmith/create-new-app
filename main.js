@@ -17,7 +17,6 @@ const dotEnv = require('./file-creators/dotEnv')
 const gitignore = require('./file-creators/gitignore')
 const packageJson = require('./file-creators/packageJson')
 const webpackConfig = require('./file-creators/webpackConfig')
-const helpersIndex = require('./file-creators/helpersIndex')
 
 // Custom modules.
 const run = require('./modules/run')

@@ -56,7 +56,6 @@ const optionDefinitions = [
   {name: 'title', alias: 't', type: String, defaultValue: ''},
 
   // Optional addons.
-  {name: 'redux', alias: 'x', type: Boolean, defaultValue: false},
   {name: 'router', alias: 'r', type: Boolean, defaultValue: false},
 
   // Flags.
@@ -95,7 +94,7 @@ const optionDefinitions = [
   {name: 'mongoAuthSource', type: String, defaultValue: 'admin'},
   {name: 'mas', type: String, defaultValue: 'admin'},
 
-  // Private options.
+  // Private options - used for testing purposes.
   {name: 'noInstall', type: Boolean, defaultValue: false},
 ]
 
@@ -156,7 +155,6 @@ function parseArgs(online) {
     offline,
     express,
     mongo,
-    redux,
     router,
     sandbox,
   } = options
@@ -166,7 +164,6 @@ function parseArgs(online) {
   options = {
     ...options,
     online, // Actual online status.
-    redux,
     router,
     offline: !online || offline, // Argument option from the CLI to process *as* offline.
     api: api ? api.replace(/ /g, '') : null,
@@ -201,10 +198,9 @@ async function guidedProcess({online, noInstall}) {
   /*
     Questions asked during the guided process:
       1.  App name?
-      2.  Include redux?
-      3.  Include router?
-      4.  Express server?
-      5.  MongoDB?
+      2.  React Router?
+      3.  Express server?
+      4.  MongoDB?
   */
 
   // Aggregate the default CLI values into an object so we can use those.
@@ -231,7 +227,6 @@ async function guidedProcess({online, noInstall}) {
       'no',
     )} for the following...\n`,
   )
-  const redux = await promptYN('Would you like to include Redux?', false)
   const router = await promptYN(
     'Would you like to include React Router?',
     false,
@@ -248,7 +243,6 @@ async function guidedProcess({online, noInstall}) {
 
     // Values from questions.
     appName,
-    redux,
     router,
     express,
     mongo,
@@ -343,16 +337,7 @@ function createProjectDirectory(options) {
 
 // STEP 4
 function createFiles(options) {
-  const {
-    appDir,
-    server,
-    mongo,
-    express,
-    redux,
-    router,
-    title,
-    description,
-  } = options
+  const {appDir, server, mongo, express, router, title, description} = options
 
   // `.env`
   const envPath = `${appDir}/.env`
@@ -403,7 +388,7 @@ function createFiles(options) {
   const webpackConfigPath = `${appDir}/webpack.config.js`
   const webpackConfigContents = keepOldFileContent({
     destinationPath: webpackConfigPath,
-    newContent: webpackConfig({redux, title, description}),
+    newContent: webpackConfig({title, description}),
   })
   fs.writeFileSync(webpackConfigPath, webpackConfigContents, 'utf8')
 
@@ -441,12 +426,7 @@ function createFiles(options) {
   })
 
   // Depending on the options, exclude certain files from being copied.
-  const excludedFiles = [
-    '.gitkeep',
-    router && redux && 'appReducer.js',
-    !router && redux && 'homeReducer.js',
-    router && 'App.jsx',
-  ].filter(Boolean)
+  const excludedFiles = ['.gitkeep', router && 'App.jsx'].filter(Boolean)
 
   // `src` directory tree.
   copySafe({
@@ -454,64 +434,10 @@ function createFiles(options) {
     destinationPath: `${appDir}/src`,
 
     // Prevent writing to `entry.jsx` multiple times.
-    excludedFiles: excludedFiles.concat(router || redux ? 'entry.jsx' : []),
+    excludedFiles: excludedFiles.concat(router ? 'entry.jsx' : []),
   })
 
-  if (router && redux) {
-    // Store.
-    copySafe({
-      sourcePath: dir('./files/redux/store-router.js'),
-      destinationPath: `${appDir}/src/store.js`,
-    })
-
-    // Redux utilities (actions, helpers, middleware, reducers).
-    copySafe({
-      sourcePath: dir('./files/redux/redux'),
-      destinationPath: `${appDir}/src/redux`,
-      excludedFiles,
-    })
-
-    // Entry file.
-    copySafe({
-      sourcePath: dir('./files/redux/entry-router.jsx'),
-      destinationPath: `${appDir}/src/entry.jsx`,
-    })
-
-    // Components.
-    copySafe({
-      sourcePath: dir('./files/redux/RouterHome.jsx'),
-      destinationPath: `${appDir}/src/components/Home.jsx`,
-    })
-    copySafe({
-      sourcePath: dir('./files/redux/NotFound.jsx'),
-      destinationPath: `${appDir}/src/components/NotFound.jsx`,
-    })
-  } else if (redux) {
-    // Store.
-    copySafe({
-      sourcePath: dir('./files/redux/store.js'),
-      destinationPath: `${appDir}/src/store.js`,
-    })
-
-    // Redux utilities (actions, helpers, middleware, reducers).
-    copySafe({
-      sourcePath: dir('./files/redux/redux'),
-      destinationPath: `${appDir}/src/redux`,
-      excludedFiles,
-    })
-
-    // Entry file.
-    copySafe({
-      sourcePath: dir('./files/redux/entry.jsx'),
-      destinationPath: `${appDir}/src/entry.jsx`,
-    })
-
-    // Components.
-    copySafe({
-      sourcePath: dir('./files/redux/ReduxApp.jsx'),
-      destinationPath: `${appDir}/src/components/App.jsx`,
-    })
-  } else if (router) {
+  if (router) {
     // Entry file.
     copySafe({
       sourcePath: dir('./files/router/entry.jsx'),
@@ -533,7 +459,7 @@ function createFiles(options) {
   fs.mkdirpSync(`${appDir}/src/helpers`)
   const helpersIndexcontent = keepOldFileContent({
     destinationPath: `${appDir}/src/helpers/index.js`,
-    newContent: helpersIndex({redux}),
+    sourcePath: dir('./files/helpers/commonHelpers.js'),
   })
   fs.writeFileSync(
     `${appDir}/src/helpers/index.js`,
@@ -545,8 +471,6 @@ function createFiles(options) {
     Add comment to top of `entry.jsx`.
     Locations:
       * ./files/src/entry.jsx
-      * ./files/redux/entry.jsx
-      * ./files/redux/entry-router.jsx
       * ./files/router/entry.jsx
   */
   const currentEntryFileContents = fs.readFileSync(
@@ -572,8 +496,10 @@ async function installDependencies(options) {
 
   // Install the dependencies.
   if (!noInstall) {
-    offline &&
+    if (offline) {
       console.log(`\nIt looks like you're offline or have a bad connection.`)
+    }
+
     console.log(`Installing project dependencies via npm${cache}...\n`)
 
     try {

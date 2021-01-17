@@ -1,15 +1,14 @@
-require('dotenv').config({ path: `${__dirname}/.env` }) // http://bit.ly/2WE8EJP
-const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
+require('dotenv').config({path: `${__dirname}/.env`}) // http://bit.ly/2WE8EJP
+const {NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK} = process.env
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const os = require('os')
-
 
 console.log(`
 
@@ -58,7 +57,6 @@ module.exports = (env, argv) => ({
     you bundle or load with webpack.
   */
   output: {
-
     /*
       http://bit.ly/2KoIZP4
       This option determines the name of each output bundle.
@@ -103,7 +101,6 @@ module.exports = (env, argv) => ({
     These options determine how the different types of modules within a project will be treated.
   */
   module: {
-
     /*
       An array of Rules which are matched to requests when modules are created.
       These rules can modify how the module is created.
@@ -188,7 +185,8 @@ module.exports = (env, argv) => ({
                   {
                     modules: false, // Needed for tree shaking to work (see above).
                     useBuiltIns: 'entry', // http://bit.ly/2KkBZCu
-                    corejs: { // http://bit.ly/2KkC09w
+                    corejs: {
+                      // http://bit.ly/2KkC09w
                       version: 3,
                       proposals: true,
                     },
@@ -287,7 +285,6 @@ module.exports = (env, argv) => ({
 
   // http://bit.ly/2WGnFeg
   resolve: {
-
     /*
       http://bit.ly/2WyqhuP
       Create aliases to import certain modules more easily.
@@ -307,9 +304,11 @@ module.exports = (env, argv) => ({
     minimize: !!env.prod,
     minimizer: [
       // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
-      new TerserPlugin({ // http://bit.ly/2WI3M6G
+      new TerserPlugin({
+        // http://bit.ly/2WI3M6G
         parallel: true, // http://bit.ly/2WJ6hWf
-        terserOptions: { // http://bit.ly/2WIWVK5
+        terserOptions: {
+          // http://bit.ly/2WIWVK5
           compress: {
             ecma: 5,
             comparisons: false, // http://bit.ly/2MtqwQv
@@ -393,10 +392,12 @@ module.exports = (env, argv) => ({
       title: __PLACEHOLDER_TITLE__,
       mobileThemeColor: '#000000',
       description: __PLACEHOLDER_DESCRIPTION__,
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-      },
+      minify: env.prod
+        ? {
+            collapseWhitespace: true,
+            removeComments: true,
+          }
+        : false,
 
       // Order the different entry points found at the top of this file.
       chunks: ['main'],
@@ -460,29 +461,31 @@ module.exports = (env, argv) => ({
       Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served `index.html` by `historyApiFallback` above.
     */
-    proxy: API_WEBPACK ? {
-      [API_WEBPACK]: {
-        target: `http://localhost:${API_PORT}`,
-        bypass(req, res, proxyOptions) {
-          // Direct all non-get requests to the API server.
-          if (req.method.toLowerCase() !== 'get') return
+    proxy: API_WEBPACK
+      ? {
+          [API_WEBPACK]: {
+            target: `http://localhost:${API_PORT}`,
+            bypass(req, res, proxyOptions) {
+              // Direct all non-get requests to the API server.
+              if (req.method.toLowerCase() !== 'get') return
 
-          /*
+              /*
             Proxy url (browser) requests back to '/'
             and let the front end do all the routing.
             For all others, let the API server respond.
           */
 
-          /*
+              /*
             http://bit.ly/2XlEOXN
             Url / browser request - allow front end routing to handle all the things.
           */
-          if ((req.headers.accept || '').includes('html')) return '/'
+              if ((req.headers.accept || '').includes('html')) return '/'
 
-          // Let the API server respond by implicitly returning here.
-        },
-      },
-    } : {},
+              // Let the API server respond by implicitly returning here.
+            },
+          },
+        }
+      : {},
 
     // https://bit.ly/3nM4mL0
     watchContentBase: true,

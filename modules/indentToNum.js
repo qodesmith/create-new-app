@@ -4,10 +4,10 @@
 */
 
 function indentToNum(str, num = 0) {
-  return '\n' + str
+  return `\n${str
     .split('\n')
     .map(line => `${' '.repeat(num)}${line}`)
-    .join('\n')
+    .join('\n')}`
 }
 
 module.exports = indentToNum

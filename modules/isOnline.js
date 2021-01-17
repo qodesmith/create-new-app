@@ -11,23 +11,24 @@
 
 const dns = require('dns')
 
-module.exports = (time = 3500) => new Promise(resolve => {
-  let slow = false
+module.exports = (time = 3500) =>
+  new Promise(resolve => {
+    let slow = false
 
-  // Prevent this from taking forever for slow connections.
-  const tooSlow = setTimeout(() => {
-    slow = true
-    console.log('\nYour internet connection appears to be unstable.')
-    console.log('Proceeding with offline mode...\n')
-    resolve(false)
-  }, time)
+    // Prevent this from taking forever for slow connections.
+    const tooSlow = setTimeout(() => {
+      slow = true
+      console.log('\nYour internet connection appears to be unstable.')
+      console.log('Proceeding with offline mode...\n')
+      resolve(false)
+    }, time)
 
-  /*
+    /*
     https://nodejs.org/api/dns.html
     Use `.resolve` over `.lookup` since the former will always perform a network request.
   */
-  dns.resolve('google.com', (err, records) => {
-    clearTimeout(tooSlow)
-    !slow && resolve(!err)
+    dns.resolve('google.com', (err, records) => {
+      clearTimeout(tooSlow)
+      !slow && resolve(!err)
+    })
   })
-})

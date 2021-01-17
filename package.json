@@ -31,7 +31,9 @@
     "app",
     "cli",
     "tool",
-    "template"
+    "template",
+    "MERN",
+    "MERN stack"
   ],
   "homepage": "https://github.com/qodesmith/create-new-app",
   "bugs": {

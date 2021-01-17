@@ -8,7 +8,7 @@
   }
 */
 
-const { MongoClient } = require('mongodb')
+const {MongoClient} = require('mongodb')
 const logMongoAuthWarning = require('./logMongoAuthWarning')
 const {
   MONGO_URI,
@@ -17,25 +17,25 @@ const {
   MONGO_USER,
   MONGO_USER_PASSWORD,
   MONGO_AUTH_SOURCE,
-  NODE_ENV
+  NODE_ENV,
 } = process.env
 const isProd = NODE_ENV === 'production'
 const url = isProd ? MONGO_URI_PROD : MONGO_URI
-const data = { client: null, db: null }
+const data = {client: null, db: null}
 const options = {
   useNewUrlParser: true,
-  useUnifiedTopology: true // http://bit.ly/2Zpn4PD
+  useUnifiedTopology: true, // http://bit.ly/2Zpn4PD
 }
 
 if (isProd) {
   if (MONGO_USER && MONGO_USER_PASSWORD) {
     // Set the authentication credentials for the database.
-    options.auth = { user: MONGO_USER, password: MONGO_USER_PASSWORD }
+    options.auth = {user: MONGO_USER, password: MONGO_USER_PASSWORD}
     options.authSource = MONGO_AUTH_SOURCE
   } else {
     // If no credentials found,
     // log some warnings and instructions on how to create them.
-    logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD })
+    logMongoAuthWarning({MONGO_USER, MONGO_USER_PASSWORD})
   }
 }
 
@@ -43,9 +43,7 @@ if (isProd) {
 const mongo = clientOnly => {
   if (data.client) {
     return Promise.resolve(
-      clientOnly
-        ? data.client
-        : [null, data.client, data.client.db(APP_NAME)]
+      clientOnly ? data.client : [null, data.client, data.client.db(APP_NAME)],
     )
   }
 

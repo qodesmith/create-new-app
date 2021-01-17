@@ -1,7 +1,6 @@
-const { DEV_SERVER_PORT, API, API_PORT } = process.env
+const {DEV_SERVER_PORT, API, API_PORT} = process.env
 const chalk = require('chalk')
 const os = require('os')
-
 
 /*
   This is a custom Webpack plugin that simply runs a function after each build.
@@ -10,7 +9,7 @@ const os = require('os')
 */
 
 class AfterCompilePlugin {
-  constructor({ run } = {}) {
+  constructor({run} = {}) {
     this.run = run
   }
 
@@ -19,19 +18,39 @@ class AfterCompilePlugin {
     console.log(chalk.greenBright('Webpack compiled successfully!\n'))
 
     if (API) {
-      const fetchMsg = `${chalk.yellow('fetch')}(${chalk.keyword('orange')(`'${API}/<your-endpoint>'`)})`
+      const fetchMsg = `${chalk.yellow('fetch')}(${chalk.keyword('orange')(
+        `'${API}/<your-endpoint>'`,
+      )})`
       const thenMsg = `.${chalk.yellow('then')}(...)`
       const fetchExample = `${fetchMsg}${thenMsg}`
 
-      console.log(`🌎  => API listening on port ${chalk.blue.bold(API_PORT)}...`)
-      console.log('       You can make fetch requests to your API from the browser:')
+      console.log(
+        `🌎  => API listening on port ${chalk.blue.bold(API_PORT)}...`,
+      )
+      console.log(
+        '       You can make fetch requests to your API from the browser:',
+      )
       console.log(`           ${chalk.italic(fetchExample)}\n`)
-      console.log(chalk.dim('────────────────────────────────────────────────────────────────────\n'))
+      console.log(
+        chalk.dim(
+          '────────────────────────────────────────────────────────────────────\n',
+        ),
+      )
     }
 
     console.log('💻  => Application being served at...')
-    console.log(`         • ${chalk.bold('Browser:')}                     http://localhost:${chalk.blue.bold(DEV_SERVER_PORT)}`)
-    console.log(`         • ${chalk.bold('Any device on your network:')}  http://${getLocalIpAddress()}:${chalk.blue.bold(DEV_SERVER_PORT)}`)
+    console.log(
+      `         • ${chalk.bold(
+        'Browser:',
+      )}                     http://localhost:${chalk.blue.bold(
+        DEV_SERVER_PORT,
+      )}`,
+    )
+    console.log(
+      `         • ${chalk.bold(
+        'Any device on your network:',
+      )}  http://${getLocalIpAddress()}:${chalk.blue.bold(DEV_SERVER_PORT)}`,
+    )
   }
 
   apply(compiler) {
@@ -64,8 +83,7 @@ class AfterCompilePlugin {
   network would use to connect to the development site.
 */
 function getLocalIpAddress() {
-  const obj = Object
-    .values(os.networkInterfaces())
+  const obj = Object.values(os.networkInterfaces())
     .reduce((acc, arr) => acc.concat(arr), [])
     .find(({family, internal}) => family === 'IPv4' && !internal)
 

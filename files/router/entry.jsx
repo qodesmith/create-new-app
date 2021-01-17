@@ -12,8 +12,7 @@ import Home from 'components/Home'
 import NotFound from 'components/NotFound'
 
 // Import React Router things.
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 
 // Top-level classes on the body. Feel free to remove / change.
 document.body.className = 'bg-black-80 fw4 white-80'
@@ -26,5 +25,5 @@ ReactDOM.render(
       <Route component={NotFound} />
     </Switch>
   </Router>,
-  document.querySelector('#app')
+  document.querySelector('#app'),
 )

@@ -1,5 +1,5 @@
 const chalk = require('chalk')
-const { errorToObject } = require('./api/utilities/errorUtil')
+const {errorToObject} = require('./api/utilities/errorUtil')
 const lines = '-'.repeat(45)
 
 // 'unhandledRejection' => promise rejection
@@ -30,9 +30,9 @@ process.on('uncaughtException', err => {
   It contains your sensitive data! Instead, when deploying to production,
   you should manually copy the `.env` file to your hosting provider.
 */
-require('dotenv').config({ path: `${__dirname}/.env` }) // http://bit.ly/2WE8EJP
+require('dotenv').config({path: `${__dirname}/.env`}) // http://bit.ly/2WE8EJP
 
-const { API, API_PORT, DEV_SERVER_PORT, NODE_ENV } = process.env // Environment variables.
+const {API, API_PORT, DEV_SERVER_PORT, NODE_ENV} = process.env // Environment variables.
 const isProd = NODE_ENV === 'production'
 const path = require('path')
 const express = require('express')
@@ -46,15 +46,16 @@ const app = express()
   Express security best practices - http://bit.ly/2KkcS2V
 */
 app.use(
-  express.static( // http://bit.ly/2Ko43Vy
+  express.static(
+    // http://bit.ly/2Ko43Vy
     path.resolve(__dirname, 'dist'),
     // `no-cache` still caches but it checks with the server via etag to ensure the latest version.
-    { setHeaders: res => res.set('Cache-Control', 'no-cache') } // Cache static assets :)
+    {setHeaders: res => res.set('Cache-Control', 'no-cache')}, // Cache static assets :)
   ),
   helmet(), // Headers security.
   compression(), // GZIP
   bp.json(), // http://bit.ly/2KpI7cL, http://bit.ly/2KkcVvD, http://bit.ly/2KmDSP3
-  bp.urlencoded({ extended: false }) // http://bit.ly/2KpI7cL, http://bit.ly/2Ko4f7e
+  bp.urlencoded({extended: false}), // http://bit.ly/2KpI7cL, http://bit.ly/2Ko4f7e
 )
 
 /*
@@ -62,7 +63,6 @@ app.use(
   ------------------------------
 */
 // app.get(`${API}/my-endpoint`, require('./api/my-endpoint'))
-
 
 /*
   Catch-all endpoint which delivers `index.html` and let's

@@ -22,7 +22,6 @@ function showHelp() {
         -f,  --force      skips creating a new directory & installs in a pre-existing one
 
       ${chalk.cyan.bold('App options:')}
-        -x,  --redux      includes redux in your application, completely wired up
         -r,  --router     includes React Router in your application, completely wired up
 
       ${chalk.cyan.bold('package.json field options:')}

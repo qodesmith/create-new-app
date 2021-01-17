@@ -9,9 +9,8 @@ const {
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
-  listFolderContents
+  listFolderContents,
 } = require('./helpers/folderFileHelper')
-
 
 describe('cli - React + MongoDB + Express + React Router + Redux project', () => {
   const appName = '12-react-mongo-rrouter-redux-test'
@@ -19,7 +18,9 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(`node ${mainPath}/main.js ${appName} --mongo --router --redux ${noInstall}`)
+    run(
+      `node ${mainPath}/main.js ${appName} --mongo --router --redux ${noInstall}`,
+    )
   })
 
   afterAll(() => {
@@ -31,20 +32,29 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
   })
 
   it('should contain the expected folders and no others', () => {
-    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaMongoRouterRedux)
-    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaMongoRouterRedux)
-    const actualFolders = listFoldersInTree(appPath, { ignores })
+    const expectedFolders = foldersFromConfig(
+      appPath,
+      filesAndFolders.cnaMongoRouterRedux,
+    )
+    const ignores = listIgnoredFoldersFromConfig(
+      appPath,
+      filesAndFolders.cnaMongoRouterRedux,
+    )
+    const actualFolders = listFoldersInTree(appPath, {ignores})
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongoRouterRedux)
+    const config = absolutePathConfig(
+      appPath,
+      filesAndFolders.cnaMongoRouterRedux,
+    )
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
         files: true,
-        namesOnly: true
+        namesOnly: true,
       })
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
@@ -57,7 +67,10 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongoRouterRedux)
+    const config = absolutePathConfig(
+      appPath,
+      filesAndFolders.cnaMongoRouterRedux,
+    )
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -84,7 +97,7 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
           'devDependencies',
           'dependencies',
           'scripts',
-          'main'
+          'main',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
@@ -99,15 +112,20 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
         expect(pkgJson.email).toBe('')
         expect(pkgJson.repository).toBe('')
         expect(pkgJson.license).toBe('ISC')
-        expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
+        expect(pkgJson.browserslist.sort()).toEqual(
+          ['>0.25%', 'not ie 11', 'not op_mini all'].sort(),
+        )
 
         const scripts = {
-          build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
-          'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env dev',
+          build:
+            'cross-env NODE_ENV=production webpack --mode production --env prod',
+          'build:dev':
+            'cross-env NODE_ENV=development webpack --mode development --env dev',
           local: 'npm run server:api',
           'server:dev': 'webpack serve --mode development --progress --env dev',
           'server:api': 'nodemon server.js',
-          start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
+          start:
+            'cross-env NODE_ENV=development npm-run-all --parallel server:*',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -115,8 +133,8 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.mongoRouterRedux
-        const { latestPackages } = deps
+        const {devDependencies} = deps.mongoRouterRedux
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.devDependencies)
@@ -141,8 +159,8 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
 
       it('should populate "dependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { dependencies } = deps.mongoRouterRedux
-        const { latestPackages } = deps
+        const {dependencies} = deps.mongoRouterRedux
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.dependencies)
@@ -167,6 +185,8 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
     })
 
     describe('webpack.config.js', () => {
+      if (process.env.NO_INSTALL) return
+
       let wpConfigDev
       let wpConfigProd
 
@@ -220,14 +240,13 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
         // We don't test this file.
         if (file === 'package-lock.json') return
 
-
         it(`should populate "${file}" correctly`, () => {
           const fileContents = fs.readFileSync(`${folderPath}/${file}`, 'utf8')
 
           // For mongoDB installs `.env` is populated dynamically with a unique `SECRET`.
           if (file === '.env') {
             const dotenv = require('dotenv')
-            const { SECRET, ...dotEnvObj } = dotenv.parse(fileContents)
+            const {SECRET, ...dotEnvObj} = dotenv.parse(fileContents)
 
             expect(SECRET.length).toBe(36) // This is a uuid.
             expect(dotEnvObj).toEqual({

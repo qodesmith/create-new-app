@@ -76,6 +76,40 @@ typings/
 "
 `;
 
+exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - / should populate ".prettierignore" correctly 1`] = `
+"node_modules
+src/assets
+dist
+build
+*.html
+package-lock.json
+!*.(js|jsx|ts)
+"
+`;
+
+exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - / should populate ".prettierrc" correctly 1`] = `
+"{
+  \\"printWidth\\": 80,
+  \\"tabWidth\\": 2,
+  \\"tabs\\": false,
+  \\"semi\\": false,
+  \\"singleQuote\\": true,
+  \\"quoteProps\\": \\"as-needed\\",
+  \\"jsxSingleQuote\\": false,
+  \\"trailingComma\\": \\"all\\",
+  \\"bracketSpacing\\": false,
+  \\"jsxBracketSameLine\\": true,
+  \\"arrowParens\\": \\"avoid\\",
+  \\"requirePragma\\": false,
+  \\"insertPragma\\": false,
+  \\"proseWrap\\": \\"preserve\\",
+  \\"htmlWhitespaceSensitivity\\": \\"css\\",
+  \\"endOfLine\\": \\"lf\\",
+  \\"embeddedLanguageFormatting\\": \\"auto\\"
+}
+"
+`;
+
 exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - / should populate "README.md" correctly 1`] = `
 "This project was created with [Create New App](https://github.com/qodesmith/create-new-app).
 "
@@ -213,7 +247,8 @@ process.on('unhandledRejection', err => {
   const msg = chalk.red.bold(\`Unhandled promise rejection at \${date}:\\\\n\`)
 
   console.log(\`\\\\n\${lines}\`)
-  console.error(msg, errorToObject(err))
+  console.error(msg)
+  console.error(errorToObject(err))
   console.log(\`\${lines}\\\\n\`)
 })
 
@@ -223,7 +258,8 @@ process.on('uncaughtException', err => {
   const msg = chalk.red.bold(\`\\\\nUncaught exception at \${date}:\\\\n\`)
 
   console.log(\`\\\\n\${lines}\`)
-  console.error(msg, errorToObject(err))
+  console.error(msg)
+  console.error(errorToObject(err))
   process.exit(1)
 })
 
@@ -311,18 +347,16 @@ app.listen(API_PORT, () => {
 `;
 
 exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
-"require('dotenv').config({ path: \`\${__dirname}/.env\` }) // http://bit.ly/2WE8EJP
-const { NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK } = process.env
+"require('dotenv').config({path: \`\${__dirname}/.env\`}) // http://bit.ly/2WE8EJP
+const {NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK} = process.env
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const AfterCompilePlugin = require('./after-compile-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const os = require('os')
-
 
 console.log(\`
 
@@ -371,7 +405,6 @@ module.exports = (env, argv) => ({
     you bundle or load with webpack.
   */
   output: {
-
     /*
       http://bit.ly/2KoIZP4
       This option determines the name of each output bundle.
@@ -416,7 +449,6 @@ module.exports = (env, argv) => ({
     These options determine how the different types of modules within a project will be treated.
   */
   module: {
-
     /*
       An array of Rules which are matched to requests when modules are created.
       These rules can modify how the module is created.
@@ -501,7 +533,8 @@ module.exports = (env, argv) => ({
                   {
                     modules: false, // Needed for tree shaking to work (see above).
                     useBuiltIns: 'entry', // http://bit.ly/2KkBZCu
-                    corejs: { // http://bit.ly/2KkC09w
+                    corejs: {
+                      // http://bit.ly/2KkC09w
                       version: 3,
                       proposals: true,
                     },
@@ -600,7 +633,6 @@ module.exports = (env, argv) => ({
 
   // http://bit.ly/2WGnFeg
   resolve: {
-
     /*
       http://bit.ly/2WyqhuP
       Create aliases to import certain modules more easily.
@@ -628,9 +660,11 @@ module.exports = (env, argv) => ({
     minimize: !!env.prod,
     minimizer: [
       // http://bit.ly/2WEaavt - List of reasons we're using Terser instead (Webpack is too!).
-      new TerserPlugin({ // http://bit.ly/2WI3M6G
+      new TerserPlugin({
+        // http://bit.ly/2WI3M6G
         parallel: true, // http://bit.ly/2WJ6hWf
-        terserOptions: { // http://bit.ly/2WIWVK5
+        terserOptions: {
+          // http://bit.ly/2WIWVK5
           compress: {
             ecma: 5,
             comparisons: false, // http://bit.ly/2MtqwQv
@@ -714,10 +748,12 @@ module.exports = (env, argv) => ({
       title: '',
       mobileThemeColor: '#000000',
       description: '',
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-      },
+      minify: env.prod
+        ? {
+            collapseWhitespace: true,
+            removeComments: true,
+          }
+        : false,
 
       // Order the different entry points found at the top of this file.
       chunks: ['main'],
@@ -781,29 +817,31 @@ module.exports = (env, argv) => ({
       Unrecognized urls (non-API calls) will be directed to '/'.
       404's will be served \`index.html\` by \`historyApiFallback\` above.
     */
-    proxy: API_WEBPACK ? {
-      [API_WEBPACK]: {
-        target: \`http://localhost:\${API_PORT}\`,
-        bypass(req, res, proxyOptions) {
-          // Direct all non-get requests to the API server.
-          if (req.method.toLowerCase() !== 'get') return
+    proxy: API_WEBPACK
+      ? {
+          [API_WEBPACK]: {
+            target: \`http://localhost:\${API_PORT}\`,
+            bypass(req, res, proxyOptions) {
+              // Direct all non-get requests to the API server.
+              if (req.method.toLowerCase() !== 'get') return
 
-          /*
+              /*
             Proxy url (browser) requests back to '/'
             and let the front end do all the routing.
             For all others, let the API server respond.
           */
 
-          /*
+              /*
             http://bit.ly/2XlEOXN
             Url / browser request - allow front end routing to handle all the things.
           */
-          if ((req.headers.accept || '').includes('html')) return '/'
+              if ((req.headers.accept || '').includes('html')) return '/'
 
-          // Let the API server respond by implicitly returning here.
-        },
-      },
-    } : {},
+              // Let the API server respond by implicitly returning here.
+            },
+          },
+        }
+      : {},
 
     // https://bit.ly/3nM4mL0
     watchContentBase: true,
@@ -1324,6 +1362,37 @@ export const randomHexColor = () => (
 "
 `;
 
+exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - /src/hooks should populate "useUpdatingClock.js" correctly 1`] = `
+"import {useEffect, useState} from \\"react\\";
+
+export default function useUpdatingClock() {
+  // An example of using React hooks to maintain local state.
+  const [date, setDate] = useState(() => new Date());
+
+  // Data we need for our updated time in the UI.
+  const hours = date.getHours();
+  const hour = hours % 12 || 12;
+  const minutes = date.getMinutes().toString().padStart(2, \\"0\\");
+  const seconds = date.getSeconds().toString().padStart(2, \\"0\\");
+  const amPm = hours >= 12 ? \\"pm\\" : \\"am\\";
+
+  // An example of using \`useEffect\` to update the DOM with the latest time.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDate(new Date());
+    }, 251);
+
+    // This \\"clean up\\" function will run when the consuming component unmounts.
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  return {hour, minutes, seconds, amPm};
+}
+"
+`;
+
 exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created Folder - /src/redux/actions should populate "index.js" correctly 1`] = `
 "export const changeColor = () => ({ type: 'CHANGE_COLOR' })
 "
@@ -1398,501 +1467,4 @@ exports[`cli - React + MongoDB + Express + React Router + Redux project contents
 */
 @import 'global';
 "
-`;
-
-exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
-Object {
-  "bail": false,
-  "context": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-  "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/dist",
-    "historyApiFallback": true,
-    "host": "0.0.0.0",
-    "hot": true,
-    "inline": true,
-    "open": true,
-    "overlay": Object {
-      "errors": false,
-      "warnings": false,
-    },
-    "port": "8080",
-    "proxy": Object {
-      "/api": Object {
-        "bypass": [Function],
-        "target": "http://localhost:3000",
-      },
-    },
-    "public": "http://localhost:8080",
-    "watchContentBase": true,
-  },
-  "devtool": "source-map",
-  "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/entry.jsx",
-  },
-  "mode": "development",
-  "module": Object {
-    "rules": Array [
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "babel-loader",
-            "options": Object {
-              "plugins": Array [
-                "@babel/plugin-proposal-object-rest-spread",
-                "@babel/plugin-proposal-class-properties",
-                "@babel/plugin-syntax-dynamic-import",
-                "@babel/plugin-proposal-optional-chaining",
-                "@babel/plugin-proposal-nullish-coalescing-operator",
-                "react-refresh/babel",
-              ],
-              "presets": Array [
-                Array [
-                  "@babel/preset-env",
-                  Object {
-                    "corejs": Object {
-                      "proposals": true,
-                      "version": 3,
-                    },
-                    "modules": false,
-                    "useBuiltIns": "entry",
-                  },
-                ],
-                Array [
-                  "@babel/preset-react",
-                  Object {
-                    "runtime": "automatic",
-                  },
-                ],
-              ],
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(scss\\|css\\)\\$/,
-        "use": Array [
-          "style-loader",
-          Object {
-            "loader": "css-loader",
-            "options": Object {
-              "importLoaders": 2,
-              "sourceMap": false,
-            },
-          },
-          Object {
-            "loader": "sass-loader",
-            "options": Object {
-              "sourceMap": false,
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "file-loader",
-            "options": Object {
-              "name": "[name].[ext]",
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/assets",
-        "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "file-loader",
-            "options": Object {
-              "name": "[name].[ext]",
-            },
-          },
-        ],
-      },
-    ],
-  },
-  "optimization": Object {
-    "minimize": false,
-    "minimizer": Array [
-      TerserPlugin {
-        "options": Object {
-          "exclude": undefined,
-          "extractComments": true,
-          "include": undefined,
-          "minify": undefined,
-          "parallel": true,
-          "terserOptions": Object {
-            "compress": Object {
-              "comparisons": false,
-              "ecma": 5,
-              "inline": 2,
-            },
-            "mangle": Object {
-              "safari10": true,
-            },
-            "output": Object {
-              "ascii_only": true,
-              "comments": false,
-              "ecma": 5,
-            },
-          },
-          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
-        },
-      },
-    ],
-  },
-  "output": Object {
-    "chunkFilename": "[name].[fullhash].chunk.js",
-    "filename": "[name].[fullhash].bundle.js",
-    "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/dist",
-    "pathinfo": true,
-    "publicPath": "/",
-  },
-  "plugins": Array [
-    DefinePlugin {
-      "definitions": Object {
-        "__API__": "\\"/api\\"",
-        "__DEV__": true,
-        "__PROD__": false,
-        "process.env": Object {
-          "NODE_ENV": "\\"development\\"",
-        },
-      },
-    },
-    MiniCssExtractPlugin {
-      "options": Object {
-        "chunkFilename": "[id].css",
-        "filename": "[name].[fullhash].css",
-        "ignoreOrder": false,
-      },
-      "runtimeOptions": Object {
-        "attributes": "",
-        "insert": "document.head.appendChild(linkTag);",
-        "linkType": "text/css",
-      },
-    },
-    CleanWebpackPlugin {
-      "apply": [Function],
-      "cleanAfterEveryBuildPatterns": Array [
-        "*.js",
-        "*.css",
-        "*.html",
-      ],
-      "cleanOnceBeforeBuildPatterns": Array [
-        "*.js",
-        "*.css",
-        "*.html",
-      ],
-      "cleanStaleWebpackAssets": true,
-      "currentAssets": Array [],
-      "dangerouslyAllowCleanPatternsOutsideProject": false,
-      "dry": false,
-      "handleDone": [Function],
-      "handleInitial": [Function],
-      "initialClean": false,
-      "outputPath": "",
-      "protectWebpackAssets": true,
-      "removeFiles": [Function],
-      "verbose": true,
-    },
-    HtmlWebpackPlugin {
-      "userOptions": Object {
-        "chunks": Array [
-          "main",
-        ],
-        "chunksSortMode": "manual",
-        "description": "",
-        "minify": Object {
-          "collapseWhitespace": true,
-          "removeComments": true,
-        },
-        "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/index.ejs",
-        "title": "",
-      },
-      "version": 5,
-    },
-    HotModuleReplacementPlugin {
-      "options": Object {},
-    },
-    ReactRefreshPlugin {
-      "options": Object {
-        "exclude": /node_modules/i,
-        "include": /\\\\\\.\\(\\[jt\\]sx\\?\\|flow\\)\\$/i,
-        "overlay": Object {
-          "entry": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
-          "module": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
-          "sockIntegration": "wds",
-        },
-      },
-    },
-    AfterCompilePlugin {
-      "run": undefined,
-    },
-  ],
-  "resolve": Object {
-    "alias": Object {
-      "actions": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/actions",
-      "assets": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/hooks",
-      "middleware": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/middleware",
-      "reducers": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/reducers",
-    },
-    "extensions": Array [
-      ".js",
-      ".jsx",
-      ".json",
-      ".scss",
-    ],
-  },
-  "target": "web",
-}
-`;
-
-exports[`cli - React + MongoDB + Express + React Router + Redux project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
-Object {
-  "bail": true,
-  "context": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-  "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/dist",
-    "historyApiFallback": true,
-    "host": "0.0.0.0",
-    "hot": true,
-    "inline": true,
-    "open": true,
-    "overlay": Object {
-      "errors": false,
-      "warnings": false,
-    },
-    "port": "8080",
-    "proxy": Object {
-      "/api": Object {
-        "bypass": [Function],
-        "target": "http://localhost:3000",
-      },
-    },
-    "public": "http://localhost:8080",
-    "watchContentBase": true,
-  },
-  "devtool": false,
-  "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/entry.jsx",
-  },
-  "mode": "production",
-  "module": Object {
-    "rules": Array [
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "babel-loader",
-            "options": Object {
-              "plugins": Array [
-                "@babel/plugin-proposal-object-rest-spread",
-                "@babel/plugin-proposal-class-properties",
-                "@babel/plugin-syntax-dynamic-import",
-                "@babel/plugin-proposal-optional-chaining",
-                "@babel/plugin-proposal-nullish-coalescing-operator",
-              ],
-              "presets": Array [
-                Array [
-                  "@babel/preset-env",
-                  Object {
-                    "corejs": Object {
-                      "proposals": true,
-                      "version": 3,
-                    },
-                    "modules": false,
-                    "useBuiltIns": "entry",
-                  },
-                ],
-                Array [
-                  "@babel/preset-react",
-                  Object {
-                    "runtime": "automatic",
-                  },
-                ],
-              ],
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(scss\\|css\\)\\$/,
-        "use": Array [
-          "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/node_modules/mini-css-extract-plugin/dist/loader.js",
-          Object {
-            "loader": "css-loader",
-            "options": Object {
-              "importLoaders": 2,
-              "sourceMap": false,
-            },
-          },
-          "postcss-loader",
-          Object {
-            "loader": "sass-loader",
-            "options": Object {
-              "sourceMap": false,
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src",
-        "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "file-loader",
-            "options": Object {
-              "name": "[name].[ext]",
-            },
-          },
-        ],
-      },
-      Object {
-        "include": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/assets",
-        "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
-        "use": Array [
-          Object {
-            "loader": "file-loader",
-            "options": Object {
-              "name": "[name].[ext]",
-            },
-          },
-        ],
-      },
-    ],
-  },
-  "optimization": Object {
-    "minimize": true,
-    "minimizer": Array [
-      TerserPlugin {
-        "options": Object {
-          "exclude": undefined,
-          "extractComments": true,
-          "include": undefined,
-          "minify": undefined,
-          "parallel": true,
-          "terserOptions": Object {
-            "compress": Object {
-              "comparisons": false,
-              "ecma": 5,
-              "inline": 2,
-            },
-            "mangle": Object {
-              "safari10": true,
-            },
-            "output": Object {
-              "ascii_only": true,
-              "comments": false,
-              "ecma": 5,
-            },
-          },
-          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
-        },
-      },
-    ],
-  },
-  "output": Object {
-    "chunkFilename": "[name].[fullhash].chunk.js",
-    "filename": "[name].[fullhash].bundle.js",
-    "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/dist",
-    "pathinfo": false,
-    "publicPath": "/",
-  },
-  "plugins": Array [
-    DefinePlugin {
-      "definitions": Object {
-        "__API__": "\\"/api\\"",
-        "__DEV__": false,
-        "__PROD__": true,
-        "process.env": Object {
-          "NODE_ENV": "\\"production\\"",
-        },
-      },
-    },
-    MiniCssExtractPlugin {
-      "options": Object {
-        "chunkFilename": "[id].css",
-        "filename": "[name].[fullhash].css",
-        "ignoreOrder": false,
-      },
-      "runtimeOptions": Object {
-        "attributes": "",
-        "insert": "document.head.appendChild(linkTag);",
-        "linkType": "text/css",
-      },
-    },
-    CleanWebpackPlugin {
-      "apply": [Function],
-      "cleanAfterEveryBuildPatterns": Array [
-        "*.js",
-        "*.css",
-        "*.html",
-      ],
-      "cleanOnceBeforeBuildPatterns": Array [
-        "*.js",
-        "*.css",
-        "*.html",
-      ],
-      "cleanStaleWebpackAssets": true,
-      "currentAssets": Array [],
-      "dangerouslyAllowCleanPatternsOutsideProject": false,
-      "dry": false,
-      "handleDone": [Function],
-      "handleInitial": [Function],
-      "initialClean": false,
-      "outputPath": "",
-      "protectWebpackAssets": true,
-      "removeFiles": [Function],
-      "verbose": true,
-    },
-    HtmlWebpackPlugin {
-      "userOptions": Object {
-        "chunks": Array [
-          "main",
-        ],
-        "chunksSortMode": "manual",
-        "description": "",
-        "minify": Object {
-          "collapseWhitespace": true,
-          "removeComments": true,
-        },
-        "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/index.ejs",
-        "title": "",
-      },
-      "version": 5,
-    },
-  ],
-  "resolve": Object {
-    "alias": Object {
-      "actions": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/actions",
-      "assets": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/hooks",
-      "middleware": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/middleware",
-      "reducers": "/Users/qodesmith/repos/create-new-app/12-react-mongo-rrouter-redux-test/src/redux/reducers",
-    },
-    "extensions": Array [
-      ".js",
-      ".jsx",
-      ".json",
-      ".scss",
-    ],
-  },
-  "target": "web",
-}
 `;

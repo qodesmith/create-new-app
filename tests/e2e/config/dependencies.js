@@ -16,88 +16,104 @@ const serverDevDeps = {
   '@babel/preset-react': '^7',
   '@fullhuman/postcss-purgecss': '^3',
   '@pmmmwh/react-refresh-webpack-plugin': '^0',
-  'autoprefixer': '^10',
+  autoprefixer: '^10',
   'babel-loader': '^8',
   'clean-webpack-plugin': '^3',
   'core-js': '^3',
   'cross-env': '^7',
   'css-declaration-sorter': '^6',
   'css-loader': '^5',
-  'cssnano': '^4',
+  cssnano: '^4',
   'file-loader': '^6',
   'html-webpack-plugin': '^5.0.0-beta',
   'mini-css-extract-plugin': '^1',
-  'npm-run-all': 'latest',
-  'postcss': '^8',
+  'npm-run-all': '^4',
+  postcss: '^8',
   'postcss-combine-duplicated-selectors': '^10',
   'postcss-combine-media-query': '^1',
   'postcss-loader': '^4',
   'purgecss-whitelister': 'latest',
-  'react': '^17',
+  react: '^17',
   'react-dom': '^17',
   'regenerator-runtime': '^0',
-  'sass': '^1',
+  sass: '^1',
   'sass-loader': '^10',
-  'sassyons': 'latest',
+  sassyons: 'latest',
   'style-loader': '^2',
   'terser-webpack-plugin': '^5',
-  'webpack': '^5',
+  webpack: '^5',
   'webpack-cli': '^4',
   'webpack-dev-server': '^3',
 }
-const devDeps = { ...serverDevDeps, 'dotenv': '^8', 'chalk': '^4' }
-const reduxDeps = { 'redux': '^4', 'react-redux': '^7' }
-const routerDeps = { 'react-router-dom': '^5', 'history': '^5' }
+const devDeps = {...serverDevDeps, dotenv: '^8', chalk: '^4'}
+const reduxDeps = {redux: '^4', 'react-redux': '^7'}
+const routerDeps = {'react-router-dom': '^5', history: '^5'}
 const serverDeps = {
-  'chalk': '^4',
-  'express': '^4',
-  'helmet': '^3',
-  'compression': '^1',
+  chalk: '^4',
+  express: '^4',
+  helmet: '^3',
+  compression: '^1',
   'body-parser': '^1',
-  'nodemon': '^2',
-  'dotenv': '^8',
+  nodemon: '^2',
+  dotenv: '^8',
 }
 const mongoDeps = {
   ...serverDeps,
-  'mongodb': '^3',
-  'saslprep': '^1', // This was added to stop MongoClient warnings.
+  mongodb: '^3',
+  saslprep: '^1', // This was added to stop MongoClient warnings.
   'connect-mongo': '^3',
   'express-session': '^1',
 }
 
 // Vanilla.
-const vanilla = { devDependencies: devDeps }
-const vanillaRedux = { devDependencies: { ...devDeps, ...reduxDeps } }
-const vanillaRouter = { devDependencies: { ...devDeps, ...routerDeps } }
-const vanillaRouterRedux = { devDependencies: { ...devDeps, ...reduxDeps, ...routerDeps } }
+const vanilla = {devDependencies: devDeps}
+const vanillaRedux = {devDependencies: {...devDeps, ...reduxDeps}}
+const vanillaRouter = {devDependencies: {...devDeps, ...routerDeps}}
+const vanillaRouterRedux = {
+  devDependencies: {...devDeps, ...reduxDeps, ...routerDeps},
+}
 
 // Express.
-const express = { devDependencies: serverDevDeps, dependencies: serverDeps }
-const expressRedux = { devDependencies: { ...serverDevDeps, ...reduxDeps }, dependencies: serverDeps }
-const expressRouter = { devDependencies: { ...serverDevDeps, ...routerDeps }, dependencies: serverDeps }
+const express = {devDependencies: serverDevDeps, dependencies: serverDeps}
+const expressRedux = {
+  devDependencies: {...serverDevDeps, ...reduxDeps},
+  dependencies: serverDeps,
+}
+const expressRouter = {
+  devDependencies: {...serverDevDeps, ...routerDeps},
+  dependencies: serverDeps,
+}
 const expressRouterRedux = {
-  devDependencies: { ...serverDevDeps, ...routerDeps, ...reduxDeps },
+  devDependencies: {...serverDevDeps, ...routerDeps, ...reduxDeps},
   dependencies: serverDeps,
 }
 
 // Mongo (always includes Express).
-const mongo = { devDependencies: serverDevDeps, dependencies: mongoDeps }
-const mongoRedux = { devDependencies: { ...serverDevDeps, ...reduxDeps }, dependencies: mongoDeps }
-const mongoRouter = { devDependencies: { ...serverDevDeps, ...routerDeps }, dependencies: mongoDeps }
+const mongo = {devDependencies: serverDevDeps, dependencies: mongoDeps}
+const mongoRedux = {
+  devDependencies: {...serverDevDeps, ...reduxDeps},
+  dependencies: mongoDeps,
+}
+const mongoRouter = {
+  devDependencies: {...serverDevDeps, ...routerDeps},
+  dependencies: mongoDeps,
+}
 const mongoRouterRedux = {
-  devDependencies: { ...serverDevDeps, ...routerDeps, ...reduxDeps },
+  devDependencies: {...serverDevDeps, ...routerDeps, ...reduxDeps},
   dependencies: mongoDeps,
 }
 
 // Latest.
-const latestPackages = [devDeps, reduxDeps, routerDeps, mongoDeps].reduce((acc, obj) => {
-  Object.keys(obj).forEach(key => {
-    if (obj[key] === 'latest') acc.push(key)
-  })
+const latestPackages = [devDeps, reduxDeps, routerDeps, mongoDeps].reduce(
+  (acc, obj) => {
+    Object.keys(obj).forEach(key => {
+      if (obj[key] === 'latest') acc.push(key)
+    })
 
-  return acc
-}, [])
-
+    return acc
+  },
+  [],
+)
 
 module.exports = {
   vanilla,

@@ -9,12 +9,14 @@ const cna = {
   './': [
     '.env',
     '.gitignore',
+    '.prettierrc',
+    '.prettierignore',
     'after-compile-plugin.js',
     'package.json',
     !noInstall && 'package-lock.json', // Only available when `npm install` is run.
     'postcss.config.js',
     'README.md',
-    'webpack.config.js'
+    'webpack.config.js',
   ].filter(Boolean),
   './.git': null,
   './dist': ['favicon.ico', 'robots.txt'],
@@ -22,9 +24,9 @@ const cna = {
   './src': ['entry.jsx', 'index.ejs'],
   './src/assets': [],
   './src/helpers': ['index.js'],
-  './src/hooks': [],
+  './src/hooks': ['useUpdatingClock.js'],
   './src/components': ['App.jsx'],
-  './src/styles': ['global.scss', 'styles.scss']
+  './src/styles': ['global.scss', 'styles.scss'],
 }
 
 const cnaRedux = {
@@ -45,58 +47,63 @@ const cnaRouterRedux = {
   ...cnaRedux,
   ...cnaRouter,
   './src': ['entry.jsx', 'index.ejs', 'store.js'],
-  './src/redux/reducers': ['homeReducer.js']
+  './src/redux/reducers': ['homeReducer.js'],
 }
 
 const cnaExpress = {
   ...cna,
   './': [...cna['./'], 'server.js'],
   './api': ['home.js'],
-  './api/utilities': ['catchy.js', 'errorUtil.js']
+  './api/utilities': ['catchy.js', 'errorUtil.js'],
 }
 
 const cnaExpressRedux = {
   ...cnaRedux,
   ...cnaExpress,
-  './src': ['entry.jsx', 'index.ejs', 'store.js']
+  './src': ['entry.jsx', 'index.ejs', 'store.js'],
 }
 
 const cnaExpressRouter = {
   ...cnaExpress,
   ...cnaRouter,
-  './': cnaExpress['./']
+  './': cnaExpress['./'],
 }
 
 const cnaExpressRouterRedux = {
   ...cnaExpress,
   ...cnaRouterRedux,
-  './': cnaExpress['./']
+  './': cnaExpress['./'],
 }
 
 const cnaMongo = {
   ...cnaExpress,
-  './api/utilities': ['catchy.js', 'errorUtil.js', 'handleErrors.js', 'logMongoAuthWarning.js', 'mongo.js']
+  './api/utilities': [
+    'catchy.js',
+    'errorUtil.js',
+    'handleErrors.js',
+    'logMongoAuthWarning.js',
+    'mongo.js',
+  ],
 }
 
 const cnaMongoRedux = {
   ...cnaExpressRedux,
   ...cnaMongo,
-  './src': ['entry.jsx', 'index.ejs', 'store.js']
+  './src': ['entry.jsx', 'index.ejs', 'store.js'],
 }
 
 const cnaMongoRouter = {
   ...cnaExpressRouter,
   ...cnaMongo,
-  './src/components': cnaRouter['./src/components']
+  './src/components': cnaRouter['./src/components'],
 }
 
 const cnaMongoRouterRedux = {
   ...cnaExpressRouterRedux,
   ...cnaMongo,
   './src': cnaRedux['./src'],
-  './src/components': cnaRouter['./src/components']
+  './src/components': cnaRouter['./src/components'],
 }
-
 
 module.exports = {
   cna,
@@ -112,5 +119,5 @@ module.exports = {
   cnaMongo,
   cnaMongoRedux,
   cnaMongoRouter,
-  cnaMongoRouterRedux
+  cnaMongoRouterRedux,
 }

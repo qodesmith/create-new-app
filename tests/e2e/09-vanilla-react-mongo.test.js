@@ -9,9 +9,8 @@ const {
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
-  listFolderContents
+  listFolderContents,
 } = require('./helpers/folderFileHelper')
-
 
 describe('cli - React + MongoDB + Express project', () => {
   const appName = '09-vanilla-react-mongo-test'
@@ -32,8 +31,11 @@ describe('cli - React + MongoDB + Express project', () => {
 
   it('should contain the expected folders and no others', () => {
     const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaMongo)
-    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaMongo)
-    const actualFolders = listFoldersInTree(appPath, { ignores })
+    const ignores = listIgnoredFoldersFromConfig(
+      appPath,
+      filesAndFolders.cnaMongo,
+    )
+    const actualFolders = listFoldersInTree(appPath, {ignores})
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
@@ -44,7 +46,7 @@ describe('cli - React + MongoDB + Express project', () => {
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
         files: true,
-        namesOnly: true
+        namesOnly: true,
       })
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
@@ -84,7 +86,7 @@ describe('cli - React + MongoDB + Express project', () => {
           'devDependencies',
           'dependencies',
           'scripts',
-          'main'
+          'main',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
@@ -99,15 +101,20 @@ describe('cli - React + MongoDB + Express project', () => {
         expect(pkgJson.email).toBe('')
         expect(pkgJson.repository).toBe('')
         expect(pkgJson.license).toBe('ISC')
-        expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
+        expect(pkgJson.browserslist.sort()).toEqual(
+          ['>0.25%', 'not ie 11', 'not op_mini all'].sort(),
+        )
 
         const scripts = {
-          build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
-          'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env dev',
+          build:
+            'cross-env NODE_ENV=production webpack --mode production --env prod',
+          'build:dev':
+            'cross-env NODE_ENV=development webpack --mode development --env dev',
           local: 'npm run server:api',
           'server:dev': 'webpack serve --mode development --progress --env dev',
           'server:api': 'nodemon server.js',
-          start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
+          start:
+            'cross-env NODE_ENV=development npm-run-all --parallel server:*',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -115,8 +122,8 @@ describe('cli - React + MongoDB + Express project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.mongo
-        const { latestPackages } = deps
+        const {devDependencies} = deps.mongo
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.devDependencies)
@@ -141,8 +148,8 @@ describe('cli - React + MongoDB + Express project', () => {
 
       it('should populate "dependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { dependencies } = deps.mongo
-        const { latestPackages } = deps
+        const {dependencies} = deps.mongo
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.dependencies)
@@ -167,6 +174,8 @@ describe('cli - React + MongoDB + Express project', () => {
     })
 
     describe('webpack.config.js', () => {
+      if (process.env.NO_INSTALL) return
+
       let wpConfigDev
       let wpConfigProd
 
@@ -220,14 +229,13 @@ describe('cli - React + MongoDB + Express project', () => {
         // We don't test this file.
         if (file === 'package-lock.json') return
 
-
         it(`should populate "${file}" correctly`, () => {
           const fileContents = fs.readFileSync(`${folderPath}/${file}`, 'utf8')
 
           // For mongoDB installs `.env` is populated dynamically with a unique `SECRET`.
           if (file === '.env') {
             const dotenv = require('dotenv')
-            const { SECRET, ...dotEnvObj } = dotenv.parse(fileContents)
+            const {SECRET, ...dotEnvObj} = dotenv.parse(fileContents)
 
             expect(SECRET.length).toBe(36) // This is a uuid.
             expect(dotEnvObj).toEqual({

@@ -9,9 +9,8 @@ const {
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
-  listFolderContents
+  listFolderContents,
 } = require('./helpers/folderFileHelper')
-
 
 describe('cli - vanilla React project', () => {
   const appName = '01-vanilla-react-test' // Ensure the folder ends in `test` to be git ignored.
@@ -34,7 +33,7 @@ describe('cli - vanilla React project', () => {
   it('should contain the expected folders and no others', () => {
     const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cna)
     const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cna)
-    const actualFolders = listFoldersInTree(appPath, { ignores })
+    const actualFolders = listFoldersInTree(appPath, {ignores})
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
@@ -45,7 +44,7 @@ describe('cli - vanilla React project', () => {
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
         files: true,
-        namesOnly: true
+        namesOnly: true,
       })
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
@@ -92,7 +91,7 @@ describe('cli - vanilla React project', () => {
           'license',
           'browserslist',
           'devDependencies',
-          'scripts'
+          'scripts',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
@@ -111,11 +110,15 @@ describe('cli - vanilla React project', () => {
         expect(pkgJson.email).toBe('')
         expect(pkgJson.repository).toBe('')
         expect(pkgJson.license).toBe('ISC')
-        expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
+        expect(pkgJson.browserslist.sort()).toEqual(
+          ['>0.25%', 'not ie 11', 'not op_mini all'].sort(),
+        )
 
         const scripts = {
-          build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
-          start: 'cross-env NODE_ENV=development webpack serve --mode development --progress'
+          build:
+            'cross-env NODE_ENV=production webpack --mode production --env prod',
+          start:
+            'cross-env NODE_ENV=development webpack serve --mode development --progress',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -123,8 +126,8 @@ describe('cli - vanilla React project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.vanilla
-        const { latestPackages } = deps
+        const {devDependencies} = deps.vanilla
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.devDependencies)
@@ -149,6 +152,8 @@ describe('cli - vanilla React project', () => {
     })
 
     describe('webpack.config.js', () => {
+      if (process.env.NO_INSTALL) return
+
       let wpConfigDev
       let wpConfigProd
 

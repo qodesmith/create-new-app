@@ -9,9 +9,8 @@ const {
   foldersFromConfig,
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
-  listFolderContents
+  listFolderContents,
 } = require('./helpers/folderFileHelper')
-
 
 describe('cli - React + Express + Redux project', () => {
   const appName = '06-react-express-redux-test'
@@ -31,9 +30,15 @@ describe('cli - React + Express + Redux project', () => {
   })
 
   it('should contain the expected folders and no others', () => {
-    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaExpressRedux)
-    const ignores = listIgnoredFoldersFromConfig(appPath, filesAndFolders.cnaExpressRedux)
-    const actualFolders = listFoldersInTree(appPath, { ignores })
+    const expectedFolders = foldersFromConfig(
+      appPath,
+      filesAndFolders.cnaExpressRedux,
+    )
+    const ignores = listIgnoredFoldersFromConfig(
+      appPath,
+      filesAndFolders.cnaExpressRedux,
+    )
+    const actualFolders = listFoldersInTree(appPath, {ignores})
 
     expect(expectedFolders.sort()).toEqual(actualFolders.sort())
   })
@@ -44,7 +49,7 @@ describe('cli - React + Express + Redux project', () => {
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
         files: true,
-        namesOnly: true
+        namesOnly: true,
       })
 
       expect(filesInFolder.sort()).toEqual(config[folder].sort())
@@ -84,7 +89,7 @@ describe('cli - React + Express + Redux project', () => {
           'devDependencies',
           'dependencies',
           'scripts',
-          'main'
+          'main',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
@@ -99,15 +104,20 @@ describe('cli - React + Express + Redux project', () => {
         expect(pkgJson.email).toBe('')
         expect(pkgJson.repository).toBe('')
         expect(pkgJson.license).toBe('ISC')
-        expect(pkgJson.browserslist.sort()).toEqual(['>0.25%', 'not ie 11', 'not op_mini all'].sort())
+        expect(pkgJson.browserslist.sort()).toEqual(
+          ['>0.25%', 'not ie 11', 'not op_mini all'].sort(),
+        )
 
         const scripts = {
-          build: 'cross-env NODE_ENV=production webpack --mode production --env prod',
-          'build:dev': 'cross-env NODE_ENV=development webpack --mode development --env dev',
+          build:
+            'cross-env NODE_ENV=production webpack --mode production --env prod',
+          'build:dev':
+            'cross-env NODE_ENV=development webpack --mode development --env dev',
           local: 'npm run server:api',
           'server:dev': 'webpack serve --mode development --progress --env dev',
           'server:api': 'nodemon server.js',
-          start: 'cross-env NODE_ENV=development npm-run-all --parallel server:*'
+          start:
+            'cross-env NODE_ENV=development npm-run-all --parallel server:*',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -115,8 +125,8 @@ describe('cli - React + Express + Redux project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { devDependencies } = deps.expressRedux
-        const { latestPackages } = deps
+        const {devDependencies} = deps.expressRedux
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.devDependencies)
@@ -141,8 +151,8 @@ describe('cli - React + Express + Redux project', () => {
 
       it('should populate "dependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const { dependencies } = deps.expressRedux
-        const { latestPackages } = deps
+        const {dependencies} = deps.expressRedux
+        const {latestPackages} = deps
 
         // 1. All the packages match.
         const installedPackages = Object.keys(pkgJson.dependencies)
@@ -167,6 +177,8 @@ describe('cli - React + Express + Redux project', () => {
     })
 
     describe('webpack.config.js', () => {
+      if (process.env.NO_INSTALL) return
+
       let wpConfigDev
       let wpConfigProd
 

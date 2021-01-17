@@ -13,7 +13,7 @@ const {
 } = require('./helpers/folderFileHelper')
 
 describe('cli - vanilla React project', () => {
-  const appName = '01-vanilla-react-test' // Ensure the folder ends in `test` to be git ignored.
+  const appName = path.parse(__filename).name // Ensure the folder ends in `test` to be git ignored.
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 

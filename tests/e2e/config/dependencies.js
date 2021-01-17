@@ -46,7 +46,6 @@ const serverDevDeps = {
   'webpack-dev-server': '^3',
 }
 const devDeps = {...serverDevDeps, dotenv: '^8', chalk: '^4'}
-const reduxDeps = {redux: '^4', 'react-redux': '^7'}
 const routerDeps = {'react-router-dom': '^5', history: '^5'}
 const serverDeps = {
   chalk: '^4',
@@ -67,69 +66,40 @@ const mongoDeps = {
 
 // Vanilla.
 const vanilla = {devDependencies: devDeps}
-const vanillaRedux = {devDependencies: {...devDeps, ...reduxDeps}}
 const vanillaRouter = {devDependencies: {...devDeps, ...routerDeps}}
-const vanillaRouterRedux = {
-  devDependencies: {...devDeps, ...reduxDeps, ...routerDeps},
-}
 
 // Express.
 const express = {devDependencies: serverDevDeps, dependencies: serverDeps}
-const expressRedux = {
-  devDependencies: {...serverDevDeps, ...reduxDeps},
-  dependencies: serverDeps,
-}
 const expressRouter = {
   devDependencies: {...serverDevDeps, ...routerDeps},
-  dependencies: serverDeps,
-}
-const expressRouterRedux = {
-  devDependencies: {...serverDevDeps, ...routerDeps, ...reduxDeps},
   dependencies: serverDeps,
 }
 
 // Mongo (always includes Express).
 const mongo = {devDependencies: serverDevDeps, dependencies: mongoDeps}
-const mongoRedux = {
-  devDependencies: {...serverDevDeps, ...reduxDeps},
-  dependencies: mongoDeps,
-}
 const mongoRouter = {
   devDependencies: {...serverDevDeps, ...routerDeps},
   dependencies: mongoDeps,
 }
-const mongoRouterRedux = {
-  devDependencies: {...serverDevDeps, ...routerDeps, ...reduxDeps},
-  dependencies: mongoDeps,
-}
 
 // Latest.
-const latestPackages = [devDeps, reduxDeps, routerDeps, mongoDeps].reduce(
-  (acc, obj) => {
-    Object.keys(obj).forEach(key => {
-      if (obj[key] === 'latest') acc.push(key)
-    })
+const latestPackages = [devDeps, routerDeps, mongoDeps].reduce((acc, obj) => {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === 'latest') acc.push(key)
+  })
 
-    return acc
-  },
-  [],
-)
+  return acc
+}, [])
 
 module.exports = {
   vanilla,
-  vanillaRedux,
   vanillaRouter,
-  vanillaRouterRedux,
 
   express,
-  expressRedux,
   expressRouter,
-  expressRouterRedux,
 
   mongo,
-  mongoRedux,
   mongoRouter,
-  mongoRouterRedux,
 
   latestPackages,
 }

@@ -1,26 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate ".env" correctly 1`] = `
-"##########################################################
-#           THIS FILE WILL BE GIT IGNORED.               #
-#     DO NOT COMMIT THIS FILE INTO VERSION CONTROL!      #
-# PLEASE KEEP ANY SENSITIVE DATA OUT OF VERSION CONTROL. #
-##########################################################
-
-
-### Production Notes ###
-
-# When deploying your app to production, you should copy this file
-# over to your remote machine. Make sure all values are correct & up to date.
-
-
-
-APP_NAME=04-react-rrouter-redux-test
-DEV_SERVER_PORT=8080
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
 "# The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -96,7 +76,7 @@ typings/
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate ".prettierignore" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate ".prettierignore" correctly 1`] = `
 "node_modules
 src/assets
 dist
@@ -107,7 +87,7 @@ package-lock.json
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate ".prettierrc" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate ".prettierrc" correctly 1`] = `
 "{
   \\"printWidth\\": 80,
   \\"tabWidth\\": 2,
@@ -130,16 +110,15 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate "README.md" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate "README.md" correctly 1`] = `
 "This project was created with [Create New App](https://github.com/qodesmith/create-new-app).
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
-"const { DEV_SERVER_PORT, API, API_PORT } = process.env
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
+"const {DEV_SERVER_PORT, API, API_PORT} = process.env
 const chalk = require('chalk')
 const os = require('os')
-
 
 /*
   This is a custom Webpack plugin that simply runs a function after each build.
@@ -148,7 +127,7 @@ const os = require('os')
 */
 
 class AfterCompilePlugin {
-  constructor({ run } = {}) {
+  constructor({run} = {}) {
     this.run = run
   }
 
@@ -157,19 +136,39 @@ class AfterCompilePlugin {
     console.log(chalk.greenBright('Webpack compiled successfully!\\\\n'))
 
     if (API) {
-      const fetchMsg = \`\${chalk.yellow('fetch')}(\${chalk.keyword('orange')(\`'\${API}/<your-endpoint>'\`)})\`
+      const fetchMsg = \`\${chalk.yellow('fetch')}(\${chalk.keyword('orange')(
+        \`'\${API}/<your-endpoint>'\`,
+      )})\`
       const thenMsg = \`.\${chalk.yellow('then')}(...)\`
       const fetchExample = \`\${fetchMsg}\${thenMsg}\`
 
-      console.log(\`🌎  => API listening on port \${chalk.blue.bold(API_PORT)}...\`)
-      console.log('       You can make fetch requests to your API from the browser:')
+      console.log(
+        \`🌎  => API listening on port \${chalk.blue.bold(API_PORT)}...\`,
+      )
+      console.log(
+        '       You can make fetch requests to your API from the browser:',
+      )
       console.log(\`           \${chalk.italic(fetchExample)}\\\\n\`)
-      console.log(chalk.dim('────────────────────────────────────────────────────────────────────\\\\n'))
+      console.log(
+        chalk.dim(
+          '────────────────────────────────────────────────────────────────────\\\\n',
+        ),
+      )
     }
 
     console.log('💻  => Application being served at...')
-    console.log(\`         • \${chalk.bold('Browser:')}                     http://localhost:\${chalk.blue.bold(DEV_SERVER_PORT)}\`)
-    console.log(\`         • \${chalk.bold('Any device on your network:')}  http://\${getLocalIpAddress()}:\${chalk.blue.bold(DEV_SERVER_PORT)}\`)
+    console.log(
+      \`         • \${chalk.bold(
+        'Browser:',
+      )}                     http://localhost:\${chalk.blue.bold(
+        DEV_SERVER_PORT,
+      )}\`,
+    )
+    console.log(
+      \`         • \${chalk.bold(
+        'Any device on your network:',
+      )}  http://\${getLocalIpAddress()}:\${chalk.blue.bold(DEV_SERVER_PORT)}\`,
+    )
   }
 
   apply(compiler) {
@@ -202,8 +201,7 @@ class AfterCompilePlugin {
   network would use to connect to the development site.
 */
 function getLocalIpAddress() {
-  const obj = Object
-    .values(os.networkInterfaces())
+  const obj = Object.values(os.networkInterfaces())
     .reduce((acc, arr) => acc.concat(arr), [])
     .find(({family, internal}) => family === 'IPv4' && !internal)
 
@@ -214,7 +212,7 @@ module.exports = AfterCompilePlugin
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
 const combineMediaQuery = require('postcss-combine-media-query')
@@ -225,7 +223,6 @@ const nano = require('cssnano')
 const path = require('path')
 // const whitelister = require('purgecss-whitelister')
 
-
 /*
   Why we scope \`purgeCss\` to production only.
   -------------------------------------------
@@ -234,29 +231,153 @@ const path = require('path')
   and see no change. This avoids that.
 */
 module.exports = {
-  plugins: isProd ? [
-    // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
-    purgeCss({
-      // Optionally whitelist 3rd party libraries:
-      // whitelist: whitelister('./node_modules/some-library/styles.css'),
-      content: [
-        path.resolve(path.resolve(), './src/**/*.js'),
-        path.resolve(path.resolve(), './src/**/*.jsx'),
-        path.resolve(path.resolve(), './src/index.ejs'),
-      ],
-      keyframes: false, // http://bit.ly/2Xnsqq2
-    }),
-    combineSelectors({ removeDuplicatedProperties: true }),
-    combineMediaQuery(),
-    autoprefixer(),
-    sorter(),
-    nano(),
-  ] : [],
+  plugins: isProd
+    ? [
+        // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
+        purgeCss({
+          // Optionally whitelist 3rd party libraries:
+          // whitelist: whitelister('./node_modules/some-library/styles.css'),
+          content: [
+            path.resolve(path.resolve(), './src/**/*.js'),
+            path.resolve(path.resolve(), './src/**/*.jsx'),
+            path.resolve(path.resolve(), './src/index.ejs'),
+          ],
+          keyframes: false, // http://bit.ly/2Xnsqq2
+        }),
+        combineSelectors({removeDuplicatedProperties: true}),
+        combineMediaQuery(),
+        autoprefixer(),
+        sorter(),
+        nano(),
+      ]
+    : [],
 }
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate "server.js" correctly 1`] = `
+"const chalk = require('chalk')
+const {errorToObject} = require('./api/utilities/errorUtil')
+const lines = '-'.repeat(45)
+
+// 'unhandledRejection' => promise rejection
+process.on('unhandledRejection', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(\`Unhandled promise rejection at \${date}:\\\\n\`)
+
+  console.log(\`\\\\n\${lines}\`)
+  console.error(msg)
+  console.error(errorToObject(err))
+  console.log(\`\${lines}\\\\n\`)
+})
+
+// 'uncaughtException' => application error
+process.on('uncaughtException', err => {
+  const date = chalk.cyan(Date.now())
+  const msg = chalk.red.bold(\`\\\\nUncaught exception at \${date}:\\\\n\`)
+
+  console.log(\`\\\\n\${lines}\`)
+  console.error(msg)
+  console.error(errorToObject(err))
+  process.exit(1)
+})
+
+/*
+  Please DO NOT INCLUDE the \`.env\` file in version control.
+  It is in the \`.gitignore\` file. Keep it that way.
+  It contains your sensitive data! Instead, when deploying to production,
+  you should manually copy the \`.env\` file to your hosting provider.
+*/
+require('dotenv').config({path: \`\${__dirname}/.env\`}) // http://bit.ly/2WE8EJP
+
+const {
+  APP_NAME,
+  SECRET,
+  API_PORT,
+  API,
+  DEV_SERVER_PORT,
+  MONGO_SESSION_COLLECTION,
+  NODE_ENV,
+} = process.env // Environment variables.
+const isProd = NODE_ENV === 'production'
+const path = require('path')
+const express = require('express')
+const helmet = require('helmet') // Sets various http headers - http://bit.ly/2WylCJl
+const compression = require('compression') // Gzip! - http://bit.ly/2WylU2T
+const bp = require('body-parser') // Makes \`req.body\` available - http://bit.ly/2WE4r8X
+const session = require('express-session') // Save data across requests - http://bit.ly/2Kmc5OV
+const app = express()
+const mongo = require('./api/utilities/mongo')
+
+// MongoDB
+const {sessionStoreErr} = require('./api/utilities/handleErrors')
+const MongoStore = require('connect-mongo')(session)
+const store = new MongoStore({
+  dbName: APP_NAME,
+  collection: MONGO_SESSION_COLLECTION,
+  clientPromise: mongo(true), // \`true\` flag to retrieve ONLY the client.
+})
+
+// Catch & record store errors in the database.
+store.on('error', sessionStoreErr)
+
+/*
+  Express middleware.
+  Express security best practices - http://bit.ly/2KkcS2V
+*/
+app.use(
+  express.static(
+    // http://bit.ly/2Ko43Vy
+    path.resolve(__dirname, 'dist'),
+    // \`no-cache\` still caches but it checks with the server via etag to ensure the latest version.
+    {setHeaders: res => res.set('Cache-Control', 'no-cache')}, // Cache static assets :)
+  ),
+  helmet(), // Headers security.
+  compression(), // GZIP
+  bp.json(), // http://bit.ly/2KpI7cL, http://bit.ly/2KkcVvD, http://bit.ly/2KmDSP3
+  bp.urlencoded({extended: false}), // http://bit.ly/2KpI7cL, http://bit.ly/2Ko4f7e
+  session({
+    store,
+    name: APP_NAME, // Needed if multiple apps running on same host.
+    resave: false, // Forces cookie to be resaved back to the session store even if no changes.
+    saveUninitialized: true, // Forces a session that is uninitialized to be saved to the store.
+    secret: SECRET, // The secret used to sign the session ID cookie.
+    cookie: {
+      maxAge: null, // Default = \`null\` - closing browser removes cookie & session.
+      httpOnly: true, // Default = \`true\` - on the client, \`document.cookie\` will not be available.
+    },
+  }),
+)
+
+/*
+  ADD YOUR CUSTOM ENDPOINTS HERE
+  ------------------------------
+*/
+// app.get(\`\${API}/my-endpoint\`, require('./api/my-endpoint'))
+
+/*
+  Catch-all endpoint which delivers \`index.html\` and let's
+  the front-end handle all the routing including 404's.
+  This should be the last chronological GET route.
+*/
+app.get('*', require('./api/home'))
+
+// And so it begins...
+app.listen(API_PORT, () => {
+  if (isProd) {
+    console.log(
+      \`💻  => PRODUCTION: Application running on port \${API_PORT}\\\\n\\\\n\`,
+    )
+  } else {
+    console.log(
+      \`💻  => Application running in browser at http://localhost:\${DEV_SERVER_PORT}\\\\n\\\\n\`,
+    )
+  }
+})
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
 "require('dotenv').config({path: \`\${__dirname}/.env\`}) // http://bit.ly/2WE8EJP
 const {NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK} = process.env
 const path = require('path')
@@ -552,10 +673,7 @@ module.exports = (env, argv) => ({
       components: path.resolve(__dirname, 'src/components'),
       assets: path.resolve(__dirname, 'src/assets'),
       hooks: path.resolve(__dirname, 'src/hooks'),
-      helpers: path.resolve(__dirname, 'src/helpers'),
-      actions: path.resolve(__dirname, 'src/redux/actions'),
-      middleware: path.resolve(__dirname, 'src/redux/middleware'),
-      reducers: path.resolve(__dirname, 'src/redux/reducers')
+      helpers: path.resolve(__dirname, 'src/helpers')
     },
 
     /*
@@ -804,11 +922,273 @@ module.exports = (env, argv) => ({
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api should populate "home.js" correctly 1`] = `
+"const path = require('path')
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
+/*
+  THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
+  NON-EXISTENT ROUTE. THE FRONT END SHOULD DIRECT TO A 404 ROUTE.
+*/
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src should populate "entry.jsx" correctly 1`] = `
+function home(req, res) {
+  /*
+    This folder & file will exist after you have run \`npm run build\`.
+    While developing, the development server will serve \`index.html\`
+    from memory, avoiding any contact with this route in the first place.
+  */
+  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
+    /*
+      If the file wasn't found, send 404.
+      This can happen in you manually change
+      the url to something non-existant
+    */
+    if (err) res.sendStatus(404)
+  })
+}
+
+module.exports = home
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api/utilities should populate "catchy.js" correctly 1`] = `
+"// Catchify is also a great library for this - https://github.com/majgis/catchify
+
+const catchy = value =>
+  Promise.resolve(value)
+    .then(res => [null, res])
+    .catch(err => [err])
+
+module.exports = catchy
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api/utilities should populate "errorUtil.js" correctly 1`] = `
+"/*
+  Calling \`JSON.stringify(error)\` will result in '{}' if there is no
+  \`Error.prototype.toJSON\` (http://bit.ly/2XmFBYl). In order to
+  mitigate that, this helper function takes advantage of the 2nd argument
+  to \`JSON.stringify\` (https://mzl.la/2XvU18w). It ensures that we get back
+  a properly stringified object with keys & values.
+
+  Before:
+    JSON.stringify(error) => '{}'
+
+  After:
+    stringifyError(error) => '{ \\"stack\\": ..., \\"message\\": ..., \\"etc\\": ... }'
+*/
+
+const replacer = (k, value) => {
+  if (!(value instanceof Error)) return value
+
+  return Object.getOwnPropertyNames(value).reduce(
+    (acc, key) => ({...acc, [key]: value[key]}),
+    {},
+  )
+}
+
+const stringifyError = (err, spacing = 0) =>
+  err ? JSON.stringify(err, replacer, spacing) : ''
+
+const errorToObject = err => (err ? JSON.parse(stringifyError(err)) : err)
+
+module.exports = {
+  stringifyError,
+  errorToObject,
+}
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api/utilities should populate "handleErrors.js" correctly 1`] = `
+"const mongo = require('./mongo')
+const {errorToObject} = require('./errorUtil')
+const isProd = process.env.NODE_ENV === 'production'
+const catchy = require('./catchy')
+
+/*
+  toLocaleString - https://mzl.la/2XhWh3j
+  Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
+  http://bit.ly/2Xp3SwW
+*/
+const localDate = () =>
+  new Date().toLocaleString('en-US', {timeZone: 'America/New_York'})
+
+/*
+  This function is used to create error objects that will be stored in MongoDB.
+  The idea is that there will be an admin-only section on the front end
+  that will display this error data in a meaningful way.
+*/
+const createError = (type = 'unknown', error = {}) => ({
+  ...errorToObject(error),
+  type,
+  localDate: localDate(),
+  date: Date.now(),
+})
+
+// A helper function that saves errors to the database.
+async function saveErrorToDb(err) {
+  if (!isProd) return console.log('ERROR CREATED FOR DB:', err)
+
+  const [dbErr, client, db] = await mongo()
+  if (dbErr) return
+  await catchy(db.collection('errors').insertOne(err))
+}
+
+// Inserts, saves, etc. error's are handled with this function.
+function operationErr(err, operation, collection, req) {
+  const newError = {
+    ...createError('db operation', err),
+    operation,
+    collection,
+    url: req.originalUrl,
+  }
+
+  saveErrorToDb(newError)
+}
+
+// Errors happening from the session store which uses MongoDB.
+function sessionStoreErr(err) {
+  const error = createError('session store', err)
+  saveErrorToDb(error)
+}
+
+// When Mongo can't connect.
+function noConnect(res, err) {
+  res.status(500).send({error: errorToObject(err)})
+}
+
+module.exports = {
+  operationErr,
+  sessionStoreErr,
+  noConnect,
+}
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api/utilities should populate "logMongoAuthWarning.js" correctly 1`] = `
+"const chalk = require('chalk')
+
+function logMongoAuthWarning({ MONGO_USER, MONGO_USER_PASSWORD }) {
+  const dashes = '='.repeat(54)
+  const warning = [
+    '',
+    !(MONGO_USER && MONGO_USER_PASSWORD)
+      ? chalk.red('No Mongo credentials found.')
+      : !MONGO_USER
+      ? chalk.red('No \`MONGO_USER\` value found.')
+      : chalk.red('No \`MONGO_USER_PASSWORD\` value found'),
+    chalk.bold.red('YOUR DATABASE WILL ALLOW UN-AUTHENTICATED CONNECTIONS!'),
+    '',
+    \`To fix this, you'll need to open the mongo shell on\`,
+    'your server and add a singe user in the \`admin\` database.',
+    \`You'll then need to ensure \\\\\`\${chalk.bold('MONGO_USER')}\\\\\` and \\\\\`\${chalk.bold('MONGO_USER_PASSWORD')}\\\\\`\`,
+    'values are added to your environment variables.',
+    '',
+    \`Here's and example of how you can do that from the mongo shell:\`,
+    '',
+    ''
+  ].join('\\\\n')
+
+  console.warn(dashes) // START LOGGING.
+  console.warn(warning)
+
+  ;[
+    chalk.bold('// Use the \`admin\` database.'),
+    chalk.cyan('use admin'),
+    '',
+    chalk.bold('// Create a user with the appropriate roles.'),
+    \`\${chalk.blue('const')} \${chalk.cyan('user')} = {\`,
+    \`  \${chalk.cyan('user:')} \${chalk.yellow(\`'myUserName'\`)}, \${chalk.gray('// Make sure to change this!')}\`,
+    \`  \${chalk.cyan('pw:')} \${chalk.yellow(\`'myPassword'\`)}, \${chalk.gray('// Make sure to change this!')}\`,
+    \`  \${chalk.cyan('roles:')} [\`,
+    \`    { \${chalk.cyan('role:')} \${chalk.yellow(\`'userAdminAnyDatabase'\`)}, \${chalk.cyan('db:')} \${chalk.yellow(\`'admin'\`)} },\`,
+    \`    \${chalk.yellow(\`'readWriteAnyDatabase'\`)}\`,
+    '  ]',
+    '}',
+    '',
+    \`\${chalk.bold('// Save that user to the \`admin\` database.')}\`,
+    \`\${chalk.cyan('db')}.\${chalk.yellow('createUser')}(\${chalk.cyan('user')})\`
+  ].forEach(line => console.log(line))
+
+  console.log(\`\\\\n\\\\nSee \${chalk.bold.blue('http://bit.ly/2UTn484')} for more details.\`)
+  console.log('\\\\n')
+  console.log(dashes) // FINISH LOGGING.
+}
+
+module.exports = logMongoAuthWarning
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /api/utilities should populate "mongo.js" correctly 1`] = `
+"/*
+  The purpose of this module is to allow the use of async / await
+  when connecting to MongoDB throughout the app. An example:
+
+  async function example() {
+    const [dbErr, client, db] = await mongo()
+    const postsCollection = await db.collection('posts')
+  }
+*/
+
+const {MongoClient} = require('mongodb')
+const logMongoAuthWarning = require('./logMongoAuthWarning')
+const {
+  MONGO_URI,
+  MONGO_URI_PROD,
+  APP_NAME,
+  MONGO_USER,
+  MONGO_USER_PASSWORD,
+  MONGO_AUTH_SOURCE,
+  NODE_ENV,
+} = process.env
+const isProd = NODE_ENV === 'production'
+const url = isProd ? MONGO_URI_PROD : MONGO_URI
+const data = {client: null, db: null}
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true, // http://bit.ly/2Zpn4PD
+}
+
+if (isProd) {
+  if (MONGO_USER && MONGO_USER_PASSWORD) {
+    // Set the authentication credentials for the database.
+    options.auth = {user: MONGO_USER, password: MONGO_USER_PASSWORD}
+    options.authSource = MONGO_AUTH_SOURCE
+  } else {
+    // If no credentials found,
+    // log some warnings and instructions on how to create them.
+    logMongoAuthWarning({MONGO_USER, MONGO_USER_PASSWORD})
+  }
+}
+
+// \`clientOnly\` is only used when creating the MongoStore in \`server.js\`.
+const mongo = clientOnly => {
+  if (data.client) {
+    return Promise.resolve(
+      clientOnly ? data.client : [null, data.client, data.client.db(APP_NAME)],
+    )
+  }
+
+  return MongoClient.connect(url, options)
+    .then(client => {
+      // Store references to the results to avoid future calls to MongoClient.
+      data.client = client
+      data.db = client.db(APP_NAME)
+
+      // Return the appropriate results.
+      return clientOnly ? client : [null, client, client.db(APP_NAME)]
+    })
+    .catch(err => [err])
+}
+
+module.exports = mongo
+"
+`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
+
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src should populate "entry.jsx" correctly 1`] = `
 "/*
   http://bit.ly/2DTXGpe - \`@babel/polyfill\` has been deprecated.
   If you need to polyfill certain JS features, uncomment the two imports below.
@@ -816,163 +1196,117 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
 // import 'core-js/stable'
 // import 'regenerator-runtime/runtime' // Needed to polyfill async / await.
 
-// Import our top-level sass file.
+/*
+  Import our top-level scss file.
+  All other scss files should be imported in \`styles.scss\`.
+*/
 import './styles/styles.scss'
 
 // Import React.
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-// Import our store provider.
-import { Provider } from 'react-redux'
-
-// Import our components.
-import Home from 'components/Home'
-import NotFound from 'components/NotFound'
-
-// Import a store, created & ready to go.
-import store from './store'
-
-// Import React Router things.
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-
-
-// Top-level classes on the body. Feel free to remove / change.
-document.body.className = 'bg-black-80 fw4 white-80'
+// Import our top-level component.
+import App from 'components/App'
 
 // Mount our app.
 ReactDOM.render(
-  <Provider store={store}>
-    <Router>
-      <Switch>
-        <Route exact path=\\"/\\" component={Home} />
-        <Route component={NotFound} />
-      </Switch>
-    </Router>
-  </Provider>,
-  document.querySelector('#app')
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.querySelector('#app'),
 )
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en-US\\">
-<head>
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <meta charset=\\"UTF-8\\">
-  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">
-  <meta name=\\"theme-color\\" content=\\"#000000\\">
+  <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta charset=\\"UTF-8\\" />
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
+    <meta name=\\"theme-color\\" content=\\"#000000\\" />
 
-  <% if (htmlWebpackPlugin.options.description) { %>
-  <meta name=\\"description\\" content=\\"<% htmlWebpackPlugin.options.description %>\\">
-  <% } %>
+    <% if (htmlWebpackPlugin.options.description) { %>
+    <meta
+      name=\\"description\\"
+      content=\\"<% htmlWebpackPlugin.options.description %>\\"
+    />
+    <% } %> <% if (htmlWebpackPlugin.options.mobileThemeColor) { %>
+    <meta
+      name=\\"theme-color\\"
+      content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\"
+    />
+    <meta
+      name=\\"apple-mobile-web-app-status-bar-style\\"
+      content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\"
+    />
+    <% } %>
 
-  <% if (htmlWebpackPlugin.options.mobileThemeColor) { %>
-  <meta name=\\"theme-color\\" content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\">
-  <meta name=\\"apple-mobile-web-app-status-bar-style\\" content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\">
-  <% } %>
-
-  <link href=\\"/favicon.ico\\" rel=\\"shortcut icon\\" type=\\"image/x-icon\\" />
-</head>
-<body>
-  <div id=\\"app\\"></div>
-</body>
+    <link href=\\"/favicon.ico\\" rel=\\"shortcut icon\\" type=\\"image/x-icon\\" />
+  </head>
+  <body>
+    <div id=\\"app\\"></div>
+  </body>
 </html>
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src should populate "store.js" correctly 1`] = `
-"import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
-import home from 'reducers/homeReducer'
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/components should populate "App.jsx" correctly 1`] = `
+"import useUpdatingClock from 'hooks/useUpdatingClock'
 
+export default function App() {
+  const {hour, minutes, seconds, amPm} = useUpdatingClock()
 
-// Add all your custom middleware to this array.
-const middlewareList = []
-
-// Add all your reducers to this object.
-const rootReducer = combineReducers({ home })
-
-// http://bit.ly/2XqEeYM
-// Using Redux DevTools extension? You should...
-const composeEnhancers = !__PROD__
-  ? (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
-  : compose
-
-// Create the Redux store in all its glory!
-const store = createStore(
-  rootReducer,
-  composeEnhancers(applyMiddleware(...middlewareList))
-)
-
-export default store
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/components should populate "Home.jsx" correctly 1`] = `
-"import React from 'react'
-import { connect } from 'react-redux'
-import { changeColor } from 'actions'
-
-
-const Home = ({ color, randomizeColor }) => {
   return (
-    <>
-      <header className=\\"pv5 bg-gold black-80 tc\\">
-        <h1 className=\\"mt0 mb1\\">Create New App</h1>
-        <div className=\\"ttc\\">by Qodesmith</div>
+    <div className=\\"df flex-col vh-100\\">
+      <header className=\\"pv24 bg-gold black-80 tc\\">
+        <h1 className=\\"mt0 mb0\\">Create New App</h1>
+        <div>By The Qodesmith</div>
       </header>
-      <div className=\\"pt4 pb1 tc\\">
-        Go save the world with <span className=\\"b\\" style={{ color }}>JavaScript</span>
-      </div>
-      <div className=\\"tc\\">
-        and edit <code>src/components/<span className=\\"b\\">Home.jsx</span></code>!
-      </div>
-      <div className=\\"df justify-center mt3\\">
-        <div className=\\"ph3 pv2 no-select ba-1px pointer\\" onClick={randomizeColor}>
-          Random Color
+
+      <section className=\\"flex-grow-1 bg-black-80 fw4 white-80 tc pt24\\">
+        <div>
+          Your application starts in the{' '}
+          <code>
+            src/<span className=\\"b white\\">entry.jsx</span>
+          </code>{' '}
+          file.
         </div>
-      </div>
-    </>
+
+        <div>
+          The component you're looking here at can be found in{' '}
+          <code>
+            src/components/<span className=\\"b white\\">App.jsx</span>
+          </code>
+        </div>
+
+        <div>
+          Now go! Save the world with <span className=\\"gold\\">JavaScript</span>!
+        </div>
+
+        <div className=\\"pa16 f-1-5em\\">
+          {hour}:{minutes}:{seconds}
+          <span className=\\"f-initial pl4\\">{amPm}</span>
+        </div>
+      </section>
+    </div>
   )
 }
-
-const mapStateToProps = ({ home }) => home
-const mapDispatchToProps = dispatch => ({
-  randomizeColor: () => dispatch(changeColor())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/components should populate "NotFound.jsx" correctly 1`] = `
-"import React from 'react'
-
-const NotFound = () => {
-  return (
-    <>
-      <h1>Looking for something?</h1>
-      <p>
-        <span className=\\"i\\">{window.location.href}</span> doesn't exist.
-      </p>
-    </>
-  )
-}
-
-export default NotFound
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
 "export const cn = (...args) => {
-  const classNames = args.reduce((arr, thing) => {
-    if (typeof thing === 'string') return [...arr, ...thing.split(' ')] // Strings.
-    if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
+  const classNames = args.reduce((arr, item) => {
+    if (typeof item === 'string') return [...arr, ...item.split(' ')] // Strings.
+    if ({}.toString.call(item) !== '[object Object]') return arr // Ignore everything else but objects.
 
-    return Object
-      .keys(thing)
-      .reduce((arr2, key) => (thing[key] ? [...arr2, key] : arr2), arr)
+    return Object.keys(item).reduce(
+      (arr2, key) => (item[key] ? [...arr2, key] : arr2),
+      arr,
+    )
   }, [])
 
   // Avoid duplicate names.
@@ -980,9 +1314,13 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
 }
 
 // http://bit.ly/2Xmuwqf - micro UUID!
-export const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
+export const uuid = a =>
+  a
+    ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid)
 
-export const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+export const randomNum = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min)
 
 // Simple email validation :)
 export const isEmail = email => {
@@ -994,77 +1332,44 @@ export const isEmail = email => {
     email.length > 5, // At least 6 chars long => a@b.co
 
     // Ensure at least 2 characters in the \`.com\` portion.
-    email.trim().split('@').pop().split('.').pop().length > 1
+    email.trim().split('@').pop().split('.').pop().length > 1,
   ].every(Boolean)
 }
-
-const letters = 'abcdef'
-const numbers = '0123456789'
-export const randomHexColor = () => (
-  letters.split('').reduce(hex => {
-    const set = randomNum(0, 1) ? letters : numbers
-    const index = randomNum(0, set.length - 1)
-    return \`\${hex}\${set[index]}\`
-  }, '#')
-)
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/hooks should populate "useUpdatingClock.js" correctly 1`] = `
-"import {useEffect, useState} from \\"react\\";
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/hooks should populate "useUpdatingClock.js" correctly 1`] = `
+"import {useEffect, useState} from 'react'
 
 export default function useUpdatingClock() {
   // An example of using React hooks to maintain local state.
-  const [date, setDate] = useState(() => new Date());
+  const [date, setDate] = useState(() => new Date())
 
   // Data we need for our updated time in the UI.
-  const hours = date.getHours();
-  const hour = hours % 12 || 12;
-  const minutes = date.getMinutes().toString().padStart(2, \\"0\\");
-  const seconds = date.getSeconds().toString().padStart(2, \\"0\\");
-  const amPm = hours >= 12 ? \\"pm\\" : \\"am\\";
+  const hours = date.getHours()
+  const hour = hours % 12 || 12
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const seconds = date.getSeconds().toString().padStart(2, '0')
+  const amPm = hours >= 12 ? 'pm' : 'am'
 
   // An example of using \`useEffect\` to update the DOM with the latest time.
   useEffect(() => {
     const interval = setInterval(() => {
-      setDate(new Date());
-    }, 251);
+      setDate(new Date())
+    }, 251)
 
     // This \\"clean up\\" function will run when the consuming component unmounts.
     return () => {
-      clearInterval(interval);
-    };
-  }, []);
+      clearInterval(interval)
+    }
+  }, [])
 
-  return {hour, minutes, seconds, amPm};
+  return {hour, minutes, seconds, amPm}
 }
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/redux/actions should populate "index.js" correctly 1`] = `
-"export const changeColor = () => ({ type: 'CHANGE_COLOR' })
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/redux/reducers should populate "homeReducer.js" correctly 1`] = `
-"import { randomHexColor } from 'helpers'
-
-const initialState = { color: '#ffd700' }
-
-const homeReducer = (state = initialState, action = {}) => {
-  switch (action.type) {
-    case 'CHANGE_COLOR':
-      return { ...state, color: randomHexColor() }
-    default:
-      return state
-  }
-}
-
-export default homeReducer
-"
-`;
-
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
 "/*
   Add your custom global styles here.
   The styles provided below are a minimal suggested starting point.
@@ -1092,7 +1397,7 @@ body {
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
 "/*
   This file will be the top-most entry point for all styles in the app.
   Any dependant styles should be explicitly imported here.
@@ -1101,10 +1406,8 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
   To import CSS files from \`node_modules\`, make sure to include the file extension.
 */
 
-
 // https://github.com/qodesmith/sassyons
 @import '~sassyons/dist/sassyons.css';
-
 
 /*
   Application Styles
@@ -1117,12 +1420,12 @@ exports[`cli - React + React Router + Redux project contents of files created Fo
 "
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
+exports[`cli - React + MongoDB + Express project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
 Object {
   "bail": false,
-  "context": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+  "context": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
   "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/dist",
+    "contentBase": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
     "hot": true,
@@ -1133,19 +1436,24 @@ Object {
       "warnings": false,
     },
     "port": "8080",
-    "proxy": Object {},
+    "proxy": Object {
+      "/api": Object {
+        "bypass": [Function],
+        "target": "http://localhost:3000",
+      },
+    },
     "public": "http://localhost:8080",
     "watchContentBase": true,
   },
   "devtool": "source-map",
   "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/entry.jsx",
+    "main": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/entry.jsx",
   },
   "mode": "development",
   "module": Object {
     "rules": Array [
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
         "use": Array [
           Object {
@@ -1183,7 +1491,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(scss\\|css\\)\\$/,
         "use": Array [
           "style-loader",
@@ -1203,7 +1511,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
         "use": Array [
           Object {
@@ -1215,7 +1523,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/assets",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/assets",
         "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
         "use": Array [
           Object {
@@ -1262,14 +1570,14 @@ Object {
     "chunkFilename": "[name].[fullhash].chunk.js",
     "filename": "[name].[fullhash].bundle.js",
     "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/dist",
+    "path": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/dist",
     "pathinfo": true,
     "publicPath": "/",
   },
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
-        "__API__": undefined,
+        "__API__": "\\"/api\\"",
         "__DEV__": true,
         "__PROD__": false,
         "process.env": Object {
@@ -1322,7 +1630,7 @@ Object {
         "description": "",
         "minify": false,
         "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/index.ejs",
+        "template": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/index.ejs",
         "title": "",
       },
       "version": 5,
@@ -1335,8 +1643,8 @@ Object {
         "exclude": /node_modules/i,
         "include": /\\\\\\.\\(\\[jt\\]sx\\?\\|flow\\)\\$/i,
         "overlay": Object {
-          "entry": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
-          "module": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
+          "entry": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
+          "module": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
           "sockIntegration": "wds",
         },
       },
@@ -1347,13 +1655,10 @@ Object {
   ],
   "resolve": Object {
     "alias": Object {
-      "actions": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/actions",
-      "assets": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/hooks",
-      "middleware": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/middleware",
-      "reducers": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/reducers",
+      "assets": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/hooks",
     },
     "extensions": Array [
       ".js",
@@ -1366,12 +1671,12 @@ Object {
 }
 `;
 
-exports[`cli - React + React Router + Redux project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
+exports[`cli - React + MongoDB + Express project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
 Object {
   "bail": true,
-  "context": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+  "context": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
   "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/dist",
+    "contentBase": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
     "hot": true,
@@ -1382,19 +1687,24 @@ Object {
       "warnings": false,
     },
     "port": "8080",
-    "proxy": Object {},
+    "proxy": Object {
+      "/api": Object {
+        "bypass": [Function],
+        "target": "http://localhost:3000",
+      },
+    },
     "public": "http://localhost:8080",
     "watchContentBase": true,
   },
   "devtool": false,
   "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/entry.jsx",
+    "main": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/entry.jsx",
   },
   "mode": "production",
   "module": Object {
     "rules": Array [
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
         "use": Array [
           Object {
@@ -1431,10 +1741,10 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(scss\\|css\\)\\$/,
         "use": Array [
-          "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/node_modules/mini-css-extract-plugin/dist/loader.js",
+          "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/node_modules/mini-css-extract-plugin/dist/loader.js",
           Object {
             "loader": "css-loader",
             "options": Object {
@@ -1452,7 +1762,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src",
         "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
         "use": Array [
           Object {
@@ -1464,7 +1774,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/assets",
+        "include": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/assets",
         "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
         "use": Array [
           Object {
@@ -1511,14 +1821,14 @@ Object {
     "chunkFilename": "[name].[fullhash].chunk.js",
     "filename": "[name].[fullhash].bundle.js",
     "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/dist",
+    "path": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/dist",
     "pathinfo": false,
     "publicPath": "/",
   },
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
-        "__API__": undefined,
+        "__API__": "\\"/api\\"",
         "__DEV__": false,
         "__PROD__": true,
         "process.env": Object {
@@ -1574,7 +1884,7 @@ Object {
           "removeComments": true,
         },
         "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/index.ejs",
+        "template": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/index.ejs",
         "title": "",
       },
       "version": 5,
@@ -1582,13 +1892,10 @@ Object {
   ],
   "resolve": Object {
     "alias": Object {
-      "actions": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/actions",
-      "assets": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/hooks",
-      "middleware": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/middleware",
-      "reducers": "/Users/qodesmith/repos/create-new-app/04-react-rrouter-redux-test/src/redux/reducers",
+      "assets": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/05-vanilla-react-mongo.test/src/hooks",
     },
     "extensions": Array [
       ".js",

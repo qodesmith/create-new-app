@@ -12,13 +12,13 @@ const {
   listFolderContents,
 } = require('./helpers/folderFileHelper')
 
-describe('cli - React + React Router + Redux project', () => {
-  const appName = '04-react-rrouter-redux-test'
+describe('cli - React + Express project', () => {
+  const appName = path.parse(__filename).name
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(`node ${mainPath}/main.js ${appName} --router --redux ${noInstall}`)
+    run(`node ${mainPath}/main.js ${appName} --express ${noInstall}`)
   })
 
   afterAll(() => {
@@ -32,11 +32,11 @@ describe('cli - React + React Router + Redux project', () => {
   it('should contain the expected folders and no others', () => {
     const expectedFolders = foldersFromConfig(
       appPath,
-      filesAndFolders.cnaRouterRedux,
+      filesAndFolders.cnaExpress,
     )
     const ignores = listIgnoredFoldersFromConfig(
       appPath,
-      filesAndFolders.cnaRouterRedux,
+      filesAndFolders.cnaExpress,
     )
     const actualFolders = listFoldersInTree(appPath, {ignores})
 
@@ -44,7 +44,7 @@ describe('cli - React + React Router + Redux project', () => {
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouterRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -57,12 +57,12 @@ describe('cli - React + React Router + Redux project', () => {
   })
 
   it('should produce valid JavaScript files with no parsing errors', () => {
-    expect(jsFilesAreValid(appPath, 'cnaRouterRedux')).toBe(true)
+    expect(jsFilesAreValid(appPath, 'cnaExpress')).toBe(true)
   })
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouterRedux)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -87,17 +87,15 @@ describe('cli - React + React Router + Redux project', () => {
           'license',
           'browserslist',
           'devDependencies',
+          'dependencies',
           'scripts',
+          'main',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
       })
 
-      it('should not have a "dependencies" field', () => {
-        expect(pkgJson.dependencies).toBe(undefined)
-      })
-
-      it('should have the correct field values (aside from "devDependencies")', () => {
+      it('should have the correct field values (aside from "devDependencies" / "dependencies")', () => {
         expect(pkgJson.name).toBe(appName)
         expect(pkgJson.version).toBe('0.1.0')
         expect(pkgJson.description).toBe('')
@@ -113,8 +111,13 @@ describe('cli - React + React Router + Redux project', () => {
         const scripts = {
           build:
             'cross-env NODE_ENV=production webpack --mode production --env prod',
+          'build:dev':
+            'cross-env NODE_ENV=development webpack --mode development --env dev',
+          local: 'npm run server:api',
+          'server:dev': 'webpack serve --mode development --progress --env dev',
+          'server:api': 'nodemon server.js',
           start:
-            'cross-env NODE_ENV=development webpack serve --mode development --progress',
+            'cross-env NODE_ENV=development npm-run-all --parallel server:*',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -122,7 +125,7 @@ describe('cli - React + React Router + Redux project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {devDependencies} = deps.vanillaRouterRedux
+        const {devDependencies} = deps.express
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -134,6 +137,32 @@ describe('cli - React + React Router + Redux project', () => {
         installedPackages.forEach(pkg => {
           const installedVersion = pkgJson.devDependencies[pkg]
           const expectedVersion = devDependencies[pkg]
+
+          if (noInstall) {
+            expect(installedVersion).toBe(expectedVersion)
+          } else if (expectedVersion === 'latest') {
+            expect(installedVersion).not.toBe('latest')
+            expect(latestPackages.includes(pkg)).toBe(true)
+          } else {
+            expect(installedVersion).toStartWith(expectedVersion, pkg)
+          }
+        })
+      })
+
+      it('should populate "dependencies" correctly', () => {
+        const deps = require('./config/dependencies')
+        const {dependencies} = deps.express
+        const {latestPackages} = deps
+
+        // 1. All the packages match.
+        const installedPackages = Object.keys(pkgJson.dependencies)
+        const expectedPackages = Object.keys(dependencies)
+        expect(installedPackages.sort()).toEqual(expectedPackages.sort())
+
+        // 2. All the package versions match.
+        installedPackages.forEach(pkg => {
+          const installedVersion = pkgJson.dependencies[pkg]
+          const expectedVersion = dependencies[pkg]
 
           if (noInstall) {
             expect(installedVersion).toBe(expectedVersion)

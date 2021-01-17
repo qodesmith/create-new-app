@@ -525,7 +525,7 @@ async function installDependencies(options) {
   }
 
   // Adjust the package.json dependencies to show their installed version.
-  // E.x. - "react": "^16" => "react": "^16.6.1"
+  // E.x. - "react": "^17" => "react": "^17.0.1"
   !noInstall && adjustPkgJson(appDir)
 
   // Initialize git.

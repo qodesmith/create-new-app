@@ -1,11 +1,12 @@
 export const cn = (...args) => {
-  const classNames = args.reduce((arr, thing) => {
-    if (typeof thing === 'string') return [...arr, ...thing.split(' ')] // Strings.
-    if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
+  const classNames = args.reduce((arr, item) => {
+    if (typeof item === 'string') return [...arr, ...item.split(' ')] // Strings.
+    if ({}.toString.call(item) !== '[object Object]') return arr // Ignore everything else but objects.
 
-    return Object
-      .keys(thing)
-      .reduce((arr2, key) => (thing[key] ? [...arr2, key] : arr2), arr)
+    return Object.keys(item).reduce(
+      (arr2, key) => (item[key] ? [...arr2, key] : arr2),
+      arr,
+    )
   }, [])
 
   // Avoid duplicate names.
@@ -13,9 +14,13 @@ export const cn = (...args) => {
 }
 
 // http://bit.ly/2Xmuwqf - micro UUID!
-export const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
+export const uuid = a =>
+  a
+    ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid)
 
-export const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+export const randomNum = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min)
 
 // Simple email validation :)
 export const isEmail = email => {
@@ -27,6 +32,6 @@ export const isEmail = email => {
     email.length > 5, // At least 6 chars long => a@b.co
 
     // Ensure at least 2 characters in the `.com` portion.
-    email.trim().split('@').pop().split('.').pop().length > 1
+    email.trim().split('@').pop().split('.').pop().length > 1,
   ].every(Boolean)
 }

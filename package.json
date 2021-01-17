@@ -1,7 +1,7 @@
 {
   "name": "create-new-app",
   "version": "6.4.0",
-  "description": "Easily generate a new fully-equiped React project, optionally with Express & MongoDB.",
+  "description": "Easily generate a new React application, optionally with Express & MongoDB.",
   "scripts": {
     "test": "jest ; node removeTestFolders.js",
     "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
@@ -16,7 +16,6 @@
   },
   "keywords": [
     "react",
-    "redux",
     "react-router",
     "webpack",
     "scss",

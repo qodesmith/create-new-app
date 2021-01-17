@@ -1,0 +1,7 @@
+node_modules
+src/assets
+dist
+build
+*.html
+package-lock.json
+!*.(js|jsx|ts)

@@ -22,16 +22,17 @@
 
 # Create New App &middot; [![npm version](https://badge.fury.io/js/create-new-app.svg)](https://badge.fury.io/js/create-new-app)
 
-Create full-stack React applications! All the tech you've come to know and love - React, Redux, Express, & MongoDB. Use some, use none, but _always_ use React ;)
+Create full-stack React applications! All the tech you've come to know and love - React, Express, & MongoDB. Use some, use none, but _always_ use React ;)
 
 ## The Why
+
 You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
 
-[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, ~~but you find yourself constantly tweaking files to get [SCSS](http://sass-lang.com/) included.~~ And wouldn't you know it? Your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
+[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
 
 **[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
 
-It's just like CRA but with full stack options - and more! You get a [Webpack](https://webpack.js.org/configuration/) development server, a build which ties all-the-things together, and a custom SCSS utility library named [Sassyons](https://github.com/qodesmith/sassyons). Optionally include [React Router](https://reacttraining.com/react-router/), [Redux](https://redux.js.org/), [Express](https://expressjs.com/), and [MongoDB](https://mongodb.github.io/node-mongodb-native/). Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
+It's just like CRA but with full stack options - and more! You get a [Webpack](https://webpack.js.org/configuration/) development server, a build which ties all-the-things together, the fancy new [React Fast Refresh](https://medium.com/javascript-in-plain-english/what-is-react-fast-refresh-f3d1e8401333), and a custom SCSS utility library named [Sassyons](https://github.com/qodesmith/sassyons) - atomic CSS anyone? Optionally include [React Router](https://reacttraining.com/react-router/), [Express](https://expressjs.com/), and [MongoDB](https://mongodb.github.io/node-mongodb-native/). Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
 
 ## Installation
 
@@ -43,12 +44,12 @@ npm install -g create-new-app
 
 ### Guided Process
 
-It couldn't be easier to use Create New App. Simply type `create-new-app` (or `cna` for short) and you'll start the guided process, being asked up to 5 questions:
+It couldn't be easier to use Create New App. Simply type `create-new-app` (or `cna` for short) and you'll start the guided process:
+
 1. Enter a name for your app
-2. Would you like to include Redux?
-3. Would you like to include React Router?
-4. Would you like to include an Express server?
-5. Would you like to include MongoDB?
+2. Would you like to include React Router?
+3. Would you like to include an Express server?
+4. Would you like to include MongoDB?
 
 ### Manual Options
 
@@ -56,6 +57,7 @@ Simplest example: `create-new-app <app-name>`<br>
 ^^^ #Boom. Your app is running on `http://localhost:8080`.
 
 Want the full control of all the options? No problem:
+
 ```shell
 create-new-app <app-name> [options]
 
@@ -72,12 +74,12 @@ cna <app-name> --sandbox
 ```
 
 This will generate 3 files for you, tied together in `index.html`:
+
 1. index.html
 2. main.js
 3. styles.css
 
 Simple, no? Let's look at some other examples...
-
 
 ## Other Examples
 
@@ -98,10 +100,9 @@ create-new-app awesomeness -e
 create-new-app awesomeness -m
 ```
 
-
 ## Webpack Magic
 
-**Webpack 4!!!** While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
+**Webpack 5!!!** While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
 
 ### Development Server
 
@@ -135,38 +136,7 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
 
 [HtmlWebpackPlugin](http://bit.ly/2WBxaLR) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
 
-
 ## Options
-
-### Redux
-
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Alias</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td width="125px"><code>--redux</code></td>
-      <td align="center"><code>-x</code></td>
-      <td>Boolean</td>
-      <td>
-        Includes <a href="https://redux.js.org/">Redux</a> in your application, completely wired up & ready to go. Store, reducers, middleware... all that good stuff.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--redux</code>
-        <br><code>-x</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-  </tbody>
-</table>
-
 
 ### React Router
 
@@ -196,7 +166,6 @@ Automatically [removes unused CSS](https://www.purgecss.com/)! It's only trigger
     </tr>
   </tbody>
 </table>
-
 
 ### Server - Express, MongoDB, API
 
@@ -400,15 +369,13 @@ If you're developing a fullstack app we've got you covered with Express and Mong
   </tbody>
 </table>
 
-
 ### Information-only
 
-| Option | Alias | Description |
-| ------ | ----- | ----------- |
-| `--help` | `-h` | Outputs the help screen, showing all the above documented options. |
+| Option        | Alias  | Description                                                                     |
+| ------------- | ------ | ------------------------------------------------------------------------------- |
+| `--help`      | `-h`   | Outputs the help screen, showing all the above documented options.              |
 | `--mongoHelp` | `--mh` | Outputs some helpful information about getting MongoDB prepared for production. |
-| `--version` | `-v` | Outputs the version of CNA that you're using to the terminal. |
-
+| `--version`   | `-v`   | Outputs the version of CNA that you're using to the terminal.                   |
 
 ### Other options
 

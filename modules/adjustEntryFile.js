@@ -3,7 +3,6 @@
   and adds a top-level comment to it explaining polyfill options.
 */
 
-
 const commentContents = [
   '/*',
   '  http://bit.ly/2DTXGpe - `@babel/polyfill` has been deprecated.',
@@ -14,7 +13,10 @@ const commentContents = [
 ].join('\n')
 
 function adjustEntryFile(entryFileContents) {
-  return entryFileContents.replace('__PLACEHOLDER_ENTRY_COMMENT__', commentContents)
+  return entryFileContents.replace(
+    '__PLACEHOLDER_ENTRY_COMMENT__',
+    commentContents,
+  )
 }
 
 module.exports = {

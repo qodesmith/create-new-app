@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate ".env" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate ".env" correctly 1`] = `
 "##########################################################
 #           THIS FILE WILL BE GIT IGNORED.               #
 #     DO NOT COMMIT THIS FILE INTO VERSION CONTROL!      #
@@ -15,15 +15,12 @@ exports[`cli - React + Express + React Router project contents of files created 
 
 
 
-API=/api
-API_PORT=3000
-API_WEBPACK=/api
-APP_NAME=07-react-express-rrouter-test
+APP_NAME=02-react-rrouter.test
 DEV_SERVER_PORT=8080
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate ".gitignore" correctly 1`] = `
 "# The majority of this files contents were taken from Github's Node example:
 # https://github.com/github/gitignore/blob/master/Node.gitignore
 
@@ -99,7 +96,7 @@ typings/
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate ".prettierignore" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate ".prettierignore" correctly 1`] = `
 "node_modules
 src/assets
 dist
@@ -110,7 +107,7 @@ package-lock.json
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate ".prettierrc" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate ".prettierrc" correctly 1`] = `
 "{
   \\"printWidth\\": 80,
   \\"tabWidth\\": 2,
@@ -133,16 +130,15 @@ exports[`cli - React + Express + React Router project contents of files created 
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate "README.md" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate "README.md" correctly 1`] = `
 "This project was created with [Create New App](https://github.com/qodesmith/create-new-app).
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
-"const { DEV_SERVER_PORT, API, API_PORT } = process.env
+exports[`cli - React + React Router project contents of files created Folder - / should populate "after-compile-plugin.js" correctly 1`] = `
+"const {DEV_SERVER_PORT, API, API_PORT} = process.env
 const chalk = require('chalk')
 const os = require('os')
-
 
 /*
   This is a custom Webpack plugin that simply runs a function after each build.
@@ -151,7 +147,7 @@ const os = require('os')
 */
 
 class AfterCompilePlugin {
-  constructor({ run } = {}) {
+  constructor({run} = {}) {
     this.run = run
   }
 
@@ -160,19 +156,39 @@ class AfterCompilePlugin {
     console.log(chalk.greenBright('Webpack compiled successfully!\\\\n'))
 
     if (API) {
-      const fetchMsg = \`\${chalk.yellow('fetch')}(\${chalk.keyword('orange')(\`'\${API}/<your-endpoint>'\`)})\`
+      const fetchMsg = \`\${chalk.yellow('fetch')}(\${chalk.keyword('orange')(
+        \`'\${API}/<your-endpoint>'\`,
+      )})\`
       const thenMsg = \`.\${chalk.yellow('then')}(...)\`
       const fetchExample = \`\${fetchMsg}\${thenMsg}\`
 
-      console.log(\`🌎  => API listening on port \${chalk.blue.bold(API_PORT)}...\`)
-      console.log('       You can make fetch requests to your API from the browser:')
+      console.log(
+        \`🌎  => API listening on port \${chalk.blue.bold(API_PORT)}...\`,
+      )
+      console.log(
+        '       You can make fetch requests to your API from the browser:',
+      )
       console.log(\`           \${chalk.italic(fetchExample)}\\\\n\`)
-      console.log(chalk.dim('────────────────────────────────────────────────────────────────────\\\\n'))
+      console.log(
+        chalk.dim(
+          '────────────────────────────────────────────────────────────────────\\\\n',
+        ),
+      )
     }
 
     console.log('💻  => Application being served at...')
-    console.log(\`         • \${chalk.bold('Browser:')}                     http://localhost:\${chalk.blue.bold(DEV_SERVER_PORT)}\`)
-    console.log(\`         • \${chalk.bold('Any device on your network:')}  http://\${getLocalIpAddress()}:\${chalk.blue.bold(DEV_SERVER_PORT)}\`)
+    console.log(
+      \`         • \${chalk.bold(
+        'Browser:',
+      )}                     http://localhost:\${chalk.blue.bold(
+        DEV_SERVER_PORT,
+      )}\`,
+    )
+    console.log(
+      \`         • \${chalk.bold(
+        'Any device on your network:',
+      )}  http://\${getLocalIpAddress()}:\${chalk.blue.bold(DEV_SERVER_PORT)}\`,
+    )
   }
 
   apply(compiler) {
@@ -205,8 +221,7 @@ class AfterCompilePlugin {
   network would use to connect to the development site.
 */
 function getLocalIpAddress() {
-  const obj = Object
-    .values(os.networkInterfaces())
+  const obj = Object.values(os.networkInterfaces())
     .reduce((acc, arr) => acc.concat(arr), [])
     .find(({family, internal}) => family === 'IPv4' && !internal)
 
@@ -217,7 +232,7 @@ module.exports = AfterCompilePlugin
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate "postcss.config.js" correctly 1`] = `
 "const isProd = process.env.NODE_ENV === 'production'
 const purgeCss = require('@fullhuman/postcss-purgecss')
 const combineMediaQuery = require('postcss-combine-media-query')
@@ -228,7 +243,6 @@ const nano = require('cssnano')
 const path = require('path')
 // const whitelister = require('purgecss-whitelister')
 
-
 /*
   Why we scope \`purgeCss\` to production only.
   -------------------------------------------
@@ -237,113 +251,31 @@ const path = require('path')
   and see no change. This avoids that.
 */
 module.exports = {
-  plugins: isProd ? [
-    // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
-    purgeCss({
-      // Optionally whitelist 3rd party libraries:
-      // whitelist: whitelister('./node_modules/some-library/styles.css'),
-      content: [
-        path.resolve(path.resolve(), './src/**/*.js'),
-        path.resolve(path.resolve(), './src/**/*.jsx'),
-        path.resolve(path.resolve(), './src/index.ejs'),
-      ],
-      keyframes: false, // http://bit.ly/2Xnsqq2
-    }),
-    combineSelectors({ removeDuplicatedProperties: true }),
-    combineMediaQuery(),
-    autoprefixer(),
-    sorter(),
-    nano(),
-  ] : [],
+  plugins: isProd
+    ? [
+        // http://bit.ly/2Xtfwao - explains why we're using purge-css here and not as a Webpack plugin.
+        purgeCss({
+          // Optionally whitelist 3rd party libraries:
+          // whitelist: whitelister('./node_modules/some-library/styles.css'),
+          content: [
+            path.resolve(path.resolve(), './src/**/*.js'),
+            path.resolve(path.resolve(), './src/**/*.jsx'),
+            path.resolve(path.resolve(), './src/index.ejs'),
+          ],
+          keyframes: false, // http://bit.ly/2Xnsqq2
+        }),
+        combineSelectors({removeDuplicatedProperties: true}),
+        combineMediaQuery(),
+        autoprefixer(),
+        sorter(),
+        nano(),
+      ]
+    : [],
 }
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate "server.js" correctly 1`] = `
-"const chalk = require('chalk')
-const { errorToObject } = require('./api/utilities/errorUtil')
-const lines = '-'.repeat(45)
-
-// 'unhandledRejection' => promise rejection
-process.on('unhandledRejection', err => {
-  const date = chalk.cyan(Date.now())
-  const msg = chalk.red.bold(\`Unhandled promise rejection at \${date}:\\\\n\`)
-
-  console.log(\`\\\\n\${lines}\`)
-  console.error(msg)
-  console.error(errorToObject(err))
-  console.log(\`\${lines}\\\\n\`)
-})
-
-// 'uncaughtException' => application error
-process.on('uncaughtException', err => {
-  const date = chalk.cyan(Date.now())
-  const msg = chalk.red.bold(\`\\\\nUncaught exception at \${date}:\\\\n\`)
-
-  console.log(\`\\\\n\${lines}\`)
-  console.error(msg)
-  console.error(errorToObject(err))
-  process.exit(1)
-})
-
-/*
-  Please DO NOT INCLUDE the \`.env\` file in version control.
-  It is in the \`.gitignore\` file. Keep it that way.
-  It contains your sensitive data! Instead, when deploying to production,
-  you should manually copy the \`.env\` file to your hosting provider.
-*/
-require('dotenv').config({ path: \`\${__dirname}/.env\` }) // http://bit.ly/2WE8EJP
-
-const { API, API_PORT, DEV_SERVER_PORT, NODE_ENV } = process.env // Environment variables.
-const isProd = NODE_ENV === 'production'
-const path = require('path')
-const express = require('express')
-const helmet = require('helmet') // Sets various http headers - http://bit.ly/2WylCJl
-const compression = require('compression') // Gzip! - http://bit.ly/2WylU2T
-const bp = require('body-parser') // Makes \`req.body\` available - http://bit.ly/2WE4r8X
-const app = express()
-
-/*
-  Express middleware.
-  Express security best practices - http://bit.ly/2KkcS2V
-*/
-app.use(
-  express.static( // http://bit.ly/2Ko43Vy
-    path.resolve(__dirname, 'dist'),
-    // \`no-cache\` still caches but it checks with the server via etag to ensure the latest version.
-    { setHeaders: res => res.set('Cache-Control', 'no-cache') } // Cache static assets :)
-  ),
-  helmet(), // Headers security.
-  compression(), // GZIP
-  bp.json(), // http://bit.ly/2KpI7cL, http://bit.ly/2KkcVvD, http://bit.ly/2KmDSP3
-  bp.urlencoded({ extended: false }) // http://bit.ly/2KpI7cL, http://bit.ly/2Ko4f7e
-)
-
-/*
-  ADD YOUR CUSTOM ENDPOINTS HERE
-  ------------------------------
-*/
-// app.get(\`\${API}/my-endpoint\`, require('./api/my-endpoint'))
-
-
-/*
-  Catch-all endpoint which delivers \`index.html\` and let's
-  the front-end handle all the routing including 404's.
-  This should be the last chronological GET route.
-*/
-app.get('*', require('./api/home'))
-
-// And so it begins...
-app.listen(API_PORT, () => {
-  if (!isProd) {
-    // This is simply to provide haptic feedback during development.
-    console.log('Node server listening...')
-  }
-})
-"
-`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - / should populate "webpack.config.js" correctly 1`] = `
 "require('dotenv').config({path: \`\${__dirname}/.env\`}) // http://bit.ly/2WE8EJP
 const {NODE_ENV, DEV_SERVER_PORT, API, API_PORT, API_WEBPACK} = process.env
 const path = require('path')
@@ -888,86 +820,11 @@ module.exports = (env, argv) => ({
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /api should populate "home.js" correctly 1`] = `
-"const path = require('path')
+exports[`cli - React + React Router project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
 
-/*
-  THIS ROUTE WILL ONLY GET HIT WHEN SOMEONE NAVIGATES TO A
-  NON-EXISTENT ROUTE. THE FRONT END SHOULD DIRECT TO A 404 ROUTE.
-*/
+exports[`cli - React + React Router project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
 
-function home(req, res) {
-  /*
-    This folder & file will exist after you have run \`npm run build\`.
-    While developing, the development server will serve \`index.html\`
-    from memory, avoiding any contact with this route in the first place.
-  */
-  res.sendFile(path.resolve(__dirname, '../dist/index.html'), err => {
-    /*
-      If the file wasn't found, send 404.
-      This can happen in you manually change
-      the url to something non-existant
-    */
-    if (err) res.sendStatus(404)
-  })
-}
-
-module.exports = home
-"
-`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - /api/utilities should populate "catchy.js" correctly 1`] = `
-"// Catchify is also a great library for this - https://github.com/majgis/catchify
-
-const catchy = value => (
-  Promise.resolve(value)
-    .then(res => [null, res])
-    .catch(err => [err])
-)
-
-module.exports = catchy
-"
-`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - /api/utilities should populate "errorUtil.js" correctly 1`] = `
-"/*
-  Calling \`JSON.stringify(error)\` will result in '{}' if there is no
-  \`Error.prototype.toJSON\` (http://bit.ly/2XmFBYl). In order to
-  mitigate that, this helper function takes advantage of the 2nd argument
-  to \`JSON.stringify\` (https://mzl.la/2XvU18w). It ensures that we get back
-  a properly stringified object with keys & values.
-
-  Before:
-    JSON.stringify(error) => '{}'
-
-  After:
-    stringifyError(error) => '{ \\"stack\\": ..., \\"message\\": ..., \\"etc\\": ... }'
-*/
-
-const replacer = (k, value) => {
-  if (!(value instanceof Error)) return value
-
-  return Object
-    .getOwnPropertyNames(value)
-    .reduce((acc, key) => ({ ...acc, [key]: value[key] }), {})
-}
-
-const stringifyError = (err, spacing = 0) => err ? JSON.stringify(err, replacer, spacing) : ''
-
-const errorToObject = err => err ? JSON.parse(stringifyError(err)) : err
-
-module.exports = {
-  stringifyError,
-  errorToObject
-}
-"
-`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - /dist should populate "favicon.ico" correctly 1`] = `"        h  &         �  �  (                                   P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��N��N��N��P��P��P��P��P��O��N��P��P��P��P��O��022.32031.32P��P��P��O��/42342.32.32:ksP��P��022022133.32022142N��O��022022023022.320221;;P��S��.31P��Q��022022P��R��-21022N��P��R��022133N��P��O��P��P��/43.32N��P��Q��Q��P��P��U��022022Q��P��P��P��P��.32.32Q��P��P��N��O��1330221331.*P��P��P��P��P��.32.32Q��P��O��.310220220220'#O��P��P��P��P��P��.32.32Q��P��,)%022022/34Q��P��P��P��P��P��P��P��.32.32Q��P��022022N��P��N��P��P��P��P��P��P��P��.32.32Q��P��022022Q��Q��/43N��P��P��P��P��P��P��.32.32Q��P��L��022022031022133Q��P��P��P��P��P��.32022M��P��P��Q��1330223))P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                (       @                            P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��N��P��N��N��N��P��P��P��P��P��P��P��P��P��P��P��O��O��N��Q��P��P��P��P��P��P��P��P��Q��L��Q��L��7OO0547RVN��P��N��P��P��P��P��P��P��P��Q��P��P��@��0;91657X[N��P��Q��Q��P��P��P��P��O��5Z^022022.32142031022.32@��P��P��P��P��P��P��O��E��/42.32342022.32.31.32.32:ksN��P��P��P��L��1,+0220220220220220220220220223EDN��P��P��P��N��0/1133022022022022022022022022222.31Q��P��P��467022022022342133022.32022022022142P��N��P��O��/11022022022222023142022.32.320220220221;;P��P��/42022022022111>��O��022022022022-20045N��L��P��.32022022022-3./43M��M��6bi-41022022022.43P��P��N��S��342.31L��P��P��Q��6SW022022022031P��N��R��6QU-21422022N��N��P��P��P��R��133022022133Q��N��P��P��Q��9fjP��P��P��P��P��.32022.32022O��P��P��P��N��022R��P��P��P��P��P��Q��231022022/43M��N��P��P��N��O��P��P��P��P��P��/43022.32022N��P��P��P��Q��O��Q��P��P��P��P��P��U��031022022022P��Q��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��P��P��P��P��P��N��133022022022133N��N��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��N��N��O��0.-133022022022133/431.*P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��P��P��M��389-32111022133022022022031O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��O��J��.310220220220220220220220'#P��O��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��O��/34022022022022031-21.32B��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��O��,)%222022022022022/34=��Q��O��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��.32022022.31133P��Q��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��022022022.32N��P��P��P��N��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��L��022022022/11N��P��P��P��P��M��P��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��T��022022022022Q��N��Q��N��/43022N��P��P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��/43133022022022/11.32/34022022022.31P��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��N��L��134022022022/430310220220221333?AQ��P��P��P��P��P��P��P��P��P��P��Q��.32022.32022Q��P��P��P��N��.'$/11022022022022022022/43,'&Q��P��P��P��P��P��P��P��P��P��P��P��P��.32022022133M��P��P��P��P��P��Q��0)&1330310220223))O��P��P��P��P��P��P��P��P��P��P��P��P��P��O��O��N��O��O��N��P��P��P��P��P��P��Q��P��P��P��P��Q��N��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��P��                                                                                                                                "`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - /dist should populate "robots.txt" correctly 1`] = `""`;
-
-exports[`cli - React + Express + React Router project contents of files created Folder - /src should populate "entry.jsx" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src should populate "entry.jsx" correctly 1`] = `
 "/*
   http://bit.ly/2DTXGpe - \`@babel/polyfill\` has been deprecated.
   If you need to polyfill certain JS features, uncomment the two imports below.
@@ -987,8 +844,7 @@ import Home from 'components/Home'
 import NotFound from 'components/NotFound'
 
 // Import React Router things.
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 
 // Top-level classes on the body. Feel free to remove / change.
 document.body.className = 'bg-black-80 fw4 white-80'
@@ -1001,39 +857,46 @@ ReactDOM.render(
       <Route component={NotFound} />
     </Switch>
   </Router>,
-  document.querySelector('#app')
+  document.querySelector('#app'),
 )
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src should populate "index.ejs" correctly 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en-US\\">
-<head>
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <meta charset=\\"UTF-8\\">
-  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">
-  <meta name=\\"theme-color\\" content=\\"#000000\\">
+  <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta charset=\\"UTF-8\\" />
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
+    <meta name=\\"theme-color\\" content=\\"#000000\\" />
 
-  <% if (htmlWebpackPlugin.options.description) { %>
-  <meta name=\\"description\\" content=\\"<% htmlWebpackPlugin.options.description %>\\">
-  <% } %>
+    <% if (htmlWebpackPlugin.options.description) { %>
+    <meta
+      name=\\"description\\"
+      content=\\"<% htmlWebpackPlugin.options.description %>\\"
+    />
+    <% } %> <% if (htmlWebpackPlugin.options.mobileThemeColor) { %>
+    <meta
+      name=\\"theme-color\\"
+      content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\"
+    />
+    <meta
+      name=\\"apple-mobile-web-app-status-bar-style\\"
+      content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\"
+    />
+    <% } %>
 
-  <% if (htmlWebpackPlugin.options.mobileThemeColor) { %>
-  <meta name=\\"theme-color\\" content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\">
-  <meta name=\\"apple-mobile-web-app-status-bar-style\\" content=\\"<% htmlWebpackPlugin.options.mobileThemeColor %>\\">
-  <% } %>
-
-  <link href=\\"/favicon.ico\\" rel=\\"shortcut icon\\" type=\\"image/x-icon\\" />
-</head>
-<body>
-  <div id=\\"app\\"></div>
-</body>
+    <link href=\\"/favicon.ico\\" rel=\\"shortcut icon\\" type=\\"image/x-icon\\" />
+  </head>
+  <body>
+    <div id=\\"app\\"></div>
+  </body>
 </html>
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/components should populate "Home.jsx" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src/components should populate "Home.jsx" correctly 1`] = `
 "import React from 'react'
 
 const Home = () => {
@@ -1044,7 +907,13 @@ const Home = () => {
         <div className=\\"tc ttc\\">by the Qodesmith</div>
       </header>
       <div className=\\"pt4 pb1 tc\\">Go save the world with JavaScript</div>
-      <div className=\\"tc\\">and edit <code>src/components/<span className=\\"b\\">Home.jsx</span></code>!</div>
+      <div className=\\"tc\\">
+        and edit{' '}
+        <code>
+          src/components/<span className=\\"b\\">Home.jsx</span>
+        </code>
+        !
+      </div>
     </>
   )
 }
@@ -1053,7 +922,7 @@ export default Home
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/components should populate "NotFound.jsx" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src/components should populate "NotFound.jsx" correctly 1`] = `
 "import React from 'react'
 
 const NotFound = () => {
@@ -1071,15 +940,16 @@ export default NotFound
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src/helpers should populate "index.js" correctly 1`] = `
 "export const cn = (...args) => {
-  const classNames = args.reduce((arr, thing) => {
-    if (typeof thing === 'string') return [...arr, ...thing.split(' ')] // Strings.
-    if (({}).toString.call(thing) !== '[object Object]') return arr // Ignore everything else but objects.
+  const classNames = args.reduce((arr, item) => {
+    if (typeof item === 'string') return [...arr, ...item.split(' ')] // Strings.
+    if ({}.toString.call(item) !== '[object Object]') return arr // Ignore everything else but objects.
 
-    return Object
-      .keys(thing)
-      .reduce((arr2, key) => (thing[key] ? [...arr2, key] : arr2), arr)
+    return Object.keys(item).reduce(
+      (arr2, key) => (item[key] ? [...arr2, key] : arr2),
+      arr,
+    )
   }, [])
 
   // Avoid duplicate names.
@@ -1087,9 +957,13 @@ exports[`cli - React + Express + React Router project contents of files created 
 }
 
 // http://bit.ly/2Xmuwqf - micro UUID!
-export const uuid = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)
+export const uuid = a =>
+  a
+    ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+    : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid)
 
-export const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+export const randomNum = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min)
 
 // Simple email validation :)
 export const isEmail = email => {
@@ -1101,44 +975,44 @@ export const isEmail = email => {
     email.length > 5, // At least 6 chars long => a@b.co
 
     // Ensure at least 2 characters in the \`.com\` portion.
-    email.trim().split('@').pop().split('.').pop().length > 1
+    email.trim().split('@').pop().split('.').pop().length > 1,
   ].every(Boolean)
 }
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/hooks should populate "useUpdatingClock.js" correctly 1`] = `
-"import {useEffect, useState} from \\"react\\";
+exports[`cli - React + React Router project contents of files created Folder - /src/hooks should populate "useUpdatingClock.js" correctly 1`] = `
+"import {useEffect, useState} from 'react'
 
 export default function useUpdatingClock() {
   // An example of using React hooks to maintain local state.
-  const [date, setDate] = useState(() => new Date());
+  const [date, setDate] = useState(() => new Date())
 
   // Data we need for our updated time in the UI.
-  const hours = date.getHours();
-  const hour = hours % 12 || 12;
-  const minutes = date.getMinutes().toString().padStart(2, \\"0\\");
-  const seconds = date.getSeconds().toString().padStart(2, \\"0\\");
-  const amPm = hours >= 12 ? \\"pm\\" : \\"am\\";
+  const hours = date.getHours()
+  const hour = hours % 12 || 12
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const seconds = date.getSeconds().toString().padStart(2, '0')
+  const amPm = hours >= 12 ? 'pm' : 'am'
 
   // An example of using \`useEffect\` to update the DOM with the latest time.
   useEffect(() => {
     const interval = setInterval(() => {
-      setDate(new Date());
-    }, 251);
+      setDate(new Date())
+    }, 251)
 
     // This \\"clean up\\" function will run when the consuming component unmounts.
     return () => {
-      clearInterval(interval);
-    };
-  }, []);
+      clearInterval(interval)
+    }
+  }, [])
 
-  return {hour, minutes, seconds, amPm};
+  return {hour, minutes, seconds, amPm}
 }
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
 "/*
   Add your custom global styles here.
   The styles provided below are a minimal suggested starting point.
@@ -1166,7 +1040,7 @@ body {
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
+exports[`cli - React + React Router project contents of files created Folder - /src/styles should populate "styles.scss" correctly 1`] = `
 "/*
   This file will be the top-most entry point for all styles in the app.
   Any dependant styles should be explicitly imported here.
@@ -1175,10 +1049,8 @@ exports[`cli - React + Express + React Router project contents of files created 
   To import CSS files from \`node_modules\`, make sure to include the file extension.
 */
 
-
 // https://github.com/qodesmith/sassyons
 @import '~sassyons/dist/sassyons.css';
-
 
 /*
   Application Styles
@@ -1191,12 +1063,12 @@ exports[`cli - React + Express + React Router project contents of files created 
 "
 `;
 
-exports[`cli - React + Express + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
+exports[`cli - React + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
 Object {
   "bail": false,
-  "context": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+  "context": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
   "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
+    "contentBase": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
     "hot": true,
@@ -1207,24 +1079,19 @@ Object {
       "warnings": false,
     },
     "port": "8080",
-    "proxy": Object {
-      "/api": Object {
-        "bypass": [Function],
-        "target": "http://localhost:3000",
-      },
-    },
+    "proxy": Object {},
     "public": "http://localhost:8080",
     "watchContentBase": true,
   },
   "devtool": "source-map",
   "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/entry.jsx",
+    "main": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/entry.jsx",
   },
   "mode": "development",
   "module": Object {
     "rules": Array [
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
         "use": Array [
           Object {
@@ -1262,7 +1129,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(scss\\|css\\)\\$/,
         "use": Array [
           "style-loader",
@@ -1282,7 +1149,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
         "use": Array [
           Object {
@@ -1294,7 +1161,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/assets",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
         "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
         "use": Array [
           Object {
@@ -1341,14 +1208,14 @@ Object {
     "chunkFilename": "[name].[fullhash].chunk.js",
     "filename": "[name].[fullhash].bundle.js",
     "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
+    "path": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
     "pathinfo": true,
     "publicPath": "/",
   },
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
-        "__API__": "\\"/api\\"",
+        "__API__": undefined,
         "__DEV__": true,
         "__PROD__": false,
         "process.env": Object {
@@ -1401,7 +1268,7 @@ Object {
         "description": "",
         "minify": false,
         "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/index.ejs",
+        "template": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/index.ejs",
         "title": "",
       },
       "version": 5,
@@ -1414,8 +1281,8 @@ Object {
         "exclude": /node_modules/i,
         "include": /\\\\\\.\\(\\[jt\\]sx\\?\\|flow\\)\\$/i,
         "overlay": Object {
-          "entry": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
-          "module": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
+          "entry": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
+          "module": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
           "sockIntegration": "wds",
         },
       },
@@ -1426,10 +1293,10 @@ Object {
   ],
   "resolve": Object {
     "alias": Object {
-      "assets": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/hooks",
+      "assets": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/hooks",
     },
     "extensions": Array [
       ".js",
@@ -1442,12 +1309,12 @@ Object {
 }
 `;
 
-exports[`cli - React + Express + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
+exports[`cli - React + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
 Object {
   "bail": true,
-  "context": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+  "context": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
   "devServer": Object {
-    "contentBase": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
+    "contentBase": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
     "historyApiFallback": true,
     "host": "0.0.0.0",
     "hot": true,
@@ -1458,24 +1325,19 @@ Object {
       "warnings": false,
     },
     "port": "8080",
-    "proxy": Object {
-      "/api": Object {
-        "bypass": [Function],
-        "target": "http://localhost:3000",
-      },
-    },
+    "proxy": Object {},
     "public": "http://localhost:8080",
     "watchContentBase": true,
   },
   "devtool": false,
   "entry": Object {
-    "main": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/entry.jsx",
+    "main": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/entry.jsx",
   },
   "mode": "production",
   "module": Object {
     "rules": Array [
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
         "use": Array [
           Object {
@@ -1512,10 +1374,10 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(scss\\|css\\)\\$/,
         "use": Array [
-          "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/node_modules/mini-css-extract-plugin/dist/loader.js",
+          "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/mini-css-extract-plugin/dist/loader.js",
           Object {
             "loader": "css-loader",
             "options": Object {
@@ -1533,7 +1395,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
         "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
         "use": Array [
           Object {
@@ -1545,7 +1407,7 @@ Object {
         ],
       },
       Object {
-        "include": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/assets",
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
         "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
         "use": Array [
           Object {
@@ -1592,14 +1454,14 @@ Object {
     "chunkFilename": "[name].[fullhash].chunk.js",
     "filename": "[name].[fullhash].bundle.js",
     "globalObject": "this",
-    "path": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/dist",
+    "path": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
     "pathinfo": false,
     "publicPath": "/",
   },
   "plugins": Array [
     DefinePlugin {
       "definitions": Object {
-        "__API__": "\\"/api\\"",
+        "__API__": undefined,
         "__DEV__": false,
         "__PROD__": true,
         "process.env": Object {
@@ -1655,7 +1517,7 @@ Object {
           "removeComments": true,
         },
         "mobileThemeColor": "#000000",
-        "template": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/index.ejs",
+        "template": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/index.ejs",
         "title": "",
       },
       "version": 5,
@@ -1663,10 +1525,10 @@ Object {
   ],
   "resolve": Object {
     "alias": Object {
-      "assets": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/assets",
-      "components": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/components",
-      "helpers": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/helpers",
-      "hooks": "/Users/qodesmith/repos/create-new-app/07-react-express-rrouter-test/src/hooks",
+      "assets": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/hooks",
     },
     "extensions": Array [
       ".js",

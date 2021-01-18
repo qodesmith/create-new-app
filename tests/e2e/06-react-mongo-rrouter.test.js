@@ -12,13 +12,13 @@ const {
   listFolderContents,
 } = require('./helpers/folderFileHelper')
 
-describe('cli - React + Express project', () => {
-  const appName = '05-vanilla-react-express-test'
+describe('cli - React + MongoDB + Express + React Router project', () => {
+  const appName = path.parse(__filename).name
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(`node ${mainPath}/main.js ${appName} --express ${noInstall}`)
+    run(`node ${mainPath}/main.js ${appName} --mongo --router ${noInstall}`)
   })
 
   afterAll(() => {
@@ -32,11 +32,11 @@ describe('cli - React + Express project', () => {
   it('should contain the expected folders and no others', () => {
     const expectedFolders = foldersFromConfig(
       appPath,
-      filesAndFolders.cnaExpress,
+      filesAndFolders.cnaMongoRouter,
     )
     const ignores = listIgnoredFoldersFromConfig(
       appPath,
-      filesAndFolders.cnaExpress,
+      filesAndFolders.cnaMongoRouter,
     )
     const actualFolders = listFoldersInTree(appPath, {ignores})
 
@@ -44,7 +44,7 @@ describe('cli - React + Express project', () => {
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongoRouter)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -57,12 +57,12 @@ describe('cli - React + Express project', () => {
   })
 
   it('should produce valid JavaScript files with no parsing errors', () => {
-    expect(jsFilesAreValid(appPath, 'cnaExpress')).toBe(true)
+    expect(jsFilesAreValid(appPath, 'cnaMongoRouter')).toBe(true)
   })
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(appPath, filesAndFolders.cnaExpress)
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongoRouter)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -125,7 +125,7 @@ describe('cli - React + Express project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {devDependencies} = deps.express
+        const {devDependencies} = deps.mongoRouter
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -151,7 +151,7 @@ describe('cli - React + Express project', () => {
 
       it('should populate "dependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {dependencies} = deps.express
+        const {dependencies} = deps.mongoRouter
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -234,7 +234,29 @@ describe('cli - React + Express project', () => {
 
         it(`should populate "${file}" correctly`, () => {
           const fileContents = fs.readFileSync(`${folderPath}/${file}`, 'utf8')
-          expect(fileContents).toMatchSnapshot()
+
+          // For mongoDB installs `.env` is populated dynamically with a unique `SECRET`.
+          if (file === '.env') {
+            const dotenv = require('dotenv')
+            const {SECRET, ...dotEnvObj} = dotenv.parse(fileContents)
+
+            expect(SECRET.length).toBe(36) // This is a uuid.
+            expect(dotEnvObj).toEqual({
+              API: '/api',
+              API_PORT: '3000',
+              API_WEBPACK: '/api',
+              APP_NAME: appName,
+              DEV_SERVER_PORT: '8080',
+              MONGO_AUTH_SOURCE: 'admin',
+              MONGO_SESSION_COLLECTION: `${appName}Sessions`,
+              MONGO_URI: `mongodb://localhost:27017/${appName}`,
+              MONGO_URI_PROD: `mongodb://localhost:27017/${appName}`,
+              MONGO_USER: '',
+              MONGO_USER_PASSWORD: '',
+            })
+          } else {
+            expect(fileContents).toMatchSnapshot()
+          }
         })
       })
     })

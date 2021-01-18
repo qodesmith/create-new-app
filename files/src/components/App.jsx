@@ -1,7 +1,7 @@
-import useUpdatingClock from "hooks/useUpdatingClock";
+import useUpdatingClock from 'hooks/useUpdatingClock'
 
 export default function App() {
-  const {hour, minutes, seconds, amPm} = useUpdatingClock();
+  const {hour, minutes, seconds, amPm} = useUpdatingClock()
 
   return (
     <div className="df flex-col vh-100">
@@ -12,15 +12,15 @@ export default function App() {
 
       <section className="flex-grow-1 bg-black-80 fw4 white-80 tc pt24">
         <div>
-          Your application starts in the{" "}
+          Your application starts in the{' '}
           <code>
             src/<span className="b white">entry.jsx</span>
-          </code>{" "}
+          </code>{' '}
           file.
         </div>
 
         <div>
-          The component you're looking here at can be found in{" "}
+          The component you're looking here at can be found in{' '}
           <code>
             src/components/<span className="b white">App.jsx</span>
           </code>
@@ -36,5 +36,5 @@ export default function App() {
         </div>
       </section>
     </div>
-  );
+  )
 }

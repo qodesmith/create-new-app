@@ -8,7 +8,13 @@ const Home = () => {
         <div className="tc ttc">by the Qodesmith</div>
       </header>
       <div className="pt4 pb1 tc">Go save the world with JavaScript</div>
-      <div className="tc">and edit <code>src/components/<span className="b">Home.jsx</span></code>!</div>
+      <div className="tc">
+        and edit{' '}
+        <code>
+          src/components/<span className="b">Home.jsx</span>
+        </code>
+        !
+      </div>
     </>
   )
 }

@@ -17,14 +17,12 @@ const dependencyReducer = obj => (
   }, {})
 )
 
-const dependencies = ({ mongo, redux, router, server }) => {
+const dependencies = ({ mongo, router, server }) => {
   const devDependencies = {
     // MAIN
     'react': '^17',
     'react-dom': '^17',
     'sassyons': 'latest', // Always install the latest.
-    'redux': redux && '^4',
-    'react-redux': redux && '^7',
     'react-router-dom': router && '^5',
     'history': router && '^5',
 

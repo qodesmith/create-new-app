@@ -12,15 +12,13 @@ const {
   listFolderContents,
 } = require('./helpers/folderFileHelper')
 
-describe('cli - React + MongoDB + Express + React Router + Redux project', () => {
-  const appName = '12-react-mongo-rrouter-redux-test'
+describe('cli - React + React Router project', () => {
+  const appName = path.parse(__filename).name
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(
-      `node ${mainPath}/main.js ${appName} --mongo --router --redux ${noInstall}`,
-    )
+    run(`node ${mainPath}/main.js ${appName} --router ${noInstall}`)
   })
 
   afterAll(() => {
@@ -34,11 +32,11 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
   it('should contain the expected folders and no others', () => {
     const expectedFolders = foldersFromConfig(
       appPath,
-      filesAndFolders.cnaMongoRouterRedux,
+      filesAndFolders.cnaRouter,
     )
     const ignores = listIgnoredFoldersFromConfig(
       appPath,
-      filesAndFolders.cnaMongoRouterRedux,
+      filesAndFolders.cnaRouter,
     )
     const actualFolders = listFoldersInTree(appPath, {ignores})
 
@@ -46,10 +44,7 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(
-      appPath,
-      filesAndFolders.cnaMongoRouterRedux,
-    )
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouter)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -62,15 +57,12 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
   })
 
   it('should produce valid JavaScript files with no parsing errors', () => {
-    expect(jsFilesAreValid(appPath, 'cnaMongoRouterRedux')).toBe(true)
+    expect(jsFilesAreValid(appPath, 'cnaRouter')).toBe(true)
   })
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(
-      appPath,
-      filesAndFolders.cnaMongoRouterRedux,
-    )
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaRouter)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -95,15 +87,17 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
           'license',
           'browserslist',
           'devDependencies',
-          'dependencies',
           'scripts',
-          'main',
         ]
 
         expect(Object.keys(pkgJson).sort()).toEqual(fields.sort())
       })
 
-      it('should have the correct field values (aside from "devDependencies" / "dependencies")', () => {
+      it('should not have a "dependencies" field', () => {
+        expect(pkgJson.dependencies).toBe(undefined)
+      })
+
+      it('should have the correct field values (aside from "devDependencies")', () => {
         expect(pkgJson.name).toBe(appName)
         expect(pkgJson.version).toBe('0.1.0')
         expect(pkgJson.description).toBe('')
@@ -119,13 +113,8 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
         const scripts = {
           build:
             'cross-env NODE_ENV=production webpack --mode production --env prod',
-          'build:dev':
-            'cross-env NODE_ENV=development webpack --mode development --env dev',
-          local: 'npm run server:api',
-          'server:dev': 'webpack serve --mode development --progress --env dev',
-          'server:api': 'nodemon server.js',
           start:
-            'cross-env NODE_ENV=development npm-run-all --parallel server:*',
+            'cross-env NODE_ENV=development webpack serve --mode development --progress',
         }
 
         expect(pkgJson.scripts).toEqual(scripts)
@@ -133,7 +122,7 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {devDependencies} = deps.mongoRouterRedux
+        const {devDependencies} = deps.vanillaRouter
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -145,32 +134,6 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
         installedPackages.forEach(pkg => {
           const installedVersion = pkgJson.devDependencies[pkg]
           const expectedVersion = devDependencies[pkg]
-
-          if (noInstall) {
-            expect(installedVersion).toBe(expectedVersion)
-          } else if (expectedVersion === 'latest') {
-            expect(installedVersion).not.toBe('latest')
-            expect(latestPackages.includes(pkg)).toBe(true)
-          } else {
-            expect(installedVersion).toStartWith(expectedVersion, pkg)
-          }
-        })
-      })
-
-      it('should populate "dependencies" correctly', () => {
-        const deps = require('./config/dependencies')
-        const {dependencies} = deps.mongoRouterRedux
-        const {latestPackages} = deps
-
-        // 1. All the packages match.
-        const installedPackages = Object.keys(pkgJson.dependencies)
-        const expectedPackages = Object.keys(dependencies)
-        expect(installedPackages.sort()).toEqual(expectedPackages.sort())
-
-        // 2. All the package versions match.
-        installedPackages.forEach(pkg => {
-          const installedVersion = pkgJson.dependencies[pkg]
-          const expectedVersion = dependencies[pkg]
 
           if (noInstall) {
             expect(installedVersion).toBe(expectedVersion)
@@ -242,29 +205,7 @@ describe('cli - React + MongoDB + Express + React Router + Redux project', () =>
 
         it(`should populate "${file}" correctly`, () => {
           const fileContents = fs.readFileSync(`${folderPath}/${file}`, 'utf8')
-
-          // For mongoDB installs `.env` is populated dynamically with a unique `SECRET`.
-          if (file === '.env') {
-            const dotenv = require('dotenv')
-            const {SECRET, ...dotEnvObj} = dotenv.parse(fileContents)
-
-            expect(SECRET.length).toBe(36) // This is a uuid.
-            expect(dotEnvObj).toEqual({
-              API: '/api',
-              API_PORT: '3000',
-              API_WEBPACK: '/api',
-              APP_NAME: appName,
-              DEV_SERVER_PORT: '8080',
-              MONGO_AUTH_SOURCE: 'admin',
-              MONGO_SESSION_COLLECTION: `${appName}Sessions`,
-              MONGO_URI: `mongodb://localhost:27017/${appName}`,
-              MONGO_URI_PROD: `mongodb://localhost:27017/${appName}`,
-              MONGO_USER: '',
-              MONGO_USER_PASSWORD: '',
-            })
-          } else {
-            expect(fileContents).toMatchSnapshot()
-          }
+          expect(fileContents).toMatchSnapshot()
         })
       })
     })

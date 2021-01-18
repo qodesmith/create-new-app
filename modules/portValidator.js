@@ -6,7 +6,7 @@
 const chalk = require('chalk')
 
 function portValidator(val, defaultPort) {
-  const num = Number.isInteger(+val) ? (+val) : undefined
+  const num = Number.isInteger(+val) ? +val : undefined
 
   if (num === undefined) {
     const msg = `\n"${val}" is an invalid port. Defaulting to ${defaultPort}...\n`

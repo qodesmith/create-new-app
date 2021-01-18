@@ -13,7 +13,7 @@
   when they take a quick glance at package.json.
 */
 
-const { readJSONSync, writeFileSync } = require('fs-extra')
+const {readJSONSync, writeFileSync} = require('fs-extra')
 
 function adjustPkgJson(folder) {
   const packageJson = readJSONSync(`${folder}/package.json`)
@@ -32,7 +32,7 @@ function adjustPkgJson(folder) {
 function transformVersion(obj, folder) {
   Object.keys(obj).forEach(pkg => {
     const location = `${folder}/node_modules/${pkg}/package.json`
-    const { version } = readJSONSync(location)
+    const {version} = readJSONSync(location)
 
     obj[pkg] = `^${version}`
   })

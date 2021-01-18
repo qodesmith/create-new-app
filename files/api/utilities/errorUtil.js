@@ -15,16 +15,18 @@
 const replacer = (k, value) => {
   if (!(value instanceof Error)) return value
 
-  return Object
-    .getOwnPropertyNames(value)
-    .reduce((acc, key) => ({ ...acc, [key]: value[key] }), {})
+  return Object.getOwnPropertyNames(value).reduce(
+    (acc, key) => ({...acc, [key]: value[key]}),
+    {},
+  )
 }
 
-const stringifyError = (err, spacing = 0) => err ? JSON.stringify(err, replacer, spacing) : ''
+const stringifyError = (err, spacing = 0) =>
+  err ? JSON.stringify(err, replacer, spacing) : ''
 
-const errorToObject = err => err ? JSON.parse(stringifyError(err)) : err
+const errorToObject = err => (err ? JSON.parse(stringifyError(err)) : err)
 
 module.exports = {
   stringifyError,
-  errorToObject
+  errorToObject,
 }

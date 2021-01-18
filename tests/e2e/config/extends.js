@@ -19,8 +19,10 @@ expect.extend({
 
     if (pass) {
       return {
-        message: () => `expected ${received} not to start with ${expected}${extra}`,
-        pass: true
+        message: () => {
+          return `expected ${received} not to start with ${expected}${extra}`
+        },
+        pass: true,
       }
     }
 
@@ -32,7 +34,7 @@ expect.extend({
           return `expected ${received} to start with ${expected}${extra}`
         }
       },
-      pass: false
+      pass: false,
     }
-  }
+  },
 })

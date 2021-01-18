@@ -1,5 +1,5 @@
 const mongo = require('./mongo')
-const { errorToObject } = require('./errorUtil')
+const {errorToObject} = require('./errorUtil')
 const isProd = process.env.NODE_ENV === 'production'
 const catchy = require('./catchy')
 
@@ -8,7 +8,8 @@ const catchy = require('./catchy')
   Returns a date string local to NY - '9/14/2017, 2:36:31 PM'
   http://bit.ly/2Xp3SwW
 */
-const localDate = () => new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+const localDate = () =>
+  new Date().toLocaleString('en-US', {timeZone: 'America/New_York'})
 
 /*
   This function is used to create error objects that will be stored in MongoDB.
@@ -19,7 +20,7 @@ const createError = (type = 'unknown', error = {}) => ({
   ...errorToObject(error),
   type,
   localDate: localDate(),
-  date: Date.now()
+  date: Date.now(),
 })
 
 // A helper function that saves errors to the database.
@@ -51,11 +52,11 @@ function sessionStoreErr(err) {
 
 // When Mongo can't connect.
 function noConnect(res, err) {
-  res.status(500).send({ error: errorToObject(err) })
+  res.status(500).send({error: errorToObject(err)})
 }
 
 module.exports = {
   operationErr,
   sessionStoreErr,
-  noConnect
+  noConnect,
 }

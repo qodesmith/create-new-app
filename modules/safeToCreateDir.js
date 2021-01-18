@@ -3,14 +3,17 @@
   install the app in already exists or not.
 */
 
-const { existsSync } = require('fs-extra')
+const {existsSync} = require('fs-extra')
 const chalk = require('chalk')
 let shouldWarn = true // Scream only once.
 
-function safeToCreateDir({ appDir, appName, force }) {
+function safeToCreateDir({appDir, appName, force}) {
   if (!existsSync(appDir)) return true
   if (force) {
-    shouldWarn && console.log(`Force installing in pre-existing directory ${chalk.green(appName)}...`)
+    shouldWarn &&
+      console.log(
+        `Force installing in pre-existing directory ${chalk.green(appName)}...`,
+      )
     shouldWarn = false
     return true
   }

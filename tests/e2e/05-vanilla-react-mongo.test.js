@@ -12,15 +12,13 @@ const {
   listFolderContents,
 } = require('./helpers/folderFileHelper')
 
-describe('cli - React + Express + React Router + Redux project', () => {
-  const appName = '08-react-express-rrouter-redux-test'
+describe('cli - React + MongoDB + Express project', () => {
+  const appName = path.parse(__filename).name
   const mainPath = path.resolve(__dirname, '../../')
   const appPath = `${mainPath}/${appName}`
 
   beforeAll(() => {
-    run(
-      `node ${mainPath}/main.js ${appName} --express --router --redux ${noInstall}`,
-    )
+    run(`node ${mainPath}/main.js ${appName} --mongo ${noInstall}`)
   })
 
   afterAll(() => {
@@ -32,13 +30,10 @@ describe('cli - React + Express + React Router + Redux project', () => {
   })
 
   it('should contain the expected folders and no others', () => {
-    const expectedFolders = foldersFromConfig(
-      appPath,
-      filesAndFolders.cnaExpressRouterRedux,
-    )
+    const expectedFolders = foldersFromConfig(appPath, filesAndFolders.cnaMongo)
     const ignores = listIgnoredFoldersFromConfig(
       appPath,
-      filesAndFolders.cnaExpressRouterRedux,
+      filesAndFolders.cnaMongo,
     )
     const actualFolders = listFoldersInTree(appPath, {ignores})
 
@@ -46,10 +41,7 @@ describe('cli - React + Express + React Router + Redux project', () => {
   })
 
   it('should contain the expected files and no others', () => {
-    const config = absolutePathConfig(
-      appPath,
-      filesAndFolders.cnaExpressRouterRedux,
-    )
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongo)
 
     Object.keys(config).forEach(folder => {
       const filesInFolder = listFolderContents(folder, {
@@ -62,15 +54,12 @@ describe('cli - React + Express + React Router + Redux project', () => {
   })
 
   it('should produce valid JavaScript files with no parsing errors', () => {
-    expect(jsFilesAreValid(appPath, 'cnaExpressRouterRedux')).toBe(true)
+    expect(jsFilesAreValid(appPath, 'cnaMongo')).toBe(true)
   })
 
   describe('contents of files created', () => {
     let i = 0
-    const config = absolutePathConfig(
-      appPath,
-      filesAndFolders.cnaExpressRouterRedux,
-    )
+    const config = absolutePathConfig(appPath, filesAndFolders.cnaMongo)
     const folderPaths = Object.keys(config)
     const folderNames = folderPaths.map(folderPath => {
       const name = folderPath.split(`${appPath}`)[1]
@@ -133,7 +122,7 @@ describe('cli - React + Express + React Router + Redux project', () => {
 
       it('should populate "devDependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {devDependencies} = deps.expressRouterRedux
+        const {devDependencies} = deps.mongo
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -159,7 +148,7 @@ describe('cli - React + Express + React Router + Redux project', () => {
 
       it('should populate "dependencies" correctly', () => {
         const deps = require('./config/dependencies')
-        const {dependencies} = deps.expressRouterRedux
+        const {dependencies} = deps.mongo
         const {latestPackages} = deps
 
         // 1. All the packages match.
@@ -242,7 +231,29 @@ describe('cli - React + Express + React Router + Redux project', () => {
 
         it(`should populate "${file}" correctly`, () => {
           const fileContents = fs.readFileSync(`${folderPath}/${file}`, 'utf8')
-          expect(fileContents).toMatchSnapshot()
+
+          // For mongoDB installs `.env` is populated dynamically with a unique `SECRET`.
+          if (file === '.env') {
+            const dotenv = require('dotenv')
+            const {SECRET, ...dotEnvObj} = dotenv.parse(fileContents)
+
+            expect(SECRET.length).toBe(36) // This is a uuid.
+            expect(dotEnvObj).toEqual({
+              API: '/api',
+              API_PORT: '3000',
+              API_WEBPACK: '/api',
+              APP_NAME: appName,
+              DEV_SERVER_PORT: '8080',
+              MONGO_AUTH_SOURCE: 'admin',
+              MONGO_SESSION_COLLECTION: `${appName}Sessions`,
+              MONGO_URI: `mongodb://localhost:27017/${appName}`,
+              MONGO_URI_PROD: `mongodb://localhost:27017/${appName}`,
+              MONGO_USER: '',
+              MONGO_USER_PASSWORD: '',
+            })
+          } else {
+            expect(fileContents).toMatchSnapshot()
+          }
         })
       })
     })

@@ -1,22 +1,22 @@
 const fs = require('fs-extra')
 const path = require('path')
 
-
 /*
   Returns an array containing the contents of a folder.
   Can optionally list only folders, only files,
   and / or return only the names without the preceding paths.
 */
-function listFolderContents(directory, { folders, files, namesOnly } = {}) {
-  return contents = fs
-    .readdirSync(directory, { withFileTypes: true })
-    .filter(dirent => { // https://nodejs.org/api/fs.html#fs_class_fs_dirent
+function listFolderContents(directory, {folders, files, namesOnly} = {}) {
+  return (contents = fs
+    .readdirSync(directory, {withFileTypes: true})
+    .filter(dirent => {
+      // https://nodejs.org/api/fs.html#fs_class_fs_dirent
       // https://stackoverflow.com/a/15630832/2525633
       if (folders) return dirent.isDirectory()
       if (files) return dirent.isFile()
       return true
     })
-    .map(dirent => namesOnly ? dirent.name : `${directory}/${dirent.name}`)
+    .map(dirent => (namesOnly ? dirent.name : `${directory}/${dirent.name}`)))
 }
 
 /*
@@ -33,12 +33,11 @@ function getAbsolutePaths(basePath, folders = []) {
   If a match is found that begins with anything in the `ignores` array,
   those matches will be ignored. Recursively calls itself.
 */
-function listFoldersInTree(basePath, { ignores = [] } = {}) {
-  return listFolderContents(basePath, { folders: true })
-    .reduce((acc, folder) => {
-      if (ignores.some(ignored => folder.startsWith(ignored))) return acc
-      return [...acc, folder, ...listFoldersInTree(folder, { ignores })]
-    }, [])
+function listFoldersInTree(basePath, {ignores = []} = {}) {
+  return listFolderContents(basePath, {folders: true}).reduce((acc, folder) => {
+    if (ignores.some(ignored => folder.startsWith(ignored))) return acc
+    return [...acc, folder, ...listFoldersInTree(folder, {ignores})]
+  }, [])
 }
 
 /*
@@ -48,11 +47,11 @@ function listFoldersInTree(basePath, { ignores = [] } = {}) {
   Ignored folders are those in the object that have falsey values.
 */
 function foldersFromConfig(basePath, config = {}) {
-  const folders = Object.keys(config)
-    .filter(folder => config[folder])
+  const folders = Object.keys(config).filter(folder => config[folder])
 
-  return getAbsolutePaths(basePath, folders)
-    .filter(folder => folder !== basePath)
+  return getAbsolutePaths(basePath, folders).filter(
+    folder => folder !== basePath,
+  )
 }
 
 /*
@@ -71,14 +70,12 @@ function listIgnoredFoldersFromConfig(basePath, config) {
   filtering out any keys that had falsey values (folders we ignore).
 */
 function absolutePathConfig(basePath, config = {}) {
-  return Object
-    .keys(config)
-    .reduce((acc, key) => {
-      if (!config[key]) return acc
+  return Object.keys(config).reduce((acc, key) => {
+    if (!config[key]) return acc
 
-      const absolutePath = path.resolve(basePath, key)
-      return { ...acc, [absolutePath]: config[key] }
-    }, {})
+    const absolutePath = path.resolve(basePath, key)
+    return {...acc, [absolutePath]: config[key]}
+  }, {})
 }
 
 module.exports = {
@@ -86,5 +83,5 @@ module.exports = {
   listIgnoredFoldersFromConfig,
   absolutePathConfig,
   listFolderContents,
-  listFoldersInTree
+  listFoldersInTree,
 }

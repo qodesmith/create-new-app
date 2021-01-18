@@ -29,25 +29,9 @@ const cna = {
   './src/styles': ['global.scss', 'styles.scss'],
 }
 
-const cnaRedux = {
-  ...cna,
-  './src': ['entry.jsx', 'index.ejs', 'store.js'],
-  './src/redux': [],
-  './src/redux/actions': ['index.js'],
-  './src/redux/middleware': [],
-  './src/redux/reducers': ['appReducer.js'],
-}
-
 const cnaRouter = {
   ...cna,
   './src/components': ['Home.jsx', 'NotFound.jsx'],
-}
-
-const cnaRouterRedux = {
-  ...cnaRedux,
-  ...cnaRouter,
-  './src': ['entry.jsx', 'index.ejs', 'store.js'],
-  './src/redux/reducers': ['homeReducer.js'],
 }
 
 const cnaExpress = {
@@ -57,21 +41,9 @@ const cnaExpress = {
   './api/utilities': ['catchy.js', 'errorUtil.js'],
 }
 
-const cnaExpressRedux = {
-  ...cnaRedux,
-  ...cnaExpress,
-  './src': ['entry.jsx', 'index.ejs', 'store.js'],
-}
-
 const cnaExpressRouter = {
   ...cnaExpress,
   ...cnaRouter,
-  './': cnaExpress['./'],
-}
-
-const cnaExpressRouterRedux = {
-  ...cnaExpress,
-  ...cnaRouterRedux,
   './': cnaExpress['./'],
 }
 
@@ -86,38 +58,19 @@ const cnaMongo = {
   ],
 }
 
-const cnaMongoRedux = {
-  ...cnaExpressRedux,
-  ...cnaMongo,
-  './src': ['entry.jsx', 'index.ejs', 'store.js'],
-}
-
 const cnaMongoRouter = {
   ...cnaExpressRouter,
   ...cnaMongo,
   './src/components': cnaRouter['./src/components'],
 }
 
-const cnaMongoRouterRedux = {
-  ...cnaExpressRouterRedux,
-  ...cnaMongo,
-  './src': cnaRedux['./src'],
-  './src/components': cnaRouter['./src/components'],
-}
-
 module.exports = {
   cna,
-  cnaRedux,
   cnaRouter,
-  cnaRouterRedux,
 
   cnaExpress,
-  cnaExpressRedux,
   cnaExpressRouter,
-  cnaExpressRouterRedux,
 
   cnaMongo,
-  cnaMongoRedux,
   cnaMongoRouter,
-  cnaMongoRouterRedux,
 }

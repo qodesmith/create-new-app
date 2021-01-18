@@ -9,15 +9,13 @@ function findLeadingSpaces(str) {
   return index < 0 ? 0 : index
 }
 
-function indentFromZero(str, { both, first, last } = {}) {
-  let lines = str
-    .split('\n')
-    .map(line => line.trim() ? line : '')
+function indentFromZero(str, {both, first, last} = {}) {
+  let lines = str.split('\n').map(line => (line.trim() ? line : ''))
 
   const [smallestIndent] = lines
     .filter(Boolean) // Filter out lines that are just empty strings.
     .map(findLeadingSpaces)
-    .sort((a, b) => a > b ? 1 : a < b ? -1 : 0)
+    .sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
 
   /*
     Why these options? Because in our usage of this module we might
@@ -31,9 +29,7 @@ function indentFromZero(str, { both, first, last } = {}) {
     if (last) lines = lines.slice(0, -1)
   }
 
-  return lines
-    .map(line => line.slice(smallestIndent))
-    .join('\n')
+  return lines.map(line => line.slice(smallestIndent)).join('\n')
 }
 
 module.exports = indentFromZero

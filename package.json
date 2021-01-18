@@ -1,6 +1,6 @@
 {
   "name": "create-new-app",
-  "version": "6.4.0",
+  "version": "7.0.0",
   "description": "Easily generate a new React application, optionally with Express & MongoDB.",
   "scripts": {
     "test": "jest ; node removeTestFolders.js",

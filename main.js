@@ -34,6 +34,7 @@ const {adjustEntryFile} = require('./modules/adjustEntryFile')
 const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
 const copySafe = require('./modules/copySafe')
+const initializeGit = require('./modules/initializeGit')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
@@ -60,6 +61,7 @@ const optionDefinitions = [
   // Flags.
   {name: 'offline', alias: 'o', type: Boolean, defaultValue: false},
   {name: 'force', alias: 'f', type: Boolean, defaultValue: false}, // Use with caution.
+  {name: 'noGit', type: Boolean, defaultValue: false},
   {name: 'sandbox', alias: 's', type: Boolean, defaultValue: false},
 
   // `package.json` fields.
@@ -485,7 +487,17 @@ function createFiles(options) {
 
 // STEP 5
 async function installDependencies(options) {
-  const {appName, appDir, server, offline, mongo, force, noInstall} = options
+  const {
+    appName,
+    appDir,
+    server,
+    offline,
+    mongo,
+    force,
+    noInstall,
+    noGit,
+    repository,
+  } = options
   const forceOffline = offline ? ' --offline' : '' // http://bit.ly/2Z2Ht9c
   const cache = offline ? ' cache' : ''
   let npmInstallFailed = false
@@ -527,17 +539,8 @@ async function installDependencies(options) {
   // E.x. - "react": "^17" => "react": "^17.0.1"
   !noInstall && adjustPkgJson(appDir)
 
-  // Initialize git.
-  try {
-    run('git init -b main', true) // Don't display stdout.
-    console.log('Initialized a git repository.\n')
-  } catch (e) {
-    console.log(
-      `Tried to initialize a new ${chalk.bold('git')} repository but couldn't.`,
-    )
-    console.log(`Do you have have ${chalk.bold('git')} installed?`)
-    console.log('  * https://git-scm.com/downloads\n')
-  }
+  // Initialize a git repo.
+  if (!force && !noGit && !repository) initializeGit()
 
   if (noInstall || npmInstallFailed) {
     console.log(

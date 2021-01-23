@@ -417,6 +417,18 @@ If you're developing a fullstack app we've got you covered with Express and Mong
       <td><code>false</code></td>
     </tr>
     <tr>
+      <td><code>--noGit</code></td>
+      <td>-</td>
+      <td>Boolean</td>
+      <td>
+        Don't want a git repo? This is for you. Keep in mind CNA won't initialize a git repo if the `--force` or `--repository` options are used.
+        <br><br>
+        <em>Examples:</em>
+        <br><code>--noGit</code>
+      </td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
       <td><code>--sandbox</code></td>
       <td><code>-s</code></td>
       <td>Boolean</td>

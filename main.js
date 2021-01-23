@@ -529,7 +529,7 @@ async function installDependencies(options) {
 
   // Initialize git.
   try {
-    run('git init', true) // Don't display stdout.
+    run('git init -b main', true) // Don't display stdout.
     console.log('Initialized a git repository.\n')
   } catch (e) {
     console.log(

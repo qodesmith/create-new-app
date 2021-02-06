@@ -8,5 +8,5 @@ module.exports = (command, silent) => {
     This helps keep the CLI looking clean.
   */
   const stdio = silent ? ['pipe', 'pipe', 2] : 'inherit' // http://bit.ly/2Z8xzTF
-  return execSync(command, {stdio})
+  return execSync(command, {stdio, encoding: 'utf8'})
 }

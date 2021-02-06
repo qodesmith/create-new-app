@@ -498,6 +498,14 @@ async function installDependencies(options) {
     noGit,
     repository,
   } = options
+  /*
+    npm v7 introduced stricter rules around peer dependencies. We check for v7
+    so we can add the `--force` flag to avoid failed installations.
+  */
+  const npmVersion = run('npm -v', true)
+  const isNpmV7 = npmVersion[0] === '7'
+  const forceFlag = isNpmV7 ? ' --force' : ''
+
   const forceOffline = offline ? ' --offline' : '' // http://bit.ly/2Z2Ht9c
   const cache = offline ? ' cache' : ''
   let npmInstallFailed = false
@@ -514,7 +522,7 @@ async function installDependencies(options) {
     console.log(`Installing project dependencies via npm${cache}...\n`)
 
     try {
-      run(`npm i${forceOffline}`)
+      run(`npm i${forceOffline}${forceFlag}`)
     } catch (e) {
       npmInstallFailed = true
       console.log(

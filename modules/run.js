@@ -1,8 +1,8 @@
 // This modules runs commands as if typed into the cli.
 
-const {execSync, execFile} = require('child_process')
+const {execSync, exec} = require('child_process')
 
-module.exports = (command, silent, cb) => {
+module.exports = (command, silentOrCallback) => {
   /*
     The silent option mute's the commands CLI output except for errors.
     This helps keep the CLI looking clean.
@@ -13,17 +13,22 @@ module.exports = (command, silent, cb) => {
     inherit - Child will use parent's stdios. Pass through the corresponding
               stdio stream to/from the parent process.
 
-    pipe    - Spawned child will not share this with the parent - "mute".
-
-    http://bit.ly/2Z8xzTF
+    pipe    - Spawned child will not share this with the parent - "mute". This
+              will also pipe the output so you can capture it in a variable:
+              `const x = run(command, true)` will pipe the output to `x`.
   */
-  //                      stdin   stdout  stderr
-  const stdio = silent ? ['pipe', 'pipe', 'inherit'] : 'inherit'
 
-  if (cb) {
-    // execFile has a slight performance advantage over exec.
-    execFile(command, {stdio: 'inherit', encoding: 'utf8'}, cb)
+  if (typeof silentOrCallback === 'function') {
+    return exec(
+      command,
+      {windowsHide: true, encoding: 'utf8'},
+      silentOrCallback, // (error, stdout, stderr) => {...}
+    )
   } else {
-    return execSync(command, {stdio, encoding: 'utf8'})
+    return execSync(command, {
+      //                         stdin   stdout  stderr
+      stdio: silentOrCallback ? ['pipe', 'pipe', 'inherit'] : 'inherit', // http://bit.ly/2Z8xzTF
+      encoding: 'utf8',
+    })
   }
 }

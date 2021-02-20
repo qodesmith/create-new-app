@@ -1,0 +1,4 @@
+module.exports = {
+  NPM_VERSION: '_NPM_VERSION',
+  CNA_LATEST_MESSAGE: 'CNA_LATEST_MESSAGE',
+}

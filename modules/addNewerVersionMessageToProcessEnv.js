@@ -3,7 +3,7 @@ const run = require('./run')
 const getVersion = require('./getVersion')
 const makeTable = require('./makeTable')
 const indentFromZero = require('./indentFromZero')
-const {CNA_LATEST_MESSAGE} = require('./constants')
+const {CNA_LATEST_MESSAGE_KEY} = require('./constants')
 
 function addNewerVersionMessageToProcessEnv() {
   // Running this asynchronously so as not to block the regular cna process.
@@ -26,7 +26,7 @@ function addNewerVersionMessageToProcessEnv() {
   return latestCnaVersionPromise()
     .then(value => {
       const message = createMessage(value)
-      process.env[CNA_LATEST_MESSAGE] = message
+      process.env[CNA_LATEST_MESSAGE_KEY] = message
 
       return message
     })

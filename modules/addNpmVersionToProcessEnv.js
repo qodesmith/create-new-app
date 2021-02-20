@@ -1,5 +1,5 @@
 const run = require('./run')
-const {NPM_VERSION} = require('./constants')
+const {NPM_VERSION_KEY} = require('./constants')
 
 function addNpmVersionToProcessEnv() {
   // Running this asynchronously so as not to block the regular cna process.
@@ -16,7 +16,7 @@ function addNpmVersionToProcessEnv() {
 
   return npmVersionPromise()
     .then(version => {
-      process.env[NPM_VERSION] = version
+      process.env[NPM_VERSION_KEY] = version
       return version
     })
     .catch(e => e)

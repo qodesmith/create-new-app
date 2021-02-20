@@ -35,10 +35,13 @@ const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
 const copySafe = require('./modules/copySafe')
 const initializeGit = require('./modules/initializeGit')
+const addNewerVersionMessageToProcessEnv = require('addNewerVersionMessageToProcessEnv')
+const addNpmVersionToProcessEnv = require('addNpmVersionToProcessEnv')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
 const dir = text => path.resolve(__dirname, text)
+const {NPM_VERSION_KEY, CNA_LATEST_MESSAGE_KEY} = require('./modules/constants')
 
 // Option definitions.
 const optionDefinitions = [
@@ -105,8 +108,10 @@ async function letsGo() {
   let options = cla(optionDefinitions, {partial: true})
   const {noInstall, appName} = options
 
-  // STEP 1 - check if we're online.
+  // STEP 1 - check if we're online, asynchronously fetch some data.
   const online = await isOnline()
+  addNewerVersionMessageToProcessEnv()
+  addNpmVersionToProcessEnv()
 
   // STEP 2 - decide between a guided process or not.
   // Guided process - called with no arguments.
@@ -502,7 +507,7 @@ async function installDependencies(options) {
     npm v7 introduced stricter rules around peer dependencies. We check for v7
     so we can add the `--force` flag to avoid failed installations.
   */
-  const npmVersion = run('npm -v', true)
+  const npmVersion = process.env[NPM_VERSION_KEY] || '' // Provided by `addNpmVersionToProcessEnv`.
   const isNpmV7 = npmVersion[0] === '7'
   const forceFlag = isNpmV7 ? ' --force' : ''
 
@@ -554,6 +559,11 @@ async function installDependencies(options) {
     console.log(
       'No dependecies intalled. `package.json` will not reflect specific versions.',
     )
+  }
+
+  // Let the user know if there's a newer version of create-new-app.
+  if (process.env[CNA_LATEST_MESSAGE_KEY]) {
+    console.log(process.env[CNA_LATEST_MESSAGE_KEY])
   }
 
   // Display the final message.

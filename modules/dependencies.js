@@ -5,7 +5,7 @@
   When updating a dependency, be sure to update the following:
     * This file, lolz.
     * tests/e2e/config/dependencies.js
-    * tests/unit/dependencies.test.js
+    * tests/unit/dependencies.test.js (update snapshots)
 */
 
 // NPM Semver Calculator - https://semver.npmjs.com/

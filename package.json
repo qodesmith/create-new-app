@@ -11,6 +11,7 @@
     "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
     "e2e:update:noinstall": "NO_INSTALL=1 npm run e2e:update",
     "unit": "jest ./tests/unit",
+    "unit:update": "jest ./tests/unit --updateSnapshot",
     "preinstall": "node ./versionCheck.js",
     "jest": "jest"
   },

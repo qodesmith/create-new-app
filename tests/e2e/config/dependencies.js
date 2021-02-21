@@ -2,7 +2,7 @@
   When updating a dependency, be sure to update the following:
     * This file, lolz.
     * modules/dependencies.js
-    * tests/unit/dependencies.test.js
+    * tests/unit/dependencies.test.js (update snapshots)
 */
 
 const serverDevDeps = {

@@ -492,6 +492,7 @@ async function installDependencies(options) {
     appName,
     appDir,
     server,
+    online, // Actual online status.
     offline,
     mongo,
     force,
@@ -558,7 +559,7 @@ async function installDependencies(options) {
   }
 
   // Display the final message.
-  const newerVersionMessage = createNewerVersionMessage()
+  const newerVersionMessage = online ? createNewerVersionMessage() : null
   const cyanDir = chalk.cyan(appDir)
   const boldName = chalk.bold(appName)
   const serverMsg = server ? 'and Express servers' : 'server'

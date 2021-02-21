@@ -23,7 +23,7 @@ function addNewerVersionMessageToProcessEnv() {
     })
   })
 
-  return latestCnaVersionPromise()
+  return latestCnaVersionPromise
     .then(value => {
       const message = createMessage(value)
       process.env[CNA_LATEST_MESSAGE_KEY] = message

@@ -14,7 +14,7 @@ function addNpmVersionToProcessEnv() {
     })
   })
 
-  return npmVersionPromise()
+  return npmVersionPromise
     .then(version => {
       process.env[NPM_VERSION_KEY] = version
       return version

@@ -31,7 +31,7 @@ const serverDevDeps = {
   postcss: '^8',
   'postcss-combine-duplicated-selectors': '^10',
   'postcss-combine-media-query': '^1',
-  'postcss-loader': '^4',
+  'postcss-loader': '^5',
   'purgecss-whitelister': 'latest',
   react: '^17',
   'react-dom': '^17',

@@ -5,21 +5,23 @@
 const chalk = require('chalk')
 const indentFromZero = require('./indentFromZero')
 
-
 function showHelp() {
-  console.log(indentFromZero(`
-    Usage: ${chalk.bold('create-new-app')} ${chalk.green('<project-directory>')} [options]
+  console.log(
+    indentFromZero(`
+    Usage: ${chalk.bold('create-new-app')} ${chalk.green(
+      '<project-directory>',
+    )} [options]
 
 
     Options:
 
       ${chalk.cyan.bold('General options:')}
-        -v,  --version    shows the version number
-        -h,  --help       shows what you're looking at now
-        -mh, --mongoHelp  shows help specific to MongoDB for production
-        -o,  --offline    forces the \`npm install\` to use local cache
-        -t,  --title      sets the webpage title
-        -f,  --force      skips creating a new directory & installs in a pre-existing one
+        -v,   --version    shows the version number
+        -h,   --help       shows what you're looking at now
+        --mh, --mongoHelp  shows help specific to MongoDB for production
+        -o,   --offline    forces the \`npm install\` to use local cache
+        -t,   --title      sets the webpage title
+        -f,   --force      skips creating a new directory & installs in a pre-existing one
 
       ${chalk.cyan.bold('App options:')}
         -r,  --router     includes React Router in your application, completely wired up
@@ -49,9 +51,12 @@ function showHelp() {
     Using MongoDB with your app?  View some tips for production with this:
       ${chalk.bold('cna --mongoHelp')}
 
-    Have an issue?  Help keep ${chalk.bold('create-new-app')} awesome by reporting it here:
+    Have an issue?  Help keep ${chalk.bold(
+      'create-new-app',
+    )} awesome by reporting it here:
       ${chalk.cyan('https://github.com/qodesmith/create-new-app/issues/new')}
-  `))
+  `),
+  )
 }
 
 module.exports = showHelp

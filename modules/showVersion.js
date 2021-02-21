@@ -1,8 +1,9 @@
 // This module logs the cna version when running `cna --version`.
 
+const getVersion = require('./getVersion')
+
 function showVersion() {
-  const json = require('../package.json')
-  console.log(json.version)
+  console.log(getVersion())
 }
 
 module.exports = showVersion

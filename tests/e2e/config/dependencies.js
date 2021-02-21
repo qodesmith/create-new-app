@@ -25,7 +25,7 @@ const serverDevDeps = {
   'css-loader': '^5',
   cssnano: '^4',
   'file-loader': '^6',
-  'html-webpack-plugin': '^5.0.0-beta',
+  'html-webpack-plugin': '^5',
   'mini-css-extract-plugin': '^1',
   'npm-run-all': '^4',
   postcss: '^8',

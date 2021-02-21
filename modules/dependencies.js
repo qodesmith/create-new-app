@@ -45,7 +45,7 @@ const dependencies = ({mongo, router, server}) => {
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^1',
     'clean-webpack-plugin': '^3',
-    'html-webpack-plugin': '^5.0.0-beta',
+    'html-webpack-plugin': '^5',
     'file-loader': '^6',
     'css-loader': '^5',
     sass: '^1',

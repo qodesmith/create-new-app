@@ -35,8 +35,8 @@ const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
 const copySafe = require('./modules/copySafe')
 const initializeGit = require('./modules/initializeGit')
-const addNewerVersionMessageToProcessEnv = require('addNewerVersionMessageToProcessEnv')
-const addNpmVersionToProcessEnv = require('addNpmVersionToProcessEnv')
+const addNewerVersionMessageToProcessEnv = require('./modules/addNewerVersionMessageToProcessEnv')
+const addNpmVersionToProcessEnv = require('./modules/addNpmVersionToProcessEnv')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.

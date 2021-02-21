@@ -32,7 +32,7 @@ const dependencies = ({mongo, router, server}) => {
     'postcss-loader': '^4',
     postcss: '^8',
     cssnano: '^4',
-    '@fullhuman/postcss-purgecss': '^3', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
+    '@fullhuman/postcss-purgecss': '^4', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install the latest.
     'postcss-combine-media-query': '^1',
     'postcss-combine-duplicated-selectors': '^10',

@@ -14,7 +14,7 @@ const serverDevDeps = {
   '@babel/plugin-proposal-nullish-coalescing-operator': '^7',
   '@babel/preset-env': '^7',
   '@babel/preset-react': '^7',
-  '@fullhuman/postcss-purgecss': '^3',
+  '@fullhuman/postcss-purgecss': '^4',
   '@pmmmwh/react-refresh-webpack-plugin': '^0',
   autoprefixer: '^10',
   'babel-loader': '^8',

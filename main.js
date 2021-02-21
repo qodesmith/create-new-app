@@ -35,13 +35,11 @@ const browserslist = require('./modules/browserslist')
 const keepOldFileContent = require('./modules/keepOldFileContent')
 const copySafe = require('./modules/copySafe')
 const initializeGit = require('./modules/initializeGit')
-const addNewerVersionMessageToProcessEnv = require('./modules/addNewerVersionMessageToProcessEnv')
-const addNpmVersionToProcessEnv = require('./modules/addNpmVersionToProcessEnv')
+const createNewerVersionMessage = require('./modules/createNewerVersionMessage')
 
 // Other.
 const cwd = fs.realpathSync(process.cwd()) // http://bit.ly/2YYe9R8 - because symlinks.
 const dir = text => path.resolve(__dirname, text)
-const {NPM_VERSION_KEY, CNA_LATEST_MESSAGE_KEY} = require('./modules/constants')
 
 // Option definitions.
 const optionDefinitions = [
@@ -108,10 +106,8 @@ async function letsGo() {
   let options = cla(optionDefinitions, {partial: true})
   const {noInstall, appName} = options
 
-  // STEP 1 - check if we're online, asynchronously fetch some data.
+  // STEP 1 - check if we're online.
   const online = await isOnline()
-  addNewerVersionMessageToProcessEnv()
-  addNpmVersionToProcessEnv()
 
   // STEP 2 - decide between a guided process or not.
   // Guided process - called with no arguments.
@@ -507,7 +503,7 @@ async function installDependencies(options) {
     npm v7 introduced stricter rules around peer dependencies. We check for v7
     so we can add the `--force` flag to avoid failed installations.
   */
-  const npmVersion = process.env[NPM_VERSION_KEY] || '' // Provided by `addNpmVersionToProcessEnv`.
+  const npmVersion = await run('npm -v', true)
   const isNpmV7 = npmVersion[0] === '7'
   const forceFlag = isNpmV7 ? ' --force' : ''
 
@@ -561,12 +557,8 @@ async function installDependencies(options) {
     )
   }
 
-  // Let the user know if there's a newer version of create-new-app.
-  if (process.env[CNA_LATEST_MESSAGE_KEY]) {
-    console.log(process.env[CNA_LATEST_MESSAGE_KEY])
-  }
-
   // Display the final message.
+  const newerVersionMessage = createNewerVersionMessage()
   const cyanDir = chalk.cyan(appDir)
   const boldName = chalk.bold(appName)
   const serverMsg = server ? 'and Express servers' : 'server'
@@ -593,4 +585,6 @@ async function installDependencies(options) {
   console.log(`\nGet started by typing:\n`)
   console.log(`  ${chalk.cyan.bold('cd')} ${boldName}`)
   console.log(`  ${chalk.cyan.bold('npm start')}\n`)
+
+  if (newerVersionMessage) console.log(`${newerVersionMessage}\n`)
 }

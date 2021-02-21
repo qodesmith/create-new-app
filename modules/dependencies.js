@@ -10,36 +10,37 @@
 
 // NPM Semver Calculator - https://semver.npmjs.com/
 
-const dependencyReducer = obj => (
-  Object.keys(obj).sort().reduce((acc, pkg) => {
-    if (obj[pkg]) acc[pkg] = obj[pkg]
-    return acc
-  }, {})
-)
+const dependencyReducer = obj =>
+  Object.keys(obj)
+    .sort()
+    .reduce((acc, pkg) => {
+      if (obj[pkg]) acc[pkg] = obj[pkg]
+      return acc
+    }, {})
 
-const dependencies = ({ mongo, router, server }) => {
+const dependencies = ({mongo, router, server}) => {
   const devDependencies = {
     // MAIN
-    'react': '^17',
+    react: '^17',
     'react-dom': '^17',
-    'sassyons': 'latest', // Always install the latest.
+    sassyons: 'latest', // Always install the latest.
     'react-router-dom': router && '^5',
-    'history': router && '^5',
+    history: router && '^5',
 
     // POSTCSS
     // https://cssnano.co/optimisations/ - list of plugins.
     'postcss-loader': '^4',
-    'postcss': '^8',
-    'cssnano': '^4',
+    postcss: '^8',
+    cssnano: '^4',
     '@fullhuman/postcss-purgecss': '^3', // http://bit.ly/2Xtfwao - why we're using purge-css *here* and not as a Webpack plugin.
     'purgecss-whitelister': 'latest', // Always install the latest.
     'postcss-combine-media-query': '^1',
     'postcss-combine-duplicated-selectors': '^10',
-    'autoprefixer': '^10',
+    autoprefixer: '^10',
     'css-declaration-sorter': '^6',
 
     // WEBPACK
-    'webpack': '^5',
+    webpack: '^5',
     'webpack-cli': '^4',
     'webpack-dev-server': '^3',
     'mini-css-extract-plugin': '^1',
@@ -47,7 +48,7 @@ const dependencies = ({ mongo, router, server }) => {
     'html-webpack-plugin': '^5.0.0-beta',
     'file-loader': '^6',
     'css-loader': '^5',
-    'sass': '^1',
+    sass: '^1',
     'sass-loader': '^10',
     'style-loader': '^2',
     'terser-webpack-plugin': '^5',
@@ -67,9 +68,9 @@ const dependencies = ({ mongo, router, server }) => {
     'regenerator-runtime': '^0', //  /  These two packages combined now replace `@babel/polyfill`.
 
     // OTHER
-    'chalk': !server && '^4', // This is also below in `serverDependencies`.
+    chalk: !server && '^4', // This is also below in `serverDependencies`.
     'cross-env': '^7',
-    'dotenv': !server && '^8', // This is also below in `serverDependencies`.
+    dotenv: !server && '^8', // This is also below in `serverDependencies`.
     'npm-run-all': '^4',
   }
 
@@ -77,24 +78,25 @@ const dependencies = ({ mongo, router, server }) => {
   // They will be saved in `package.json` as `dependencies`.
   const serverDependencies = {
     // SERVER
-    'chalk': '^4', // This is also conditionally above in `devDependencies`.
-    'express': '^4',
-    'helmet': '^3',
-    'compression': '^1',
+    chalk: '^4', // This is also conditionally above in `devDependencies`.
+    express: '^4',
+    helmet: '^4',
+    compression: '^1',
     'body-parser': '^1',
-    'nodemon': '^2',
-    'dotenv': '^8', // This is also conditionally above in `devDependencies`.
+    nodemon: '^2',
+    dotenv: '^8', // This is also conditionally above in `devDependencies`.
 
     // MONGO
-    'mongodb': mongo && '^3',
-    'saslprep': mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
+    mongodb: mongo && '^3',
+    saslprep: mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
     'connect-mongo': mongo && '^3',
     'express-session': mongo && '^1',
   }
 
   return {
     devDependencies: dependencyReducer(devDependencies),
-    serverDependencies: (mongo || server) ? dependencyReducer(serverDependencies) : {},
+    serverDependencies:
+      mongo || server ? dependencyReducer(serverDependencies) : {},
   }
 }
 

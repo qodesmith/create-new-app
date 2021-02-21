@@ -50,7 +50,7 @@ const routerDeps = {'react-router-dom': '^5', history: '^5'}
 const serverDeps = {
   chalk: '^4',
   express: '^4',
-  helmet: '^3',
+  helmet: '^4',
   compression: '^1',
   'body-parser': '^1',
   nodemon: '^2',

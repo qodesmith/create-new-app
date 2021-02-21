@@ -1062,3 +1062,483 @@ exports[`cli - React + React Router project contents of files created Folder - /
 @import 'global';
 "
 `;
+
+exports[`cli - React + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 1`] = `
+Object {
+  "bail": false,
+  "context": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+  "devServer": Object {
+    "contentBase": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
+    "historyApiFallback": true,
+    "host": "0.0.0.0",
+    "hot": true,
+    "inline": true,
+    "open": true,
+    "overlay": Object {
+      "errors": false,
+      "warnings": false,
+    },
+    "port": "8080",
+    "proxy": Object {},
+    "public": "http://localhost:8080",
+    "watchContentBase": true,
+  },
+  "devtool": "source-map",
+  "entry": Object {
+    "main": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/entry.jsx",
+  },
+  "mode": "development",
+  "module": Object {
+    "rules": Array [
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "babel-loader",
+            "options": Object {
+              "plugins": Array [
+                "@babel/plugin-proposal-object-rest-spread",
+                "@babel/plugin-proposal-class-properties",
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-optional-chaining",
+                "@babel/plugin-proposal-nullish-coalescing-operator",
+                "react-refresh/babel",
+              ],
+              "presets": Array [
+                Array [
+                  "@babel/preset-env",
+                  Object {
+                    "corejs": Object {
+                      "proposals": true,
+                      "version": 3,
+                    },
+                    "modules": false,
+                    "useBuiltIns": "entry",
+                  },
+                ],
+                Array [
+                  "@babel/preset-react",
+                  Object {
+                    "runtime": "automatic",
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(scss\\|css\\)\\$/,
+        "use": Array [
+          "style-loader",
+          Object {
+            "loader": "css-loader",
+            "options": Object {
+              "importLoaders": 2,
+              "sourceMap": false,
+            },
+          },
+          Object {
+            "loader": "sass-loader",
+            "options": Object {
+              "sourceMap": false,
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "file-loader",
+            "options": Object {
+              "name": "[name].[ext]",
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+        "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "file-loader",
+            "options": Object {
+              "name": "[name].[ext]",
+            },
+          },
+        ],
+      },
+    ],
+  },
+  "optimization": Object {
+    "minimize": false,
+    "minimizer": Array [
+      TerserPlugin {
+        "options": Object {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minify": undefined,
+          "parallel": true,
+          "terserOptions": Object {
+            "compress": Object {
+              "comparisons": false,
+              "ecma": 5,
+              "inline": 2,
+            },
+            "mangle": Object {
+              "safari10": true,
+            },
+            "output": Object {
+              "ascii_only": true,
+              "comments": false,
+              "ecma": 5,
+            },
+          },
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": Object {
+    "chunkFilename": "[name].[fullhash].chunk.js",
+    "filename": "[name].[fullhash].bundle.js",
+    "globalObject": "this",
+    "path": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
+    "pathinfo": true,
+    "publicPath": "/",
+  },
+  "plugins": Array [
+    DefinePlugin {
+      "definitions": Object {
+        "__API__": undefined,
+        "__DEV__": true,
+        "__PROD__": false,
+        "process.env": Object {
+          "NODE_ENV": "\\"development\\"",
+        },
+      },
+    },
+    MiniCssExtractPlugin {
+      "_sortedModulesCache": WeakMap {},
+      "options": Object {
+        "chunkFilename": "[id].css",
+        "filename": "[name].[fullhash].css",
+        "ignoreOrder": false,
+      },
+      "runtimeOptions": Object {
+        "attributes": undefined,
+        "insert": undefined,
+        "linkType": "text/css",
+      },
+    },
+    CleanWebpackPlugin {
+      "apply": [Function],
+      "cleanAfterEveryBuildPatterns": Array [
+        "*.js",
+        "*.css",
+        "*.html",
+      ],
+      "cleanOnceBeforeBuildPatterns": Array [
+        "*.js",
+        "*.css",
+        "*.html",
+      ],
+      "cleanStaleWebpackAssets": true,
+      "currentAssets": Array [],
+      "dangerouslyAllowCleanPatternsOutsideProject": false,
+      "dry": false,
+      "handleDone": [Function],
+      "handleInitial": [Function],
+      "initialClean": false,
+      "outputPath": "",
+      "protectWebpackAssets": true,
+      "removeFiles": [Function],
+      "verbose": true,
+    },
+    HtmlWebpackPlugin {
+      "userOptions": Object {
+        "chunks": Array [
+          "main",
+        ],
+        "chunksSortMode": "manual",
+        "description": "",
+        "minify": false,
+        "mobileThemeColor": "#000000",
+        "template": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/index.ejs",
+        "title": "",
+      },
+      "version": 5,
+    },
+    HotModuleReplacementPlugin {
+      "options": Object {},
+    },
+    ReactRefreshPlugin {
+      "options": Object {
+        "exclude": /node_modules/i,
+        "include": /\\\\\\.\\(\\[jt\\]sx\\?\\|flow\\)\\$/i,
+        "overlay": Object {
+          "entry": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js",
+          "module": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/@pmmmwh/react-refresh-webpack-plugin/overlay/index.js",
+          "sockIntegration": "wds",
+        },
+      },
+    },
+    AfterCompilePlugin {
+      "run": undefined,
+    },
+  ],
+  "resolve": Object {
+    "alias": Object {
+      "assets": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/hooks",
+    },
+    "extensions": Array [
+      ".js",
+      ".jsx",
+      ".json",
+      ".scss",
+    ],
+  },
+  "target": "web",
+}
+`;
+
+exports[`cli - React + React Router project contents of files created webpack.config.js should have the correct top-level properties and file contents 2`] = `
+Object {
+  "bail": true,
+  "context": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+  "devServer": Object {
+    "contentBase": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
+    "historyApiFallback": true,
+    "host": "0.0.0.0",
+    "hot": true,
+    "inline": true,
+    "open": true,
+    "overlay": Object {
+      "errors": false,
+      "warnings": false,
+    },
+    "port": "8080",
+    "proxy": Object {},
+    "public": "http://localhost:8080",
+    "watchContentBase": true,
+  },
+  "devtool": false,
+  "entry": Object {
+    "main": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/entry.jsx",
+  },
+  "mode": "production",
+  "module": Object {
+    "rules": Array [
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(js\\|jsx\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "babel-loader",
+            "options": Object {
+              "plugins": Array [
+                "@babel/plugin-proposal-object-rest-spread",
+                "@babel/plugin-proposal-class-properties",
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-optional-chaining",
+                "@babel/plugin-proposal-nullish-coalescing-operator",
+              ],
+              "presets": Array [
+                Array [
+                  "@babel/preset-env",
+                  Object {
+                    "corejs": Object {
+                      "proposals": true,
+                      "version": 3,
+                    },
+                    "modules": false,
+                    "useBuiltIns": "entry",
+                  },
+                ],
+                Array [
+                  "@babel/preset-react",
+                  Object {
+                    "runtime": "automatic",
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(scss\\|css\\)\\$/,
+        "use": Array [
+          "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/node_modules/mini-css-extract-plugin/dist/loader.js",
+          Object {
+            "loader": "css-loader",
+            "options": Object {
+              "importLoaders": 2,
+              "sourceMap": false,
+            },
+          },
+          "postcss-loader",
+          Object {
+            "loader": "sass-loader",
+            "options": Object {
+              "sourceMap": false,
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src",
+        "test": /\\\\\\.\\(woff\\|woff2\\|eot\\|ttf\\|otf\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "file-loader",
+            "options": Object {
+              "name": "[name].[ext]",
+            },
+          },
+        ],
+      },
+      Object {
+        "include": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+        "test": /\\\\\\.\\(png\\|svg\\|jpg\\|gif\\)\\$/,
+        "use": Array [
+          Object {
+            "loader": "file-loader",
+            "options": Object {
+              "name": "[name].[ext]",
+            },
+          },
+        ],
+      },
+    ],
+  },
+  "optimization": Object {
+    "minimize": true,
+    "minimizer": Array [
+      TerserPlugin {
+        "options": Object {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minify": undefined,
+          "parallel": true,
+          "terserOptions": Object {
+            "compress": Object {
+              "comparisons": false,
+              "ecma": 5,
+              "inline": 2,
+            },
+            "mangle": Object {
+              "safari10": true,
+            },
+            "output": Object {
+              "ascii_only": true,
+              "comments": false,
+              "ecma": 5,
+            },
+          },
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": Object {
+    "chunkFilename": "[name].[fullhash].chunk.js",
+    "filename": "[name].[fullhash].bundle.js",
+    "globalObject": "this",
+    "path": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/dist",
+    "pathinfo": false,
+    "publicPath": "/",
+  },
+  "plugins": Array [
+    DefinePlugin {
+      "definitions": Object {
+        "__API__": undefined,
+        "__DEV__": false,
+        "__PROD__": true,
+        "process.env": Object {
+          "NODE_ENV": "\\"production\\"",
+        },
+      },
+    },
+    MiniCssExtractPlugin {
+      "_sortedModulesCache": WeakMap {},
+      "options": Object {
+        "chunkFilename": "[id].css",
+        "filename": "[name].[fullhash].css",
+        "ignoreOrder": false,
+      },
+      "runtimeOptions": Object {
+        "attributes": undefined,
+        "insert": undefined,
+        "linkType": "text/css",
+      },
+    },
+    CleanWebpackPlugin {
+      "apply": [Function],
+      "cleanAfterEveryBuildPatterns": Array [
+        "*.js",
+        "*.css",
+        "*.html",
+      ],
+      "cleanOnceBeforeBuildPatterns": Array [
+        "*.js",
+        "*.css",
+        "*.html",
+      ],
+      "cleanStaleWebpackAssets": true,
+      "currentAssets": Array [],
+      "dangerouslyAllowCleanPatternsOutsideProject": false,
+      "dry": false,
+      "handleDone": [Function],
+      "handleInitial": [Function],
+      "initialClean": false,
+      "outputPath": "",
+      "protectWebpackAssets": true,
+      "removeFiles": [Function],
+      "verbose": true,
+    },
+    HtmlWebpackPlugin {
+      "userOptions": Object {
+        "chunks": Array [
+          "main",
+        ],
+        "chunksSortMode": "manual",
+        "description": "",
+        "minify": Object {
+          "collapseWhitespace": true,
+          "removeComments": true,
+        },
+        "mobileThemeColor": "#000000",
+        "template": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/index.ejs",
+        "title": "",
+      },
+      "version": 5,
+    },
+  ],
+  "resolve": Object {
+    "alias": Object {
+      "assets": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/assets",
+      "components": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/components",
+      "helpers": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/helpers",
+      "hooks": "/Users/qodesmith/repos/create-new-app/02-react-rrouter.test/src/hooks",
+    },
+    "extensions": Array [
+      ".js",
+      ".jsx",
+      ".json",
+      ".scss",
+    ],
+  },
+  "target": "web",
+}
+`;

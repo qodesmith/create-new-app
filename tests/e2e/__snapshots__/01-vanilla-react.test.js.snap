@@ -461,12 +461,7 @@ export default function useUpdatingClock() {
 `;
 
 exports[`cli - vanilla React project contents of files created Folder - /src/styles should populate "global.scss" correctly 1`] = `
-"/*
-  Add your custom global styles here.
-  The styles provided below are a minimal suggested starting point.
-*/
-
-// https://bit.ly/3aI9YSD - universal box-sizing with inheritance.
+"// https://bit.ly/3aI9YSD - universal box-sizing with inheritance.
 html {
   box-sizing: border-box;
 }
@@ -485,6 +480,11 @@ body {
   // size/line-height | family
   font: 16px 'Open Sans', Arial, Helvetica, sans-serif;
 }
+
+/*
+  Add your custom global styles here.
+  The styles provided below are a minimal suggested starting point.
+*/
 "
 `;
 
@@ -498,7 +498,7 @@ exports[`cli - vanilla React project contents of files created Folder - /src/sty
 */
 
 // https://github.com/qodesmith/sassyons
-@import '~sassyons/dist/sassyons.css';
+@import 'sassyons/dist/sassyons.css';
 
 /*
   Application Styles
@@ -672,14 +672,15 @@ Object {
       },
     },
     MiniCssExtractPlugin {
+      "_sortedModulesCache": WeakMap {},
       "options": Object {
         "chunkFilename": "[id].css",
         "filename": "[name].[fullhash].css",
         "ignoreOrder": false,
       },
       "runtimeOptions": Object {
-        "attributes": "",
-        "insert": "document.head.appendChild(linkTag);",
+        "attributes": undefined,
+        "insert": undefined,
         "linkType": "text/css",
       },
     },
@@ -918,14 +919,15 @@ Object {
       },
     },
     MiniCssExtractPlugin {
+      "_sortedModulesCache": WeakMap {},
       "options": Object {
         "chunkFilename": "[id].css",
         "filename": "[name].[fullhash].css",
         "ignoreOrder": false,
       },
       "runtimeOptions": Object {
-        "attributes": "",
-        "insert": "document.head.appendChild(linkTag);",
+        "attributes": undefined,
+        "insert": undefined,
         "linkType": "text/css",
       },
     },

@@ -8,12 +8,12 @@ Usage: [1mcreate-new-app[22m [32m<project-directory>[39m [options]
 Options:
 
   [36m[1mGeneral options:[22m[39m
-    -v,  --version    shows the version number
-    -h,  --help       shows what you're looking at now
-    -mh, --mongoHelp  shows help specific to MongoDB for production
-    -o,  --offline    forces the \`npm install\` to use local cache
-    -t,  --title      sets the webpage title
-    -f,  --force      skips creating a new directory & installs in a pre-existing one
+    -v,   --version    shows the version number
+    -h,   --help       shows what you're looking at now
+    --mh, --mongoHelp  shows help specific to MongoDB for production
+    -o,   --offline    forces the \`npm install\` to use local cache
+    -t,   --title      sets the webpage title
+    -f,   --force      skips creating a new directory & installs in a pre-existing one
 
   [36m[1mApp options:[22m[39m
     -r,  --router     includes React Router in your application, completely wired up

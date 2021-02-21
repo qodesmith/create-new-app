@@ -2,7 +2,7 @@
   When updating a dependency, be sure to update the following:
     * This file, lolz.
     * modules/dependencies.js
-    * tests/unit/dependencies.test.js
+    * tests/unit/dependencies.test.js (update snapshots)
 */
 
 const serverDevDeps = {
@@ -14,7 +14,7 @@ const serverDevDeps = {
   '@babel/plugin-proposal-nullish-coalescing-operator': '^7',
   '@babel/preset-env': '^7',
   '@babel/preset-react': '^7',
-  '@fullhuman/postcss-purgecss': '^3',
+  '@fullhuman/postcss-purgecss': '^4',
   '@pmmmwh/react-refresh-webpack-plugin': '^0',
   autoprefixer: '^10',
   'babel-loader': '^8',
@@ -25,19 +25,19 @@ const serverDevDeps = {
   'css-loader': '^5',
   cssnano: '^4',
   'file-loader': '^6',
-  'html-webpack-plugin': '^5.0.0-beta',
+  'html-webpack-plugin': '^5',
   'mini-css-extract-plugin': '^1',
   'npm-run-all': '^4',
   postcss: '^8',
   'postcss-combine-duplicated-selectors': '^10',
   'postcss-combine-media-query': '^1',
-  'postcss-loader': '^4',
+  'postcss-loader': '^5',
   'purgecss-whitelister': 'latest',
   react: '^17',
   'react-dom': '^17',
   'regenerator-runtime': '^0',
   sass: '^1',
-  'sass-loader': '^10',
+  'sass-loader': '^11',
   sassyons: 'latest',
   'style-loader': '^2',
   'terser-webpack-plugin': '^5',
@@ -50,7 +50,7 @@ const routerDeps = {'react-router-dom': '^5', history: '^5'}
 const serverDeps = {
   chalk: '^4',
   express: '^4',
-  helmet: '^3',
+  helmet: '^4',
   compression: '^1',
   'body-parser': '^1',
   nodemon: '^2',

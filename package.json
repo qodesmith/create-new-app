@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest ; node removeTestFolders.js",
     "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
+    "test:update:noinstall": "NO_INSTALL=1 jest --updateSnapshot ; node removeTestFolders.js",
     "test:remain": "REMAIN=true npm run test",
     "e2e": "jest ./tests/e2e ; node removeTestFolders.js",
     "e2e:noinstall": "NO_INSTALL=1 npm run e2e",

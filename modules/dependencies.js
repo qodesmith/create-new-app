@@ -49,7 +49,7 @@ const dependencies = ({mongo, router, server}) => {
     'file-loader': '^6',
     'css-loader': '^5',
     sass: '^1',
-    'sass-loader': '^10',
+    'sass-loader': '^11',
     'style-loader': '^2',
     'terser-webpack-plugin': '^5',
     '@pmmmwh/react-refresh-webpack-plugin': '^0',

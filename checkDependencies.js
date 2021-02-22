@@ -4,6 +4,7 @@
   It's simply for maintenance reasons concerning this library.
 */
 
+const registryFetch = require('npm-registry-fetch')
 const chalk = require('chalk')
 const formDependencies = require('./modules/dependencies')
 const makeTable = require('./modules/makeTable')
@@ -18,37 +19,31 @@ const packages = Object.keys(fullList)
 const keysLength = packages.length
 const all = process.argv.some(arg => arg === '--all' || arg === 'all')
 
-const RegistryClient = require('npm-registry-client')
-const client = new RegistryClient()
-const uri = 'https://registry.npmjs.org'
-const params = {timeout: 1000}
-
-const promises = packages.map(name => {
-  return new Promise(resolve => {
-    const url = `${uri}/${name}/`
-    client.get(url, params, (error, data, raw, res) => {
-      if (error)
-        return resolve({
-          name: `${chalk.yellow.bold('ERROR')} - ${name}`,
-          error: true,
-        })
-
-      const usedVersion = fullList[name]
+const promises = packages.map(pkg => {
+  return registryFetch
+    .json(pkg)
+    .then(data => {
+      const usedVersion = fullList[pkg]
       const latestVersion = data['dist-tags'].latest
       const [latestMajor] = latestVersion.split('.')
       const isDeprecated = !!data.versions[latestVersion].deprecated
       const used = usedVersion.includes('^')
         ? usedVersion.slice(1)
         : usedVersion
-      name = isDeprecated ? `${chalk.bold.red('DEPRECATED:')} ${name}` : name
+      const name = isDeprecated
+        ? `${chalk.bold.red('DEPRECATED:')} ${pkg}`
+        : pkg
 
       if (all || isDeprecated || used !== latestMajor) {
-        resolve({name, used, latestVersion: chalk.green(latestVersion)})
+        return {name, used, latestVersion: chalk.green(latestVersion)}
       } else {
-        resolve({name: ''})
+        return {name: ''}
       }
     })
-  })
+    .catch(() => ({
+      name: `${chalk.yellow.bold('ERROR')} - ${pkg}`,
+      error: true,
+    }))
 })
 
 Promise.all(promises).then(results => {

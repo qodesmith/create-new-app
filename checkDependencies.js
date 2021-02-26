@@ -8,14 +8,13 @@ const registryFetch = require('npm-registry-fetch')
 const chalk = require('chalk')
 const formDependencies = require('./modules/dependencies')
 const makeTable = require('./modules/makeTable')
-const removeAnsiChars = require('./modules/removeAnsiChars')
 const {devDependencies, serverDependencies} = formDependencies({
   mongo: 1,
   router: 1,
   server: 1,
 })
 const fullList = {...devDependencies, ...serverDependencies}
-const packages = Object.keys(fullList)
+const packages = Object.keys(fullList).sort()
 const keysLength = packages.length
 const all = process.argv.some(arg => arg === '--all' || arg === 'all')
 
@@ -47,21 +46,15 @@ const promises = packages.map(pkg => {
 })
 
 Promise.all(promises).then(results => {
-  const finalResults = results
-    .sort((a, b) => {
-      const name1 = removeAnsiChars(a.name)
-      const name2 = removeAnsiChars(b.name)
-      return name1 > name2 ? 1 : name1 < name2 ? -1 : 0
-    })
-    .reduce(
-      (acc, {name, used, latestVersion, error}) => {
-        if (!name) return acc
-        if (error) return [...acc, [name, '-', '-']]
+  const finalResults = results.reduce(
+    (acc, {name, used, latestVersion, error}) => {
+      if (!name) return acc
+      if (error) return [...acc, [name, '-', '-']]
 
-        return [...acc, [name, used, latestVersion]]
-      },
-      [[chalk.bold('PACKAGE'), chalk.bold('USED'), chalk.bold('LATEST')]],
-    )
+      return [...acc, [name, used, latestVersion]]
+    },
+    [[chalk.bold('PACKAGE'), chalk.bold('USED'), chalk.bold('LATEST')]],
+  )
 
   // http://bit.ly/2Z7GZ1M - clear the console.
   console.log('\x1Bc')

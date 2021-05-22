@@ -60,7 +60,7 @@ const mongoDeps = {
   ...serverDeps,
   mongodb: '^3',
   saslprep: '^1', // This was added to stop MongoClient warnings.
-  'connect-mongo': '^3',
+  'connect-mongo': '^4',
   'express-session': '^1',
 }
 

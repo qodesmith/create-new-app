@@ -53,10 +53,10 @@ const mongo = require('./api/utilities/mongo')
 
 // MongoDB
 const {sessionStoreErr} = require('./api/utilities/handleErrors')
-const MongoStore = require('connect-mongo')(session)
-const store = new MongoStore({
+const MongoStore = require('connect-mongo')
+const store = MongoStore.create({
   dbName: APP_NAME,
-  collection: MONGO_SESSION_COLLECTION,
+  collectionName: MONGO_SESSION_COLLECTION,
   clientPromise: mongo(true), // `true` flag to retrieve ONLY the client.
 })
 

@@ -89,7 +89,7 @@ const dependencies = ({mongo, router, server}) => {
     // MONGO
     mongodb: mongo && '^3',
     saslprep: mongo && '^1', // Needed for MongoClient, otherwise it logs warnings -_-
-    'connect-mongo': mongo && '^3',
+    'connect-mongo': mongo && '^4',
     'express-session': mongo && '^1',
   }
 

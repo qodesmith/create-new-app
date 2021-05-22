@@ -1395,6 +1395,7 @@ Object {
       "_sortedModulesCache": WeakMap {},
       "options": Object {
         "chunkFilename": "[id].css",
+        "experimentalUseImportModule": false,
         "filename": "[name].[fullhash].css",
         "ignoreOrder": false,
       },
@@ -1647,6 +1648,7 @@ Object {
       "_sortedModulesCache": WeakMap {},
       "options": Object {
         "chunkFilename": "[id].css",
+        "experimentalUseImportModule": false,
         "filename": "[name].[fullhash].css",
         "ignoreOrder": false,
       },

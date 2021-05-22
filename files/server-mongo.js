@@ -53,7 +53,7 @@ const mongo = require('./api/utilities/mongo')
 
 // MongoDB
 const {sessionStoreErr} = require('./api/utilities/handleErrors')
-const MongoStore = require('connect-mongo').default
+const MongoStore = require('connect-mongo')
 const store = MongoStore.create({
   dbName: APP_NAME,
   collectionName: MONGO_SESSION_COLLECTION,

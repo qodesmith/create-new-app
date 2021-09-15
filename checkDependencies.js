@@ -34,7 +34,12 @@ const promises = packages.map(pkg => {
         : pkg
 
       if (all || isDeprecated || used !== latestMajor) {
-        return {name, used, latestVersion: chalk.green(latestVersion)}
+        return {
+          name,
+          used,
+          latestVersion: chalk.green(latestVersion),
+          url: chalk.blue(`https://www.npmjs.com/package/${pkg}`),
+        }
       } else {
         return {name: ''}
       }
@@ -47,24 +52,30 @@ const promises = packages.map(pkg => {
 
 Promise.all(promises).then(results => {
   const finalResults = results.reduce(
-    (acc, {name, used, latestVersion, error}) => {
+    (acc, {name, used, latestVersion, error, url}) => {
       if (!name) return acc
-      if (error) return [...acc, [name, '-', '-']]
+      if (error) return [...acc, [name, '-', '-', url]]
 
-      return [...acc, [name, used, latestVersion]]
+      return [...acc, [name, used, latestVersion, url]]
     },
-    [[chalk.bold('PACKAGE'), chalk.bold('USED'), chalk.bold('LATEST')]],
+    [
+      [
+        chalk.bold('PACKAGE'),
+        chalk.bold('USED'),
+        chalk.bold('LATEST'),
+        chalk.bold('NPM URL'),
+      ],
+    ],
   )
 
   // http://bit.ly/2Z7GZ1M - clear the console.
-  console.log('\x1Bc')
+  // console.log('\x1Bc')
 
   // Using a quick `setTimeout` here to ensure the console was cleared.
   setTimeout(() => {
     const totalChecked = results.filter(item => !item.error).length
-    const checked = chalk[totalChecked === keysLength ? 'green' : 'yellow'](
-      totalChecked,
-    )
+    const checked =
+      chalk[totalChecked === keysLength ? 'green' : 'yellow'](totalChecked)
 
     if (finalResults.length === 1) {
       console.log('All packages up to date!')

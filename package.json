@@ -44,7 +44,7 @@
   },
   "license": "MIT",
   "author": "Qodesmith <theqodesmith@gmail.com> (https://github.com/qodesmith/create-new-app)",
-  "main": "main.js",
+  "exports": "./main.js",
   "bin": {
     "create-new-app": "main.js",
     "cna": "main.js"
@@ -59,19 +59,21 @@
     ]
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "command-line-args": "^5.1.1",
+    "commander": "^9.0.0",
     "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0",
-    "npm-registry-fetch": "^11.0.0",
+    "npm-registry-fetch": "^12.0.0",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.16.0",
+    "eslint": "^8.4.0",
     "eslint-plugin-react": "^7.21.5",
-    "jest": "^26.6.3"
+    "jest": "^27.4.3"
   },
   "engines": {
-    "node": ">=12.13.0"
-  }
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "type": "module"
 }

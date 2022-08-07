@@ -11,7 +11,8 @@ try {
 
 const spaces = ' '.repeat(38 - nodeVersion.length)
 
-if (+nodeVersion < 10.13) {
+// Keep in sync with Vite's required Node version - 14.18.0 || >=16.0.0
+if (+nodeVersion !== 14.18 && +nodeVersion < 16) {
   const message = [
     '╭───────────────────────────────────────────────────────────────────╮',
     '│                                                                   │',

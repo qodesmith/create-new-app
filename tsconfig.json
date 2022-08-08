@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "system",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": false,
     "outDir": "dist",
+    "outFile": "./dist/main.js",
     "strictNullChecks": true
   },
   "lib": ["es2020"],

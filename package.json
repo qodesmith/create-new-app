@@ -14,7 +14,8 @@
     "unit": "jest ./tests/unit",
     "unit:update": "jest ./tests/unit --updateSnapshot",
     "preinstall": "node ./versionCheck.js",
-    "jest": "jest"
+    "jest": "jest",
+    "ts": "tsc"
   },
   "keywords": [
     "react",
@@ -44,10 +45,10 @@
   },
   "license": "MIT",
   "author": "Qodesmith <theqodesmith@gmail.com> (https://github.com/qodesmith/create-new-app)",
-  "exports": "./main.js",
+  "exports": "./dist/main.js",
   "bin": {
-    "create-new-app": "main.js",
-    "cna": "main.js"
+    "create-new-app": "./dist/main.js",
+    "cna": "./dist/main.js"
   },
   "repository": {
     "type": "git",
@@ -69,12 +70,20 @@
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/inquirer": "^9.0.0",
+    "@types/validate-npm-package-name": "^3.0.3",
     "eslint": "^8.4.0",
     "eslint-plugin-react": "^7.21.5",
-    "jest": "^27.4.3"
+    "jest": "^27.4.3",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.4"
   },
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": "^14.18.0 || >=16.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "files": [
+    "/dist"
+  ]
 }

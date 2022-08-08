@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 **/*test
 package-lock.json
+*.env
+dist

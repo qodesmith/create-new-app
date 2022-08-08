@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "module": "system",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6",
-    "moduleResolution": "node",
+    "target": "ES6",
+    "moduleResolution": "Node",
     "sourceMap": false,
     "outDir": "dist",
-    "outFile": "./dist/main.js",
     "strictNullChecks": true
   },
-  "lib": ["es2020"],
+  "lib": ["ES2022"],
   "files": ["main.ts"]
 }

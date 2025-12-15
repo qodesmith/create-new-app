@@ -2,7 +2,14 @@
   "name": "create-new-app",
   "version": "8.0.0",
   "description": "Generate a full-stack React application ready for production",
-  "scripts": {},
+  "scripts": {
+    "check": "biome check",
+    "check:fix": "biome check --write .",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format",
+    "format:fix": "biome format --write ."
+  },
   "keywords": [],
   "homepage": "https://github.com/qodesmith/create-new-app",
   "bugs": {
@@ -15,6 +22,8 @@
     "type": "git",
     "url": "https://github.com/qodesmith/create-new-app"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@qodestack/biome-config": "^2.3.1"
+  },
   "devDependencies": {}
 }

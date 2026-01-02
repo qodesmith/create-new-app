@@ -1,18 +1,14 @@
-import type { CliOptions } from './options-parser'
-import type { GuidedOptions } from './guided-mode'
-import {
-  isValidProjectName,
-  getProjectNameError,
-  isValidProjectType,
-  getProjectTypeError,
-} from '../utils/validation'
-import { error, cancel } from '../utils/logger'
+import type {GuidedOptions} from './guided-mode'
+import type {CliOptions} from './options-parser'
 
-export interface CliModeResult {
-  success: boolean
-  options?: GuidedOptions
-  errors?: string[]
-}
+import process from 'node:process'
+
+import {error} from '../utils/logger'
+import {getProjectNameError, getProjectTypeError} from '../utils/validation'
+
+export type CliModeResult =
+  | {success: true; options: GuidedOptions}
+  | {success: false; errors: string[]}
 
 /**
  * Validate and convert CLI options to generation options
@@ -22,13 +18,13 @@ export function validateCliOptions(options: CliOptions): CliModeResult {
   const errors: string[] = []
 
   // Validate name
-  if (!options.name) {
-    errors.push('Project name is required. Usage: create-new-app <name>')
-  } else {
+  if (options.name) {
     const nameError = getProjectNameError(options.name)
     if (nameError) {
       errors.push(nameError)
     }
+  } else {
+    errors.push('Project name is required. Usage: create-new-app <name>')
   }
 
   // Validate type (default to fullstack if not provided)
@@ -39,14 +35,14 @@ export function validateCliOptions(options: CliOptions): CliModeResult {
   }
 
   if (errors.length > 0) {
-    return { success: false, errors }
+    return {success: false, errors}
   }
 
   return {
     success: true,
     options: {
-      name: options.name!,
-      type: type,
+      name: options.name as string, // options.name is a string here
+      type,
     },
   }
 }
@@ -58,11 +54,11 @@ export function runCliMode(options: CliOptions): GuidedOptions {
   const result = validateCliOptions(options)
 
   if (!result.success) {
-    for (const err of result.errors!) {
+    for (const err of result.errors) {
       error(err)
     }
     process.exit(1)
   }
 
-  return result.options!
+  return result.options
 }

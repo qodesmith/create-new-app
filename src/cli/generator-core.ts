@@ -5,7 +5,6 @@ import {dirname, join, parse} from 'node:path'
 import process from 'node:process'
 
 import {
-  copyDir,
   ensureDir,
   getFilesRecursive,
   pathExists,
@@ -29,6 +28,9 @@ function getTemplatePath(type: ProjectType): string {
       return join(templatesRoot, 'library')
     case 'vanilla':
       return join(templatesRoot, 'vanilla')
+    default:
+      // This should never happen.
+      throw new Error(`Unknown project type: ${type}`)
   }
 }
 
@@ -52,8 +54,10 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Replacements for templates
   const replacements: Record<string, string> = {
+    // biome-ignore-start lint/style/useNamingConvention: these are the template keys
     PROJECT_NAME: name,
     YEAR: new Date().getFullYear().toString(),
+    // biome-ignore-end lint/style/useNamingConvention: these are the template keys
   }
 
   // Copy and process template files

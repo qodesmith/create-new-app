@@ -6,16 +6,19 @@ dist/
 
 # Environment
 .env
-.env.local
-.env.*.local
+.env.**
+
+# caches
+.cache
+*.tsbuildinfo
 
 # Database
-*.db
-*.db-journal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 
-# IDE
-.vscode/
-.idea/
+# TanStack temp dir
+.tanstack
 
 # OS
 .DS_Store

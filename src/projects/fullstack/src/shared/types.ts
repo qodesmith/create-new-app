@@ -1,11 +1,18 @@
-// Shared types between client and server
+// biome-ignore-all lint/suspicious/noExplicitAny: it's ok
 
-export interface ApiResponse<T> {
-  data?: T
-  error?: string
+declare global {
+  namespace NodeJS {
+    // biome-ignore lint/style/useConsistentTypeDefinitions: it's ok
+    interface ProcessEnv {
+      // biome-ignore-start lint/style/useNamingConvention: env vars are ok
+      NODE_ENV: 'development' | 'production' | 'test'
+      // biome-ignore-end lint/style/useNamingConvention: env vars are ok
+    }
+  }
 }
 
-export interface HealthResponse {
-  status: 'ok' | 'error'
-  timestamp: string
-}
+export type Prettify<T> = T extends Date
+  ? T
+  : T extends Record<any, any>
+    ? {[K in keyof T]: Prettify<T[K]>} & {}
+    : T

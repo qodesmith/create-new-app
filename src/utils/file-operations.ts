@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import {existsSync, mkdirSync, readdirSync} from 'node:fs'
+import {dirname, join} from 'node:path'
 
 /**
  * Recursively copy a directory from src to dest
@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path'
 export async function copyDir(src: string, dest: string): Promise<void> {
   ensureDir(dest)
 
-  const entries = readdirSync(src, { withFileTypes: true })
+  const entries = readdirSync(src, {withFileTypes: true})
 
   for (const entry of entries) {
     const srcPath = join(src, entry.name)
@@ -34,7 +34,7 @@ export async function copyFile(src: string, dest: string): Promise<void> {
  */
 export function ensureDir(dir: string): void {
   if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true })
+    mkdirSync(dir, {recursive: true})
   }
 }
 
@@ -98,7 +98,7 @@ export function getFilesRecursive(dir: string): string[] {
 
   if (!existsSync(dir)) return files
 
-  const entries = readdirSync(dir, { withFileTypes: true })
+  const entries = readdirSync(dir, {withFileTypes: true})
 
   for (const entry of entries) {
     const fullPath = join(dir, entry.name)

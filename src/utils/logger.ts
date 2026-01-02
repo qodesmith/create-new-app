@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 import * as p from '@clack/prompts'
 
 /**

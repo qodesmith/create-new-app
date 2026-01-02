@@ -1,13 +1,19 @@
 #!/usr/bin/env bun
 
-import { parseCliArgs, getHelpText, getVersion } from './options-parser'
-import { runGuidedMode } from './guided-mode'
-import { runCliMode } from './cli-mode'
-import { generateProject } from './generator-core'
-import { intro, outro, info } from '../utils/logger'
+// biome-ignore-all lint/suspicious/noConsole: it's ok here
+
+import type {GuidedOptions} from './guided-mode'
+
+import process from 'node:process'
+
+import {info, intro, outro} from '../utils/logger'
+import {runCliMode} from './cli-mode'
+import {generateProject} from './generator-core'
+import {runGuidedMode} from './guided-mode'
+import {getHelpText, getVersion, parseCliArgs} from './options-parser'
 
 async function main() {
-  const { options } = parseCliArgs(process.argv.slice(2))
+  const {options} = parseCliArgs(process.argv.slice(2))
 
   // Handle --help
   if (options.help) {
@@ -24,7 +30,7 @@ async function main() {
 
   intro('create-new-app')
 
-  let projectOptions
+  let projectOptions: GuidedOptions
 
   // If --yes flag or all required options provided, use CLI mode
   if (options.yes || (options.name && options.type)) {
@@ -44,7 +50,7 @@ async function main() {
   outro(`Done! cd ${projectOptions.name} && bun dev`)
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

@@ -1,7 +1,8 @@
-import { parseArgs } from 'util'
-import type { ProjectType } from '../utils/validation'
+import type {ProjectType} from '../utils/validation'
 
-export interface CliOptions {
+import {parseArgs} from 'node:util'
+
+export type CliOptions = {
   /** Project name (also used as directory name) */
   name?: string
   /** Type of project to generate */
@@ -14,7 +15,7 @@ export interface CliOptions {
   yes: boolean
 }
 
-export interface ParseResult {
+export type ParseResult = {
   options: CliOptions
   positionals: string[]
 }
@@ -38,7 +39,7 @@ Examples:
  * Parse command line arguments
  */
 export function parseCliArgs(args: string[]): ParseResult {
-  const { values, positionals } = parseArgs({
+  const {values, positionals} = parseArgs({
     args,
     options: {
       type: {

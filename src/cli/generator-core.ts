@@ -56,22 +56,29 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   const replacements: Record<string, string> = {
     // biome-ignore-start lint/style/useNamingConvention: these are the template keys
     PROJECT_NAME: name,
-    YEAR: new Date().getFullYear().toString(),
+    // Add other placeholders here...
     // biome-ignore-end lint/style/useNamingConvention: these are the template keys
   }
 
   // Copy and process template files
   await withSpinner('Copying project files...', async () => {
     const files = getFilesRecursive(templatePath)
-    const textExts = new Set(['.ts', '.tsx', '.json', '.md'])
+    const templateFiles = new Set([
+      'fly.toml',
+      'litefs.yml',
+      'package.json',
+      'index.html',
+      '__root.tsx',
+      'index.ts',
+    ])
 
     for (const srcFile of files) {
       const relativePath = srcFile.slice(templatePath.length + 1)
       const destPath = join(targetDir, relativePath)
-      const {base: fileName, ext} = parse(srcFile)
+      const {base: fileName} = parse(srcFile)
 
       // Check if file needs placeholder replacement
-      if (textExts.has(ext)) {
+      if (templateFiles.has(fileName)) {
         const content = await readAndReplace(srcFile, replacements)
         await writeFile(destPath, content)
       } else if (fileName === 'biome.jsonc') {

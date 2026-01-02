@@ -70,12 +70,15 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
       'index.html',
       '__root.tsx',
       'index.ts',
+      '.env.development',
     ])
 
     for (const srcFile of files) {
       const relativePath = srcFile.slice(templatePath.length + 1)
       const destPath = join(targetDir, relativePath)
       const {base: fileName} = parse(srcFile)
+
+      ensureDir(dirname(destPath))
 
       // Check if file needs placeholder replacement
       if (templateFiles.has(fileName)) {
@@ -85,11 +88,12 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         // Remove "root": false line (used to prevent conflicts during development)
         const content = await Bun.file(srcFile).text()
         const cleaned = content.replace(/^\s*"root":\s*false,?\n?/m, '')
-        ensureDir(dirname(destPath))
         await Bun.write(destPath, cleaned)
+      } else if (fileName.endsWith('-keep')) {
+        const sanitizedPath = destPath.slice(0, -5) // Remove "-keep" from path
+        await Bun.write(sanitizedPath, Bun.file(srcFile))
       } else {
-        // Binary files - copy as-is
-        ensureDir(dirname(destPath))
+        // Copy as-is
         await Bun.write(destPath, Bun.file(srcFile))
       }
     }

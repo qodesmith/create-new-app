@@ -18,6 +18,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Environment variable files
 .env
 .env.**
+!src/**/.env
+!src/**/.env.**
 
 # caches
 .eslintcache
@@ -29,3 +31,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Generated test app
+my-app

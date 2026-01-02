@@ -93,7 +93,29 @@ A basic local web setup - index.html, styles.css, app.js.
 
 # Folder Structure
 
-The folder structure for Create New App
+Proposed folder structure for Create New App:
+
+```
+src/
+  ├── cli/
+  │   ├── index.ts           # Entry point
+  │   ├── options-parser.ts  # Bun parseArgs wrapper
+  │   ├── guided-mode.ts     # @clack/prompts interactive
+  │   ├── cli-mode.ts        # Non-interactive validation
+  │   └── generator-core.ts  # Project generation
+  ├── utils/
+  │   ├── file-operations.ts # Copy, write, replace
+  │   ├── logger.ts          # Clack logging wrappers
+  │   └── validation.ts      # Name/type validators
+  └── projects/
+      └── fullstack/         # Complete template
+          ├── client/        # React + Tanstack Router
+          ├── server/        # Hono + Drizzle
+          ├── shared/        # Shared types
+          ├── Dockerfile
+          └── fly.toml
+```
+
 
 ```
 .

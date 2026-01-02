@@ -3,14 +3,24 @@
   "version": "8.0.0",
   "description": "Generate a full-stack React application ready for production",
   "type": "module",
+  "bin": {
+    "create-new-app": "./src/cli/index.ts",
+    "cna": "./src/cli/index.ts"
+  },
   "scripts": {
+    "dev": "bun run src/cli/index.ts",
+    "build": "bun build src/cli/index.ts --compile --outfile dist/create-new-app",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "check": "biome check",
     "check:fix": "biome check --write .",
     "lint": "biome lint",
     "lint:fix": "biome lint --write .",
     "format": "biome format",
-    "format:fix": "biome format --write ."
+    "format:fix": "biome format --write .",
+    "prepublishOnly": "bun run build"
   },
+  "files": ["src", "dist"],
   "keywords": [],
   "homepage": "https://github.com/qodesmith/create-new-app",
   "bugs": {
@@ -24,6 +34,7 @@
     "url": "https://github.com/qodesmith/create-new-app"
   },
   "dependencies": {
+    "@clack/prompts": "^0.11.0",
     "@qodestack/biome-config": "^2.3.1"
   },
   "devDependencies": {

@@ -1,15 +1,18 @@
-import { join, dirname } from 'node:path'
-import type { GuidedOptions } from './guided-mode'
-import type { ProjectType } from '../utils/validation'
+import type {ProjectType} from '../utils/validation'
+import type {GuidedOptions} from './guided-mode'
+
+import {dirname, join, parse} from 'node:path'
+import process from 'node:process'
+
 import {
   copyDir,
   ensureDir,
-  readAndReplace,
-  writeFile,
   getFilesRecursive,
   pathExists,
+  readAndReplace,
+  writeFile,
 } from '../utils/file-operations'
-import { step, success, error, withSpinner } from '../utils/logger'
+import {error, step, success, withSpinner} from '../utils/logger'
 
 /**
  * Get the path to a project template
@@ -33,7 +36,7 @@ function getTemplatePath(type: ProjectType): string {
  * Generate a project from templates
  */
 export async function generateProject(options: GuidedOptions): Promise<void> {
-  const { name, type } = options
+  const {name, type} = options
   const targetDir = join(process.cwd(), name)
   const templatePath = getTemplatePath(type)
 
@@ -56,16 +59,18 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   // Copy and process template files
   await withSpinner('Copying project files...', async () => {
     const files = getFilesRecursive(templatePath)
+    const textExts = new Set(['.ts', '.tsx', '.json', '.md'])
 
     for (const srcFile of files) {
       const relativePath = srcFile.slice(templatePath.length + 1)
       const destPath = join(targetDir, relativePath)
+      const {base: fileName, ext} = parse(srcFile)
 
       // Check if file needs placeholder replacement
-      if (srcFile.endsWith('.ts') || srcFile.endsWith('.json') || srcFile.endsWith('.md')) {
+      if (textExts.has(ext)) {
         const content = await readAndReplace(srcFile, replacements)
         await writeFile(destPath, content)
-      } else if (srcFile.endsWith('biome.jsonc')) {
+      } else if (fileName === 'biome.jsonc') {
         // Remove "root": false line (used to prevent conflicts during development)
         const content = await Bun.file(srcFile).text()
         const cleaned = content.replace(/^\s*"root":\s*false,?\n?/m, '')

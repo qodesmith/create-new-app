@@ -1,20 +1,25 @@
+# See https://fly.io/docs/reference/configuration/
+
 app = "{{PROJECT_NAME}}"
-primary_region = "iad"
+primary_region = "ewr" # https://fly.io/docs/reference/regions/
 
 [build]
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = "suspend"
   auto_start_machines = true
-  min_machines_running = 0
-
-[mounts]
-  source = "data"
-  destination = "/app/data"
+  min_machines_running = 1 # Keeps 1 Machine always running in primary region
+  processes = ['app']
 
 [[vm]]
   memory = "512mb"
   cpu_kind = "shared"
   cpus = 1
+
+[mounts]
+  source = "litefs"
+
+  # Must match `data.dir` in litefs.yml exactly.
+  destination = "/var/lib/litefs"

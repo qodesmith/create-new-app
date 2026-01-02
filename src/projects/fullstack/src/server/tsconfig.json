@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Indicates to TypeScript that this "project" can be referenced by other
+    // "projects". This is required in order to use references.
+    "composite": true,
+
+    // `outDir` is required when `composite: true` is set because TypeScript
+    // insists on knowing where to put the generated files even thought we're
+    // not using TypeScript to generate anything!
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/shared/*": ["../shared/*"],
+      "@/*": ["./*"]
+    }
+  },
+  "references": [{"path": "../shared"}],
+  "include": ["./**/*", "../shared/*"]
+}

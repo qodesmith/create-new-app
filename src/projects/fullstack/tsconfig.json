@@ -1,26 +1,16 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@client/*": ["./client/*"],
-      "@server/*": ["./server/*"],
-      "@shared/*": ["./shared/*"]
+      "@/*": ["./src/client/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+  "references": [
+    {"path": "./src/shared"},
+    {"path": "./src/client"},
+    {"path": "./src/server"}
+  ],
+  "files": []
 }

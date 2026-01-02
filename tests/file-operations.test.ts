@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test'
-import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+import {afterEach, beforeEach, describe, expect, it} from 'bun:test'
+import {existsSync, mkdirSync, rmSync, writeFileSync} from 'node:fs'
+import {join} from 'node:path'
+
 import {
   ensureDir,
-  pathExists,
   isDirEmpty,
+  pathExists,
   replacePlaceholders,
 } from '../src/utils/file-operations'
 
@@ -13,13 +14,13 @@ const TEST_DIR = join(import.meta.dir, '.test-tmp')
 describe('file-operations', () => {
   beforeEach(() => {
     if (existsSync(TEST_DIR)) {
-      rmSync(TEST_DIR, { recursive: true })
+      rmSync(TEST_DIR, {recursive: true})
     }
   })
 
   afterEach(() => {
     if (existsSync(TEST_DIR)) {
-      rmSync(TEST_DIR, { recursive: true })
+      rmSync(TEST_DIR, {recursive: true})
     }
   })
 
@@ -38,7 +39,7 @@ describe('file-operations', () => {
     })
 
     it('does nothing if directory exists', () => {
-      mkdirSync(TEST_DIR, { recursive: true })
+      mkdirSync(TEST_DIR, {recursive: true})
       ensureDir(TEST_DIR) // Should not throw
       expect(existsSync(TEST_DIR)).toBe(true)
     })
@@ -46,7 +47,7 @@ describe('file-operations', () => {
 
   describe('pathExists', () => {
     it('returns true for existing path', () => {
-      mkdirSync(TEST_DIR, { recursive: true })
+      mkdirSync(TEST_DIR, {recursive: true})
       expect(pathExists(TEST_DIR)).toBe(true)
     })
 
@@ -57,12 +58,12 @@ describe('file-operations', () => {
 
   describe('isDirEmpty', () => {
     it('returns true for empty directory', () => {
-      mkdirSync(TEST_DIR, { recursive: true })
+      mkdirSync(TEST_DIR, {recursive: true})
       expect(isDirEmpty(TEST_DIR)).toBe(true)
     })
 
     it('returns false for non-empty directory', () => {
-      mkdirSync(TEST_DIR, { recursive: true })
+      mkdirSync(TEST_DIR, {recursive: true})
       writeFileSync(join(TEST_DIR, 'file.txt'), 'content')
       expect(isDirEmpty(TEST_DIR)).toBe(false)
     })
@@ -72,31 +73,32 @@ describe('file-operations', () => {
     })
   })
 
+  // biome-ignore-start lint/style/useNamingConvention: placeholder keys
   describe('replacePlaceholders', () => {
     it('replaces single placeholder', () => {
-      const result = replacePlaceholders('Hello {{NAME}}!', { NAME: 'World' })
+      const result = replacePlaceholders('Hello {{NAME}}!', {NAME: 'World'})
       expect(result).toBe('Hello World!')
     })
 
     it('replaces multiple placeholders', () => {
-      const result = replacePlaceholders(
-        '{{GREETING}} {{NAME}}!',
-        { GREETING: 'Hello', NAME: 'World' }
-      )
+      const result = replacePlaceholders('{{GREETING}} {{NAME}}!', {
+        GREETING: 'Hello',
+        NAME: 'World',
+      })
       expect(result).toBe('Hello World!')
     })
 
     it('replaces same placeholder multiple times', () => {
-      const result = replacePlaceholders(
-        '{{X}} + {{X}} = 2{{X}}',
-        { X: '1' }
-      )
+      const result = replacePlaceholders('{{X}} + {{X}} = 2{{X}}', {X: '1'})
       expect(result).toBe('1 + 1 = 21')
     })
 
     it('leaves unmatched placeholders', () => {
-      const result = replacePlaceholders('{{KNOWN}} {{UNKNOWN}}', { KNOWN: 'yes' })
+      const result = replacePlaceholders('{{KNOWN}} {{UNKNOWN}}', {
+        KNOWN: 'yes',
+      })
       expect(result).toBe('yes {{UNKNOWN}}')
     })
   })
+  // biome-ignore-end lint/style/useNamingConvention: placeholder keys
 })

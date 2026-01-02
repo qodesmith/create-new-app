@@ -1,11 +1,11 @@
 # CLI App Generator
 
-This is a CLI tool that generates applications. There are 4 types of
-applications that users can generate:
+This is a CLI tool that generates JavaScript / TypeScript applications. There
+are 4 types of applications that users can generate:
 
 ## Fullstack
 
-This is a fullstack React application powered by Bun. Key technologies include:
+A fullstack React application powered by Bun. Key technologies include:
 
 ### Backend
 
@@ -71,7 +71,29 @@ This is a fullstack React application powered by Bun. Key technologies include:
 **Biome**
 - Custom Biome config via the `@qodestack/biome-config` package
 
+### Deployment
+
+**Docker**
+- Dockerfile for containerizing the application
+
+**Fly.io**
+- Deployment to production
+
+## Client-only SPA
+
+A React single page application.
+
+## Library
+
+A library meant for distribution on npm.
+
+## Vanilla
+
+A basic local web setup - index.html, styles.css, app.js.
+
 # Folder Structure
+
+The folder structure for Create New App
 
 ```
 .

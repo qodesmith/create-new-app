@@ -65,6 +65,12 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
       if (srcFile.endsWith('.ts') || srcFile.endsWith('.json') || srcFile.endsWith('.md')) {
         const content = await readAndReplace(srcFile, replacements)
         await writeFile(destPath, content)
+      } else if (srcFile.endsWith('biome.jsonc')) {
+        // Remove "root": false line (used to prevent conflicts during development)
+        const content = await Bun.file(srcFile).text()
+        const cleaned = content.replace(/^\s*"root":\s*false,?\n?/m, '')
+        ensureDir(dirname(destPath))
+        await Bun.write(destPath, cleaned)
       } else {
         // Binary files - copy as-is
         ensureDir(dirname(destPath))

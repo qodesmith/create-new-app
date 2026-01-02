@@ -1,9 +1,11 @@
-import * as p from '@clack/prompts'
-import { isValidProjectName, getProjectNameError } from '../utils/validation'
-import type { ProjectType } from '../utils/validation'
-import { cancel } from '../utils/logger'
+import type {ProjectType} from '../utils/validation'
 
-export interface GuidedOptions {
+import * as p from '@clack/prompts'
+
+import {cancel} from '../utils/logger'
+import {getProjectNameError} from '../utils/validation'
+
+export type GuidedOptions = {
   name: string
   type: ProjectType
 }
@@ -21,7 +23,7 @@ export async function runGuidedMode(
           message: 'What is your project name?',
           placeholder: 'my-app',
           initialValue: defaults.name,
-          validate: (value) => {
+          validate: value => {
             const error = getProjectNameError(value)
             if (error) return error
           },

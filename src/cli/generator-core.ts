@@ -64,13 +64,12 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   await withSpinner('Copying project files...', async () => {
     const files = getFilesRecursive(templatePath)
     const templateFiles = new Set([
+      '.env.development',
+      '__root.tsx',
       'fly.toml',
+      'index.html',
       'litefs.yml',
       'package.json',
-      'index.html',
-      '__root.tsx',
-      'index.ts',
-      '.env.development',
     ])
 
     for (const srcFile of files) {

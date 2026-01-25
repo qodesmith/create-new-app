@@ -9,7 +9,6 @@ dist/
 .env.**
 
 # caches
-.cache
 *.tsbuildinfo
 
 # Database
@@ -24,5 +23,5 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Private keys / certs
+*.pem

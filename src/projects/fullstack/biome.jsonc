@@ -1,9 +1,0 @@
-{
-  "root": false,
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["@qodestack/biome-config"],
-  "files": {
-    "ignoreUnknown": true,
-    "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
-  }
-}

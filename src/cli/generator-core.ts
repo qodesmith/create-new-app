@@ -4,6 +4,8 @@ import type {GuidedOptions} from './guided-mode'
 import {dirname, join, parse} from 'node:path'
 import process from 'node:process'
 
+import {log} from '@clack/prompts'
+
 import {
   ensureDir,
   getFilesRecursive,
@@ -11,7 +13,7 @@ import {
   readAndReplace,
   writeFile,
 } from '../utils/file-operations'
-import {error, step, success, withSpinner} from '../utils/logger'
+import {withSpinner} from '../utils/withSpinner'
 
 /**
  * Get the path to a project template
@@ -44,12 +46,12 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Check template exists
   if (!pathExists(templatePath)) {
-    error(`Template for "${type}" not found at ${templatePath}`)
+    log.error(`Template for "${type}" not found at ${templatePath}`)
     process.exit(1)
   }
 
   // Create target directory
-  step(`Creating project directory: ${name}`)
+  log.step(`Creating project directory: ${name}`)
   ensureDir(targetDir)
 
   // Replacements for templates
@@ -108,5 +110,15 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     await proc.exited
   })
 
-  success('Project created successfully!')
+  // Set up Biome
+  await withSpinner('Setting up Biome...', async () => {
+    const proc = Bun.spawn(['bunx', 'biomeInit', '--jsonc'], {
+      cwd: targetDir,
+      stdout: 'pipe',
+      stderr: 'pipe',
+    })
+    await proc.exited
+  })
+
+  log.success('Project created successfully!')
 }

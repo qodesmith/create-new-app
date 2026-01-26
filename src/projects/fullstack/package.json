@@ -3,16 +3,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot server/index.ts",
+    "dev": "NODE_ENV=development bun --bun run ./startDev.ts",
+    "dev:local": "NODE_ENV=development ALL_CONNECTIONS=true bun --bun run ./startDev.ts",
     "build": "bun run build:client && bun run build:server",
     "build:client": "bun build client/index.tsx --outdir dist/public --minify --splitting",
     "build:server": "bun build server/index.ts --outdir dist --target bun --minify",
     "start": "bun run dist/index.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "check": "biome check",
-    "check:fix": "biome check --write ."
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",

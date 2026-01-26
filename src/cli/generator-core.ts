@@ -1,6 +1,7 @@
 import type {ProjectType} from '../utils/validation'
 import type {GuidedOptions} from './guided-mode'
 
+import {$} from 'bun'
 import {dirname, join, parse} from 'node:path'
 import process from 'node:process'
 
@@ -102,22 +103,12 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Install dependencies
   await withSpinner('Installing dependencies...', async () => {
-    const proc = Bun.spawn(['bun', 'install'], {
-      cwd: targetDir,
-      stdout: 'pipe',
-      stderr: 'pipe',
-    })
-    await proc.exited
+    await $`bun install`.cwd(targetDir).quiet()
   })
 
   // Set up Biome
   await withSpinner('Setting up Biome...', async () => {
-    const proc = Bun.spawn(['bunx', 'biomeInit', '--jsonc'], {
-      cwd: targetDir,
-      stdout: 'pipe',
-      stderr: 'pipe',
-    })
-    await proc.exited
+    await $`bunx biomeInit --jsonc`.cwd(targetDir).quiet()
   })
 
   log.success('Project created successfully!')

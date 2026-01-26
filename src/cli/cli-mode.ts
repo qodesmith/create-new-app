@@ -3,7 +3,8 @@ import type {CliOptions} from './options-parser'
 
 import process from 'node:process'
 
-import {error} from '../utils/logger'
+import {log} from '@clack/prompts'
+
 import {getProjectNameError, getProjectTypeError} from '../utils/validation'
 
 export type CliModeResult =
@@ -55,7 +56,7 @@ export function runCliMode(options: CliOptions): GuidedOptions {
 
   if (!result.success) {
     for (const err of result.errors) {
-      error(err)
+      log.error(err)
     }
     process.exit(1)
   }

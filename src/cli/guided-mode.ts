@@ -1,8 +1,9 @@
 import type {ProjectType} from '../utils/validation'
 
-import * as p from '@clack/prompts'
+import process from 'node:process'
 
-import {cancel} from '../utils/logger'
+import {cancel, confirm, group, isCancel, select, text} from '@clack/prompts'
+
 import {getProjectNameError} from '../utils/validation'
 
 export type GuidedOptions = {
@@ -16,10 +17,10 @@ export type GuidedOptions = {
 export async function runGuidedMode(
   defaults: Partial<GuidedOptions> = {}
 ): Promise<GuidedOptions> {
-  const result = await p.group(
+  const result = await group(
     {
       name: () =>
-        p.text({
+        text({
           message: 'What is your project name?',
           placeholder: 'my-app',
           initialValue: defaults.name,
@@ -30,7 +31,7 @@ export async function runGuidedMode(
         }),
 
       type: () =>
-        p.select({
+        select({
           message: 'What type of project?',
           initialValue: defaults.type ?? 'fullstack',
           options: [
@@ -60,6 +61,7 @@ export async function runGuidedMode(
     {
       onCancel: () => {
         cancel('Operation cancelled')
+        process.exit(1)
       },
     }
   )
@@ -74,13 +76,14 @@ export async function runGuidedMode(
  * Prompt for confirmation
  */
 export async function confirmAction(message: string): Promise<boolean> {
-  const result = await p.confirm({
+  const result = await confirm({
     message,
     initialValue: true,
   })
 
-  if (p.isCancel(result)) {
+  if (isCancel(result)) {
     cancel('Operation cancelled')
+    process.exit(1)
   }
 
   return result

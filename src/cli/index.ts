@@ -6,7 +6,8 @@ import type {GuidedOptions} from './guided-mode'
 
 import process from 'node:process'
 
-import {info, intro, outro} from '../utils/logger'
+import {intro, log, outro} from '@clack/prompts'
+
 import {runCliMode} from './cli-mode'
 import {generateProject} from './generator-core'
 import {runGuidedMode} from './guided-mode'
@@ -43,7 +44,7 @@ async function main() {
     })
   }
 
-  info(`Creating ${projectOptions.type} project: ${projectOptions.name}`)
+  log.info(`Creating ${projectOptions.type} project: ${projectOptions.name}`)
 
   await generateProject(projectOptions)
 

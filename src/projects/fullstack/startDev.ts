@@ -10,7 +10,7 @@ import process from 'node:process'
 import open from 'open'
 import colors from 'picocolors'
 
-import {localhost} from './src/server/constantsServer'
+import {localhost} from './src/server/constants'
 
 if (!existsSync(path.join(process.cwd(), 'node_modules'))) {
   console.log(`First run ${colors.cyan('bun install')} to install dependencies`)

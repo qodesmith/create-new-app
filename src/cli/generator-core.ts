@@ -71,9 +71,11 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
       '__root.tsx',
       'Dockerfile',
       'Dockerfile.local',
+      'drizzleStudio.ts',
       'fly.toml',
       'index.html',
       'litefs.yml',
+      'options.ts',
       'package.json',
     ])
 

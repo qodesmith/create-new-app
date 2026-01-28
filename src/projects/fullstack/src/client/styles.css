@@ -1,6 +1,0 @@
-@import 'tailwindcss';
-
-/* Custom styles */
-body {
-  @apply bg-gray-50 text-gray-900 antialiased;
-}

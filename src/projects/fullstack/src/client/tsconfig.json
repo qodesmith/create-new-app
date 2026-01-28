@@ -14,7 +14,7 @@
     "noUncheckedIndexedAccess": true,
     "paths": {
       "@/shared/*": ["../shared/*"],
-      "@/*": ["./*"]
+      "@/client/*": ["./*"]
     }
   },
   "references": [{"path": "../shared"}],

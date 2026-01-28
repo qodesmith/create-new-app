@@ -1,0 +1,64 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
+
+import type {auth} from '../server/db/auth/auth'
+import type * as appSchema from '../server/db/schema/appSchema'
+import type * as authSchema from '../server/db/schema/authSchema'
+
+declare global {
+  namespace NodeJS {
+    // biome-ignore lint/style/useConsistentTypeDefinitions: it's ok
+    interface ProcessEnv {
+      // biome-ignore-start lint/style/useNamingConvention: env vars are ok
+      NODE_ENV: 'development' | 'production' | 'test'
+      // biome-ignore-end lint/style/useNamingConvention: env vars are ok
+    }
+  }
+}
+
+export type Prettify<T> = T extends Date
+  ? T
+  : T extends Record<any, any>
+    ? {[K in keyof T]: Prettify<T[K]>} & {}
+    : T
+
+export type DateToString<T> = T extends Date
+  ? string
+  : T extends Record<any, any>
+    ? {[K in keyof T]: DateToString<T[K]>}
+    : T
+
+export type {HonoAuthServer} from '../server/hono/authRoutes'
+export type {HonoServer} from '../server/hono/honoServer'
+
+export type ServerAuth = typeof auth
+
+export type ErrorContext =
+  | 'client:topLevel'
+  | 'client:missingUser'
+  | 'rateLimitMiddleware'
+  | 'hono:topLevel'
+  | 'hono:betterAuth'
+
+export type AppSchemaInsert = {
+  [K in keyof typeof appSchema as '$inferInsert' extends keyof (typeof appSchema)[K]
+    ? K
+    : never]: (typeof appSchema)[K]['$inferInsert']
+}
+
+export type AppSchemaSelect = {
+  [K in keyof typeof appSchema as '$inferSelect' extends keyof (typeof appSchema)[K]
+    ? K
+    : never]: (typeof appSchema)[K]['$inferSelect']
+}
+
+export type AuthSchemaInsert = {
+  [K in keyof typeof authSchema as '$inferInsert' extends keyof (typeof authSchema)[K]
+    ? K
+    : never]: (typeof authSchema)[K]['$inferInsert']
+}
+
+export type AuthSchemaSelect = {
+  [K in keyof typeof authSchema as '$inferSelect' extends keyof (typeof authSchema)[K]
+    ? K
+    : never]: (typeof authSchema)[K]['$inferSelect']
+}

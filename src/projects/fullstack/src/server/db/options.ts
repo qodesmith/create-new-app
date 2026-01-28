@@ -12,7 +12,7 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
-import {betterAuthBasePath, minPasswordLength} from '@/shared/constantsShared'
+import {betterAuthBasePath, minPasswordLength} from '@/shared/constants'
 
 import {passkey} from '@better-auth/passkey'
 import {getUnitInSeconds} from '@qodestack/utils'

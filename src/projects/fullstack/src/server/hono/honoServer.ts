@@ -7,7 +7,6 @@ import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
 import {errorToObject, getUnitInMs} from '@qodestack/utils'
-import {type} from 'arktype'
 import {createInsertSchema} from 'drizzle-arktype'
 import {Hono} from 'hono'
 import {csrf} from 'hono/csrf'

@@ -69,6 +69,8 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     const templateFiles = new Set([
       '.env.development',
       '__root.tsx',
+      'Dockerfile',
+      'Dockerfile.local',
       'fly.toml',
       'index.html',
       'litefs.yml',

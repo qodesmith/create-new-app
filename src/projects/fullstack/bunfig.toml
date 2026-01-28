@@ -1,0 +1,6 @@
+[serve.static]
+plugins = ["bun-plugin-tailwind"]
+
+# Allows client-side code to consume environment variables. During the build,
+# these env vars will be replaced with static values.
+env = "BUN_PUBLIC_*"

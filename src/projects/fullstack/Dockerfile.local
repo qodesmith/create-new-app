@@ -9,10 +9,11 @@ ENV IN_DOCKER_BUILD=true
 
 WORKDIR /app
 
-COPY package.json bun.lock
+COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
 COPY build.ts .env.production bunfig.toml ./
+COPY dev.sqlite ./{{PROJECT_NAME}}.sqlite
 COPY src ./src/
 
 RUN NODE_ENV=production bun --bun run ./build.ts
@@ -20,6 +21,20 @@ RUN NODE_ENV=production bun --bun run ./build.ts
 ################################
 # BUILD STAGE - Drizzle Studio #
 ################################
+
+# Docker Desktop won't let you bind to 127.0.0.1 in addition to localhost.
+# Therefore, you need to run the container locally like so:
+#
+# docker run --rm -it \
+#   -p 9001:9001 \
+#   -p 127.0.0.1:4983:4983 \
+#   {{PROJECT_NAME}}:latest
+#
+# Then, in Docker Desktop, open the container by clicking it's name, choose the
+# `exec` tab, then:
+# 1. cd drizzleStudio
+# 2. bun drizzleStudio.ts
+# 3. Open https://local.drizzle.studio/ in a browser
 
 FROM oven/bun:alpine AS drizzlestudio
 
@@ -51,15 +66,6 @@ COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
 
 FROM oven/bun:alpine
 
-# Needed dependencies in order for LiteFS to work (curl is just for convenience)
-RUN apk add --no-cache ca-certificates fuse3 sqlite curl
-
-# Pull in the litefs binary by copying it from the official Docker image.
-COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
-
-# Copy LiteFS configuration.
-COPY litefs.yml /etc/litefs.yml
-
 WORKDIR /app
 
 COPY .env.production bunfig.toml /app
@@ -77,11 +83,8 @@ COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/
 EXPOSE 9001
 
 ENV NODE_ENV=production
-ENV SQLITE_PATH=/litefs/{{PROJECT_NAME}}.sqlite
+ENV SQLITE_PATH=/app/{{PROJECT_NAME}}.sqlite
 ENV TZ=America/New_York
-ENV START_APP_CMD="bun ./bunServer.js"
+ENV IS_LOCAL_CONTAINER=true
 
-# Use a non-root user
-USER bun
-
-ENTRYPOINT ["litefs", "mount"]
+ENTRYPOINT ["bun", "./bunServer.js"]

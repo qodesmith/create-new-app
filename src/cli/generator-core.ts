@@ -112,7 +112,11 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Set up Biome
   await withSpinner('Setting up Biome...', async () => {
-    await $`bunx biomeInit --jsonc`.cwd(targetDir).quiet()
+    /**
+     * Ensure the CLI does NOT create a biome.jsonc file. We will manually
+     * create it so we can include a number of overrides to the config.
+     */
+    await $`bunx biomeInit --no-includeBiome`.cwd(targetDir).quiet()
   })
 
   log.success('Project created successfully!')

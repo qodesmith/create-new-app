@@ -1,0 +1,67 @@
+{
+  "root": true,
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@qodestack/biome-config/react"],
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!dist",
+      "!*.lock",
+      "!src/server/db/drizzle",
+      "!src/client/routeTree.gen.ts",
+      "!src/client/app.css"
+    ]
+  },
+  "overrides": [
+    // General rules for client-side code.
+    {
+      "includes": ["src/client/**/*.ts", "src/client/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // Avoid importing process in client code.
+            "noProcessGlobal": "off",
+
+            // Inform Biome about how our custom hooks work.
+            "useExhaustiveDependencies": {
+              "level": "error",
+              "fix": "safe",
+              "options": {
+                "hooks": [{"name": "useStable", "stableResult": true}]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Allow Tanstack routes & Shadcn components to export more than components.
+    {
+      "includes": [
+        "src/client/routes/**/*.tsx",
+        "src/client/components/**/*.tsx",
+        "src/client/components/**/*.ts"
+      ],
+      "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Ignore errors with Shadcn / Tailwind directives.
+    {
+      "includes": ["src/client/app.css"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noUnknownAtRules": {
+              "level": "on",
+              "options": {
+                "ignore": ["@custom-variant", "@theme", "@layer", "@apply"]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

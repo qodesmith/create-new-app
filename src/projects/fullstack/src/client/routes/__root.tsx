@@ -1,79 +1,80 @@
-import { createRootRoute, createRoute, Outlet, Link } from '@tanstack/react-router'
+import type {RouterContext} from '@/client/types'
 
-// Root layout
-const rootRoute = createRootRoute({
-  component: () => (
-    <div className="min-h-screen">
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex space-x-8">
-              <Link
-                to="/"
-                className="text-gray-900 font-semibold text-lg"
-              >
-                {{PROJECT_NAME}}
-              </Link>
-              <Link
-                to="/"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                activeProps={{ className: 'text-blue-600' }}
-              >
-                Home
-              </Link>
-              <Link
-                to="/about"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                activeProps={{ className: 'text-blue-600' }}
-              >
-                About
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Outlet />
-      </main>
-    </div>
-  ),
+import {Toaster} from '@/client/components/ui/sonner'
+import {themeAtom, themeSettingAtom} from '@/client/state/globalState'
+
+import {createRootRouteWithContext, Outlet} from '@tanstack/react-router'
+import {useAtomValue, useSetAtom} from 'jotai'
+import {lazy, useLayoutEffect} from 'react'
+
+const _TanStackRouterDevtools =
+  process.env.NODE_ENV === 'production'
+    ? () => null // Render nothing in production
+    : lazy(() =>
+        // Lazy load in developmente
+        import('@tanstack/react-router-devtools').then(res => ({
+          default: res.TanStackRouterDevtools,
+          // For Embedded Mode
+          // default: res.TanStackRouterDevtoolsPanel
+        }))
+      )
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  /**
+   * This route is ALWAYS rendered and ALWAYS matched. This route is the
+   * top-most route in the entire application.
+   */
+  component: RootComponent,
 })
 
-// Home page
-const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: () => (
-    <div className="text-center py-12">
-      <h1 className="text-4xl font-bold text-gray-900 mb-4">
-        Welcome to {{PROJECT_NAME}}
-      </h1>
-      <p className="text-lg text-gray-600">
-        A fullstack React application powered by Bun
-      </p>
-    </div>
-  ),
-})
+function RootComponent() {
+  return (
+    <>
+      {/* Content here will show on EVERY page */}
+      <Toaster richColors visibleToasts={3} closeButton />
+      <ThemeSetter />
 
-// About page
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/about',
-  component: () => (
-    <div className="prose mx-auto">
-      <h1>About</h1>
-      <p>
-        This project was generated with create-new-app and includes:
-      </p>
-      <ul>
-        <li>React + Tanstack Router</li>
-        <li>Bun + Hono backend</li>
-        <li>SQLite + Drizzle ORM</li>
-        <li>Tailwind CSS</li>
-      </ul>
-    </div>
-  ),
-})
+      {/* Renders the current route's content  */}
+      <Outlet />
 
-// Export route tree
-export const routeTree = rootRoute.addChildren([indexRoute, aboutRoute])
+      {/* Will NOT show in production */}
+      {/* <TanStackRouterDevtools /> */}
+    </>
+  )
+}
+
+function ThemeSetter() {
+  const themeSetting = useAtomValue(themeSettingAtom)
+  const setTheme = useSetAtom(themeAtom)
+
+  useLayoutEffect(() => {
+    const root = window.document.documentElement
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+    root.classList.remove('light', 'dark')
+
+    if (themeSetting === 'system') {
+      const newTheme = mediaQuery.matches ? 'dark' : 'light'
+
+      setTheme(newTheme)
+      root.classList.add(newTheme)
+    } else {
+      setTheme(themeSetting)
+      root.classList.add(themeSetting)
+    }
+
+    function handler(e: MediaQueryListEvent) {
+      const newTheme = e.matches ? 'dark' : 'light'
+
+      setTheme(newTheme)
+      root.classList.remove('light', 'dark')
+      root.classList.add(newTheme)
+    }
+
+    mediaQuery.addEventListener('change', handler)
+
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [themeSetting, setTheme])
+
+  return null
+}

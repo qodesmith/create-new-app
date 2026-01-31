@@ -1,7 +1,6 @@
 import {$, serve} from 'bun'
 
-import {is0000, isProd, port} from '@/server/constants'
-
+import {is0000, isProd, port} from './constants'
 import {migrateDbSchema} from './db/migrate'
 import {honoServer} from './hono/honoServer'
 import indexHtml from './index.html'

@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.17",
-    "@qodestack/biome-config": "^2.3.1",
+    "@qodestack/biome-config": "^2.3.4",
     "@tanstack/react-router-devtools": "^1.157.16",
     "@tanstack/router-cli": "^1.157.16",
     "@types/bun": "latest",

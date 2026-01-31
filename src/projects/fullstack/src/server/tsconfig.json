@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@/shared/*": ["../shared/*"],
-      "@/*": ["./*"]
+      "@/server/*": ["./*"]
     }
   },
   "references": [{"path": "../shared"}],

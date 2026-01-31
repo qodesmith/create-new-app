@@ -2,6 +2,7 @@ import type {ProjectType} from '../utils/validation'
 import type {GuidedOptions} from './guided-mode'
 
 import {$} from 'bun'
+import {existsSync} from 'node:fs'
 import {dirname, join, parse} from 'node:path'
 import process from 'node:process'
 
@@ -125,6 +126,26 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
      */
     await $`bunx biomeInit --no-includeBiome`.cwd(targetDir).quiet()
   })
+
+  // Update VSCode settings if they exist
+  const vscodeSettingsPath = `${targetDir}/.vscode/settings.json`
+  if (existsSync(vscodeSettingsPath)) {
+    await withSpinner('Updating VS Code settings...', async () => {
+      const vscodeSettingsRaw = await Bun.file(vscodeSettingsPath).text()
+      const vscodeSettings = Bun.JSON5.parse(vscodeSettingsRaw) as Record<
+        string,
+        unknown
+      >
+
+      vscodeSettings['typescript.preferences.importModuleSpecifier'] =
+        'non-relative'
+
+      await Bun.write(
+        vscodeSettingsPath,
+        Bun.JSON5.stringify(vscodeSettings) as string
+      )
+    })
+  }
 
   try {
     await withSpinner('Initializing git...', async () => {

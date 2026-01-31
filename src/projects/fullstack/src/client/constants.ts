@@ -6,5 +6,4 @@ import type {FileRouteTypes} from '@/client/routeTree.gen'
  */
 export const resetAppKey = 'reset-app'
 
-
 export const defaultAuthedPath = '/account' satisfies FileRouteTypes['to']

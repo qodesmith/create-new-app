@@ -2,11 +2,10 @@ import path from 'node:path'
 import process from 'node:process'
 
 import {isProd} from '@/server/constants'
+import {getDatabase} from '@/server/db/getDatabase'
+import {log} from '@/server/utils/logger'
 
 import {migrate} from 'drizzle-orm/bun-sqlite/migrator'
-
-import {log} from '../utils/logger'
-import {getDatabase} from './getDatabase'
 
 /**
  * This function uses the Drizzle JavaScript `migrate` function to run database

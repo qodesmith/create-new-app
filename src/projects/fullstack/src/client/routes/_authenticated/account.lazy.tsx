@@ -190,8 +190,8 @@ function AccountPage() {
             )}
           </p>
           <p className="text-muted-foreground text-sm">
-            Choose how the app looks. Your preference is saved on this
-            device. "System" follows your device setting.
+            Choose how the app looks. Your preference is saved on this device.
+            "System" follows your device setting.
           </p>
 
           <div className="flex flex-wrap gap-2 pt-1">

@@ -1,5 +1,6 @@
-import { defineConfig } from 'drizzle-kit'
+import {defineConfig} from 'drizzle-kit'
 
+// biome-ignore lint/style/noDefaultExport: Drizzle expects a default export
 export default defineConfig({
   schema: './server/db/schema.ts',
   out: './drizzle',

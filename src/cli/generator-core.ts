@@ -124,7 +124,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
      * Ensure the CLI does NOT create a biome.jsonc file. We will manually
      * create it so we can include a number of overrides to the config.
      */
-    await $`bunx biomeInit --no-includeBiome`.cwd(targetDir).quiet()
+    await $`bunx biomeInit --no-includeBiomeConfig`.cwd(targetDir).quiet()
   })
 
   // Update VSCode settings if they exist
@@ -132,7 +132,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   if (existsSync(vscodeSettingsPath)) {
     await withSpinner('Updating VS Code settings...', async () => {
       const vscodeSettingsRaw = await Bun.file(vscodeSettingsPath).text()
-      const vscodeSettings = Bun.JSON5.parse(vscodeSettingsRaw) as Record<
+      const vscodeSettings = JSON.parse(vscodeSettingsRaw) as Record<
         string,
         unknown
       >
@@ -142,7 +142,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
       await Bun.write(
         vscodeSettingsPath,
-        Bun.JSON5.stringify(vscodeSettings) as string
+        JSON.stringify(vscodeSettings, null, 2)
       )
     })
   }

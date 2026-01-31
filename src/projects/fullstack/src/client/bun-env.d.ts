@@ -1,5 +1,5 @@
 /**
- * Allows for importing assets to get their path as a string.
+ * Allows for importing assets in client code to get their path as a string.
  */
 
 ////////////

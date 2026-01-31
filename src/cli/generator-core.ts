@@ -126,5 +126,13 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     await $`bunx biomeInit --no-includeBiome`.cwd(targetDir).quiet()
   })
 
+  try {
+    await withSpinner('Initializing git...', async () => {
+      await $`git init`.cwd(targetDir).quiet()
+    })
+  } catch {
+    log.warning('Git initialization failed')
+  }
+
   log.success('Project created successfully!')
 }

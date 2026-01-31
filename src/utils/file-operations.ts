@@ -80,17 +80,6 @@ export function replacePlaceholders(
 }
 
 /**
- * Write content to a file, creating parent directories if needed
- */
-export async function writeFile(
-  filePath: string,
-  content: string
-): Promise<void> {
-  ensureDir(dirname(filePath))
-  await Bun.write(filePath, content)
-}
-
-/**
  * Get all files in a directory recursively
  */
 export function getFilesRecursive(dir: string): string[] {

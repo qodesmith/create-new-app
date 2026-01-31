@@ -12,7 +12,6 @@ import {
   getFilesRecursive,
   pathExists,
   readAndReplace,
-  writeFile,
 } from '../utils/file-operations'
 import {withSpinner} from '../utils/withSpinner'
 
@@ -94,22 +93,22 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
       ensureDir(dirname(destPath))
 
-      // Check if file needs placeholder replacement
+      // Files that contain placeholders for replacement.
       if (relativeFilePathsWithTemplate.has(relativePath)) {
         const content = await readAndReplace(srcFile, placeholderReplacements)
-        await writeFile(destPath, content)
-      } else if (fileName === 'biome.jsonc') {
-        // Remove "root": false line (used to prevent conflicts during development)
-        const content = await Bun.file(srcFile).text()
-        const cleaned = content.replace(/^\s*"root":\s*false,?\n?/m, '')
-        await Bun.write(destPath, cleaned)
-      } else if (fileName.endsWith('-keep')) {
+        await Bun.write(destPath, content)
+        continue
+      }
+
+      // Rename <file>-keep => <file>
+      if (fileName.endsWith('-keep')) {
         const sanitizedPath = destPath.slice(0, -5) // Remove "-keep" from path
         await Bun.write(sanitizedPath, Bun.file(srcFile))
-      } else {
-        // Copy as-is
-        await Bun.write(destPath, Bun.file(srcFile))
+        continue
       }
+
+      // Simply copy the file.
+      await Bun.write(destPath, Bun.file(srcFile))
     }
   })
 

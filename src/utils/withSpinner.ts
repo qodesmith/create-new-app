@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 import {spinner} from '@clack/prompts'
 
 /**
@@ -14,7 +16,7 @@ export async function withSpinner<T>(
     s.stop(message)
     return result
   } catch (err) {
-    s.stop('Failed')
-    throw err
+    s.stop(Error.isError(err) ? err.message : 'An error occurred')
+    process.exit(1)
   }
 }

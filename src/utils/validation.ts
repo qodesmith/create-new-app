@@ -14,7 +14,7 @@ export function isValidProjectName(name: string): boolean {
 /**
  * Get error message for invalid project name
  */
-export function getProjectNameError(name: string): string | null {
+export function getProjectNameError(name: string | undefined): string | null {
   if (!name || name.length === 0) {
     return 'Project name is required'
   }

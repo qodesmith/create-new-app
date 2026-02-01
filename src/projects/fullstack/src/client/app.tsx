@@ -2,7 +2,8 @@
  * This file is the entry point for the React app. It sets up the root element
  * and renders it to the DOM.
  *
- * This file is included in `src/index.html`.
+ * This file is included in `src/index.html` which enables Bun to traverse the
+ * dependency tree to build the application.
  */
 
 import type {RouterContext} from '@/client/types'

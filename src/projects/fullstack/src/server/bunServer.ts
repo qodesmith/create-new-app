@@ -1,4 +1,5 @@
-import {$, serve} from 'bun'
+import {serve} from 'bun'
+import {networkInterfaces} from 'node:os'
 
 import {is0000, isProd, port} from './constants'
 import {migrateDbSchema} from './db/migrate'
@@ -15,11 +16,7 @@ const bunServer = serve({
 
   /**
    * Testing on a mobile phone?
-   * 1. Set this value to '0.0.0.0'
-   * 2. Get your Mac's IP address:
-   *   - ipconfig getifaddr en0 (for wifi)
-   *   - ipconfig getifaddr en1 (for ethernet)
-   * 3. URL on phone - <ip address>:<port>
+   * Set this to '0.0.0.0' and connect via the IP logged at startup.
    */
   hostname: is0000 ? '0.0.0.0' : undefined,
   port,
@@ -35,15 +32,10 @@ const bunServer = serve({
 })
 
 if (is0000) {
-  const wifiIp = await $`ipconfig getifaddr en0`.quiet().nothrow().text()
-  const ethIp = await $`ipconfig getifaddr en1`.quiet().nothrow().text()
-  let mobileHost = ''
-
-  if (wifiIp) {
-    mobileHost = wifiIp.trim()
-  } else if (ethIp) {
-    mobileHost = ethIp.trim()
-  }
+  const interfaces = networkInterfaces()
+  const mobileHost = Object.values(interfaces)
+    .flat()
+    .find(iface => iface?.family === 'IPv4' && !iface.internal)?.address
 
   if (mobileHost) {
     log.success(`📲 Connect via mobile at http://${mobileHost}:${port}`)

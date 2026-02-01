@@ -101,7 +101,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         continue
       }
 
-      // Rename <file>-keep => <file>
+      // Rename `-keep` files - name.ext-keep => name.ext
       if (fileName.endsWith('-keep')) {
         const sanitizedPath = destPath.slice(0, -5) // Remove "-keep" from path
         await Bun.write(sanitizedPath, Bun.file(srcFile))

@@ -155,14 +155,14 @@
   }
 
   p {
-    @apply py-1
+    @apply py-1;
   }
 
   button {
     @apply cursor-pointer;
 
     &:disabled {
-      @apply cursor-not-allowed
+      @apply cursor-not-allowed;
     }
   }
 }

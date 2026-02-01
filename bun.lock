@@ -285,7 +285,7 @@
 
     "@prisma/client": ["@prisma/client@5.22.0", "", { "peerDependencies": { "prisma": "*" }, "optionalPeers": ["prisma"] }, "sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA=="],
 
-    "@qodestack/biome-config": ["@qodestack/biome-config@2.3.4", "", { "dependencies": { "@biomejs/biome": "2.3.13", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-m7DV7YQb6CQKXTbdvYCoMgX4cDGbjRTWWfVXUOtaalb7eCBnMxguCRe6/v28gKZYWHgi2fGuq3q9UUkXzJfuNQ=="],
+    "@qodestack/biome-config": ["@qodestack/biome-config@2.3.5", "", { "dependencies": { "@biomejs/biome": "2.3.13", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-GBUY45Ayd0jh9ZU3jsVXWTjyPwbUuObqgOeojqy2An1z/I+MbFUaupVceHJvffQxNrY3t7ZNpiO1u+TTyTZEwA=="],
 
     "@qodestack/utils": ["@qodestack/utils@2.28.0", "", { "peerDependencies": { "typescript": "^5.9.2" } }, "sha512-Xs1o6Mx+a4XuQRgTlE/j1JpBfcZ95j41uC3+5tPHm8AIr1BhmHCORJpXdyPiVsZA62T/nD1Gz2+gxeEBdrVGyA=="],
 

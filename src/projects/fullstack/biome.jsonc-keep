@@ -44,23 +44,6 @@
         "src/client/components/**/*.ts"
       ],
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
-    },
-
-    // Ignore errors with Shadcn / Tailwind directives.
-    {
-      "includes": ["src/client/app.css"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noUnknownAtRules": {
-              "level": "on",
-              "options": {
-                "ignore": ["@custom-variant", "@theme", "@layer", "@apply"]
-              }
-            }
-          }
-        }
-      }
     }
   ]
 }

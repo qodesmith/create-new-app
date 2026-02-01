@@ -136,13 +136,15 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         string,
         unknown
       >
-
-      vscodeSettings['typescript.preferences.importModuleSpecifier'] =
-        'non-relative'
+      const additionalSettings = {
+        'typescript.preferences.preferTypeOnlyAutoImports': true,
+        'typescript.preferences.importModuleSpecifier': 'non-relative',
+        'typescript.preferences.includePackageJsonAutoImports': 'auto',
+      }
 
       await Bun.write(
         vscodeSettingsPath,
-        JSON.stringify(vscodeSettings, null, 2)
+        JSON.stringify({...vscodeSettings, ...additionalSettings}, null, 2)
       )
     })
   }

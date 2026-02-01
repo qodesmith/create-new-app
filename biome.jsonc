@@ -5,5 +5,41 @@
   "files": {
     "ignoreUnknown": true,
     "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
-  }
+  },
+  "overrides": [
+    // General rules for client-side code.
+    {
+      "includes": [
+        "src/projects/fullstack/src/client/**/*.ts",
+        "src/projects/fullstack/src/client/**/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // Avoid importing process in client code.
+            "noProcessGlobal": "off",
+
+            // Inform Biome about how our custom hooks work.
+            "useExhaustiveDependencies": {
+              "level": "error",
+              "fix": "safe",
+              "options": {
+                "hooks": [{"name": "useStable", "stableResult": true}]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Allow Tanstack routes & Shadcn components to export more than components.
+    {
+      "includes": [
+        "src/projects/fullstack/src/client/routes/**/*.tsx",
+        "src/projects/fullstack/src/client/components/**/*.tsx",
+        "src/projects/fullstack/src/client/components/**/*.ts"
+      ],
+      "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 import type {FileRoutesByTo} from '@/client/routeTree.gen'
 
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
-import {isValidRoute} from '@/client/lib/utils'
+import {isValidRoute} from '@/client/lib/isValidRoute'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {createFileRoute, redirect} from '@tanstack/react-router'

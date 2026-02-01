@@ -1,6 +1,5 @@
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
-import {AuroraBackground} from '@/client/components/ui/aurora-background'
 import {Button} from '@/client/components/ui/button'
 import {
   CardContent,
@@ -63,7 +62,7 @@ function SignupPage() {
   })
 
   return (
-    <AuroraBackground className="flex h-full justify-center overflow-auto bg-background p-4">
+    <div className="flex h-full justify-center overflow-auto bg-background p-4">
       <MagicCard
         className="my-auto w-full max-w-sm rounded-2xl py-6"
         spotlightGradientColor="rgba(255,255,255,.1)"
@@ -274,6 +273,6 @@ function SignupPage() {
           </div>
         </CardContent>
       </MagicCard>
-    </AuroraBackground>
+    </div>
   )
 }

@@ -17,5 +17,8 @@
     "ui": "@/client/components/ui",
     "lib": "@/client/lib",
     "hooks": "@/client/hooks"
+  },
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}"
   }
 }

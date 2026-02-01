@@ -1,6 +1,5 @@
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
-import {AuroraBackground} from '@/client/components/ui/aurora-background'
 import {Button} from '@/client/components/ui/button'
 import {
   CardContent,
@@ -10,10 +9,10 @@ import {
 } from '@/client/components/ui/card'
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
-import {defaultAuthedPath} from '@/client/constantsClient'
+import {defaultAuthedPath} from '@/client/constants'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
-import {minPasswordLength} from '@/shared/constantsShared'
+import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
@@ -55,7 +54,7 @@ function LoginPage() {
   })
 
   return (
-    <AuroraBackground className="flex h-full justify-center overflow-auto bg-background p-4">
+    <div className="flex h-full justify-center overflow-auto bg-background p-4">
       <MagicCard
         className="my-auto w-full max-w-sm rounded-2xl py-6"
         spotlightGradientColor="rgba(255,255,255,.1)"
@@ -155,6 +154,6 @@ function LoginPage() {
           </div>
         </CardContent>
       </MagicCard>
-    </AuroraBackground>
+    </div>
   )
 }

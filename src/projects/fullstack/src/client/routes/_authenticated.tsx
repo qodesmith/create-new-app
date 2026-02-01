@@ -1,5 +1,5 @@
-import {defaultAuthedPath, resetAppKey} from '@/client/constantsClient'
-import {isValidRoute} from '@/client/lib/utils'
+import {defaultAuthedPath, resetAppKey} from '@/client/constants'
+import {isValidRoute} from '@/client/lib/isValidRoute'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {createFileRoute, Outlet, redirect} from '@tanstack/react-router'

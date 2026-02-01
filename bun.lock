@@ -13,6 +13,7 @@
         "@hono/arktype-validator": "^2.0.1",
         "@libsql/client": "^0.17.0",
         "@qodestack/utils": "^2.28.0",
+        "@radix-ui/react-slot": "^1.2.4",
         "@tanstack/react-form": "^1.28.0",
         "@tanstack/react-query": "^5.90.20",
         "@tanstack/react-router": "^1.157.18",
@@ -292,6 +293,10 @@
     "@qodestack/biome-config": ["@qodestack/biome-config@2.3.5", "", { "dependencies": { "@biomejs/biome": "2.3.13", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-GBUY45Ayd0jh9ZU3jsVXWTjyPwbUuObqgOeojqy2An1z/I+MbFUaupVceHJvffQxNrY3t7ZNpiO1u+TTyTZEwA=="],
 
     "@qodestack/utils": ["@qodestack/utils@2.28.0", "", { "peerDependencies": { "typescript": "^5.9.2" } }, "sha512-Xs1o6Mx+a4XuQRgTlE/j1JpBfcZ95j41uC3+5tPHm8AIr1BhmHCORJpXdyPiVsZA62T/nD1Gz2+gxeEBdrVGyA=="],
+
+    "@radix-ui/react-compose-refs": ["@radix-ui/react-compose-refs@1.1.2", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg=="],
+
+    "@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.4", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-Jl+bCv8HxKnlTLVrcDE8zTMJ09R9/ukw4qBs/oZClOfoQk/cOTbDn+NceXfV7j09YPVQUryJPHurafcSg6EVKA=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 

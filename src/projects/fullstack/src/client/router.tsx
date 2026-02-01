@@ -1,6 +1,6 @@
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
-import {Button} from '@/client/components/custom/Button'
 import {ErrorState} from '@/client/components/custom/ErrorState'
+import {Button} from '@/client/components/ui/button'
 import {logClientError} from '@/client/lib/utils'
 import {apiClientAtom} from '@/client/state/globalState'
 
@@ -83,7 +83,7 @@ export function createTanstackRouter() {
           title={title}
           actions={
             <div className="flex justify-center">
-              <Button variant="primary" onClick={onClick}>
+              <Button onClick={onClick}>
                 {isValidationError ? 'Retry' : 'Reset'}
               </Button>
             </div>

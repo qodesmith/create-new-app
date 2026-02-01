@@ -1,9 +1,6 @@
 import type {ClassValue} from 'clsx'
-import type {FileRoutesByTo} from '@/client/routeTree.gen'
 import type {ApiClient} from '@/client/types'
 import type {ErrorContext} from '@/shared/types'
-
-import {matchRoutes} from '@/client/router'
 
 import {errorToObject, noop} from '@qodestack/utils'
 import {clsx} from 'clsx'
@@ -36,27 +33,6 @@ export function getCookie(name: string) {
    * .shift()   => 'value2'
    */
   return parts.length === 2 ? parts.pop()?.split(';').shift() : undefined
-}
-
-export function isValidRoute(
-  pathname: string
-): pathname is keyof FileRoutesByTo {
-  const matches = matchRoutes(pathname)
-
-  if (
-    // There will always be a single match for '__root__' - ignore this.
-    matches.length <= 1 ||
-    /**
-     * More specific matches start at the end of the array. If there's a
-     * partial match in the pathname, the rest of the "unmatched" portion will
-     * get dumped into params as {'**': <unmatched>}.
-     */
-    '**' in (matches.at(-1)?.params ?? {})
-  ) {
-    return false
-  }
-
-  return true
 }
 
 /**

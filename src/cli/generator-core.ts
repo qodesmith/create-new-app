@@ -2,6 +2,7 @@ import type {ProjectType} from '../utils/validation'
 import type {GuidedOptions} from './guided-mode'
 
 import {$} from 'bun'
+import {randomBytes} from 'node:crypto'
 import {existsSync} from 'node:fs'
 import {dirname, join, parse} from 'node:path'
 import process from 'node:process'
@@ -97,7 +98,15 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
       // Files that contain placeholders for replacement.
       if (relativeFilePathsWithTemplate.has(relativePath)) {
-        const content = await readAndReplace(srcFile, placeholderReplacements)
+        let content = await readAndReplace(srcFile, placeholderReplacements)
+
+        if (fileName === '.env.development') {
+          content = content.replace(
+            'BETTER_AUTH_SECRET=',
+            `BETTER_AUTH_SECRET=${randomBytes(32).toString('hex')}`
+          )
+        }
+
         await Bun.write(destPath, content)
         continue
       }

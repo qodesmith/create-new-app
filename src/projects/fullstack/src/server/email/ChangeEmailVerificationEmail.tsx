@@ -1,5 +1,4 @@
-import {getHexGradientStops} from '@/server/email/getHexGradientStops'
-
+import {getHexGradientStops} from '@qodestack/utils'
 import {
   Body,
   Container,

@@ -12,6 +12,8 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
+import {sendChangeEmailVerificationEmail} from '@/server/email/sendChangeEmailVerificationEmail'
+import {log} from '@/server/utils/logger'
 import {betterAuthBasePath, minPasswordLength} from '@/shared/constants'
 
 import {passkey} from '@better-auth/passkey'
@@ -19,9 +21,6 @@ import {getUnitInSeconds} from '@qodestack/utils'
 import {type} from 'arktype'
 import {APIError} from 'better-auth/api'
 import {admin, createAuthMiddleware} from 'better-auth/plugins'
-
-import {sendChangeEmailVerificationEmail} from '../email/sendChangeEmailVerificationEmail'
-import {log} from '../utils/logger'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 

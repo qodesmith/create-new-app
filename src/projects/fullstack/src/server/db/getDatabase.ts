@@ -5,16 +5,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {isProd} from '@/server/constants'
+import {casing} from '@/server/db/options'
+import * as appSchema from '@/server/db/schema/appSchema'
+import * as authSchema from '@/server/db/schema/authSchema'
+import {getEnvVar} from '@/server/utils/getEnvVar'
 import {log} from '@/server/utils/logger'
 
 import {errorToObject} from '@qodestack/utils'
 import {sql} from 'drizzle-orm'
 import {drizzle} from 'drizzle-orm/bun-sqlite'
-
-import {getEnvVar} from '../utils/getEnvVar'
-import {casing} from './options'
-import * as appSchema from './schema/appSchema'
-import * as authSchema from './schema/authSchema'
 
 let db: BunSQLiteDatabase<typeof appSchema & typeof authSchema> & {
   $client: Database

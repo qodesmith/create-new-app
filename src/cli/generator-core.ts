@@ -128,6 +128,11 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     await $`bunx biomeInit --no-includeBiomeConfig`.cwd(targetDir).quiet()
   })
 
+  // Generate database schemas
+  await withSpinner('Generating database schemas with Drizzle...', async () => {
+    await $`bun run dbInit.ts`.cwd(targetDir).quiet()
+  })
+
   // Update VSCode settings if they exist
   const vscodeSettingsPath = `${targetDir}/.vscode/settings.json`
   if (existsSync(vscodeSettingsPath)) {

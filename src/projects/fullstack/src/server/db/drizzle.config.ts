@@ -3,10 +3,9 @@ import process from 'node:process'
 import {fileURLToPath} from 'node:url'
 
 import {isProdEnv} from '@/server/constants'
+import {getEnvVar} from '@/server/utils/getEnvVar'
 
 import {defineConfig} from 'drizzle-kit'
-
-import {getEnvVar} from '../utils/getEnvVar'
 
 /**
  * THIS IS INTENTIONAL!!!

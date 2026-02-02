@@ -1,6 +1,12 @@
 import {isProd} from '@/server/constants'
+import {auth} from '@/server/db/auth/auth'
+import {getDatabase} from '@/server/db/getDatabase'
+import {errorsTable} from '@/server/db/schema/appSchema'
+import {adminRoutes} from '@/server/hono/adminRoutes'
 import {authRoutes} from '@/server/hono/authRoutes'
+import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRoutes'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
+import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
 import {bestEffort} from '@/server/utils/bestEffort'
 import {log} from '@/server/utils/logger'
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
@@ -10,13 +16,6 @@ import {errorToObject, getUnitInMs} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
 import {Hono} from 'hono'
 import {csrf} from 'hono/csrf'
-
-import {auth} from '../db/auth/auth'
-import {getDatabase} from '../db/getDatabase'
-import {errorsTable} from '../db/schema/appSchema'
-import {getRateLimitMiddleware} from '../middleware/rateLimitMiddleware'
-import {adminRoutes} from './adminRoutes'
-import {staticAssetsFromBuildRoutes} from './staticAssetsFromBuildRoutes'
 
 export type HonoServer = typeof honoServer
 

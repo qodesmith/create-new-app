@@ -6,9 +6,9 @@ import {Hono} from 'hono'
 
 export type HonoAuthServer = typeof authRoutes
 
-// biome-ignore lint/style/useNamingConvention: this is how Hono does it
+// biome-ignore lint/style/useNamingConvention: Hono expects `Variables` as a type argument
 export const authRoutes = new Hono<{Variables: SessionData}>()
   .use(authMiddleware)
-  .get(c => {
-    return c.json({auth: true})
+  .get('/test', c => {
+    return c.json({auth: true, date: new Date().toISOString()})
   })

@@ -192,7 +192,7 @@ subprocesses.serverProc = serverProc
 void pipeConsoleOutput(serverProc, 'server')
 
 // Open the site in a browser once localhost is ready.
-void checkLocalhost().then(() => open(`${localhost}/dashboard`))
+void checkLocalhost().then(() => open(localhost))
 
 // For debug purposes, you can log all process ids associated with this script.
 // console.table([

@@ -84,6 +84,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
       'src/server/api/index.ts',
       'src/server/db/drizzleStudio.ts',
       'src/server/db/options.ts',
+      'src/server/email/ChangeEmailVerificationEmail.tsx',
     ])
 
     for (const srcFile of files) {

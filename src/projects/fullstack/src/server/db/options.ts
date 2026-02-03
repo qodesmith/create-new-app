@@ -247,6 +247,7 @@ export const authOptions = {
       // The relying party ID, typically your domain
       rpID: domain,
 
+      // TODO - update rpName to semantic name for your app.
       // Human-readable name shown in browser prompts
       rpName: '{{PROJECT_NAME}}',
 

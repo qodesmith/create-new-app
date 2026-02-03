@@ -4,7 +4,7 @@ const nodeEnv = getEnvVar('NODE_ENV')
 
 export const port = getEnvVar('PORT')
 
-// TODO - update domain names
+// TODO - update these variables with your actual domain name.
 export const domain = '{{PROJECT_NAME}}.com' as const
 export const origin = 'https://{{PROJECT_NAME}}.com' as const
 export const originWww = 'https://www.{{PROJECT_NAME}}.com' as const

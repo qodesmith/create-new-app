@@ -57,7 +57,6 @@ export default function Email({
             border: `1px solid ${cyan400}`,
           }}
         >
-          {/* SUPERCHARGE */}
           <Section style={{textAlign: 'center', marginBottom: '16px'}}>
             <Text style={{margin: 0, fontSize: '24px', fontWeight: 700}}>
               {appName
@@ -68,8 +67,7 @@ export default function Email({
 
                   return (
                     <span
-                      // biome-ignore lint/suspicious/noArrayIndexKey: it's ok
-                      key={i}
+                      key={i + letter}
                       style={{
                         paddingRight: i === arr.length - 1 ? undefined : '15px',
                         color,

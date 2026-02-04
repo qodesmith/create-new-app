@@ -18,7 +18,8 @@
     "lint:fix": "biome lint --write .",
     "format": "biome format",
     "format:fix": "biome format --write .",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "checkDeps": "bun run src/utils/checkDeps.ts"
   },
   "files": ["src", "dist"],
   "keywords": [],
@@ -49,6 +50,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@react-email/components": "^1.0.3",
     "@react-email/preview-server": "5.2.5",
+    "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-router": "^1.157.18",

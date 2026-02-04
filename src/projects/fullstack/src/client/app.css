@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css"; /* Shadcn */
 
+/* https://github.com/tailwindlabs/tailwindcss-typography */
+/* Use the `prose` class to add opiniated, sane typography styling. */
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

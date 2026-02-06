@@ -51,8 +51,6 @@ function ThemeSetter() {
     const root = window.document.documentElement
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
-    root.classList.remove('light', 'dark')
-
     if (themeSetting === 'system') {
       const newTheme = mediaQuery.matches ? 'dark' : 'light'
 

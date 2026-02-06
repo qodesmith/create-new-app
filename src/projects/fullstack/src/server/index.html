@@ -6,10 +6,28 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
-    <link rel="stylesheet" href="tailwindcss">
 
     <!-- TODO - replace this with your actual favicon -->
     <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="tailwindcss">
+
+    <script>
+    ;(() => {
+      // 'ui-theme' is the same key found for themeSettingAtom in globalState.ts
+      let theme = localStorage.getItem('ui-theme') ?? 'system'
+
+      if (theme === 'system') {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+      }
+
+      // Light mode is the default, so only set a class for dark mode.
+      if (theme === 'dark') {
+        document.documentElement.classList.add(theme)
+      }
+    })()
+    </script>
 
     <title>{{PROJECT_NAME}}</title>
   </head>

@@ -5,7 +5,7 @@ import {atomWithLazy, atomWithStorage} from 'jotai/utils'
 
 // Corresponds to the user's preference in settings.
 export const themeSettingAtom = atomWithStorage<'light' | 'dark' | 'system'>(
-  'ui-theme',
+  'ui-theme', // This exact string is also used in index.html
   'system'
 )
 

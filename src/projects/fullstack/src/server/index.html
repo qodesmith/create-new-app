@@ -9,11 +9,11 @@
 
     <!-- TODO - replace this with your actual favicon -->
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="tailwindcss">
+    <link rel="stylesheet" href="../client/app.css">
 
     <script>
     ;(() => {
-      // 'ui-theme' is the same key found for themeSettingAtom in globalState.ts
+      // 'ui-theme' is the same key used in globalState.ts for themeSettingAtom
       let theme = localStorage.getItem('ui-theme') ?? 'system'
 
       if (theme === 'system') {

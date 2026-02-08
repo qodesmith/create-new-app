@@ -25,7 +25,7 @@ function RouteComponent() {
   })
 
   return (
-    <section className="prose prose-neutral dark:prose-invert h-full max-w-none border border-border p-4">
+    <section className="prose prose-neutral dark:prose-invert h-full max-w-none p-4">
       <div>
         <h1 className="flex justify-center gap-3">
           {appName.split('').map((letter, i) => {

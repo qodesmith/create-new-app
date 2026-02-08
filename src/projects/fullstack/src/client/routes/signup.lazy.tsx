@@ -20,10 +20,10 @@ import {useAtomValue} from 'jotai'
 import {toast} from 'sonner'
 
 export const Route = createLazyFileRoute('/signup')({
-  component: SignupPage,
+  component: SignUpPage,
 })
 
-function SignupPage() {
+function SignUpPage() {
   const router = useRouter()
   const namePattern = '[a-zA-Z\\s]+'
   const authClient = useAtomValue(authClientAtom)
@@ -264,7 +264,7 @@ function SignupPage() {
             <p className="text-muted-foreground text-sm">
               Already have an account?{' '}
               <Link
-                to="/login"
+                to="/signin"
                 className="font-medium text-foreground transition-colors hover:text-muted-foreground"
               >
                 Sign in

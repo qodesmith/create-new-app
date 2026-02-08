@@ -8,20 +8,23 @@
 
 import type {RouterContext} from '@/client/types'
 
+import {getAuthClient} from '@/client/apiClient'
 import {useStable} from '@/client/hooks/useStable'
 import {createQueryClient} from '@/client/queryClient'
 import {createTanstackRouter} from '@/client/router'
+import {isSignedInAtom} from '@/client/state/globalState'
 
 import {QueryClientProvider} from '@tanstack/react-query'
 import {RouterProvider} from '@tanstack/react-router'
 import {createStore, Provider as JotaiProvider} from 'jotai'
-import {StrictMode, useState} from 'react'
+import {StrictMode, useRef, useState} from 'react'
 import {createRoot} from 'react-dom/client'
 
 import '@/client/app.css'
 
 // biome-ignore lint/style/useComponentExportOnlyModules: it's ok here
-function AppContainer() {
+function AppContainer({isLoggedIn}: {isLoggedIn: boolean}) {
+  const hasSetLoggedInRef = useRef(false)
   const [store, setStore] = useState(() => createStore())
   const router = useStable(() => createTanstackRouter())
   const queryClient = useStable(() => createQueryClient())
@@ -29,6 +32,7 @@ function AppContainer() {
     return () => {
       setStore(createStore())
       router.clearCache()
+      router.invalidate()
       queryClient.clear() // Clear all connected caches.
       void queryClient.cancelQueries(undefined, {silent: true})
     }
@@ -36,6 +40,11 @@ function AppContainer() {
 
   // Route context is available within route loaders.
   const context: RouterContext = {store, queryClient, resetApp}
+
+  if (!hasSetLoggedInRef.current) {
+    hasSetLoggedInRef.current = true
+    store.set(isSignedInAtom, isLoggedIn)
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,12 +55,15 @@ function AppContainer() {
   )
 }
 
-function start() {
+async function start() {
   const root = createRoot(document.getElementById('root') as Element)
+  const authClient = getAuthClient()
+  const sessionData = await authClient.getSession()
+  const isLoggedIn = !!sessionData.data?.session && !!sessionData.data.user
 
   root.render(
     <StrictMode>
-      <AppContainer />
+      <AppContainer isLoggedIn={isLoggedIn} />
     </StrictMode>
   )
 }
@@ -67,5 +79,5 @@ declare module '@tanstack/react-router' {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', start)
 } else {
-  start()
+  void start()
 }

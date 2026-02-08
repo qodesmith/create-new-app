@@ -11,22 +11,23 @@ import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
-import {authClientAtom} from '@/client/state/globalState'
+import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
-import {useAtomValue} from 'jotai'
+import {useAtomValue, useSetAtom} from 'jotai'
 import {toast} from 'sonner'
 
-export const Route = createLazyFileRoute('/login')({
-  component: LoginPage,
+export const Route = createLazyFileRoute('/signin')({
+  component: SignInPage,
 })
 
-function LoginPage() {
+function SignInPage() {
   const {redirect} = Route.useSearch() ?? {}
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
+  const setIsSignedIn = useSetAtom(isSignedInAtom)
 
   const form = useForm({
     defaultValues: {
@@ -46,6 +47,7 @@ function LoginPage() {
           return
         }
 
+        setIsSignedIn(true)
         await router.navigate({to: redirect ?? defaultAuthedPath})
       } catch {
         toast.error('An unexpected error occurred')

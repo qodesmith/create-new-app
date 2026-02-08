@@ -1,5 +1,6 @@
 import type {RouterContext} from '@/client/types'
 
+import {AppHeader} from '@/client/components/custom/AppHeader'
 import {Toaster} from '@/client/components/ui/sonner'
 import {themeAtom, themeSettingAtom} from '@/client/state/globalState'
 
@@ -35,7 +36,10 @@ function RootComponent() {
       <ThemeSetter />
 
       {/* Renders the current route's content  */}
-      <Outlet />
+      <div>
+        <AppHeader />
+        <Outlet />
+      </div>
 
       {/* Will NOT show in production */}
       {/* <TanStackRouterDevtools /> */}

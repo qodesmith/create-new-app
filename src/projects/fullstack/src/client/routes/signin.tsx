@@ -2,11 +2,11 @@ import type {FileRoutesByTo} from '@/client/routeTree.gen'
 
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
 import {isValidRoute} from '@/client/lib/isValidRoute'
-import {authClientAtom} from '@/client/state/globalState'
+import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 
 import {createFileRoute, redirect} from '@tanstack/react-router'
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/signin')({
   beforeLoad: async ({context}) => {
     const shouldResetApp = sessionStorage.getItem(resetAppKey) === 'true'
 
@@ -19,6 +19,7 @@ export const Route = createFileRoute('/login')({
     const session = await authClient.getSession()
 
     if (session.data?.session) {
+      context.store.set(isSignedInAtom, true)
       throw redirect({to: defaultAuthedPath, replace: true})
     }
   },

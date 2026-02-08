@@ -11,7 +11,5 @@ export const Route = createFileRoute('/signup')({
     if (session.data?.session) {
       throw redirect({to: defaultAuthedPath, replace: true})
     }
-
-    throw redirect({to: '/login', replace: true})
   },
 })

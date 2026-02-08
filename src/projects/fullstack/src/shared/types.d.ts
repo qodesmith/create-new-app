@@ -35,6 +35,8 @@ export type ServerAuth = typeof auth
 export type ErrorContext =
   | 'client:topLevel'
   | 'client:missingUser'
+  | 'client:signOutError'
+  | 'client:signOutFailure'
   | 'rateLimitMiddleware'
   | 'hono:topLevel'
   | 'hono:betterAuth'

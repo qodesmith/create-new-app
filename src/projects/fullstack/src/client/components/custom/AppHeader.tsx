@@ -18,17 +18,31 @@ export function AppHeader() {
           {parsedLocation.pathname}
         </code>
       </div>
-      {isLoggedIn ? (
-        <Button size="sm" onClick={signOut} disabled={isSigningOut}>
-          Log out
-        </Button>
-      ) : (
-        <div className="flex gap-2">
-          <Link to="/signin">Sign in</Link>
-          <span>/</span>
-          <Link to="/signup">Sign up</Link>
-        </div>
-      )}
+      <div className="flex items-center gap-8">
+        <Link to="/" className="" activeProps={{className: 'underline'}}>
+          Home
+        </Link>
+        {isLoggedIn ? (
+          <>
+            <Link to="/account" activeProps={{className: 'underline'}}>
+              Account
+            </Link>
+            <Button size="sm" onClick={signOut} disabled={isSigningOut}>
+              Log out
+            </Button>
+          </>
+        ) : (
+          <div className="flex gap-2">
+            <Link to="/signin" activeProps={{className: 'underline'}}>
+              Sign in
+            </Link>
+            <span>/</span>
+            <Link to="/signup" activeProps={{className: 'underline'}}>
+              Sign up
+            </Link>
+          </div>
+        )}
+      </div>
     </header>
   )
 }

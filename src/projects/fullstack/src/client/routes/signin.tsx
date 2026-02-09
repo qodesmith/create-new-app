@@ -4,11 +4,7 @@ import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 import {createFileRoute, redirect} from '@tanstack/react-router'
 
 export const Route = createFileRoute('/signin')({
-  /**
-   * `validateSearch` runs before any of the other hooks. The shape returned
-   * here will be inferred across all usages of this route.
-   */
-  validateSearch: search => {
+  validateSearch: (search): {redirect?: string} => {
     return {
       redirect:
         typeof search.redirect === 'string' ? search.redirect : undefined,

@@ -20,7 +20,7 @@ export function AppHeader() {
       </div>
       {isLoggedIn ? (
         <Button size="sm" onClick={signOut} disabled={isSigningOut}>
-          Log Out
+          Log out
         </Button>
       ) : (
         <div className="flex gap-2">

@@ -39,7 +39,7 @@ function AppContainer({isLoggedIn}: {isLoggedIn: boolean}) {
   })
 
   // Route context is available within route loaders.
-  const context: RouterContext = {store, queryClient, resetApp}
+  const context: RouterContext = {router, store, queryClient, resetApp}
 
   if (!hasSetLoggedInRef.current) {
     hasSetLoggedInRef.current = true

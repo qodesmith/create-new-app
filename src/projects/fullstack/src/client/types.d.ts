@@ -5,9 +5,11 @@ import type {
   getApiClient,
   getAuthClient,
 } from '@/client/apiClient'
+import type {createTanstackRouter} from '@/client/router'
 
 export type RouterContext = {
   resetApp: () => void
+  router: ReturnType<typeof createTanstackRouter>
   store: Store
   queryClient: QueryClient
 }

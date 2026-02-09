@@ -10,31 +10,12 @@ import {useEffect} from 'react'
 
 import {routeTree} from './routeTree.gen'
 
-/**
- * NOTE:
- *
- * Under normal circumstances, creating any object in the module scope can cause
- * SSR state leakage issues. That is because during SSR, the code will get
- * compiled once and reused across all requests for the lifetime of the server.
- *
- * Since we need Tanstack Router's matchRoutes function where we don't have
- * access to the router (i.e. outside the React render cycle), we create a
- * router here and only export the matchRoutes utility function which does NOT
- * have access to state. This is safe to share across user requests since route
- * pathnames are not unique to users - they are global to the application.
- *
- * SSR state leaks occur when router instances maintain mutable state (current
- * location, history, component tree, etc.) that persist across requests. This
- * pattern avoids that by only using the route-matching logic.
- */
-// @ts-expect-error context isn't needed here - see comment above
-export const {matchRoutes} = createRouter({routeTree})
-
 export function createTanstackRouter() {
   return createRouter({
     // @ts-expect-error context values will be passed into <RouterProvider context={...} />
     context: {}, // type is RouterContext
     routeTree,
+    defaultPreload: 'intent',
 
     /**
      * Give components up to 100ms to load data before showing a loader.

@@ -48,34 +48,32 @@ function RootComponent() {
 }
 
 function ThemeSetter() {
-  const themeSetting = useAtomValue(themeSettingAtom)
   const setTheme = useSetAtom(themeAtom)
+  const themeSetting = useAtomValue(themeSettingAtom)
 
   useLayoutEffect(() => {
     const root = window.document.documentElement
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
-    if (themeSetting === 'system') {
-      const newTheme = mediaQuery.matches ? 'dark' : 'light'
-
-      setTheme(newTheme)
-      root.classList.add(newTheme)
-    } else {
-      setTheme(themeSetting)
-      root.classList.add(themeSetting)
-    }
-
-    function handler(e: MediaQueryListEvent) {
-      const newTheme = e.matches ? 'dark' : 'light'
-
+    function applyTheme(isDark: boolean) {
+      const newTheme = isDark ? 'dark' : 'light'
       setTheme(newTheme)
       root.classList.remove('light', 'dark')
       root.classList.add(newTheme)
     }
 
-    mediaQuery.addEventListener('change', handler)
+    if (themeSetting === 'system') {
+      applyTheme(mediaQuery.matches)
 
-    return () => mediaQuery.removeEventListener('change', handler)
+      function handler(e: MediaQueryListEvent) {
+        applyTheme(e.matches)
+      }
+
+      mediaQuery.addEventListener('change', handler)
+      return () => mediaQuery.removeEventListener('change', handler)
+    }
+
+    applyTheme(themeSetting === 'dark')
   }, [themeSetting, setTheme])
 
   return null

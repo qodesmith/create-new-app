@@ -1,24 +1,15 @@
+import type {createTanstackRouter} from '@/client/router'
 import type {FileRoutesByTo} from '@/client/routeTree.gen'
 
-import {matchRoutes} from '@/client/router'
-
 export function isValidRoute(
-  pathname: string
-): pathname is keyof FileRoutesByTo {
-  const matches = matchRoutes(pathname)
+  router: ReturnType<typeof createTanstackRouter>,
+  path: string | undefined
+): path is keyof FileRoutesByTo {
+  if (!path) return false
 
-  if (
-    // There will always be a single match for '__root__' - ignore this.
-    matches.length <= 1 ||
-    /**
-     * More specific matches start at the end of the array. If there's a
-     * partial match in the pathname, the rest of the "unmatched" portion will
-     * get dumped into params as {'**': <unmatched>}.
-     */
-    '**' in (matches.at(-1)?.params ?? {})
-  ) {
-    return false
-  }
+  const routePathsSet = new Set(
+    Object.keys(router.buildRouteTree().routesByPath)
+  )
 
-  return true
+  return routePathsSet.has(path)
 }

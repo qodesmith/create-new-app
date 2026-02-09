@@ -10,6 +10,7 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
+import {isValidRoute} from '@/client/lib/isValidRoute'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
@@ -24,10 +25,13 @@ export const Route = createLazyFileRoute('/signin')({
 })
 
 function SignInPage() {
-  const {redirect} = Route.useSearch() ?? {}
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
   const setIsSignedIn = useSetAtom(isSignedInAtom)
+  const {redirect} = Route.useSearch()
+  const redirectPath = isValidRoute(router, redirect)
+    ? redirect
+    : defaultAuthedPath
 
   const form = useForm({
     defaultValues: {
@@ -48,7 +52,7 @@ function SignInPage() {
         }
 
         setIsSignedIn(true)
-        await router.navigate({to: redirect ?? defaultAuthedPath})
+        await router.navigate({to: redirectPath})
       } catch {
         toast.error('An unexpected error occurred')
       }

@@ -18,7 +18,9 @@ export const Route = createFileRoute('/_authenticated')({
         to: '/signin',
         replace: true,
         search: {
-          redirect: isValidRoute(pathname) ? pathname : defaultAuthedPath,
+          redirect: isValidRoute(context.router, pathname)
+            ? pathname
+            : defaultAuthedPath,
         },
       })
     }

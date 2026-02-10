@@ -72,8 +72,9 @@ let hasLoggedProcessIds = false
 const stdoutLines: string[] = []
 
 /**
- * Pipes stdout / stderr of the subprocess to the main process so we can see the
- * output in a single terminal.
+ * Reads a single stream (stdout OR stderr) from a subprocess, prepends a
+ * colored prefix label, and writes it to the main process stdout. Buffers
+ * output until process ids have been logged.
  */
 async function handleStd(
   subProcess: Subprocess<'ignore', 'pipe', 'pipe'>,
@@ -106,8 +107,8 @@ async function handleStd(
 }
 
 /**
- * Pipes stdout & stderr of the subprocess to the main process so we can see the
- * output in a single terminal.
+ * Convenience wrapper that calls `handleStd` for both stdout and stderr of a
+ * subprocess in parallel.
  */
 async function pipeConsoleOutput(
   subProcess: Subprocess<'ignore', 'pipe', 'pipe'>,

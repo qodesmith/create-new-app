@@ -15,7 +15,7 @@
     <script>
     ;(() => {
       // 'ui-theme' is the same key used in globalState.ts for themeSettingAtom
-      let theme = localStorage.getItem('ui-theme') ?? 'system'
+      let theme = JSON.parse(localStorage.getItem('ui-theme') ?? '"system"')
 
       if (theme === 'system') {
         theme = window.matchMedia('(prefers-color-scheme: dark)').matches

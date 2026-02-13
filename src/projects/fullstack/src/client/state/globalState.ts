@@ -28,10 +28,13 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
 
 export const loginTypeAtom = atom<'login' | 'signup'>('login')
 
-export const apiAuthClientAtom = atomWithLazy(getApiAuthClient)
+export const isSignedInAtom = atom(false)
 
-export const apiClientAtom = atomWithLazy(getApiClient)
-
+// RPC for Better Auth endpoints.
 export const authClientAtom = atomWithLazy(getAuthClient)
 
-export const isSignedInAtom = atom(false)
+// RPC for custom authenticated endpoints.
+export const apiAuthClientAtom = atomWithLazy(getApiAuthClient)
+
+// RPC for custom public endpoints.
+export const apiClientAtom = atomWithLazy(getApiClient)

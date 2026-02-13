@@ -2,7 +2,10 @@ import type {RouterContext} from '@/client/types'
 
 import {AppHeader} from '@/client/components/custom/AppHeader'
 import {Toaster} from '@/client/components/ui/sonner'
-import {themeAtom, themeSettingAtom} from '@/client/state/globalState'
+import {
+  _themeAtom_INTERNAL_USE_ONLY,
+  themeSettingAtom,
+} from '@/client/state/globalState'
 
 import {createRootRouteWithContext, Outlet} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
@@ -46,7 +49,7 @@ function RootComponent() {
 }
 
 function ThemeSetter() {
-  const setTheme = useSetAtom(themeAtom)
+  const setTheme = useSetAtom(_themeAtom_INTERNAL_USE_ONLY)
   const themeSetting = useAtomValue(themeSettingAtom)
 
   useLayoutEffect(() => {
@@ -55,6 +58,7 @@ function ThemeSetter() {
 
     function applyTheme(isDark: boolean) {
       const newTheme = isDark ? 'dark' : 'light'
+
       setTheme(newTheme)
       root.classList.remove('light', 'dark')
       root.classList.add(newTheme)

@@ -18,8 +18,13 @@ export const themeSettingAtom = atomWithStorage<'light' | 'dark' | 'system'>(
   {getOnInit: true}
 )
 
+// biome-ignore lint/style/useNamingConvention: internal use only
+export const _themeAtom_INTERNAL_USE_ONLY = atom<'light' | 'dark'>('dark')
+
 // The actual current theme - light or dark (default to dark).
-export const themeAtom = atom<'light' | 'dark'>('dark')
+export const themeSelector = atom<'light' | 'dark'>(get =>
+  get(_themeAtom_INTERNAL_USE_ONLY)
+)
 
 export const loginTypeAtom = atom<'login' | 'signup'>('login')
 

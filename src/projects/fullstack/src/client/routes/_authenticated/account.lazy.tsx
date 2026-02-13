@@ -21,7 +21,7 @@ import {Separator} from '@/client/components/ui/separator'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {
   authClientAtom,
-  themeAtom,
+  themeSelector,
   themeSettingAtom,
 } from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
@@ -51,7 +51,7 @@ function AccountPage() {
   )
   const avatarInputId = useId()
   const [themeSetting, setThemeSetting] = useAtom(themeSettingAtom)
-  const theme = useAtomValue(themeAtom)
+  const theme = useAtomValue(themeSelector)
   const authClient = useAtomValue(authClientAtom)
 
   const changeEmailForm = useForm({

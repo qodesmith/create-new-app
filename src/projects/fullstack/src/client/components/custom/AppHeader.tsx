@@ -1,3 +1,4 @@
+import {ThemeCycler} from '@/client/components/custom/ThemeCycler'
 import {Button} from '@/client/components/ui/button'
 import {useSignOut} from '@/client/hooks/useSignOut'
 import {isSignedInAtom} from '@/client/state/globalState'
@@ -42,6 +43,7 @@ export function AppHeader() {
             </Link>
           </div>
         )}
+        <ThemeCycler />
       </div>
     </header>
   )

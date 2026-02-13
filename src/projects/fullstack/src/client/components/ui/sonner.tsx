@@ -1,7 +1,7 @@
 import type {CSSProperties} from 'react'
 import type {ToasterProps} from 'sonner'
 
-import {themeAtom} from '@/client/state/globalState'
+import {themeSelector} from '@/client/state/globalState'
 
 import {useAtomValue} from 'jotai'
 import {
@@ -15,7 +15,7 @@ import {useMemo} from 'react'
 import {Toaster as Sonner} from 'sonner'
 
 export const Toaster = ({...props}: ToasterProps) => {
-  const theme = useAtomValue(themeAtom)
+  const theme = useAtomValue(themeSelector)
   const style = useMemo(() => {
     return {
       '--normal-bg': 'var(--popover)',

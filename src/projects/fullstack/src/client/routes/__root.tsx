@@ -8,7 +8,7 @@ import {createRootRouteWithContext, Outlet} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
 import {lazy, useLayoutEffect} from 'react'
 
-const _TanStackRouterDevtools =
+const TanStackRouterDevtools =
   process.env.NODE_ENV === 'production'
     ? () => null // Render nothing in production
     : lazy(() =>
@@ -36,13 +36,11 @@ function RootComponent() {
       <ThemeSetter />
 
       {/* Renders the current route's content  */}
-      <div>
-        <AppHeader />
-        <Outlet />
-      </div>
+      <AppHeader />
+      <Outlet />
 
       {/* Will NOT show in production */}
-      {/* <TanStackRouterDevtools /> */}
+      <TanStackRouterDevtools />
     </>
   )
 }

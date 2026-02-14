@@ -24,6 +24,9 @@ function logLine() {
  * https://www.better-auth.com/docs/concepts/cli#generate
  *
  * The generate command creates the schema required by Better Auth.
+ *
+ * It is safe to run this multiple times. If there are no schema changes, the
+ * generated output will be identical.
  */
 log.warning('[BETTER AUTH] Generating schema...')
 await $`bun --bun run better-auth generate --config src/server/db/auth/authSchemaGenerator.ts --output src/server/db/schema/authSchema.ts -y`
@@ -43,6 +46,9 @@ logLine()
  *
  * drizzle-kit generate lets you generate SQL migrations based on your Drizzle
  * schema upon declaration or on subsequent schema changes.
+ *
+ * It is safe to run this multiple times. If there are no schema changes,
+ * drizzle will not create any migrations.
  */
 log.warning('[DRIZZLE KIT] Generating SQL migrations...')
 await $`bun --bun run drizzle-kit generate --dialect sqlite --schema src/server/db/schema --out src/server/db/drizzle`
@@ -55,6 +61,9 @@ logLine()
  * 2. fetch migration history from database
  * 3. pick previously unapplied migrations
  * 4. apply new migration to the database
+ *
+ * It is safe to run this multiple times. If there are no unapplied migrations,
+ * drizzle will not apply any migrations.
  */
 log.warning('[DRIZZLE KIT] Applying SQL migrations to database...')
 await $`bun --bun drizzle-kit migrate --config src/server/db/drizzle.config.ts`

@@ -9,10 +9,8 @@
     "build": "bun run build:client && bun run build:server",
     "build:client": "bun build client/index.tsx --outdir dist/public --minify --splitting",
     "build:server": "bun build server/index.ts --outdir dist --target bun --minify",
-    "start": "bun run dist/index.js",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "start": "NODE_ENV=production bun --bun run dist/index.js",
+    "db:view": "NODE_ENV=development bun --bun run src/server/db/drizzleStudioLocal.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.4.18",

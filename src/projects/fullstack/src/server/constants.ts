@@ -2,7 +2,7 @@ import type {MirrorMap} from '@/shared/types'
 
 import {getEnvVar} from './utils/getEnvVar'
 
-const nodeEnv = getEnvVar('NODE_ENV')
+export const nodeEnv = getEnvVar('NODE_ENV')
 
 export const port = getEnvVar('PORT')
 

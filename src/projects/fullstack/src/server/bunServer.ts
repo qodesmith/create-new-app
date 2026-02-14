@@ -1,12 +1,29 @@
-import {serve} from 'bun'
+import {$, serve} from 'bun'
 import {networkInterfaces} from 'node:os'
+import process from 'node:process'
 
-import {is0000, isProd, port} from './constants'
+import {getDatabase} from '@/server/db/getDatabase'
+
+import {sql} from 'drizzle-orm'
+
+import {is0000, isProd, nodeEnv, port} from './constants'
 import {migrateDbSchema} from './db/migrate'
 import {honoServer} from './hono/honoServer'
 import indexHtml from './index.html'
 import {handleBunServerError} from './utils/handleBunServerError'
 import {log} from './utils/logger'
+
+if (nodeEnv === 'development') {
+  const db = getDatabase()
+  const tables = db.all<{name: string}>(
+    sql`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'`
+  )
+
+  // If the development database has no tables, initialize it.
+  if (!tables.length) {
+    await $`bun run initDevDb.ts`.cwd(process.cwd())
+  }
+}
 
 migrateDbSchema()
 

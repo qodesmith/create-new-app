@@ -2,17 +2,15 @@
 /**
  * NOTE:
  *
- * This file isn't meant to be run locally. It's only meant to be run inside the
- * Docker container created during the build. It should be copied to the same
- * directory as the schema files.
+ * This file isn't meant to be run locally. It's only meant to be run manually
+ * inside the Docker container created during the build. It should be copied to
+ * the same directory as the schema files.
  */
 
-import {execSync} from 'node:child_process'
-
-const port = 4983
+const port = '4983'
 
 console.log('Once the process is started, open another terminal and type:')
-console.log(`fly proxy ${port}:${port} --app {{PROJECT_NAME}}`)
+console.log(`fly proxy ${port}:${port} --app my-app`)
 console.log('-'.repeat(80))
 
 ////////////
@@ -20,7 +18,7 @@ console.log('-'.repeat(80))
 ////////////
 
 // SSH into the fly machine & start drizzle studio:
-// - fly ssh console --app {{PROJECT_NAME}}
+// - fly ssh console --app my-app
 // - cd drizzleStudio (you MUST be in this directory to proceed!)
 // - bun drizzleStudio.ts
 
@@ -29,7 +27,7 @@ console.log('-'.repeat(80))
 ////////////
 
 // In another terminal tab, proxy the port and pick the machine:
-// - fly proxy 4983:4983 --app {{PROJECT_NAME}} --select
+// - fly proxy 4983:4983 --app my-app --select
 
 ////////////
 // STEP 3 //
@@ -43,13 +41,23 @@ console.log('-'.repeat(80))
  * `--host ::` is using IPv6 because that is what fly is using!!!
  * IPv4 would look like `--host 0.0.0.0`
  */
-execSync(
-  `bunx drizzle-kit studio --config /app/drizzleStudio/drizzle.config.js --host :: --port ${port}`,
+Bun.spawn(
+  [
+    'bunx',
+    'drizzle-kit',
+    'studio',
+    '--config',
+    '/app/drizzleStudio/drizzle.config.js',
+    '--host',
+    '::',
+    '--port',
+    port,
+  ],
 
   /**
    * inherit - Shares stdio with the parent process
    * ignore  - Discards all output silently
    * pipe    - (default) Captures output in returned buffer (no display)
    */
-  {stdio: 'inherit'} // OR [stdin, stdout, stderr]
+  {stdio: ['inherit', 'inherit', 'inherit']}
 )

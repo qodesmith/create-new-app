@@ -1,12 +1,12 @@
-import type {userRoles} from '@/server/constants'
-
 import process from 'node:process'
 import {parseArgs} from 'node:util'
 
+import {userRoles} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
+import {minPasswordLength} from '@/shared/constants'
 
 import {createLogger} from '@qodestack/utils'
 import {eq} from 'drizzle-orm'
@@ -20,6 +20,7 @@ const {values, positionals} = parseArgs({
     password: {type: 'string'},
     name: {type: 'string'},
     lastName: {type: 'string'},
+    role: {type: 'string'},
   },
   strict: true,
   allowPositionals: true,
@@ -30,11 +31,33 @@ const [task] = positionalArgs as (keyof typeof tasks)[]
 
 const tasks = {
   createAdminUser: async () => {
+    const email = getEnvVar('ADMIN_EMAIL', {shouldThrow: false})
+    const password = getEnvVar('ADMIN_PASSWORD', {shouldThrow: false})
+    const {name, lastName} = values
+
+    /**
+     * Creating an admin user expects the admin's email and password to be set
+     * as env variables.
+     */
+    if (!(email && password)) {
+      log.error(
+        'To create and admin user, you must set the following env variables:'
+      )
+      log.error('  * ADMIN_EMAIL')
+      log.error('  * ADMIN_PASSWORD')
+
+      process.exit()
+    }
+
+    if (!(name && lastName)) {
+      log.warning('Using default name for admin user:', name, lastName)
+    }
+
     await tasks.createUser({
-      email: getEnvVar('ADMIN_EMAIL'),
-      password: getEnvVar('ADMIN_PASSWORD'),
-      name: 'Admin',
-      lastName: 'Supreme',
+      email,
+      password,
+      name: name ?? 'Admin',
+      lastName: lastName ?? 'Supreme',
       role: 'admin',
     })
   },
@@ -53,6 +76,22 @@ const tasks = {
   }) => {
     let token = ''
     const origFxn = auth.options.emailVerification.sendVerificationEmail
+    const userRoleValues = Object.values(userRoles)
+
+    if (!userRoleValues.includes(role)) {
+      log.error(`${role} is not a value user role. Possible values are:`)
+
+      for (const userRole in userRoles) {
+        log.error(`  * ${userRole}`)
+      }
+
+      process.exit()
+    }
+
+    if (password.length < minPasswordLength) {
+      log.error(`The password must be at least ${minPasswordLength} characters`)
+      process.exit()
+    }
 
     try {
       // @ts-expect-error - There's no way to get the token via the api

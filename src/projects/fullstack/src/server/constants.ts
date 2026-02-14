@@ -1,3 +1,5 @@
+import type {MirrorMap} from '@/shared/types'
+
 import {getEnvVar} from './utils/getEnvVar'
 
 const nodeEnv = getEnvVar('NODE_ENV')
@@ -13,7 +15,17 @@ export const localhost = `http://localhost:${port}` as const
 
 export const localhost0 = `http://0.0.0.0:${port}` as const
 
-export const userRoles = {admin: 'admin', user: 'user'} as const
+// Add new user roles by adding strings to this array. Keep `as const`!
+const _userRoles = ['admin', 'user'] as const
+
+export const userRoles = _userRoles.reduce(
+  (acc, role) => {
+    // @ts-expect-error - TS can't correlate that key and value are the same K
+    acc[role] = role
+    return acc
+  },
+  {} as MirrorMap<typeof _userRoles>
+)
 
 /**
  * This variable is set in the `dev:local` npm script to trigger the app running

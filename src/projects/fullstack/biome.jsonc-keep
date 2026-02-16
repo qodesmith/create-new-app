@@ -9,8 +9,7 @@
       "!dist",
       "!*.lock",
       "!src/server/db/drizzle",
-      "!src/client/routeTree.gen.ts",
-      "!src/client/app.css"
+      "!src/client/routeTree.gen.ts"
     ]
   },
   "overrides": [

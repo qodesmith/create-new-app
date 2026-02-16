@@ -21,9 +21,9 @@ export async function sendChangeEmailVerificationEmail({
   const resend = new Resend(apiKey)
 
   await resend.emails.send({
-    from: 'onboarding@resend.dev', // TODO - change this to an official supercharge email
+    from: 'onboarding@resend.dev', // TODO - change this to an official email
     to: isProd ? user.email : testRecipient,
-    subject: 'Confirm your updated Supercharge email',
+    subject: 'Confirm your updated email',
     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
   })
 }

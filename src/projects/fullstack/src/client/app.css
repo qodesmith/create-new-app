@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css"; /* Shadcn */
 
+/* Other component dependencies - ensures a single CSS asset for the application */
+@import "./assets/audioLoader.css";
+
 /* https://github.com/tailwindlabs/tailwindcss-typography */
 /* Use the `prose` class to add opiniated, sane typography styling. */
 @plugin "@tailwindcss/typography";

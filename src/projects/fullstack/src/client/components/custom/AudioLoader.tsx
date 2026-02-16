@@ -1,8 +1,5 @@
-import {memo, useMemo} from 'react'
-
-import '@/client/assets/audioLoader.css'
-
 import {getRandomNumber} from '@qodestack/utils'
+import {memo, useMemo} from 'react'
 
 type Speed = 'default' | 'slow' | 'fast'
 

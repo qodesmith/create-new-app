@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.0.0",
-    "@qodestack/biome-config": "^2.3.5"
+    "@qodestack/biome-config": "^2.3.6"
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.18",

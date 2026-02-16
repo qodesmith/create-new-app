@@ -217,9 +217,7 @@ export const authOptions = {
      */
     useSecureCookies: isProd,
     database: {
-      // TODO - a bug with Better Auth causes the wrong type to be generated
-      // for SQLite databases using Drizzle that want incrementing number ids.
-      // useNumberId: true,
+      useNumberId: true,
     },
   },
 

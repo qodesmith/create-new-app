@@ -12,8 +12,9 @@ import {log} from '@clack/prompts'
 import {
   ensureDir,
   getFilesRecursive,
+  getIsTemplateFile,
   pathExists,
-  readAndReplace,
+  replacePlaceholders,
 } from '../utils/file-operations'
 import {withSpinner} from '../utils/withSpinner'
 
@@ -63,63 +64,45 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Replacements for files that have handlebars-style placeholders in them.
   const placeholderReplacements: Record<string, string> = {
-    // biome-ignore-start lint/style/useNamingConvention: these are the template keys
-    PROJECT_NAME: name,
+    '{{PROJECT_NAME}}': name,
+
     // Add other placeholders here...
-    // biome-ignore-end lint/style/useNamingConvention: these are the template keys
   }
 
   // Copy and process template files
   await withSpinner('Copying project files...', async () => {
     const files = getFilesRecursive(fullProjectPath)
-    const relativeFilePathsWithTemplate = new Set([
-      '.env.development',
-      'Dockerfile',
-      'Dockerfile.local',
-      'fly.toml',
-      'litefs.yml',
-      'package.json',
-      'src/client/routes/index.tsx',
-      'src/server/constants.ts',
-      'src/server/index.html',
-      'src/server/api/index.ts',
-      'src/server/db/drizzleStudio.ts',
-      'src/server/db/options.ts',
-      'src/server/email/ChangeEmailVerificationEmail.tsx',
-    ])
 
-    for (const srcFile of files) {
+    for (const srcFileName of files) {
       // Remove absolute path plus leading slash.
-      const relativePath = srcFile.slice(fullProjectPath.length + 1)
-      const destPath = join(targetDir, relativePath)
-      const {base: fileName} = parse(srcFile)
-
-      ensureDir(dirname(destPath))
+      const relativePath = srcFileName.slice(fullProjectPath.length + 1)
+      const {base: fileName} = parse(srcFileName)
+      let fileContents = await Bun.file(srcFileName).text()
+      let destPath = join(targetDir, relativePath)
+      const isTemplateFile = getIsTemplateFile({
+        fileContents,
+        placeholderReplacements,
+      })
 
       // Files that contain placeholders for replacement.
-      if (relativeFilePathsWithTemplate.has(relativePath)) {
-        let content = await readAndReplace(srcFile, placeholderReplacements)
+      if (isTemplateFile) {
+        fileContents = replacePlaceholders(srcFileName, placeholderReplacements)
+      }
 
-        if (fileName === '.env.development') {
-          content = content.replace(
-            'BETTER_AUTH_SECRET=',
-            `BETTER_AUTH_SECRET=${randomBytes(32).toString('hex')}`
-          )
-        }
-
-        await Bun.write(destPath, content)
-        continue
+      if (fileName === '.env.development') {
+        fileContents = fileContents.replace(
+          'BETTER_AUTH_SECRET=',
+          `BETTER_AUTH_SECRET=${randomBytes(32).toString('hex')}`
+        )
       }
 
       // Rename `-keep` files - name.ext-keep => name.ext
       if (fileName.endsWith('-keep')) {
-        const sanitizedPath = destPath.slice(0, -5) // Remove "-keep" from path
-        await Bun.write(sanitizedPath, Bun.file(srcFile))
-        continue
+        destPath = destPath.slice(0, -5) // Remove "-keep" from path
       }
 
-      // Simply copy the file.
-      await Bun.write(destPath, Bun.file(srcFile))
+      ensureDir(dirname(destPath))
+      await Bun.write(destPath, fileContents)
     }
   })
 

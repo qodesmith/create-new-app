@@ -53,16 +53,20 @@ export function isDirEmpty(dir: string): boolean {
   return readdirSync(dir).length === 0
 }
 
-/**
- * Read a file and replace placeholders with values
- * Placeholders use {{VAR}} syntax
- */
-export async function readAndReplace(
-  filePath: string,
-  replacements: Record<string, string>
-): Promise<string> {
-  const content = await Bun.file(filePath).text()
-  return replacePlaceholders(content, replacements)
+export function getIsTemplateFile({
+  fileContents,
+  placeholderReplacements,
+}: {
+  fileContents: string
+  placeholderReplacements: Record<string, string>
+}): boolean {
+  for (const placeholder of Object.keys(placeholderReplacements)) {
+    if (fileContents.includes(placeholder)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 /**
@@ -74,7 +78,7 @@ export function replacePlaceholders(
 ): string {
   let result = content
   for (const [key, value] of Object.entries(replacements)) {
-    result = result.replaceAll(`{{${key}}}`, value)
+    result = result.replaceAll(key, value)
   }
   return result
 }

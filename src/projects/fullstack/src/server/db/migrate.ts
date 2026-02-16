@@ -9,9 +9,17 @@ import {migrate} from 'drizzle-orm/bun-sqlite/migrator'
 
 /**
  * This function uses the Drizzle JavaScript `migrate` function to run database
- * migrations from Drizzle's meta JSON and sql files.
+ * migrations from Drizzle's meta JSON and sql files. It is ok to call this
+ * function multiple times. If there's nothing to migrate, this will be a no-op.
  */
 export function migrateDbSchema() {
+  if (!isProd) {
+    log.warning(
+      '`migrateDbSchema` is only meant to run in production - skipping'
+    )
+    return
+  }
+
   // [bunBinaryPath, currentFilePath, arg1, arg2, ...] => [arg1, arg2, ...]
   const args = process.argv.slice(2) // Skip 'bun' and script path
 
@@ -22,7 +30,7 @@ export function migrateDbSchema() {
    * In production deployment, we may have more than one machine deployed and we
    * only want to run the db migration on the primary machine for LiteFS.
    */
-  if (isProd && !isPrimary) {
+  if (!isPrimary) {
     log.text('Skipping database migration on non-primary node in production')
     return
   }

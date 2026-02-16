@@ -14,6 +14,14 @@ import indexHtml from './index.html'
 import {handleBunServerError} from './utils/handleBunServerError'
 import {log} from './utils/logger'
 
+if (process.env.NODE_ENV === 'production') {
+  /**
+   * This expects the src/server/db/drizzle folder to be populated with a
+   * generated schema. The schema should be checked into version control.
+   */
+  migrateDbSchema()
+}
+
 if (process.env.NODE_ENV === 'development') {
   const db = getDatabase()
   const tables = db.all<{name: string}>(
@@ -25,8 +33,6 @@ if (process.env.NODE_ENV === 'development') {
     await $`bun run initDevDb.ts`.cwd(process.cwd())
   }
 }
-
-migrateDbSchema()
 
 const bunServer = serve({
   routes: {'/': indexHtml},

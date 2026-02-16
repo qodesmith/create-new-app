@@ -2,7 +2,7 @@ import {relations} from 'drizzle-orm'
 import {index, integer, sqliteTable, text} from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
+  id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: integer('emailVerified', {mode: 'boolean'})
@@ -23,7 +23,7 @@ export const users = sqliteTable('users', {
 export const sessions = sqliteTable(
   'sessions',
   {
-    id: text('id').primaryKey(),
+    id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
     expiresAt: integer('expiresAt', {mode: 'timestamp_ms'}).notNull(),
     token: text('token').notNull().unique(),
     createdAt: integer('createdAt', {mode: 'timestamp_ms'}).notNull(),
@@ -32,7 +32,7 @@ export const sessions = sqliteTable(
       .notNull(),
     ipAddress: text('ipAddress'),
     userAgent: text('userAgent'),
-    userId: text('userId')
+    userId: integer('userId')
       .notNull()
       .references(() => users.id, {onDelete: 'cascade'}),
     impersonatedBy: text('impersonatedBy'),
@@ -43,10 +43,10 @@ export const sessions = sqliteTable(
 export const accounts = sqliteTable(
   'accounts',
   {
-    id: text('id').primaryKey(),
+    id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
     accountId: text('accountId').notNull(),
     providerId: text('providerId').notNull(),
-    userId: text('userId')
+    userId: integer('userId')
       .notNull()
       .references(() => users.id, {onDelete: 'cascade'}),
     accessToken: text('accessToken'),
@@ -71,7 +71,7 @@ export const accounts = sqliteTable(
 export const verifications = sqliteTable(
   'verifications',
   {
-    id: text('id').primaryKey(),
+    id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
     identifier: text('identifier').notNull(),
     value: text('value').notNull(),
     expiresAt: integer('expiresAt', {mode: 'timestamp_ms'}).notNull(),
@@ -86,10 +86,10 @@ export const verifications = sqliteTable(
 export const passkeys = sqliteTable(
   'passkeys',
   {
-    id: text('id').primaryKey(),
+    id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
     name: text('name'),
     publicKey: text('publicKey').notNull(),
-    userId: text('userId')
+    userId: integer('userId')
       .notNull()
       .references(() => users.id, {onDelete: 'cascade'}),
     credentialID: text('credentialID').notNull(),
@@ -107,7 +107,7 @@ export const passkeys = sqliteTable(
 )
 
 export const ratelimits = sqliteTable('ratelimits', {
-  id: text('id').primaryKey(),
+  id: integer('id', {mode: 'number'}).primaryKey({autoIncrement: true}),
   key: text('key').notNull().unique(),
   count: integer('count').notNull(),
   lastRequest: integer('lastRequest').notNull(),

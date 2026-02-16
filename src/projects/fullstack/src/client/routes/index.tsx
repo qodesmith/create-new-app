@@ -36,7 +36,7 @@ export const Route = createFileRoute('/')({
 })
 
 function RouteComponent() {
-  const appName = 'my-app'
+  const appName = '{{PROJECT_NAME}}'
   const cyan400 = '#00d3f3'
   const fuchsia500 = '#e12afb'
   const appNameColorStops = getHexGradientStops({

@@ -10,7 +10,7 @@
 const port = '4983'
 
 console.log('Once the process is started, open another terminal and type:')
-console.log(`fly proxy ${port}:${port} --app my-app`)
+console.log(`fly proxy ${port}:${port} --app {{PROJECT_NAME}}`)
 console.log('-'.repeat(80))
 
 ////////////
@@ -18,7 +18,7 @@ console.log('-'.repeat(80))
 ////////////
 
 // SSH into the fly machine & start drizzle studio:
-// - fly ssh console --app my-app
+// - fly ssh console --app {{PROJECT_NAME}}
 // - cd drizzleStudio (you MUST be in this directory to proceed!)
 // - bun drizzleStudio.ts
 
@@ -27,7 +27,7 @@ console.log('-'.repeat(80))
 ////////////
 
 // In another terminal tab, proxy the port and pick the machine:
-// - fly proxy 4983:4983 --app my-app --select
+// - fly proxy 4983:4983 --app {{PROJECT_NAME}} --select
 
 ////////////
 // STEP 3 //

@@ -1,19 +1,20 @@
+/** biome-ignore-all lint/correctness/noProcessGlobal: allows Bun to remove conditional code based on process.env.NODE_ENV */
+
 import {$, serve} from 'bun'
 import {networkInterfaces} from 'node:os'
-import process from 'node:process'
 
 import {getDatabase} from '@/server/db/getDatabase'
 
 import {sql} from 'drizzle-orm'
 
-import {is0000, isProd, nodeEnv, port} from './constants'
+import {is0000, isProd, port} from './constants'
 import {migrateDbSchema} from './db/migrate'
 import {honoServer} from './hono/honoServer'
 import indexHtml from './index.html'
 import {handleBunServerError} from './utils/handleBunServerError'
 import {log} from './utils/logger'
 
-if (nodeEnv === 'development') {
+if (process.env.NODE_ENV === 'development') {
   const db = getDatabase()
   const tables = db.all<{name: string}>(
     sql`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'`

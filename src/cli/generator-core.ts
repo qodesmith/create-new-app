@@ -1,7 +1,6 @@
 import type {ProjectType} from '../utils/validation'
 import type {GuidedOptions} from './guided-mode'
 
-import {$} from 'bun'
 import {randomBytes} from 'node:crypto'
 import {existsSync} from 'node:fs'
 import {dirname, join, parse} from 'node:path'
@@ -16,6 +15,7 @@ import {
   pathExists,
   replacePlaceholders,
 } from '../utils/file-operations'
+import {run} from '../utils/run'
 import {withSpinner} from '../utils/withSpinner'
 
 /**
@@ -86,7 +86,10 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
       // Files that contain placeholders for replacement.
       if (isTemplateFile) {
-        fileContents = replacePlaceholders(srcFileName, placeholderReplacements)
+        fileContents = replacePlaceholders(
+          fileContents,
+          placeholderReplacements
+        )
       }
 
       if (fileName === '.env.development') {
@@ -108,7 +111,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Install dependencies
   await withSpinner('Installing dependencies...', async () => {
-    await $`bun install`.cwd(targetDir).quiet()
+    await run('bun install', targetDir)
   })
 
   // Set up Biome
@@ -117,7 +120,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
      * Ensure the CLI does NOT create a biome.jsonc file. We will manually
      * create it so we can include a number of overrides to the config.
      */
-    await $`bunx biomeInit --no-includeBiomeConfig`.cwd(targetDir).quiet()
+    await run('bunx biomeInit --no-include-biome-config', targetDir)
   })
 
   // Update VSCode settings if they exist
@@ -144,7 +147,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   try {
     await withSpinner('Initializing git...', async () => {
-      await $`git init`.cwd(targetDir).quiet()
+      await run('git init', targetDir)
     })
   } catch {
     log.warning('Git initialization failed')

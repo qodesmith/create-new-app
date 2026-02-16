@@ -14,6 +14,7 @@ import {
   HoverCardTrigger,
 } from '@/client/components/ui/hover-card'
 import {Marquee} from '@/client/components/ui/marquee'
+import {cn} from '@/client/lib/utils'
 
 import {getHexGradientStops} from '@qodestack/utils'
 import {createFileRoute} from '@tanstack/react-router'
@@ -43,9 +44,16 @@ function RouteComponent() {
     endColor: fuchsia500,
     stops: appName.length,
   })
+  const happyCoding = 'Happy coding!'
+  const happyCodingColorStops = getHexGradientStops({
+    startColor: cyan400,
+    endColor: fuchsia500,
+    stops: happyCoding.length,
+  })
 
   return (
     <>
+      {/* TECH MARQUEES */}
       <section className="prose prose-neutral dark:prose-invert max-w-none">
         <div>
           <h1 className="flex justify-center gap-3">
@@ -93,6 +101,50 @@ function RouteComponent() {
           })}
         </Marquee>
       </section>
+
+      {/* GETTING STARTED */}
+      <section className="prose prose-neutral dark:prose-invert mx-auto p-8 text-center">
+        <h2>Getting Started</h2>
+        <p className="text-justify">
+          You've got a fullstack application here, ready to deploy! It's using
+          all the goodies you see above in the scolling marquees. Obviously
+          you've already figured out{' '}
+          <Code className="whitespace-nowrap">bun dev</Code> starts the dev
+          server. Here's a few helpful scripts when you're ready:
+        </p>
+        <ul className="text-left">
+          <li>
+            <Code>bun dev:local</Code> - starts the dev server on{' '}
+            <Code>0.0.0.0</Code>, logging a local IP address accesible from any
+            other device on your network.
+          </li>
+          <li>
+            <Code>bun db:view</Code> - starts Drizzle Studio, a UI to explore
+            your development database.
+          </li>
+          <li>
+            <Code>bun dev:email</Code> - starts a local server where you can
+            design your email templates used to send password reset, email
+            change, etc.
+          </li>
+        </ul>
+        <hr />
+        <p className="text-justify">
+          Below are files you may want to familiarize yourself with that
+          highlight the inner workings of this app.{' '}
+          {happyCoding.split('').map((letter, i) => {
+            const color = happyCodingColorStops[i]
+
+            return (
+              <span key={i + letter} style={{color}} className="italic">
+                {letter}
+              </span>
+            )
+          })}
+        </p>
+      </section>
+
+      {/* FILE DESCRIPTIONS */}
       <section className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2 lg:grid-cols-3">
         <SectionHeading icon={<MonitorIcon size={20} />}>Client</SectionHeading>
 
@@ -136,8 +188,8 @@ function RouteComponent() {
         >
           Content rendered here will show on every page. A few things rendered
           (hover for description):
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">
+          <ul className="text-sm">
+            <li>
               <HoverBadge text="<Toaster />">
                 A container for the toasts. See the{' '}
                 <ExternalLink href="https://ui.shadcn.com/docs/components/radix/sonner">
@@ -146,14 +198,14 @@ function RouteComponent() {
                 docs for more info.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="<ThemeSetter />">
                 Full runtime theme manager. This takes over theme management
                 once React mounts, syncing the user's preference to Jotai state
                 and <Code>localStorage</Code> for persistence across reloads.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="<AppHeader />">
                 Header component for this example app. Showcases how to access
                 the current route. Also shows how to access the user's
@@ -177,8 +229,8 @@ function RouteComponent() {
         {/* globalState.ts */}
         <FileCard fileName="globalState.ts" description="Global jotai state">
           A few atoms to note (hover for description):
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">
+          <ul className="text-sm">
+            <li>
               <HoverBadge text="authClientAtom">
                 RPC for Better Auth endpoints. This will be used for signing in,
                 signing out, and signing up new users. See Better Auth{' '}
@@ -188,13 +240,13 @@ function RouteComponent() {
                 docs.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="apiAuthClientAtom">
                 RPC for custom authenticated endpoints. See the{' '}
                 <Code>authRoutePath</Code> in <Code>honoServer.ts</Code>.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="apiClientAtom">
                 RPC for custom public endpoints requiring no authentication.
               </HoverBadge>
@@ -284,32 +336,32 @@ function RouteComponent() {
           ensure <Code>/client</Code> and <Code>/server</Code> can't import from
           each other. <Code>/shared</Code> can be imported from both (hover for
           description):
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">
+          <ul className="text-sm">
+            <li>
               <HoverBadge text="<root>/tsconfig.base.json">
                 Settings that all other tsconfig files extend from.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="<root>/tsconfig.json">
                 The main TypeScript config - wires together all the other
                 tsconfigs.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="shared/tsconfig.json">
                 Intentionally doesn't reference any other tsconfigs because it
                 is only meant to be imported{' '}
                 <span className="italic">from</span>.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="client/tsconfig.json">
                 Prevents importing from server code. Can import from client and
                 shared code.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="server/tsconfig.json">
                 Prevents importing from client code. Can import from server and
                 shared code.
@@ -326,9 +378,9 @@ function RouteComponent() {
           Starts the development server and related process, logs labeled
           messages from each process in a single terminal, and ensures all
           process are stopped together. Processes include:
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">Bun development server</li>
-            <li className="pb-1">TanStack Router routes file watcher</li>
+          <ul className="text-sm">
+            <li>Bun development server</li>
+            <li>TanStack Router routes file watcher</li>
             <li>
               Opens <Code>localhost</Code> when the dev server and TSR are ready
             </li>
@@ -364,10 +416,7 @@ function RouteComponent() {
             LightFS
           </ExternalLink>{' '}
           which <span className="font-mono text-xs">===</span> distributed
-          SQLite. This also sets you up with{' '}
-          <ExternalLink href="https://orm.drizzle.team/drizzle-studio/overview">
-            Drizzle Studio
-          </ExternalLink>{' '}
+          SQLite. This also sets you up with Drizzle Studio{' '}
           <span className="italic">in production!</span>
         </FileCard>
 
@@ -380,20 +429,22 @@ function RouteComponent() {
           }
         >
           <p>
-            Drizzle Studio is a UI that lets you explore and edit your database
-            visually. There are local and production options.{' '}
-            <Code>bun db:view</Code> runs Drizzle Studio{' '}
-            <span className="italic">locally</span> and connects to your
-            development database.
+            <ExternalLink href="https://orm.drizzle.team/drizzle-studio/overview">
+              Drizzle Studio
+            </ExternalLink>{' '}
+            is a UI that lets you explore and edit your database visually. There
+            are local and production options. <Code>bun db:view</Code> runs
+            Drizzle Studio <span className="italic">locally</span> and connects
+            to your development database.
           </p>
-          <p className="pt-3">
+          <p>
             Building the app with Docker will set up scripts to run Drizzle
             Studio in production, only accessible if you SSH into your
             production container and run them directly. See the below files for
             details:
           </p>
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">
+          <ul className="text-sm">
+            <li>
               <HoverBadge text="drizzleStudioLocal.ts">
                 Used to run Drizzle Studio against your development database
                 locally.
@@ -418,13 +469,13 @@ function RouteComponent() {
           description="Client, server, and shared constants"
         >
           3 files containing constants (hover for description):
-          <ul className="list-inside list-disc text-sm">
-            <li className="pb-1">
+          <ul className="text-sm">
+            <li>
               <HoverBadge text="client/constants.ts">
                 Constants only available within the <Code>/client</Code> folder.
               </HoverBadge>
             </li>
-            <li className="pb-1">
+            <li>
               <HoverBadge text="server/constants.ts">
                 Constants only available within the <Code>/server</Code> folder.
               </HoverBadge>
@@ -562,7 +613,9 @@ function FileCard({
         </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="prose dark:prose-invert prose-neutral max-w-none">
+        {children}
+      </CardContent>
     </Card>
   )
 }
@@ -597,7 +650,7 @@ function ExternalLink({href, children}: {href: string; children: ReactNode}) {
       href={href}
       target="_blank"
       rel="noopener"
-      className="text-blue-500 hover:underline"
+      className="text-blue-500 no-underline hover:underline"
     >
       {children}
     </a>
@@ -621,9 +674,20 @@ function SectionHeading({
   )
 }
 
-function Code({children}: {children: ReactNode}) {
+function Code({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
   return (
-    <span className="rounded font-bold font-mono text-fuchsia-500 text-xs dark:text-cyan-400">
+    <span
+      className={cn(
+        'rounded font-bold font-mono text-fuchsia-500 text-xs dark:text-cyan-400',
+        className
+      )}
+    >
       {children}
     </span>
   )

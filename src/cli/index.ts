@@ -6,7 +6,8 @@ import type {GuidedOptions} from './guided-mode'
 
 import process from 'node:process'
 
-import {intro, log, outro} from '@clack/prompts'
+import {intro, note, outro} from '@clack/prompts'
+import colors from 'picocolors'
 
 import {runCliMode} from './cli-mode'
 import {generateProject} from './generator-core'
@@ -44,11 +45,21 @@ async function main() {
     })
   }
 
-  log.info(`Creating ${projectOptions.type} project: ${projectOptions.name}`)
-
   await generateProject(projectOptions)
 
-  outro(`Done! cd ${projectOptions.name} && bun dev`)
+  const finalMessage = [
+    colors.bold(colors.cyan(`cd ${projectOptions.name}`)),
+    colors.bold(colors.cyan('bun dev')),
+    '',
+    colors.italic('Search the codebase for "TODO" to see what things'),
+    colors.italic('you need to address before deploying to production.'),
+    colors.italic('Happy coding!'),
+  ].join('\n')
+
+  // Wraps the entire message in a bordered box.
+  note(finalMessage, 'Next steps:')
+
+  outro(colors.cyan('https://github.com/qodesmith/create-new-app'))
 }
 
 main().catch(err => {

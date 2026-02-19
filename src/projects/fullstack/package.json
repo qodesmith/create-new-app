@@ -9,7 +9,8 @@
     "docker:local": "NODE_ENV=production docker build -f Dockerfile.local -t {{PROJECT_NAME}}:latest .",
     "build": "bun run build.ts",
     "deploy": "fly deploy",
-    "db:view": "NODE_ENV=development bun --bun run src/server/db/drizzleStudioLocal.ts"
+    "db:view": "NODE_ENV=development bun --bun run src/server/db/drizzleStudioLocal.ts",
+    "knip": "knip"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.4.18",
@@ -54,6 +55,7 @@
     "@types/bun": "latest",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
+    "knip": "^5.84.1",
     "open": "^11.0.0",
     "picocolors": "^1.1.1",
     "react-email": "^5.1.1",

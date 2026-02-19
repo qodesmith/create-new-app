@@ -26,26 +26,8 @@
     - If using Brave, turn shields off to see the site
 
   https://orm.drizzle.team/docs/connect-bun-sqlite
-  SQLite is synchronous but drizzle exposes async AND sync apis for SQLite.
-  These are the SYNC apis available:
-    1. query.all()
-      - Returns all rows from the query result as an array of objects.
-    2. query.get()
-      - Returns only the first row from the query result as a single object (or
-        undefined if no results).
-      - Useful when you expect a single result.
-    3. query.values()
-      - Returns all rows as arrays of raw values instead of objects. Each row is
-        an array where values correspond to column order.
-      - Use case: When you need raw data without the overhead of creating
-        objects with named properties
-      - Returns: Array of arrays, e.g., [[1, 'Alice'], [2, 'Bob']]
-    4. query.run()
-      - Executes the query but doesn't return row data. Instead, it returns
-        metadata about the operation.
-      - Use case: INSERT, UPDATE, DELETE statements where you don't need the
-        data back, just confirmation of execution.
-      - Returns: Execution metadata (changes made, last insert ID, etc.)
+  SQLite is synchronous but drizzle exposes async AND sync apis for SQLite. See
+  comments in `getDatabase.ts`.
 */
 
 import type {ErrorContext} from '@/shared/types'

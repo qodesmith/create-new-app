@@ -1,7 +1,6 @@
 import type {BetterAuthOptions} from 'better-auth'
 import type {DrizzleAdapterConfig} from 'better-auth/adapters/drizzle'
 import type {Password} from 'bun'
-import type {Casing} from 'drizzle-orm'
 
 import {
   domain,
@@ -23,8 +22,6 @@ import {APIError} from 'better-auth/api'
 import {admin, createAuthMiddleware} from 'better-auth/plugins'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
-
-export const casing: Casing = 'camelCase'
 
 export const drizzleAdapterOptions = {
   provider: 'sqlite',

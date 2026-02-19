@@ -1,3 +1,4 @@
+import type {Casing} from 'drizzle-orm'
 import type {BunSQLiteDatabase} from 'drizzle-orm/bun-sqlite'
 
 import {Database} from 'bun:sqlite'
@@ -5,7 +6,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {isProd} from '@/server/constants'
-import {casing} from '@/server/db/options'
 import * as appSchema from '@/server/db/schema/appSchema'
 import * as authSchema from '@/server/db/schema/authSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
@@ -19,9 +19,34 @@ let db: BunSQLiteDatabase<typeof appSchema & typeof authSchema> & {
   $client: Database
 }
 
+const casing: Casing = 'camelCase'
 const sqlitePath = getEnvVar('SQLITE_PATH')
 const schema = {...appSchema, ...authSchema}
 
+/**
+ * https://orm.drizzle.team/docs/connect-bun-sqlite
+ *
+ * SQLite is synchronous but drizzle exposes async AND sync apis for SQLite.
+ * These are the SYNC apis available:
+ *   1. query.all()
+ *     - Returns all rows from the query result as an array of objects.
+ *   2. query.get()
+ *     - Returns only the first row from the query result as a single object (or
+ *       undefined if no results).
+ *     - Useful when you expect a single result.
+ *   3. query.values()
+ *     - Returns all rows as arrays of raw values instead of objects. Each row is
+ *       an array where values correspond to column order.
+ *     - Use case: When you need raw data without the overhead of creating
+ *       objects with named properties
+ *     - Returns: Array of arrays, e.g., [[1, 'Alice'], [2, 'Bob']]
+ *   4. query.run()
+ *     - Executes the query but doesn't return row data. Instead, it returns
+ *       metadata about the operation.
+ *     - Use case: INSERT, UPDATE, DELETE statements where you don't need the
+ *       data back, just confirmation of execution.
+ *     - Returns: Execution metadata (changes made, last insert ID, etc.)
+ */
 export function getDatabase() {
   if (!db) {
     db = drizzle({client: new Database(sqlitePath), schema, casing})

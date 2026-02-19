@@ -15,27 +15,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Get the value of a cookie by name.
- */
-export function getCookie(name: string) {
-  // '; key1=value1; key2=value2; key3=value3'
-  const value = `; ${document.cookie}`
-
-  /**
-   * Looking for 'key2' would return:
-   * ['; key1=value1', 'value2; key3=value3']
-   */
-  const parts = value.split(`; ${name}=`)
-
-  /**
-   * pop()      => 'value2; key3=value3'
-   * split(':') => ['value2', ' key3=value3']
-   * .shift()   => 'value2'
-   */
-  return parts.length === 2 ? parts.pop()?.split(';').shift() : undefined
-}
-
-/**
  * Logs client-side errors to the server for centralized error tracking.
  *
  * @param error - The error object or unknown value to be logged

@@ -26,15 +26,13 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
   get(_themeAtom_INTERNAL_USE_ONLY)
 )
 
-export const loginTypeAtom = atom<'login' | 'signup'>('login')
-
 export const isSignedInAtom = atom(false)
 
 // RPC for Better Auth endpoints.
 export const authClientAtom = atomWithLazy(getAuthClient)
 
-// RPC for custom authenticated endpoints.
+// Hono RPC for custom authenticated endpoints.
 export const apiAuthClientAtom = atomWithLazy(getApiAuthClient)
 
-// RPC for custom public endpoints.
+// Hono RPC for custom public endpoints.
 export const apiClientAtom = atomWithLazy(getApiClient)

@@ -5,7 +5,6 @@ import {userRoles} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
-import {getEnvVar} from '@/server/utils/getEnvVar'
 import {minPasswordLength} from '@/shared/constants'
 
 import {createLogger} from '@qodestack/utils'
@@ -30,36 +29,18 @@ const [_bunBinaryPath, _currentFilePath, ...positionalArgs] = positionals
 const [task] = positionalArgs as (keyof typeof tasks)[]
 
 const tasks = {
-  createAdminUser: async () => {
-    const email = getEnvVar('ADMIN_EMAIL', {shouldThrow: false})
-    const password = getEnvVar('ADMIN_PASSWORD', {shouldThrow: false})
-    const {name, lastName} = values
-
-    /**
-     * Creating an admin user expects the admin's email and password to be set
-     * as env variables.
-     */
-    if (!(email && password)) {
-      log.error(
-        'To create and admin user, you must set the following env variables:'
-      )
-      log.error('  * ADMIN_EMAIL')
-      log.error('  * ADMIN_PASSWORD')
-
-      process.exit()
-    }
-
-    if (!(name && lastName)) {
-      log.warning('Using default name for admin user:', name, lastName)
-    }
-
-    await tasks.createUser({
-      email,
-      password,
-      name: name ?? 'Admin',
-      lastName: lastName ?? 'Supreme',
-      role: 'admin',
-    })
+  createAdminUser: async ({
+    email,
+    password,
+    name,
+    lastName,
+  }: {
+    email: string
+    password: string
+    name: string
+    lastName: string
+  }) => {
+    return tasks.createUser({email, password, name, lastName, role: 'admin'})
   },
   createUser: async ({
     email,
@@ -144,21 +125,23 @@ if (positionalArgs.length > 1) {
   process.exit()
 }
 
-if (task === 'createAdminUser') {
-  await tasks.createAdminUser()
-  process.exit()
-}
-
-if (task === 'createUser') {
+if (task === 'createAdminUser' || task === 'createUser') {
   const {email, password, name, lastName} = values
-
   if (!(email && password && name && lastName)) {
     log.error('You must provide --email, --password, --name, and --lastName')
     process.exit()
   }
 
-  await tasks.createUser({email, password, name, lastName})
+  await tasks[task]({email, password, name, lastName})
   process.exit()
 }
 
-log.error(`"${task}" is not a valid argument`)
+if (!(task in tasks)) {
+  log.error(`"${task}" is not a valid argument. Valid arguments include:`)
+
+  for (const validTask in tasks) {
+    log.error(`  * ${validTask}`)
+  }
+
+  process.exit()
+}

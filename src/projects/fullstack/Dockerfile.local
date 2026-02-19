@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
-COPY build.ts .env.production bunfig.toml ./
+COPY build.ts bunfig.toml ./
 COPY dev.sqlite ./{{PROJECT_NAME}}.sqlite
 COPY src ./src/
 
@@ -68,14 +68,9 @@ FROM oven/bun:alpine
 
 WORKDIR /app
 
-COPY .env.production bunfig.toml /app
+COPY bunfig.toml /app
 COPY --from=mainapp /dist /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
-
-# The build.ts file dumps cliTools into /dist/tools
-# We need a copy of the env file to avoid errors being thrown from missing env
-# vars because we've compiled backend code that relies on them.
-COPY .env.production /app/tools
 
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/

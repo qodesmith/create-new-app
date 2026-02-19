@@ -2,8 +2,6 @@ import type {MirrorMap} from '@/shared/types'
 
 import {getEnvVar} from './utils/getEnvVar'
 
-export const nodeEnv = getEnvVar('NODE_ENV')
-
 export const port = getEnvVar('PORT')
 
 // TODO - update these variables with your actual domain name.
@@ -38,15 +36,17 @@ export const is0000 =
  * This variable is set inside Dockerfile.local. This Dockerfile is meant to
  * bundle the app in a production environment but be run locally.
  */
-export const isLocalContainer =
+const isLocalContainer =
   getEnvVar('IS_LOCAL_CONTAINER', {
     shouldThrow: false,
   }) === 'true'
 
+const nodeEnv = getEnvVar('NODE_ENV')
+
 /**
  * `NODE_ENV === 'production'`
  */
-export const isProdEnv = nodeEnv === 'production'
+const isProdEnv = nodeEnv === 'production'
 
 /**
  * Indicates whether the app is running in the __deployed production

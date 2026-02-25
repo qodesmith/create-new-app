@@ -23,7 +23,7 @@ import {createRoot} from 'react-dom/client'
 import '@/client/app.css'
 
 // biome-ignore lint/style/useComponentExportOnlyModules: it's ok here
-function AppContainer({isLoggedIn}: {isLoggedIn: boolean}) {
+function AppContainer({isSignedInOnAppLoad}: {isSignedInOnAppLoad: boolean}) {
   const hasSetLoggedInRef = useRef(false)
   const [store, setStore] = useState(() => createStore())
   const router = useStable(() => createTanstackRouter())
@@ -43,7 +43,7 @@ function AppContainer({isLoggedIn}: {isLoggedIn: boolean}) {
 
   if (!hasSetLoggedInRef.current) {
     hasSetLoggedInRef.current = true
-    store.set(isSignedInAtom, isLoggedIn)
+    store.set(isSignedInAtom, isSignedInOnAppLoad)
   }
 
   return (
@@ -68,11 +68,12 @@ async function start() {
      */
     query: {disableCookieCache: true},
   })
-  const isLoggedIn = !!sessionData.data?.session && !!sessionData.data.user
+  const isSignedInOnAppLoad =
+    !!sessionData.data?.session && !!sessionData.data.user
 
   root.render(
     <StrictMode>
-      <AppContainer isLoggedIn={isLoggedIn} />
+      <AppContainer isSignedInOnAppLoad={isSignedInOnAppLoad} />
     </StrictMode>
   )
 }

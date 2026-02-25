@@ -43,6 +43,25 @@
         "src/client/components/**/*.ts"
       ],
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Disallow importing server constants (i.e. `localhost`) into startDev.ts.
+    {
+      "includes": ["startDev.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "./src/server/constants": "Don't import server constants from startDev.ts"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

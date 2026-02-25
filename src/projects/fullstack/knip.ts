@@ -5,7 +5,7 @@ export default {
   entry: [
     /**
      * Any `.ts` files called from a package.json script are automatically
-     * included here via Knip's Bun plugin (i.e. dev, dev:local, etc.).
+     * included here via Knip's Bun plugin (i.e. dev, dev:all, etc.).
      */
     'src/server/bunServer.ts',
     'src/client/app.tsx',

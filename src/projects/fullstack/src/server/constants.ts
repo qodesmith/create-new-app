@@ -26,7 +26,7 @@ export const userRoles = _userRoles.reduce(
 )
 
 /**
- * This variable is set in the `dev:local` npm script to trigger the app running
+ * This variable is set in the `dev:all` npm script to trigger the app running
  * locally at `http://0.0.0.0:<port>`
  */
 export const is0000 =

@@ -2,7 +2,7 @@
 
 import type {Subprocess} from 'bun'
 
-import {spawn} from 'bun'
+import {serve, spawn} from 'bun'
 import {existsSync, rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -10,12 +10,48 @@ import process from 'node:process'
 import open from 'open'
 import colors from 'picocolors'
 
-import {localhost} from './src/server/constants'
-
 if (!existsSync(path.join(process.cwd(), 'node_modules'))) {
   console.log(`First run ${colors.cyan('bun install')} to install dependencies`)
   process.exit()
 }
+
+/**
+ * Bun's server will throw an `EADDRINUSE` error if the port is in use. Use this
+ * to ensure an available port by auto-incrementing the port value.
+ */
+async function genDevServerPort(initialPort: number | string) {
+  const immediatelyStopConnections = true
+  let port = +initialPort
+
+  while (true) {
+    try {
+      const server = serve({port, routes: {'/': () => new Response()}})
+      await server.stop(immediatelyStopConnections)
+      return port
+    } catch {
+      port++
+    }
+  }
+}
+
+const initialPort = process.env.PORT
+
+if (!initialPort) {
+  throw new Error('process.env.PORT is undefined')
+}
+
+const resolvedPort = await genDevServerPort(initialPort)
+
+if (resolvedPort !== +initialPort) {
+  process.env.PORT = String(resolvedPort)
+  console.log(
+    colors.yellow(`Port ${initialPort} in use, using ${resolvedPort}`)
+  )
+}
+
+// ALL_CONNECTIONS is set in the `dev:all` package.json script.
+const is0000 = process.env.ALL_CONNECTIONS === 'true'
+const localhost = `http://${is0000 ? '0.0.0.0' : 'localhost'}:${resolvedPort}`
 
 /**
  * An object with functions that prepend stdout and stderr sub processes with

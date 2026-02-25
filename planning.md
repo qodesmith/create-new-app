@@ -48,7 +48,7 @@ A fullstack React application powered by Bun. Key technologies include:
 
 **Tanstack Form**
 - Client-side form library
-- Handles the login and signup pages if user-management is selected
+- Handles the signin and signup pages if user-management is selected
 
 **Jotai**
 - Global state management solution

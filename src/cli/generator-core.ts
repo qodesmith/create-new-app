@@ -65,6 +65,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   // Replacements for files that have handlebars-style placeholders in them.
   const placeholderReplacements: Record<string, string> = {
     '{{PROJECT_NAME}}': name,
+    '{{BETTER_AUTH_SECRET}}': randomBytes(32).toString('hex'),
 
     // Add other placeholders here...
   }
@@ -89,13 +90,6 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         fileContents = replacePlaceholders(
           fileContents,
           placeholderReplacements
-        )
-      }
-
-      if (fileName === '.env.development') {
-        fileContents = fileContents.replace(
-          'BETTER_AUTH_SECRET=',
-          `BETTER_AUTH_SECRET=${randomBytes(32).toString('hex')}`
         )
       }
 

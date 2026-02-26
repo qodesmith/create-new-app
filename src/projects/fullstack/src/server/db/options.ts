@@ -99,6 +99,11 @@ export const authOptions = {
     requireEmailVerification: true,
     resetPasswordTokenExpiresIn: getUnitInSeconds(5, 'm'),
     minPasswordLength,
+
+    /**
+     * The route used in the url that the user returns to is defined on the
+     * client in the `redirectTo` property of `authClient.requestPasswordReset`.
+     */
     sendResetPassword: async ({user, url, token: _token}, _request) => {
       /**
        * Better Auth verifies that the user actually exists before calling

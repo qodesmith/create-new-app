@@ -94,8 +94,6 @@ for (const {name, parentPath} of dirents) {
 }
 
 // Write the data to a file so we can create Hono routes for them later.
-writeFileSync(
-  inDockerBuild ? `${outdir}/assets.json` : `${outdir}/assets.json`,
-  JSON.stringify(assets, null, 2),
-  {encoding: 'utf8'}
-)
+writeFileSync(`${outdir}/assets.json`, JSON.stringify(assets, null, 2), {
+  encoding: 'utf8',
+})

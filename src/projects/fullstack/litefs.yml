@@ -37,6 +37,7 @@ proxy:
   addr: ":8080"
 
   # Hostport of your application.
+  # Make sure to keep this port in sync with the PORT env variable!
   target: "0.0.0.0:9001"
 
   # Filename of the SQLite database you want to use for TXID tracking.

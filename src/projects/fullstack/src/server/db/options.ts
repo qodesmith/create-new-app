@@ -11,7 +11,9 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
+import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
 import {sendChangeEmailVerificationEmail} from '@/server/email/sendChangeEmailVerificationEmail'
+import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
 import {betterAuthBasePath, minPasswordLength} from '@/shared/constants'
 
@@ -93,12 +95,22 @@ export const authOptions = {
   // https://www.better-auth.com/docs/authentication/email-password
   emailAndPassword: {
     enabled: true,
-    autoSignIn: true,
-    requireEmailVerification: false,
-    resetPasswordTokenExpiresIn: getUnitInSeconds(1, 'h'),
+    autoSignIn: false,
+    requireEmailVerification: true,
+    resetPasswordTokenExpiresIn: getUnitInSeconds(5, 'm'),
     minPasswordLength,
-    sendResetPassword: async (_data, _request) => {
-      // TODO - Send an email to the user with a link to reset their password
+    sendResetPassword: async ({user, url, token: _token}, _request) => {
+      /**
+       * Better Auth verifies that the user actually exists before calling
+       * sendResetPassword. No need to manually check first.
+       */
+      void sendEmail({
+        user,
+        subject: 'Reset your password',
+        react: ResetPasswordEmail({resetUrl: url}),
+        failureContext: 'resend:sendResetPasswordEmailFailure',
+        errorContext: 'resend:sendResetPasswordEmailError',
+      })
     },
 
     /**

@@ -38,14 +38,22 @@ export type {HonoServer} from '../server/hono/honoServer'
 
 export type ServerAuth = typeof auth
 
+/**
+ * Errors are errors returned from API endpoints. Failures are errors caught in
+ * a catch statement from trying to hit API endpoints.
+ */
 export type ErrorContext =
   | 'client:topLevel'
   | 'client:missingUser'
-  | 'client:signOutError'
   | 'client:signOutFailure'
+  | 'client:signOutError'
+  | 'client:requestPasswordResetFailure'
+  | 'client:requestPasswordResetError'
   | 'rateLimitMiddleware'
   | 'hono:topLevel'
   | 'hono:betterAuth'
+  | 'resend:sendResetPasswordEmailFailure'
+  | 'resend:sendResetPasswordEmailError'
 
 export type AppSchemaInsert = {
   [K in keyof typeof appSchema as '$inferInsert' extends keyof (typeof appSchema)[K]

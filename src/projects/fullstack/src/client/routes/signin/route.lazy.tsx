@@ -20,6 +20,8 @@ import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
 import {toast} from 'sonner'
 
+import {ResetPasswordDialog} from './-ResetPasswordDialog'
+
 export const Route = createLazyFileRoute('/signin')({
   component: SignInPage,
 })
@@ -28,7 +30,7 @@ function SignInPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
   const setIsSignedIn = useSetAtom(isSignedInAtom)
-  const {redirect} = Route.useSearch()
+  const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
     ? redirect
     : defaultAuthedPath
@@ -60,9 +62,9 @@ function SignInPage() {
   })
 
   return (
-    <div className="flex h-full justify-center overflow-auto bg-background p-4">
+    <div className="grid h-full place-items-center overflow-auto bg-background p-4">
       <MagicCard
-        className="my-auto w-full max-w-sm rounded-2xl py-6"
+        className="w-full max-w-sm rounded-2xl py-6"
         spotlightGradientColor="rgba(255,255,255,.1)"
         borderGradientFrom="rgba(255,0,255,1)"
         borderGradientTo="cornflowerblue"
@@ -98,6 +100,7 @@ function SignInPage() {
                     onBlur={field.handleBlur}
                     aria-invalid={field.state.meta.errors.length > 0}
                     autoComplete="email"
+                    autoFocus
                     required
                   />
                 </div>
@@ -148,15 +151,18 @@ function SignInPage() {
           </form>
 
           <div className="pt-6 text-center">
-            <p className="text-muted-foreground text-sm">
-              Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="font-medium text-foreground transition-colors hover:text-muted-foreground"
-              >
-                Sign up
-              </Link>
-            </p>
+            <div className="text-muted-foreground text-sm">
+              <p>
+                Forgot your password?{' '}
+                <ResetPasswordDialog dialogInitialOpen={!!dialogInitialOpen} />
+              </p>
+              <p>
+                Don't have an account?{' '}
+                <Link to="/signup" className="link-animated text-primary">
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </div>
         </CardContent>
       </MagicCard>

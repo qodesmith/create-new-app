@@ -1,13 +1,22 @@
+import type {SearchSchemaInput} from '@tanstack/react-router'
+
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
 import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 
 import {createFileRoute, redirect} from '@tanstack/react-router'
 
 export const Route = createFileRoute('/signin')({
-  validateSearch: (search): {redirect?: string} => {
+  validateSearch: (
+    /**
+     * Using `<type> & SearchSchemaInput` is TanStack Router's way of making
+     * query params optional when using the <Link /> component. Otherwise,
+     * `search` will be a required prop for the Link.
+     */
+    search: {redirect?: string; dialogInitialOpen?: boolean} & SearchSchemaInput
+  ): {redirect?: string; dialogInitialOpen?: boolean} => {
     return {
-      redirect:
-        typeof search.redirect === 'string' ? search.redirect : undefined,
+      dialogInitialOpen: search.dialogInitialOpen,
+      redirect: search.redirect,
     }
   },
   beforeLoad: async ({context}) => {

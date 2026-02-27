@@ -115,21 +115,31 @@ function AccountPage() {
       }
 
       try {
-        const result = await authClient.changePassword({
+        const {error} = await authClient.changePassword({
           currentPassword,
           newPassword,
           revokeOtherSessions: true,
         })
 
-        if (result.error) {
-          toast.error(result.error.message || 'Failed to change password')
+        if (error) {
+          toast.error(error.message || 'Failed to change password')
+          logClientError({
+            error,
+            context: 'client:changePasswordFailure',
+            apiClient,
+          })
           return
         }
 
         toast.success('Password updated successfully')
         changePasswordForm.reset()
-      } catch {
+      } catch (error) {
         toast.error('An unexpected error occurred while updating your password')
+        logClientError({
+          error,
+          context: 'client:changePasswordFailure',
+          apiClient,
+        })
       }
     },
   })

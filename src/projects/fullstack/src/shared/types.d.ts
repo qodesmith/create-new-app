@@ -57,6 +57,8 @@ export type ErrorContext =
   | 'client:requestPasswordResetError'
   | 'client:changeEmailFailure'
   | 'client:changeEmailError'
+  | 'client:changePasswordFailure'
+  | 'client:changePasswordError'
   | 'rateLimitMiddleware'
   | 'hono:topLevel'
   | 'hono:betterAuth'

@@ -34,22 +34,22 @@ export function ResetPasswordDialog({
     onSubmit: async ({value}) => {
       try {
         const resetPasswordPath: FileRouteTypes['to'] = '/reset-password'
-        const {error, data} = await authClient.requestPasswordReset({
+        const {error} = await authClient.requestPasswordReset({
           email: value.email,
 
           // This is the return url sent in an email to the user
           redirectTo: resetPasswordPath,
         })
 
-        if (data) {
-          toast.success('Check your email for a link to reset your password.')
-        } else {
+        if (error) {
           toast.error('Failed to send reset email')
           logClientError({
             error,
             context: 'client:requestPasswordResetFailure',
             apiClient,
           })
+        } else {
+          toast.success('Check your email for a link to reset your password.')
         }
 
         setIsOpen(false)

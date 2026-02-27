@@ -40,7 +40,7 @@ function SignUpPage() {
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
       try {
-        const {error, data} = await authClient.signUp.email({
+        const {error} = await authClient.signUp.email({
           name: value.name,
           email: value.email,
           password: value.password,
@@ -48,15 +48,14 @@ function SignUpPage() {
           callbackURL: defaultAuthedPath,
         })
 
-        if (data) {
-          toast.success(
-            'Account created successfully! Please check your email.'
-          )
-          router.navigate({to: '/signin'})
-        } else {
+        if (error) {
           toast.error(error.message || 'Failed to sign up')
           logClientError({error, context: 'client:signUpFailure', apiClient})
+          return
         }
+
+        toast.success('Account created successfully! Please check your email.')
+        await router.navigate({to: '/signin'})
       } catch (error) {
         toast.error('An unexpected error occurred')
         logClientError({error, context: 'client:signUpError', apiClient})

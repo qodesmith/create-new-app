@@ -17,7 +17,7 @@ type SignUpVerificationEmailProps = {
 
 // biome-ignore lint/style/noDefaultExport: react.email expects a default export for testing
 export default function Email({verificationUrl}: SignUpVerificationEmailProps) {
-  const appName = 'my-app'
+  const appName = '{{PROJECT_NAME}}'
   const cyan400 = '#00d3f3'
   const cyan900 = '#053345'
   const fuchsia500 = '#e12afb'

@@ -11,6 +11,8 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
+import {getDatabase} from '@/server/db/getDatabase'
+import {users} from '@/server/db/schema/authSchema'
 import ChangeEmailVerificationEmail from '@/server/email/ChangeEmailVerificationEmail'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
 import SignUpVerificationEmail from '@/server/email/SignUpVerificationEmail'
@@ -23,6 +25,7 @@ import {getUnitInSeconds} from '@qodestack/utils'
 import {type} from 'arktype'
 import {APIError} from 'better-auth/api'
 import {admin, createAuthMiddleware} from 'better-auth/plugins'
+import {eq} from 'drizzle-orm'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 
@@ -41,6 +44,8 @@ export const authOptions = {
 
   hooks: {
     before: createAuthMiddleware(async ctx => {
+      const emailValidator = type('string.email')
+
       // Server-side form validation when signing up.
       if (ctx.path === '/sign-up/email') {
         const email = ctx.body.email as string | undefined
@@ -50,7 +55,6 @@ export const authOptions = {
         const password = ctx.body.password as string | undefined
 
         // Validate with arktype.
-        const emailValidator = type('string.email')
         const nameValidator = type(/^[a-zA-Z ]{2,}$/)
         const passwordValidator = type(`string >= ${minPasswordLength}`)
 
@@ -82,6 +86,16 @@ export const authOptions = {
           })
         }
       }
+
+      // Server-side form validation when changing email.
+      if (ctx.path === '/change-email') {
+        const newEmail = ctx.body.newEmail as string | undefined
+        const emailResult = emailValidator(newEmail)
+
+        if (emailResult instanceof type.errors) {
+          throw new APIError('BAD_REQUEST', {message: 'Invalid email'})
+        }
+      }
     }),
   },
 
@@ -91,22 +105,71 @@ export const authOptions = {
     autoSignInAfterVerification: true,
 
     /**
-     * The route used in the url that the user returns to is defined in client
-     * code - `authClient.signUp.email` => `callbackURL`.
+     * This single callback handles both sign-up and change-email verification.
+     *
+     * We intentionally avoid using `user.changeEmail.sendChangeEmailVerification`
+     * because Better Auth treats it as a fallback for `sendChangeEmailConfirmation`,
+     * triggering a 2-step flow that sends a redundant second email. Instead, we
+     * detect the flow via `request.url` and use the appropriate email template.
+     *
+     * https://github.com/better-auth/better-auth/issues/3742#issuecomment-3970358918
+     *
+     * The callback URL the user returns to is defined in client code:
+     * - POST /sign-up/email => `authClient.signUp.email` => `callbackURL`
+     * - POST /change-email => `authClient.changeEmail` => `callbackURL`
      */
-    sendVerificationEmail: async ({user, url, token: _token}, _request) => {
+    sendVerificationEmail: async ({user, url, token: _token}, request) => {
+      if (!request) {
+        throw new Error('No request found for sendVerificationEmail')
+      }
+
+      const {pathname} = new URL(request.url)
+
       /**
        * Using `void` (fire-and-forget) to prevent timing attacks. Without it,
        * response time varies based on whether an email is sent, letting
        * attackers discover valid accounts by measuring response latency.
        */
-      void sendEmail({
-        user,
-        subject: 'Verify your email address',
-        react: SignUpVerificationEmail({verificationUrl: url}),
-        failureContext: 'resend:sendSignUpVerificationEmailFailure',
-        errorContext: 'resend:sendSignUpVerificationEmailError',
-      })
+
+      if (pathname === `${betterAuthBasePath}/sign-up/email`) {
+        return void sendEmail({
+          user,
+          subject: 'Verify your email address',
+          react: SignUpVerificationEmail({verificationUrl: url}),
+          failureContext: 'resend:sendSignUpVerificationEmailFailure',
+          errorContext: 'resend:sendSignUpVerificationEmailError',
+        })
+      }
+
+      if (pathname === `${betterAuthBasePath}/change-email`) {
+        const userId = +user.id
+
+        if (Number.isNaN(userId)) {
+          throw new Error('Invalid user id for changing email')
+        }
+
+        const db = getDatabase()
+        const userFromDb = db
+          .select()
+          .from(users)
+          .where(eq(users.id, userId))
+          .get()
+
+        if (!userFromDb) {
+          throw new Error('Could not find original user in database')
+        }
+
+        void sendEmail({
+          user: userFromDb,
+          subject: 'Confirm your updated email',
+          react: ChangeEmailVerificationEmail({
+            verificationUrl: url,
+            newEmail: user.email,
+          }),
+          failureContext: 'resend:sendChangePasswordEmailFailure',
+          errorContext: 'resend:sendChangePasswordEmailError',
+        })
+      }
     },
   },
 
@@ -119,8 +182,8 @@ export const authOptions = {
     minPasswordLength,
 
     /**
-     * The route used in the url that the user returns to is defined in client
-     * code - `authClient.requestPasswordReset` => `redirectTo`.
+     * The callback URL the user returns to is defined in client code:
+     * `authClient.requestPasswordReset` => `redirectTo`.
      */
     sendResetPassword: async ({user, url, token: _token}, _request) => {
       /**
@@ -172,18 +235,18 @@ export const authOptions = {
     },
     changeEmail: {
       enabled: true,
-      sendChangeEmailVerification: async (
-        {user, newEmail, url, token: _token},
-        _request
-      ) => {
-        void sendEmail({
-          user,
-          subject: 'Confirm your updated email',
-          react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
-          failureContext: 'resend:sendChangePasswordEmailFailure',
-          errorContext: 'resend:sendChangePasswordEmailError',
-        })
-      },
+      // sendChangeEmailVerification: async (
+      //   {user, newEmail, url, token: _token},
+      //   _request
+      // ) => {
+      //   void sendEmail({
+      //     user,
+      //     subject: 'Confirm your updated email',
+      //     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
+      //     failureContext: 'resend:sendChangePasswordEmailFailure',
+      //     errorContext: 'resend:sendChangePasswordEmailError',
+      //   })
+      // },
     },
     deleteUser: {
       enabled: true,
@@ -215,7 +278,7 @@ export const authOptions = {
   },
 
   logger: {
-    disabled: false,
+    disabled: true, // Enable this for server-side logging to the console.
     level: 'info',
     log: (level, message, ...args) => {
       const logLevel: keyof typeof log = (() => {

@@ -21,6 +21,7 @@ import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
+import {BASE_ERROR_CODES} from 'better-auth'
 import {useAtomValue, useSetAtom} from 'jotai'
 import {toast} from 'sonner'
 
@@ -55,7 +56,15 @@ function SignInPage() {
 
         if (error) {
           toast.error(error.message || 'Failed to sign in')
-          logClientError({error, context: 'client:signInFailure', apiClient})
+
+          /**
+           * https://github.com/better-auth/better-auth/blob/canary/packages/core/src/error/codes.ts
+           * Avoid polluting the db with invalid email or password errors.
+           */
+          if (error.code !== BASE_ERROR_CODES.INVALID_EMAIL_OR_PASSWORD) {
+            logClientError({error, context: 'client:signInFailure', apiClient})
+          }
+
           return
         }
 

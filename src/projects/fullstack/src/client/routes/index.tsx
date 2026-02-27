@@ -133,18 +133,22 @@ function RouteComponent() {
           You can sign into this demo app with 2 accounts:
         </p>
         <table className="mx-auto w-fit border-collapse border">
-          <tr className="bg-secondary/50 font-bold">
-            <td className="border px-2 py-1">Email</td>
-            <td className="border px-2 py-1">Password</td>
-          </tr>
-          <tr className="font-mono">
-            <td className="border px-2 py-1">admin@example.com</td>
-            <td className="border px-2 py-1">password</td>
-          </tr>
-          <tr className="font-mono">
-            <td className="border px-2 py-1">user@example.com</td>
-            <td className="border px-2 py-1">password</td>
-          </tr>
+          <thead>
+            <tr className="bg-secondary/50 font-bold">
+              <td className="border px-2 py-1">Email</td>
+              <td className="border px-2 py-1">Password</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="font-mono">
+              <td className="border px-2 py-1">admin@example.com</td>
+              <td className="border px-2 py-1">password</td>
+            </tr>
+            <tr className="font-mono">
+              <td className="border px-2 py-1">user@example.com</td>
+              <td className="border px-2 py-1">password</td>
+            </tr>
+          </tbody>
         </table>
         <p className="text-justify">
           Below are files you may want to familiarize yourself with that

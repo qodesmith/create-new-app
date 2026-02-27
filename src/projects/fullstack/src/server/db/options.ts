@@ -11,9 +11,9 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
+import ChangeEmailVerificationEmail from '@/server/email/ChangeEmailVerificationEmail'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
 import SignUpVerificationEmail from '@/server/email/SignUpVerificationEmail'
-import {sendChangeEmailVerificationEmail} from '@/server/email/sendChangeEmailVerificationEmail'
 import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
 import {betterAuthBasePath, minPasswordLength} from '@/shared/constants'
@@ -163,6 +163,7 @@ export const authOptions = {
 
   user: {
     additionalFields: {
+      // TODO - decide to keep lastName in the user schema or not.
       lastName: {
         type: 'string',
         required: true,
@@ -171,20 +172,17 @@ export const authOptions = {
     },
     changeEmail: {
       enabled: true,
-      sendChangeEmailVerification: async (data, _request) => {
-        try {
-          await sendChangeEmailVerificationEmail({
-            user: data.user,
-            newEmail: data.newEmail,
-            url: data.url,
-          })
-        } catch (error) {
-          log.error('Failed to send change-email verification email', error)
-          throw new APIError('INTERNAL_SERVER_ERROR', {
-            message:
-              'Unable to send verification email. Please try again later.',
-          })
-        }
+      sendChangeEmailVerification: async (
+        {user, newEmail, url, token: _token},
+        _request
+      ) => {
+        void sendEmail({
+          user,
+          subject: 'Confirm your updated email',
+          react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
+          failureContext: 'resend:sendChangePasswordEmailFailure',
+          errorContext: 'resend:sendChangePasswordEmailError',
+        })
       },
     },
     deleteUser: {
@@ -232,11 +230,7 @@ export const authOptions = {
         }
       })()
 
-      if (args.length) {
-        log[logLevel]('[Better Auth]', message, ...args)
-      } else {
-        log[logLevel]('[Better Auth]', message)
-      }
+      log[logLevel]('[Better Auth]', message, ...args)
     },
   },
 
@@ -274,14 +268,14 @@ export const authOptions = {
      * the user's device and a public key shared with the website.
      */
     passkey({
-      // The relying party ID, typically your domain
+      // The relying party ID, typically your domain.
       rpID: domain,
 
-      // TODO - update rpName to semantic name for your app.
-      // Human-readable name shown in browser prompts
-      rpName: '{{PROJECT_NAME}}',
+      // TODO - update rpName to a semantic name for your app.
+      // Human-readable name shown in browser prompts.
+      rpName: 'my-app',
 
-      // Fully qualified URL where passkey actions happen
+      // Fully qualified URL where passkey actions happen.
       origin: [origin, originWww],
     }),
   ],

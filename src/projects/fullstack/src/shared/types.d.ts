@@ -45,10 +45,14 @@ export type ServerAuth = typeof auth
 export type ErrorContext =
   | 'client:topLevel'
   | 'client:missingUser'
+  | 'client:signInFailure'
+  | 'client:signInError'
   | 'client:signUpFailure'
   | 'client:signUpError'
   | 'client:signOutFailure'
   | 'client:signOutError'
+  | 'client:resetPasswordFailure'
+  | 'client:resetPasswordError'
   | 'client:requestPasswordResetFailure'
   | 'client:requestPasswordResetError'
   | 'rateLimitMiddleware'
@@ -58,6 +62,8 @@ export type ErrorContext =
   | 'resend:sendSignUpVerificationEmailError'
   | 'resend:sendResetPasswordEmailFailure'
   | 'resend:sendResetPasswordEmailError'
+  | 'resend:sendChangePasswordEmailFailure'
+  | 'resend:sendChangePasswordEmailError'
 
 export type AppSchemaInsert = {
   [K in keyof typeof appSchema as '$inferInsert' extends keyof (typeof appSchema)[K]

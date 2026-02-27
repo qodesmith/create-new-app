@@ -11,8 +11,12 @@ import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
 import {isValidRoute} from '@/client/lib/isValidRoute'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
-import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
+import {
+  apiClientAtom,
+  authClientAtom,
+  isSignedInAtom,
+} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -29,6 +33,7 @@ export const Route = createLazyFileRoute('/signin')({
 function SignInPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
+  const apiClient = useAtomValue(apiClientAtom)
   const setIsSignedIn = useSetAtom(isSignedInAtom)
   const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
@@ -43,20 +48,22 @@ function SignInPage() {
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
       try {
-        const result = await authClient.signIn.email({
+        const {error} = await authClient.signIn.email({
           email: value.email,
           password: value.password,
         })
 
-        if (result.error) {
-          toast.error(result.error.message || 'Failed to sign in')
+        if (error) {
+          toast.error(error.message || 'Failed to sign in')
+          logClientError({error, context: 'client:signInFailure', apiClient})
           return
         }
 
         setIsSignedIn(true)
         await router.navigate({to: redirectPath})
-      } catch {
+      } catch (error) {
         toast.error('An unexpected error occurred')
+        logClientError({error, context: 'client:signInError', apiClient})
       }
     },
   })

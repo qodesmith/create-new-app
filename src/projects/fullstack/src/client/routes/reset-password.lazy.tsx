@@ -9,8 +9,8 @@ import {
 } from '@/client/components/ui/card'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
-import {authClientAtom} from '@/client/state/globalState'
+import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
+import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -56,6 +56,7 @@ function NewPasswordForm({
 }) {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
+  const apiClient = useAtomValue(apiClientAtom)
 
   const form = useForm({
     defaultValues: {
@@ -72,14 +73,24 @@ function NewPasswordForm({
 
         if (error) {
           toast.error(error.message || 'Failed to reset password')
+          logClientError({
+            error,
+            context: 'client:resetPasswordError',
+            apiClient,
+          })
           showInvalidTokenView()
           return
         }
 
         toast.success('Password reset successfully!')
         await router.navigate({to: '/signin'})
-      } catch {
+      } catch (error) {
         toast.error('An unexpected error occurred')
+        logClientError({
+          error,
+          context: 'client:resetPasswordFailure',
+          apiClient,
+        })
       }
     },
   })

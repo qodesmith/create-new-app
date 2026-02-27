@@ -46,7 +46,7 @@ const nodeEnv = getEnvVar('NODE_ENV')
 /**
  * `NODE_ENV === 'production'`
  */
-const isProdEnv = nodeEnv === 'production'
+export const isProdEnv = nodeEnv === 'production'
 
 /**
  * Indicates whether the app is running in the __deployed production

@@ -45,6 +45,8 @@ export type ServerAuth = typeof auth
 export type ErrorContext =
   | 'client:topLevel'
   | 'client:missingUser'
+  | 'client:signUpFailure'
+  | 'client:signUpError'
   | 'client:signOutFailure'
   | 'client:signOutError'
   | 'client:requestPasswordResetFailure'
@@ -52,6 +54,8 @@ export type ErrorContext =
   | 'rateLimitMiddleware'
   | 'hono:topLevel'
   | 'hono:betterAuth'
+  | 'resend:sendSignUpVerificationEmailFailure'
+  | 'resend:sendSignUpVerificationEmailError'
   | 'resend:sendResetPasswordEmailFailure'
   | 'resend:sendResetPasswordEmailError'
 

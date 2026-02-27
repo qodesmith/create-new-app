@@ -12,6 +12,7 @@ import {
   userRoles,
 } from '@/server/constants'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
+import SignUpVerificationEmail from '@/server/email/SignUpVerificationEmail'
 import {sendChangeEmailVerificationEmail} from '@/server/email/sendChangeEmailVerificationEmail'
 import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
@@ -40,13 +41,15 @@ export const authOptions = {
 
   hooks: {
     before: createAuthMiddleware(async ctx => {
+      // Server-side form validation when signing up.
       if (ctx.path === '/sign-up/email') {
         const email = ctx.body.email as string | undefined
         const name = ctx.body.name as string | undefined
+        // TODO - decide to keep lastName in the user schema or not.
         const lastName = ctx.body.lastName as string | undefined
         const password = ctx.body.password as string | undefined
 
-        // Validate with arktype
+        // Validate with arktype.
         const emailValidator = type('string.email')
         const nameValidator = type(/^[a-zA-Z ]{2,}$/)
         const passwordValidator = type(`string >= ${minPasswordLength}`)
@@ -83,15 +86,30 @@ export const authOptions = {
   },
 
   emailVerification: {
-    sendOnSignUp: false,
+    sendOnSignUp: true,
     expiresIn: getUnitInSeconds(1, 'h'),
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async (_data, _request) => {
-      // TODO - Send an email verification
+
+    /**
+     * The route used in the url that the user returns to is defined in client
+     * code - `authClient.signUp.email` => `callbackURL`.
+     */
+    sendVerificationEmail: async ({user, url, token: _token}, _request) => {
+      /**
+       * Using `void` (fire-and-forget) to prevent timing attacks. Without it,
+       * response time varies based on whether an email is sent, letting
+       * attackers discover valid accounts by measuring response latency.
+       */
+      void sendEmail({
+        user,
+        subject: 'Verify your email address',
+        react: SignUpVerificationEmail({verificationUrl: url}),
+        failureContext: 'resend:sendSignUpVerificationEmailFailure',
+        errorContext: 'resend:sendSignUpVerificationEmailError',
+      })
     },
   },
 
-  // TODO - enable email verification and disabled autoSignIn once email is wired up
   // https://www.better-auth.com/docs/authentication/email-password
   emailAndPassword: {
     enabled: true,
@@ -101,8 +119,8 @@ export const authOptions = {
     minPasswordLength,
 
     /**
-     * The route used in the url that the user returns to is defined on the
-     * client in the `redirectTo` property of `authClient.requestPasswordReset`.
+     * The route used in the url that the user returns to is defined in client
+     * code - `authClient.requestPasswordReset` => `redirectTo`.
      */
     sendResetPassword: async ({user, url, token: _token}, _request) => {
       /**

@@ -10,8 +10,8 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
-import {authClientAtom} from '@/client/state/globalState'
+import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
+import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -27,6 +27,7 @@ function SignUpPage() {
   const router = useRouter()
   const namePattern = '[a-zA-Z\\s]+'
   const authClient = useAtomValue(authClientAtom)
+  const apiClient = useAtomValue(apiClientAtom)
 
   const form = useForm({
     defaultValues: {
@@ -39,24 +40,26 @@ function SignUpPage() {
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
       try {
-        const result = await authClient.signUp.email({
+        const {error, data} = await authClient.signUp.email({
           name: value.name,
           email: value.email,
           password: value.password,
           lastName: value.lastName,
+          callbackURL: defaultAuthedPath,
         })
 
-        if (result.error) {
-          toast.error(result.error.message || 'Failed to sign up')
-          return
+        if (data) {
+          toast.success(
+            'Account created successfully! Please check your email.'
+          )
+          router.navigate({to: '/signin'})
+        } else {
+          toast.error(error.message || 'Failed to sign up')
+          logClientError({error, context: 'client:signUpFailure', apiClient})
         }
-
-        // TODO - implement email verification
-        toast.success('Account created successfully! Please check your email.')
-
-        router.navigate({to: defaultAuthedPath})
-      } catch {
+      } catch (error) {
         toast.error('An unexpected error occurred')
+        logClientError({error, context: 'client:signUpError', apiClient})
       }
     },
   })
@@ -263,10 +266,7 @@ function SignUpPage() {
           <div className="pt-6 text-center">
             <p className="text-muted-foreground text-sm">
               Already have an account?{' '}
-              <Link
-                to="/signin"
-                className="font-medium text-foreground transition-colors hover:text-muted-foreground"
-              >
+              <Link to="/signin" className="link-animated text-primary">
                 Sign in
               </Link>
             </p>

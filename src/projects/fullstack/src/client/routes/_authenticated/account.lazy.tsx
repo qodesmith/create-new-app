@@ -18,8 +18,9 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
 import {
+  apiClientAtom,
   authClientAtom,
   themeSelector,
   themeSettingAtom,
@@ -53,6 +54,7 @@ function AccountPage() {
   const [themeSetting, setThemeSetting] = useAtom(themeSettingAtom)
   const theme = useAtomValue(themeSelector)
   const authClient = useAtomValue(authClientAtom)
+  const apiClient = useAtomValue(apiClientAtom)
 
   const changeEmailForm = useForm({
     defaultValues: {
@@ -70,22 +72,28 @@ function AccountPage() {
 
       try {
         const callbackURL: FileRouteTypes['to'] = '/account'
-        const result = await authClient.changeEmail({
+        const {error} = await authClient.changeEmail({
           newEmail: email.trim(),
           callbackURL,
         })
 
-        if (result.error) {
-          toast.error(result.error.message || 'Failed to start email change')
+        if (error) {
+          toast.error(error.message || 'Failed to change email')
+          logClientError({
+            error,
+            context: 'client:changeEmailFailure',
+            apiClient,
+          })
           return
         }
 
         changeEmailForm.reset()
         toast.success(
-          'We sent a verification link to your current email. Pleas confirm the change.'
+          'We sent a verification link to your current email. Please confirm the change.'
         )
-      } catch {
+      } catch (error) {
         toast.error('An unexpected error occurred while updating your email')
+        logClientError({error, context: 'client:changeEmailError', apiClient})
       }
     },
   })

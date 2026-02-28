@@ -10,6 +10,7 @@
     "build": "bun run build.ts",
     "deploy": "fly deploy",
     "db:view": "NODE_ENV=development bun --bun run src/server/db/drizzleStudioLocal.ts",
+    "db:init": "NODE_ENV=development bun --bun run initDevDb.ts",
     "knip": "knip"
   },
   "dependencies": {

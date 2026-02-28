@@ -18,7 +18,11 @@ import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
 import SignUpVerificationEmail from '@/server/email/SignUpVerificationEmail'
 import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
-import {betterAuthBasePath, minPasswordLength} from '@/shared/constants'
+import {
+  betterAuthBasePath,
+  emailVerificationExpiryInSeconds,
+  minPasswordLength,
+} from '@/shared/constants'
 
 import {passkey} from '@better-auth/passkey'
 import {getUnitInSeconds} from '@qodestack/utils'
@@ -36,7 +40,7 @@ export const drizzleAdapterOptions = {
 } satisfies DrizzleAdapterConfig
 
 export const authOptions = {
-  appName: '{{PROJECT_NAME}}',
+  appName: 'my-app',
   baseURL: isProd ? origin : localhost,
 
   // There is a matching Hono endpoint for this.
@@ -101,7 +105,7 @@ export const authOptions = {
 
   emailVerification: {
     sendOnSignUp: true,
-    expiresIn: getUnitInSeconds(1, 'h'),
+    expiresIn: emailVerificationExpiryInSeconds,
     autoSignInAfterVerification: true,
 
     /**
@@ -336,7 +340,7 @@ export const authOptions = {
 
       // TODO - update rpName to a semantic name for your app.
       // Human-readable name shown in browser prompts.
-      rpName: '{{PROJECT_NAME}}',
+      rpName: 'my-app',
 
       // Fully qualified URL where passkey actions happen.
       origin: [origin, originWww],

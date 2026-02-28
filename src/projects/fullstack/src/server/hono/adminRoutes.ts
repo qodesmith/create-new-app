@@ -1,10 +1,50 @@
+import {emailVerificationExpiryInMs} from '@/shared/constants'
+
+import {and, eq, lt} from 'drizzle-orm'
 import {Hono} from 'hono'
 
-import {exportDatabase} from '../db/getDatabase'
+import {exportDatabase, getDatabase} from '../db/getDatabase'
+import {users} from '../db/schema/authSchema'
 import {adminMiddleware} from '../middleware/adminMiddleware'
 
 export const adminRoutes = new Hono()
   .use(adminMiddleware)
+
+  /**
+   * List unverified users past the verification window.
+   */
+  .get('/stale-users', c => {
+    const db = getDatabase()
+    const cutoff = new Date(Date.now() - emailVerificationExpiryInMs)
+    const staleUsers = db
+      .select({
+        id: users.id,
+        name: users.name,
+        lastName: users.lastName,
+        email: users.email,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
+      .all()
+
+    return c.json({count: staleUsers.length, users: staleUsers})
+  })
+
+  /**
+   * Manually purge unverified users past the verification window.
+   */
+  .delete('/stale-users', c => {
+    const db = getDatabase()
+    const cutoff = new Date(Date.now() - emailVerificationExpiryInMs)
+    const result = db
+      .delete(users)
+      .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
+      .returning()
+      .all()
+
+    return c.json({deleted: result.length})
+  })
 
   /**
    * Download the database for backup.

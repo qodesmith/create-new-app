@@ -38,7 +38,7 @@ const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 export type SessionData = Prettify<typeof auth.$Infer.Session>
 
 export const authOptions = {
-  appName: 'my-app',
+  appName: '{{PROJECT_NAME}}',
   baseURL: isProd ? origin : localhost,
 
   // There is a matching Hono endpoint for this.
@@ -345,7 +345,7 @@ export const authOptions = {
 
       // TODO - update rpName to a semantic name for your app.
       // Human-readable name shown in browser prompts.
-      rpName: 'my-app',
+      rpName: '{{PROJECT_NAME}}',
 
       // Fully qualified URL where passkey actions happen.
       origin: [origin, originWww],

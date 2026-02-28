@@ -145,6 +145,13 @@ export const authOptions = {
       }
 
       if (pathname === `${betterAuthBasePath}/change-email`) {
+        /**
+         * https://github.com/better-auth/better-auth/issues/2349#issuecomment-2817112648
+         *
+         * Better Auth returns user.id as a string despite
+         * `useNumberId: true` in `authOptions.advanced.database`, and they
+         * have no plans to change this. So we coerce to a number here.
+         */
         const userId = +user.id
 
         if (Number.isNaN(userId)) {

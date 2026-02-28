@@ -103,7 +103,7 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
     const user = c.get('user')
     const db = getDatabase()
 
-    db.delete(avatarsTable).where(eq(avatarsTable.userId, +user.id)).run()
+    db.delete(avatarsTable).where(eq(avatarsTable.userId, user.id)).run()
 
     return c.body(null, 204)
   })

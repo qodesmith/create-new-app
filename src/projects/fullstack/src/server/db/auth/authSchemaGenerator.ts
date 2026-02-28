@@ -4,10 +4,10 @@
  */
 import {Database} from 'bun:sqlite'
 
+import {authOptions, drizzleAdapterOptions} from '@/server/db/auth/auth'
+
 import {betterAuth} from 'better-auth'
 import {drizzleAdapter} from 'better-auth/adapters/drizzle'
-
-import {authOptions, drizzleAdapterOptions} from '../options'
 
 /**
  * This `betterAuth` instance is solely used for generating the auth schema.

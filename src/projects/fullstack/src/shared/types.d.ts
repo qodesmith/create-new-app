@@ -43,6 +43,18 @@ export type ServerAuth = typeof auth
  * a catch statement from trying to hit API endpoints.
  */
 export type ErrorContext =
+  // Server
+  | 'topLevel:hono'
+  | 'topLevel:betterAuth'
+  | 'rateLimitMiddleware'
+  | 'resend:sendSignUpVerificationEmailFailure'
+  | 'resend:sendSignUpVerificationEmailError'
+  | 'resend:sendResetPasswordEmailFailure'
+  | 'resend:sendResetPasswordEmailError'
+  | 'resend:sendChangePasswordEmailFailure'
+  | 'resend:sendChangePasswordEmailError'
+
+  // Client
   | 'client:topLevel'
   | 'client:missingUser'
   | 'client:signInFailure'
@@ -62,15 +74,6 @@ export type ErrorContext =
   | 'client:avatarUploadFailure'
   | 'client:avatarUploadError'
   | 'client:avatarDeleteError'
-  | 'rateLimitMiddleware'
-  | 'hono:topLevel'
-  | 'hono:betterAuth'
-  | 'resend:sendSignUpVerificationEmailFailure'
-  | 'resend:sendSignUpVerificationEmailError'
-  | 'resend:sendResetPasswordEmailFailure'
-  | 'resend:sendResetPasswordEmailError'
-  | 'resend:sendChangePasswordEmailFailure'
-  | 'resend:sendChangePasswordEmailError'
 
 export type AppSchemaInsert = {
   [K in keyof typeof appSchema as '$inferInsert' extends keyof (typeof appSchema)[K]

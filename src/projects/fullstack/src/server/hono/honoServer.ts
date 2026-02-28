@@ -37,8 +37,7 @@ export const honoServer = new Hono()
           db.insert(errorsTable)
             .values({
               error: errorToObject(error),
-              location: 'hono',
-              context: 'hono:betterAuth',
+              context: 'topLevel:betterAuth',
             })
             .run()
         })
@@ -96,7 +95,6 @@ export const honoServer = new Hono()
     arktypeValidator(
       'json',
       createInsertSchema(errorsTable).omit(
-        'location',
         'id',
         'createdAt',
         'updatedAt',
@@ -112,9 +110,7 @@ export const honoServer = new Hono()
       const userId = session ? +session.user.id : undefined
 
       bestEffort(() => {
-        db.insert(errorsTable)
-          .values({location: 'client', error, context, userId, metadata})
-          .run()
+        db.insert(errorsTable).values({error, context, userId, metadata}).run()
       })
 
       return c.body(null)
@@ -146,11 +142,7 @@ export const honoServer = new Hono()
 
     bestEffort(() => {
       db.insert(errorsTable)
-        .values({
-          error: errorToObject(error),
-          location: 'hono',
-          context: 'hono:topLevel',
-        })
+        .values({error: errorToObject(error), context: 'topLevel:hono'})
         .run()
     })
 

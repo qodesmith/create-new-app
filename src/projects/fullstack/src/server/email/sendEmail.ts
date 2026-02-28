@@ -1,5 +1,5 @@
 import type {JSX} from 'react'
-import type {AppSchemaInsert, ErrorContext} from '@/shared/types'
+import type {ErrorContext} from '@/shared/types'
 
 import {isProd} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
@@ -26,7 +26,6 @@ export async function sendEmail({
   const resend = new Resend(apiKey)
   const from = getEnvVar('RESEND_FROM_EMAIL')
   const to = isProd ? user.email : getEnvVar('RESEND_ACCOUNT_EMAIL')
-  const location: AppSchemaInsert['errorsTable']['location'] = 'hono'
 
   return resend.emails
     .send({from, to, subject, react})
@@ -37,7 +36,7 @@ export async function sendEmail({
         const metadata = res.headers !== null ? {headers: res.headers} : null
 
         db.insert(errorsTable)
-          .values({context: errorContext, error, location, metadata})
+          .values({context: errorContext, error, metadata})
           .run()
       }
     })
@@ -45,8 +44,6 @@ export async function sendEmail({
       const db = getDatabase()
       const error = errorToObject(e)
 
-      db.insert(errorsTable)
-        .values({context: failureContext, error, location})
-        .run()
+      db.insert(errorsTable).values({context: failureContext, error}).run()
     })
 }

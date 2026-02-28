@@ -50,7 +50,6 @@ const commonFields = {
 export const errorsTable = sqliteTable('errors', {
   ...commonFields,
   error: text({mode: 'json'}).$type<Record<string, unknown>>().notNull(),
-  location: text().$type<'client' | 'bun' | 'hono'>().notNull(),
   context: text().$type<ErrorContext>().notNull(),
   metadata: text({mode: 'json'}).$type<Record<string, unknown>>(),
   // The potentially logged-in user.

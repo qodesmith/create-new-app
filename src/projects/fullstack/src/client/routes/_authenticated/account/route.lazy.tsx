@@ -1,131 +1,25 @@
 import type {ReactNode} from 'react'
-import type {FileRouteTypes} from '@/client/routeTree.gen'
 
-import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {BorderBeam} from '@/client/components/ui/border-beam'
-import {Button} from '@/client/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@/client/components/ui/card'
-import {Input} from '@/client/components/ui/input'
-import {Label} from '@/client/components/ui/label'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {
-  apiClientAtom,
-  authClientAtom,
-  themeSelector,
-  themeSettingAtom,
-} from '@/client/state/globalState'
-import {minPasswordLength} from '@/shared/constants'
 
-import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute} from '@tanstack/react-router'
-import {useAtom, useAtomValue} from 'jotai'
-import {toast} from 'sonner'
 
 import {AccountAvatar} from './-AccountAvatar'
+import {Appearance} from './-Appearance'
+import {ChangeEmail} from './-ChangeEmail'
+import {ChangePassword} from './-ChangePassword'
 
 export const Route = createLazyFileRoute('/_authenticated/account')({
   component: AccountPage,
 })
 
 function AccountPage() {
-  const [themeSetting, setThemeSetting] = useAtom(themeSettingAtom)
-  const theme = useAtomValue(themeSelector)
-  const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
-
-  const changeEmailForm = useForm({
-    defaultValues: {
-      email: '',
-      confirmEmail: '',
-    },
-    onSubmitInvalid: handleFormSubmitInvalid,
-    onSubmit: async ({value}) => {
-      const {email, confirmEmail} = value
-
-      if (email.trim() !== confirmEmail.trim()) {
-        toast.error('Email addresses must match')
-        return
-      }
-
-      try {
-        const callbackURL: FileRouteTypes['to'] = '/account'
-        const {error} = await authClient.changeEmail({
-          newEmail: email.trim(),
-          callbackURL,
-        })
-
-        if (error) {
-          toast.error(error.message || 'Failed to change email')
-          logClientError({
-            error,
-            context: 'client:changeEmailFailure',
-            apiClient,
-          })
-          return
-        }
-
-        changeEmailForm.reset()
-        toast.success(
-          'We sent a verification link to your current email. Please confirm the change.'
-        )
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating your email')
-        logClientError({error, context: 'client:changeEmailError', apiClient})
-      }
-    },
-  })
-
-  const changePasswordForm = useForm({
-    defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmNewPassword: '',
-    },
-    onSubmitInvalid: handleFormSubmitInvalid,
-    onSubmit: async ({value, formApi}) => {
-      const {currentPassword, newPassword, confirmNewPassword} = value
-
-      if (newPassword !== confirmNewPassword) {
-        toast.error('New passwords must match')
-        formApi.setFieldValue('confirmNewPassword', '')
-        return
-      }
-
-      try {
-        const {error} = await authClient.changePassword({
-          currentPassword,
-          newPassword,
-          revokeOtherSessions: true,
-        })
-
-        if (error) {
-          toast.error(error.message || 'Failed to change password')
-          logClientError({
-            error,
-            context: 'client:changePasswordFailure',
-            apiClient,
-          })
-          return
-        }
-
-        toast.success('Password updated successfully')
-        changePasswordForm.reset()
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating your password')
-        logClientError({
-          error,
-          context: 'client:changePasswordFailure',
-          apiClient,
-        })
-      }
-    },
-  })
-
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4 p-4 pb-8 md:p-6">
       <header className="space-y-1">
@@ -143,200 +37,19 @@ function AccountPage() {
 
         {/* THEME PREFERENCES */}
         <AccountCard title="Appearance">
-          <p className="mb-0 text-sm">
-            Current setting - <span className="font-bold">{themeSetting}</span>
-            {themeSetting === 'system' ? (
-              <span className="text-xs italic">&nbsp;({theme})</span>
-            ) : (
-              ''
-            )}
-          </p>
-          <p className="text-muted-foreground text-sm">
-            Choose how the app looks. Your preference is saved on this device.
-            "System" follows your device setting.
-          </p>
-
-          <div className="flex flex-wrap gap-2 pt-1">
-            <Button
-              type="button"
-              size="sm"
-              variant={themeSetting === 'light' ? 'default' : 'outline'}
-              onClick={() => setThemeSetting('light')}
-            >
-              Light
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={themeSetting === 'dark' ? 'default' : 'outline'}
-              onClick={() => setThemeSetting('dark')}
-            >
-              Dark
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={themeSetting === 'system' ? 'default' : 'outline'}
-              onClick={() => setThemeSetting('system')}
-            >
-              System
-            </Button>
-          </div>
+          <Appearance />
         </AccountCard>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
         {/* CHANGE EMAIL */}
         <AccountCard title="Change email">
-          <form
-            className="space-y-4"
-            onSubmit={event => {
-              event.preventDefault()
-              event.stopPropagation()
-              changeEmailForm.handleSubmit()
-            }}
-          >
-            <changeEmailForm.Field
-              name="email"
-              validators={{
-                onSubmit: ({value}) => {
-                  if (!value.trim()) return 'Email is required'
-                },
-              }}
-            >
-              {field => (
-                <div className="space-y-1 text-sm">
-                  <Label htmlFor="newEmail">New email</Label>
-                  <Input
-                    id="newEmail"
-                    type="email"
-                    autoComplete="email"
-                    value={field.state.value}
-                    onChange={event => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    required
-                  />
-                </div>
-              )}
-            </changeEmailForm.Field>
-
-            <changeEmailForm.Field name="confirmEmail">
-              {field => (
-                <div className="space-y-1 text-sm">
-                  <Label htmlFor="confirmEmail">Confirm new email</Label>
-                  <Input
-                    id="confirmEmail"
-                    type="email"
-                    autoComplete="email"
-                    value={field.state.value}
-                    onChange={event => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
-                    required
-                  />
-                </div>
-              )}
-            </changeEmailForm.Field>
-
-            <changeEmailForm.Subscribe>
-              {({canSubmit, isSubmitting}) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting}
-                  className="w-full"
-                >
-                  {isSubmitting ? 'Sending verification...' : 'Update email'}
-                </Button>
-              )}
-            </changeEmailForm.Subscribe>
-          </form>
+          <ChangeEmail />
         </AccountCard>
 
         {/* CHANGE PASSWORD */}
         <AccountCard title="Change password">
-          <form
-            className="space-y-4"
-            onSubmit={event => {
-              event.preventDefault()
-              event.stopPropagation()
-              changePasswordForm.handleSubmit()
-            }}
-          >
-            <input
-              type="text"
-              name="username"
-              autoComplete="username"
-              className="sr-only"
-              tabIndex={-1}
-              aria-hidden="true"
-            />
-            <changePasswordForm.Field name="currentPassword">
-              {field => (
-                <PasswordInput
-                  id="currentPassword"
-                  label="Current password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                  value={field.state.value}
-                  onChange={event => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  autoComplete="current-password"
-                  required
-                />
-              )}
-            </changePasswordForm.Field>
-
-            <changePasswordForm.Field
-              name="newPassword"
-              validators={{
-                onSubmit: ({value}) => {
-                  if (value.length < minPasswordLength) {
-                    return `Password must be at least ${minPasswordLength} characters`
-                  }
-                },
-              }}
-            >
-              {field => (
-                <PasswordInput
-                  id="newPassword"
-                  label="New password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                  value={field.state.value}
-                  onChange={event => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  autoComplete="new-password"
-                  minLength={minPasswordLength}
-                  required
-                />
-              )}
-            </changePasswordForm.Field>
-
-            <changePasswordForm.Field name="confirmNewPassword">
-              {field => (
-                <PasswordInput
-                  id="confirmNewPassword"
-                  label="Confirm new password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                  value={field.state.value}
-                  onChange={event => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  autoComplete="new-password"
-                  minLength={minPasswordLength}
-                  required
-                />
-              )}
-            </changePasswordForm.Field>
-
-            <changePasswordForm.Subscribe>
-              {({canSubmit, isSubmitting}) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting}
-                  className="w-full"
-                >
-                  {isSubmitting ? 'Updating password...' : 'Update password'}
-                </Button>
-              )}
-            </changePasswordForm.Subscribe>
-          </form>
+          <ChangePassword />
         </AccountCard>
       </section>
     </div>

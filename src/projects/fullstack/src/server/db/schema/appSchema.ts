@@ -32,7 +32,7 @@
 
 import type {ErrorContext} from '@/shared/types'
 
-import {integer, sqliteTable, text} from 'drizzle-orm/sqlite-core'
+import {blob, integer, sqliteTable, text} from 'drizzle-orm/sqlite-core'
 
 import {users} from './authSchema'
 
@@ -54,5 +54,15 @@ export const errorsTable = sqliteTable('errors', {
   context: text().$type<ErrorContext>().notNull(),
   metadata: text({mode: 'json'}).$type<Record<string, unknown>>(),
   // The potentially logged-in user.
-  userId: text().references(() => users.id, {onDelete: 'cascade'}), // DO NOT add `.notNull()`
+  userId: integer().references(() => users.id, {onDelete: 'cascade'}), // DO NOT add `.notNull()`
+})
+
+export const avatarsTable = sqliteTable('avatars', {
+  ...commonFields,
+  userId: integer()
+    .references(() => users.id, {onDelete: 'cascade'})
+    .notNull()
+    .unique(),
+  data: blob({mode: 'buffer'}).notNull(),
+  mimeType: text().notNull(),
 })

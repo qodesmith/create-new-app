@@ -2,11 +2,6 @@ import type {ReactNode} from 'react'
 import type {FileRouteTypes} from '@/client/routeTree.gen'
 
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/client/components/ui/avatar'
 import {BorderBeam} from '@/client/components/ui/border-beam'
 import {Button} from '@/client/components/ui/button'
 import {
@@ -17,7 +12,6 @@ import {
 } from '@/client/components/ui/card'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
-import {Separator} from '@/client/components/ui/separator'
 import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
 import {
   apiClientAtom,
@@ -28,29 +22,17 @@ import {
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
-import {createLazyFileRoute, useRouteContext} from '@tanstack/react-router'
+import {createLazyFileRoute} from '@tanstack/react-router'
 import {useAtom, useAtomValue} from 'jotai'
-import {useId, useMemo, useState} from 'react'
 import {toast} from 'sonner'
+
+import {AccountAvatar} from './-AccountAvatar'
 
 export const Route = createLazyFileRoute('/_authenticated/account')({
   component: AccountPage,
 })
 
 function AccountPage() {
-  const user = useRouteContext({
-    from: '/_authenticated',
-    select: ({user}) => user,
-  })
-  const initials = useMemo(() => {
-    const first = user.name.trim()[0] ?? ''
-    const last = user.lastName?.trim?.()[0] ?? ''
-    return `${first}${last}` || (user.name || 'U').slice(0, 2)
-  }, [user.lastName, user.name])
-  const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(
-    null
-  )
-  const avatarInputId = useId()
   const [themeSetting, setThemeSetting] = useAtom(themeSettingAtom)
   const theme = useAtomValue(themeSelector)
   const authClient = useAtomValue(authClientAtom)
@@ -154,47 +136,9 @@ function AccountPage() {
       </header>
 
       <section className="grid gap-4 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        {/* PROFILE & AVATAR (mocked upload) */}
+        {/* PROFILE & AVATAR */}
         <AccountCard title="Profile">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-14 w-14 rounded-full grayscale">
-              <AvatarImage src={user.image ?? undefined} alt={user.email} />
-              <AvatarFallback className="rounded-lg font-semibold uppercase">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-sm">
-              <p className="font-medium">
-                {user.name} {user.lastName}
-              </p>
-              <p className="text-muted-foreground">{user.email}</p>
-            </div>
-          </div>
-
-          <Separator className="my-2" />
-
-          <div className="space-y-2 text-sm">
-            <Label htmlFor={avatarInputId}>Avatar</Label>
-            <Input
-              id={avatarInputId}
-              type="file"
-              accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
-              onChange={event => {
-                const file = event.target.files?.[0] ?? null
-                setSelectedAvatarFile(file)
-              }}
-            />
-            <p className="text-muted-foreground text-sm">
-              Avatar uploads are mocked for now. You can choose an image, but it
-              is not yet stored with your account.
-            </p>
-            {selectedAvatarFile && (
-              <p className="text-muted-foreground text-xs">
-                Selected file:{' '}
-                <span className="font-medium">{selectedAvatarFile.name}</span>
-              </p>
-            )}
-          </div>
+          <AccountAvatar />
         </AccountCard>
 
         {/* THEME PREFERENCES */}

@@ -50,3 +50,7 @@ function AvatarFallback({
 }
 
 export {Avatar, AvatarImage, AvatarFallback}
+
+export type ImageLoadingStatus = Parameters<
+  NonNullable<React.ComponentProps<typeof AvatarImage>['onLoadingStatusChange']>
+>[0]

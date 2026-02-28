@@ -109,7 +109,7 @@ export const honoServer = new Hono()
 
       // Check if user is authenticated and use their ID instead of client-provided userId
       const session = await auth.api.getSession({headers: c.req.raw.headers})
-      const userId = session?.user?.id
+      const userId = session ? +session.user.id : undefined
 
       bestEffort(() => {
         db.insert(errorsTable)

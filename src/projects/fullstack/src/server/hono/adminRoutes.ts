@@ -1,11 +1,10 @@
+import {exportDatabase, getDatabase} from '@/server/db/getDatabase'
+import {users} from '@/server/db/schema/authSchema'
+import {adminMiddleware} from '@/server/middleware/adminMiddleware'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
 import {and, eq, lt} from 'drizzle-orm'
 import {Hono} from 'hono'
-
-import {exportDatabase, getDatabase} from '../db/getDatabase'
-import {users} from '../db/schema/authSchema'
-import {adminMiddleware} from '../middleware/adminMiddleware'
 
 export const adminRoutes = new Hono()
   .use(adminMiddleware)

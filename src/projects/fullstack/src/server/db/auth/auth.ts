@@ -12,6 +12,7 @@ import {
   originWww,
   userRoles,
 } from '@/server/constants'
+import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
 import ChangeEmailVerificationEmail from '@/server/email/ChangeEmailVerificationEmail'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
@@ -31,8 +32,6 @@ import {APIError, betterAuth} from 'better-auth'
 import {drizzleAdapter} from 'better-auth/adapters/drizzle'
 import {admin, createAuthMiddleware} from 'better-auth/plugins'
 import {eq} from 'drizzle-orm'
-
-import {getDatabase} from '../getDatabase'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 

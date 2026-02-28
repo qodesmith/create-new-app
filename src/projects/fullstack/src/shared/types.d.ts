@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
 
+//////////////////////////////////////////////////////////////
+// DO NOT use alias imports (i.e. @/server) in this file!!! //
+// It will break TypeScript and type everything as `any`.   //
+//////////////////////////////////////////////////////////////
+
+import type * as appSchema from '../db/schema/appSchema'
+import type * as authSchema from '../db/schema/authSchema'
 import type {auth} from '../server/db/auth/auth'
-import type * as appSchema from '../server/db/schema/appSchema'
-import type * as authSchema from '../server/db/schema/authSchema'
 
 declare global {
   namespace NodeJS {
@@ -33,8 +38,8 @@ export type DateToString<T> = T extends Date
     ? {[K in keyof T]: DateToString<T[K]>}
     : T
 
-export type {HonoAuthServer} from '../server/hono/authRoutes'
-export type {HonoServer} from '../server/hono/honoServer'
+export type {HonoAuthServer} from '../hono/authRoutes'
+export type {HonoServer} from '../hono/honoServer'
 
 export type ServerAuth = typeof auth
 

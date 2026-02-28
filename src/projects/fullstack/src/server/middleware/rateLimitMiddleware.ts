@@ -1,14 +1,13 @@
 import type {MiddlewareHandler} from 'hono'
 
 import {isProd} from '@/server/constants'
+import {getDatabase} from '@/server/db/getDatabase'
+import {errorsTable} from '@/server/db/schema/appSchema'
 import {bestEffort} from '@/server/utils/bestEffort'
 
 import {getUnitInMs} from '@qodestack/utils'
 import {getConnInfo} from 'hono/bun'
 import {rateLimiter} from 'hono-rate-limiter'
-
-import {getDatabase} from '../db/getDatabase'
-import {errorsTable} from '../db/schema/appSchema'
 
 export function getRateLimitMiddleware({
   windowMs = getUnitInMs(1, 'h'), // 1 hour

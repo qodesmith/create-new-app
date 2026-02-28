@@ -1,7 +1,7 @@
+import {getEnvVar} from '@/server/utils/getEnvVar'
+
 import {safeJsonParse} from '@qodestack/utils'
 import {createMiddleware} from 'hono/factory'
-
-import {getEnvVar} from '../utils/getEnvVar'
 
 /**
  * This middleware aims at preventing direct access to assets, such as images,

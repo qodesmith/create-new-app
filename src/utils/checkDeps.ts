@@ -11,7 +11,9 @@ type DepInfo = {
 /**
  * Fetch latest version from npm registry
  */
-async function getLatestVersion(packageName: string): Promise<string | null> {
+export async function getLatestVersion(
+  packageName: string
+): Promise<string | null> {
   try {
     const res = await fetch(`https://registry.npmjs.org/${packageName}/latest`)
     if (!res.ok) return null
@@ -25,7 +27,7 @@ async function getLatestVersion(packageName: string): Promise<string | null> {
 /**
  * Find all package.json files in src/projects recursively
  */
-function findPackageJsonFiles(dir: string): string[] {
+export function findPackageJsonFiles(dir: string): string[] {
   const files: string[] = []
   const entries = readdirSync(dir, {withFileTypes: true})
 
@@ -44,7 +46,7 @@ function findPackageJsonFiles(dir: string): string[] {
 /**
  * Parse version string, stripping ^ or ~ prefix
  */
-function parseVersion(version: string): string {
+export function parseVersion(version: string): string {
   return version.replace(/^[\^~]/, '')
 }
 

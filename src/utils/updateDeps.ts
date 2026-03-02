@@ -201,6 +201,10 @@ async function syncPackageManager(
 
   for (const file of allFiles) {
     const pkg = await Bun.file(file).json()
+
+    // For project files, only sync if packageManager is already declared.
+    if (file !== rootPkgPath && !pkg.packageManager) continue
+
     if (pkg.packageManager === expected) continue
 
     const previous = pkg.packageManager

@@ -4,7 +4,7 @@
   "extends": ["@qodestack/biome-config/react"],
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
+    "includes": ["!**/node_modules", "!dist", "!*.lock"]
   },
   "overrides": [
     // General rules for client-side code.
@@ -40,6 +40,18 @@
         "src/projects/fullstack/src/client/components/**/*.ts"
       ],
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Don't re-order package.json keys.
+    {
+      "includes": ["**/package.json"],
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedKeys": "off"
+          }
+        }
+      }
     }
   ]
 }

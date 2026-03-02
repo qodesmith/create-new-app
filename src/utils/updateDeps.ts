@@ -3,7 +3,13 @@
 import {$} from 'bun'
 import {dirname, join} from 'node:path'
 
-import {findPackageJsonFiles, getLatestVersion, parseVersion} from './checkDeps'
+import {
+  findPackageJsonFiles,
+  getLatestVersion,
+  getPrefix,
+  parseVersion,
+} from './checkDeps'
+import {syncDeps} from './syncDeps'
 
 type UpdateInfo = {
   package: string
@@ -13,15 +19,8 @@ type UpdateInfo = {
 }
 
 /**
- * Check if a version string has a ^ or ~ prefix
- */
-function getPrefix(version: string): string {
-  const match = version.match(/^[\^~]/)
-  return match ? match[0] : ''
-}
-
-/**
- * Update all deps in src/projects and root package.json to latest versions
+ * Update all deps in src/projects to latest, sync root devDeps via syncDeps,
+ * then update root dependencies and peerDependencies independently.
  */
 async function updateDeps(): Promise<void> {
   const projectsDir = join(dirname(import.meta.dir), 'projects')
@@ -29,8 +28,7 @@ async function updateDeps(): Promise<void> {
   const rootPkgPath = join(dirname(import.meta.dir), '..', 'package.json')
 
   // Collect all unique package names from project files
-  const allPackages = new Map<string, string>() // name -> version string
-
+  const allPackages = new Map<string, string>()
   for (const file of packageFiles) {
     const pkg = await Bun.file(file).json()
     const deps = {...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {})}
@@ -57,7 +55,7 @@ async function updateDeps(): Promise<void> {
 
   const updates: UpdateInfo[] = []
 
-  // Update project package.json files
+  // 1. Update project package.json files
   for (const file of packageFiles) {
     const pkg = await Bun.file(file).json()
     const relativePath = file.replace(projectsDir, 'src/projects')
@@ -102,15 +100,38 @@ async function updateDeps(): Promise<void> {
     }
   }
 
-  // Update root package.json to stay in sync
+  // 2. Sync root devDependencies from project files
+  await syncDeps()
+
+  // 3. Update root dependencies and peerDependencies independently
   const rootPkg = await Bun.file(rootPkgPath).json()
   let rootChanged = false
 
-  for (const depKey of [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-  ] as const) {
+  // Fetch latest for root-only packages (deps + peerDeps)
+  const rootOnlyPackages = new Set<string>()
+  for (const depKey of ['dependencies', 'peerDependencies'] as const) {
+    const deps = rootPkg[depKey]
+    if (!deps) continue
+    for (const [name, version] of Object.entries(deps)) {
+      if (
+        typeof version === 'string' &&
+        version !== 'latest' &&
+        getPrefix(version as string) &&
+        !latestVersions.has(name)
+      ) {
+        rootOnlyPackages.add(name)
+      }
+    }
+  }
+
+  await Promise.all(
+    Array.from(rootOnlyPackages).map(async name => {
+      const latest = await getLatestVersion(name)
+      if (latest) latestVersions.set(name, latest)
+    })
+  )
+
+  for (const depKey of ['dependencies', 'peerDependencies'] as const) {
     const deps = rootPkg[depKey]
     if (!deps) continue
 
@@ -148,14 +169,50 @@ async function updateDeps(): Promise<void> {
     await $`bunx biome format --write ${rootPkgPath}`.quiet()
   }
 
+  // 4. Sync packageManager field across root + project package.json files
+  await syncPackageManager(rootPkgPath, packageFiles)
+
   if (updates.length === 0) {
     console.log('All dependencies are already up to date!')
     return
   }
 
   updates.sort((a, b) => a.package.localeCompare(b.package))
-  console.log(`Updated ${updates.length} dependencies:`)
+  console.log(`\nUpdated ${updates.length} dependencies:`)
   console.table(updates)
+}
+
+/**
+ * Sync the packageManager field in root and project package.json files
+ * to match the @types/bun devDependency version (pinned, no ^ or ~).
+ */
+async function syncPackageManager(
+  rootPkgPath: string,
+  projectFiles: string[]
+): Promise<void> {
+  const rootPkg = await Bun.file(rootPkgPath).json()
+  const typesVersion: string | undefined =
+    rootPkg.devDependencies?.['@types/bun']
+  if (!typesVersion) return
+
+  const pinned = parseVersion(typesVersion)
+  const expected = `bun@${pinned}`
+  const allFiles = [rootPkgPath, ...projectFiles]
+
+  for (const file of allFiles) {
+    const pkg = await Bun.file(file).json()
+    if (pkg.packageManager === expected) continue
+
+    const previous = pkg.packageManager
+    pkg.packageManager = expected
+    await Bun.write(file, JSON.stringify(pkg, null, 2))
+    await $`bunx biome format --write ${file}`.quiet()
+
+    const label = file === rootPkgPath ? 'package.json' : file.split('/projects/')[1]
+    console.log(
+      `Updated packageManager in ${label}: ${previous ?? '(none)'} → ${expected}`
+    )
+  }
 }
 
 // Run if executed directly

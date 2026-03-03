@@ -25,14 +25,14 @@ export function useSignOut() {
       if (isSignedOut) {
         resetApp()
       } else if (error) {
-        logClientError({error, context: 'client:signOutError', apiClient})
+        logClientError({error, context: 'client:signOutRejection', apiClient})
       }
 
       setIsSignedIn(!isSignedOut)
 
       return isSignedOut
     } catch (error) {
-      logClientError({error, context: 'client:signOutFailure', apiClient})
+      logClientError({error, context: 'client:signOutException', apiClient})
       return false
     } finally {
       setIsSigningOut(false)

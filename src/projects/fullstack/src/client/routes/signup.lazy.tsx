@@ -50,7 +50,7 @@ function SignUpPage() {
 
         if (error) {
           toast.error(error.message || 'Failed to sign up')
-          logClientError({error, context: 'client:signUpFailure', apiClient})
+          logClientError({error, context: 'client:signUpRejection', apiClient})
           return
         }
 
@@ -58,7 +58,7 @@ function SignUpPage() {
         await router.navigate({to: '/signin'})
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({error, context: 'client:signUpError', apiClient})
+        logClientError({error, context: 'client:signUpException', apiClient})
       }
     },
   })

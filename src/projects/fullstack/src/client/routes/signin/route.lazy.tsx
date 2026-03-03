@@ -1,257 +1,141 @@
+import type {FileRouteTypes} from '@/client/routeTree.gen'
+
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
-import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {Button} from '@/client/components/ui/button'
 import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/client/components/ui/card'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
-import {MagicCard} from '@/client/components/ui/magic-card'
-import {defaultAuthedPath} from '@/client/constants'
-import {isValidRoute} from '@/client/lib/isValidRoute'
+import {useBoolean} from '@/client/hooks/useBoolean'
 import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {
-  apiClientAtom,
-  authClientAtom,
-  isSignedInAtom,
-} from '@/client/state/globalState'
-import {minPasswordLength} from '@/shared/constants'
+import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
-import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
-import {useAtomValue, useSetAtom} from 'jotai'
-import {Fingerprint} from 'lucide-react'
-import {useState} from 'react'
+import {useAtomValue} from 'jotai'
 import {toast} from 'sonner'
 
-import {ResetPasswordDialog} from './-ResetPasswordDialog'
-
-export const Route = createLazyFileRoute('/signin')({
-  component: SignInPage,
-})
-
-function SignInPage() {
-  const router = useRouter()
+export function ResetPasswordDialog({
+  dialogInitialOpen,
+}: {
+  dialogInitialOpen: boolean
+}) {
   const authClient = useAtomValue(authClientAtom)
   const apiClient = useAtomValue(apiClientAtom)
-  const setIsSignedIn = useSetAtom(isSignedInAtom)
-  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
-  const {redirect, dialogInitialOpen} = Route.useSearch()
-  const redirectPath = isValidRoute(router, redirect)
-    ? redirect
-    : defaultAuthedPath
+  const {value: isOpen, setValue: setIsOpen} = useBoolean(dialogInitialOpen)
 
   const form = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: {email: ''},
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
       try {
-        const {error} = await authClient.signIn.email({
+        const resetPasswordPath: FileRouteTypes['to'] = '/reset-password'
+        const {error} = await authClient.requestPasswordReset({
           email: value.email,
-          password: value.password,
+
+          // This is the return url sent in an email to the user
+          redirectTo: resetPasswordPath,
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to sign in')
-
-          /**
-           * https://github.com/better-auth/better-auth/blob/canary/packages/core/src/error/codes.ts
-           * Avoid polluting the db with invalid email or password errors.
-           * DO NOT import {BASE_ERROR_CODES} from 'better-auth' - it will throw errors!
-           */
-          if (error.code !== 'INVALID_EMAIL_OR_PASSWORD') {
-            logClientError({error, context: 'client:signInFailure', apiClient})
-          }
-
-          return
+          toast.error('Failed to send reset email')
+          logClientError({
+            error,
+            context: 'client:requestPasswordResetRejection',
+            apiClient,
+          })
+        } else {
+          toast.success('Check your email for a link to reset your password.')
         }
 
-        setIsSignedIn(true)
-        await router.navigate({to: redirectPath})
+        setIsOpen(false)
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({error, context: 'client:signInError', apiClient})
+        logClientError({
+          error,
+          context: 'client:requestPasswordResetException',
+          apiClient,
+        })
       }
     },
   })
 
   return (
-    <div className="grid h-full place-items-center overflow-auto bg-background p-4">
-      <MagicCard
-        className="w-full max-w-sm rounded-2xl py-6"
-        spotlightGradientColor="rgba(255,255,255,.1)"
-        borderGradientFrom="rgba(255,0,255,1)"
-        borderGradientTo="cornflowerblue"
-      >
-        <CardHeader className="gap-0 pb-6 text-center">
-          <CardTitle className="text-3xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form
-            className="space-y-6"
-            onSubmit={e => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
-            }}
-          >
-            <form.Field name="email">
-              {field => (
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block pb-1 font-medium text-foreground text-sm"
-                  >
-                    Email address
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={field.state.value}
-                    onChange={e => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    autoComplete="email"
-                    autoFocus
-                    required
-                  />
-                </div>
-              )}
-            </form.Field>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        setIsOpen(open)
 
-            <form.Field
-              name="password"
-              validators={{
-                onSubmit: ({value}) => {
-                  if (value.length < minPasswordLength) {
-                    return `Password must be at least ${minPasswordLength} characters`
-                  }
-                },
-              }}
-            >
-              {field => (
-                <PasswordInput
-                  id="password"
+        if (!open) {
+          form.reset()
+        }
+      }}
+    >
+      <DialogTrigger asChild>
+        <button type="button">
+          <span className="link-animated text-primary">Reset it here</span>
+        </button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Reset password</DialogTitle>
+          <DialogDescription>
+            Enter your email and we'll send you a link to reset your password.
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          className="space-y-4"
+          onSubmit={e => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field name="email">
+            {field => (
+              <div>
+                <label
+                  htmlFor="reset-email"
+                  className="block pb-1 font-medium text-foreground text-sm"
+                >
+                  Email address
+                </label>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="you@example.com"
                   value={field.state.value}
                   onChange={e => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  autoComplete="current-password"
-                  minLength={minPasswordLength}
+                  autoComplete="email"
                   required
-                  label="Password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
                 />
-              )}
-            </form.Field>
+              </div>
+            )}
+          </form.Field>
 
-            <form.Subscribe>
-              {({canSubmit, isSubmitting}) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting}
-                  className="w-full"
-                >
-                  {isSubmitting ? (
-                    <AudioLoader width={20} height={20} gap={1} rounded={2} />
-                  ) : (
-                    'Sign in'
-                  )}
-                </Button>
-              )}
-            </form.Subscribe>
-          </form>
-
-          <div className="relative my-6 flex items-center">
-            <div className="grow border-t" />
-            <span className="mx-3 shrink text-muted-foreground text-xs">
-              or
-            </span>
-            <div className="grow border-t" />
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            disabled={isPasskeyLoading}
-            onClick={async () => {
-              setIsPasskeyLoading(true)
-              try {
-                const {error} = await authClient.signIn.passkey()
-
-                if (error) {
-                  toast.error(error.message || 'Failed to sign in with passkey')
-
-                  if (
-                    'code' in error &&
-                    error.code !== 'AUTH_CANCELLED' &&
-                    error.code !== 'ERROR_CEREMONY_ABORTED'
-                  ) {
-                    logClientError({
-                      error,
-                      context: 'client:passkeySignInFailure',
-                      apiClient,
-                    })
-                  }
-
-                  return
-                }
-
-                setIsSignedIn(true)
-                await router.navigate({to: redirectPath})
-              } catch (error) {
-                // User dismissed WebAuthn prompt
-                if (
-                  error instanceof Error &&
-                  (error.message.toLowerCase().includes('cancelled') ||
-                    error.message.toLowerCase().includes('canceled') ||
-                    error.message.toLowerCase().includes('abort') ||
-                    error.message.toLowerCase().includes('not allowed'))
-                ) {
-                  return
-                }
-
-                toast.error('Failed to sign in with passkey')
-                logClientError({
-                  error,
-                  context: 'client:passkeySignInError',
-                  apiClient,
-                })
-              } finally {
-                setIsPasskeyLoading(false)
-              }
-            }}
-          >
-            <Fingerprint className="mr-2 size-4" />
-            {isPasskeyLoading
-              ? 'Waiting for passkey...'
-              : 'Sign in with passkey'}
-          </Button>
-
-          <div className="pt-6 text-center">
-            <div className="text-muted-foreground text-sm">
-              <p>
-                Forgot your password?{' '}
-                <ResetPasswordDialog dialogInitialOpen={!!dialogInitialOpen} />
-              </p>
-              <p>
-                Don't have an account?{' '}
-                <Link to="/signup" className="link-animated text-primary">
-                  Sign up
-                </Link>
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </MagicCard>
-    </div>
+          <form.Subscribe>
+            {({canSubmit, isSubmitting}) => (
+              <Button
+                type="submit"
+                disabled={!canSubmit || isSubmitting}
+                className="w-full"
+              >
+                {isSubmitting ? (
+                  <AudioLoader width={20} height={20} gap={1} rounded={2} />
+                ) : (
+                  'Send reset link'
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }

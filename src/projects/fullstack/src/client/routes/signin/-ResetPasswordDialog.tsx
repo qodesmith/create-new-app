@@ -45,7 +45,7 @@ export function ResetPasswordDialog({
           toast.error('Failed to send reset email')
           logClientError({
             error,
-            context: 'client:requestPasswordResetFailure',
+            context: 'client:requestPasswordResetRejection',
             apiClient,
           })
         } else {
@@ -57,7 +57,7 @@ export function ResetPasswordDialog({
         toast.error('An unexpected error occurred')
         logClientError({
           error,
-          context: 'client:requestPasswordResetError',
+          context: 'client:requestPasswordResetException',
           apiClient,
         })
       }

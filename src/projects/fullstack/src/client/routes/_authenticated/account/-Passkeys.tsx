@@ -41,7 +41,7 @@ export function Passkeys() {
       if (error) {
         logClientError({
           error,
-          context: 'client:passkeyListError',
+          context: 'client:passkeyListRejection',
           apiClient,
         })
         return
@@ -49,7 +49,7 @@ export function Passkeys() {
 
       setPasskeys(data ?? [])
     } catch (error) {
-      logClientError({error, context: 'client:passkeyListError', apiClient})
+      logClientError({error, context: 'client:passkeyListException', apiClient})
     } finally {
       setIsLoading(false)
     }
@@ -75,7 +75,7 @@ export function Passkeys() {
         toast.error(error.message || 'Failed to add passkey')
         logClientError({
           error,
-          context: 'client:passkeyAddFailure',
+          context: 'client:passkeyAddRejection',
           apiClient,
         })
         return
@@ -101,7 +101,7 @@ export function Passkeys() {
       if (isWebAuthnCancellation) return
 
       toast.error('Failed to add passkey')
-      logClientError({error, context: 'client:passkeyAddError', apiClient})
+      logClientError({error, context: 'client:passkeyAddException', apiClient})
     } finally {
       setIsAdding(false)
     }
@@ -119,7 +119,7 @@ export function Passkeys() {
         toast.error(error.message || 'Failed to delete passkey')
         logClientError({
           error,
-          context: 'client:passkeyDeleteFailure',
+          context: 'client:passkeyDeleteRejection',
           apiClient,
         })
         return
@@ -131,7 +131,11 @@ export function Passkeys() {
       return fetchPasskeys()
     } catch (error) {
       toast.error('Failed to delete passkey')
-      logClientError({error, context: 'client:passkeyDeleteError', apiClient})
+      logClientError({
+        error,
+        context: 'client:passkeyDeleteException',
+        apiClient,
+      })
     } finally {
       setIsDeleting(false)
     }

@@ -53,7 +53,7 @@ export function createTanstackRouter() {
       useEffect(() => {
         logClientError({
           error,
-          context: 'client:topLevel',
+          context: 'client:topLevelException',
           metadata: info,
           apiClient,
         })

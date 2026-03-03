@@ -58,7 +58,7 @@ export function AccountAvatar() {
         toast.error(data.error)
         logClientError({
           error: data,
-          context: 'client:avatarUploadFailure',
+          context: 'client:avatarUploadRejection',
           apiClient,
         })
         return
@@ -70,22 +70,49 @@ export function AccountAvatar() {
     },
     onError: error => {
       toast.error(error.message)
-      logClientError({error, context: 'client:avatarUploadError', apiClient})
+      logClientError({
+        error,
+        context: 'client:avatarUploadException',
+        apiClient,
+      })
       setShowImage(false)
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      return apiAuthClient.avatar.$delete()
+      const res = await apiAuthClient.avatar.$delete()
+      if (res.ok) return res
+
+      return {
+        error: 'Delete avatar failed',
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+      }
     },
-    onSuccess: () => {
+    onSuccess: data => {
+      if (data && 'error' in data) {
+        toast.error('Failed to remove avatar')
+        logClientError({
+          error: data,
+          context: 'client:avatarDeleteRejection',
+          apiClient,
+        })
+        setShowImage(true)
+        return
+      }
+
       toast.success('Avatar removed')
       setShowImage(false)
     },
     onError: error => {
       toast.error('Failed to remove avatar')
-      logClientError({error, context: 'client:avatarDeleteError', apiClient})
+      logClientError({
+        error,
+        context: 'client:avatarDeleteException',
+        apiClient,
+      })
       setShowImage(true)
     },
   })

@@ -41,8 +41,9 @@ export type DateToString<T> = T extends Date
 export type ServerAuth = typeof auth
 
 /**
- * Errors are errors returned from API endpoints. Failures are errors caught in
- * a catch statement from trying to hit API endpoints.
+ * Rejections are errors returned from API endpoints (the server responded, but
+ * the operation was rejected). Exceptions are errors caught in a catch
+ * statement (something unexpected broke).
  */
 export type ErrorContext =
   // Server
@@ -57,31 +58,32 @@ export type ErrorContext =
   | 'resend:sendChangePasswordEmailError'
 
   // Client
-  | 'client:topLevel'
-  | 'client:missingUser'
-  | 'client:signInFailure'
-  | 'client:signInError'
-  | 'client:signUpFailure'
-  | 'client:signUpError'
-  | 'client:signOutFailure'
-  | 'client:signOutError'
-  | 'client:resetPasswordFailure'
-  | 'client:resetPasswordError'
-  | 'client:requestPasswordResetFailure'
-  | 'client:requestPasswordResetError'
-  | 'client:changeEmailFailure'
-  | 'client:changeEmailError'
-  | 'client:changePasswordFailure'
-  | 'client:changePasswordError'
-  | 'client:avatarUploadFailure'
-  | 'client:avatarUploadError'
-  | 'client:avatarDeleteError'
-  | 'client:passkeyAddFailure'
-  | 'client:passkeyAddError'
-  | 'client:passkeyDeleteFailure'
-  | 'client:passkeyDeleteError'
-  | 'client:passkeyRenameFailure'
-  | 'client:passkeyRenameError'
-  | 'client:passkeyListError'
-  | 'client:passkeySignInFailure'
-  | 'client:passkeySignInError'
+  | 'client:topLevelException'
+  | 'client:signInRejection'
+  | 'client:signInException'
+  | 'client:signUpRejection'
+  | 'client:signUpException'
+  | 'client:signOutRejection'
+  | 'client:signOutException'
+  | 'client:resetPasswordRejection'
+  | 'client:resetPasswordException'
+  | 'client:requestPasswordResetRejection'
+  | 'client:requestPasswordResetException'
+  | 'client:changeEmailRejection'
+  | 'client:changeEmailException'
+  | 'client:changePasswordRejection'
+  | 'client:changePasswordException'
+  | 'client:avatarUploadRejection'
+  | 'client:avatarUploadException'
+  | 'client:avatarDeleteRejection'
+  | 'client:avatarDeleteException'
+  | 'client:passkeyAddRejection'
+  | 'client:passkeyAddException'
+  | 'client:passkeyDeleteRejection'
+  | 'client:passkeyDeleteException'
+  | 'client:passkeyRenameRejection'
+  | 'client:passkeyRenameException'
+  | 'client:passkeyListRejection'
+  | 'client:passkeyListException'
+  | 'client:passkeySignInRejection'
+  | 'client:passkeySignInException'

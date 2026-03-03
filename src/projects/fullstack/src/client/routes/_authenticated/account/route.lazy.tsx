@@ -14,6 +14,7 @@ import {AccountAvatar} from './-AccountAvatar'
 import {Appearance} from './-Appearance'
 import {ChangeEmail} from './-ChangeEmail'
 import {ChangePassword} from './-ChangePassword'
+import {Passkeys} from './-Passkeys'
 
 export const Route = createLazyFileRoute('/_authenticated/account')({
   component: AccountPage,
@@ -52,6 +53,12 @@ function AccountPage() {
           <ChangePassword />
         </AccountCard>
       </section>
+
+      <section>
+        <AccountCard title="Passkeys">
+          <Passkeys />
+        </AccountCard>
+      </section>
     </div>
   )
 }
@@ -64,7 +71,7 @@ function AccountCard({title, children}: {title: string; children: ReactNode}) {
       </CardHeader>
       <CardContent className="space-y-4">{children}</CardContent>
       <BorderBeam
-        className="from-transparent via-cyan-400/80 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className="overflow-hidden from-transparent via-cyan-400/80 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         size={240}
         duration={6}
       />

@@ -22,6 +22,8 @@ import {minPasswordLength} from '@/shared/constants'
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
+import {Fingerprint} from 'lucide-react'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 import {ResetPasswordDialog} from './-ResetPasswordDialog'
@@ -35,6 +37,7 @@ function SignInPage() {
   const authClient = useAtomValue(authClientAtom)
   const apiClient = useAtomValue(apiClientAtom)
   const setIsSignedIn = useSetAtom(isSignedInAtom)
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
     ? redirect
@@ -165,6 +168,73 @@ function SignInPage() {
               )}
             </form.Subscribe>
           </form>
+
+          <div className="relative my-6 flex items-center">
+            <div className="grow border-t" />
+            <span className="mx-3 shrink text-muted-foreground text-xs">
+              or
+            </span>
+            <div className="grow border-t" />
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            disabled={isPasskeyLoading}
+            onClick={async () => {
+              setIsPasskeyLoading(true)
+              try {
+                const {error} = await authClient.signIn.passkey()
+
+                if (error) {
+                  toast.error(error.message || 'Failed to sign in with passkey')
+
+                  if (
+                    'code' in error &&
+                    error.code !== 'AUTH_CANCELLED' &&
+                    error.code !== 'ERROR_CEREMONY_ABORTED'
+                  ) {
+                    logClientError({
+                      error,
+                      context: 'client:passkeySignInFailure',
+                      apiClient,
+                    })
+                  }
+
+                  return
+                }
+
+                setIsSignedIn(true)
+                await router.navigate({to: redirectPath})
+              } catch (error) {
+                // User dismissed WebAuthn prompt
+                if (
+                  error instanceof Error &&
+                  (error.message.toLowerCase().includes('cancelled') ||
+                    error.message.toLowerCase().includes('canceled') ||
+                    error.message.toLowerCase().includes('abort') ||
+                    error.message.toLowerCase().includes('not allowed'))
+                ) {
+                  return
+                }
+
+                toast.error('Failed to sign in with passkey')
+                logClientError({
+                  error,
+                  context: 'client:passkeySignInError',
+                  apiClient,
+                })
+              } finally {
+                setIsPasskeyLoading(false)
+              }
+            }}
+          >
+            <Fingerprint className="mr-2 size-4" />
+            {isPasskeyLoading
+              ? 'Waiting for passkey...'
+              : 'Sign in with passkey'}
+          </Button>
 
           <div className="pt-6 text-center">
             <div className="text-muted-foreground text-sm">

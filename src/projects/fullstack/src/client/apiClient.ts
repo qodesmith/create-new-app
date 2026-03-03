@@ -2,7 +2,7 @@ import type {HonoAuthServer, HonoServer, ServerAuth} from '@/shared/types'
 
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
-// import {passkeyClient} from '@better-auth/passkey/client'
+import {passkeyClient} from '@better-auth/passkey/client'
 import {adminClient, inferAdditionalFields} from 'better-auth/client/plugins'
 import {createAuthClient} from 'better-auth/react'
 import {hc} from 'hono/client'
@@ -44,9 +44,8 @@ export function getAuthClient() {
       // https://www.better-auth.com/docs/concepts/typescript#inferring-additional-fields-on-client
       inferAdditionalFields<ServerAuth>(),
 
-      // TODO - investigate why this has lint errors and doesn't show up as authClient.passkey
       // https://www.better-auth.com/docs/plugins/passkey#add-the-client-plugin
-      // passkeyClient(),
+      passkeyClient(),
 
       // https://www.better-auth.com/docs/plugins/admin#add-the-client-plugin
       adminClient(),

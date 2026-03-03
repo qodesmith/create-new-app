@@ -36,9 +36,9 @@ export default {
   ],
   ignoreBinaries: ['fly', 'biome'],
   ignoreDependencies: [
-    '@better-auth/cli',
     '@react-email/preview-server',
     '@tanstack/router-cli',
+    'auth',
   ],
   ignoreFiles: [
     'src/server/db/auth/authSchemaGenerator.ts',

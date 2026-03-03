@@ -13,19 +13,19 @@
 
     <script type="module" src="../client/app.tsx"></script>
     <script>
-    ;(() => {
-      // 'ui-theme' is the same key used in globalState.ts for themeSettingAtom
-      let theme = JSON.parse(localStorage.getItem('ui-theme') ?? '"system"')
+      ;(() => {
+        // 'ui-theme' is the same key used in globalState.ts for themeSettingAtom
+        let theme = JSON.parse(localStorage.getItem('ui-theme') ?? '"system"')
 
-      if (theme === 'system') {
-        theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light'
-      }
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light'
+        }
 
-      // Light mode is the default, so only set a class for dark mode.
-      document.documentElement.classList.add(theme)
-    })()
+        // Light mode is the default, so only set a class for dark mode.
+        document.documentElement.classList.add(theme)
+      })()
     </script>
 
     <title>{{PROJECT_NAME}}</title>

@@ -1,7 +1,8 @@
 import type {BetterAuthOptions} from 'better-auth'
 import type {DrizzleAdapterConfig} from 'better-auth/adapters/drizzle'
 import type {Password} from 'bun'
-import type {AuthSchemaSelect, Prettify} from '@/shared/types'
+import type {AuthSchemaSelect} from '@/server/types'
+import type {Prettify} from '@/shared/types'
 
 import {
   domain,
@@ -28,9 +29,10 @@ import {
 import {passkey} from '@better-auth/passkey'
 import {getUnitInSeconds} from '@qodestack/utils'
 import {type} from 'arktype'
-import {APIError, betterAuth} from 'better-auth'
+import {betterAuth} from 'better-auth'
 import {drizzleAdapter} from 'better-auth/adapters/drizzle'
-import {admin, createAuthMiddleware} from 'better-auth/plugins'
+import {APIError, createAuthMiddleware} from 'better-auth/api'
+import {admin} from 'better-auth/plugins'
 import {eq} from 'drizzle-orm'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
@@ -315,7 +317,8 @@ export const authOptions = {
      */
     useSecureCookies: isProd,
     database: {
-      useNumberId: true,
+      // Generate integer id's for schemas.
+      generateId: 'serial',
     },
   },
 
@@ -341,14 +344,14 @@ export const authOptions = {
      */
     passkey({
       // The relying party ID, typically your domain.
-      rpID: domain,
+      rpID: isProd ? domain : 'localhost',
 
       // TODO - update rpName to a semantic name for your app.
       // Human-readable name shown in browser prompts.
       rpName: '{{PROJECT_NAME}}',
 
       // Fully qualified URL where passkey actions happen.
-      origin: [origin, originWww],
+      origin: isProd ? [origin, originWww] : [localhost, localhost0],
     }),
   ],
   trustedOrigins: isProd ? [origin, originWww] : [localhost, localhost0],

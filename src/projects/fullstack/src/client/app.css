@@ -185,7 +185,7 @@
 */
 
 @utility link-animated {
-  @apply relative no-underline before:pointer-events-none before:absolute before:start-0 before:bottom-0 before:h-px before:w-full before:bg-current before:transition-transform before:duration-300 before:ease-in-out before:content-[''];
+  @apply relative no-underline before:pointer-events-none before:absolute before:inset-s-0 before:bottom-0 before:h-px before:w-full before:bg-current before:transition-transform before:duration-300 before:ease-in-out before:content-[''];
 
   &::before {
     transform: scale3d(0, 1, 1);

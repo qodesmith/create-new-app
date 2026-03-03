@@ -47,15 +47,15 @@ export type ServerAuth = typeof auth
  */
 export type ErrorContext =
   // Server
-  | 'topLevel:hono'
-  | 'topLevel:betterAuth'
-  | 'rateLimitMiddleware'
-  | 'resend:sendSignUpVerificationEmailFailure'
-  | 'resend:sendSignUpVerificationEmailError'
-  | 'resend:sendResetPasswordEmailFailure'
-  | 'resend:sendResetPasswordEmailError'
-  | 'resend:sendChangePasswordEmailFailure'
-  | 'resend:sendChangePasswordEmailError'
+  | 'hono:topLevelException'
+  | 'hono:rateLimitException'
+  | 'betterAuth:topLevelException'
+  | 'resend:sendSignUpVerificationEmailRejection'
+  | 'resend:sendSignUpVerificationEmailException'
+  | 'resend:sendResetPasswordEmailRejection'
+  | 'resend:sendResetPasswordEmailException'
+  | 'resend:sendChangePasswordEmailRejection'
+  | 'resend:sendChangePasswordEmailException'
 
   // Client
   | 'client:topLevelException'

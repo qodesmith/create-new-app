@@ -139,8 +139,8 @@ export const authOptions = {
           user,
           subject: 'Verify your email address',
           react: SignUpVerificationEmail({verificationUrl: url}),
-          failureContext: 'resend:sendSignUpVerificationEmailFailure',
-          errorContext: 'resend:sendSignUpVerificationEmailError',
+          rejectionContext: 'resend:sendSignUpVerificationEmailRejection',
+          exceptionContext: 'resend:sendSignUpVerificationEmailException',
         })
       }
 
@@ -163,8 +163,8 @@ export const authOptions = {
             verificationUrl: url,
             newEmail: user.email,
           }),
-          failureContext: 'resend:sendChangePasswordEmailFailure',
-          errorContext: 'resend:sendChangePasswordEmailError',
+          rejectionContext: 'resend:sendChangePasswordEmailRejection',
+          exceptionContext: 'resend:sendChangePasswordEmailException',
         })
       }
     },
@@ -191,8 +191,8 @@ export const authOptions = {
         user,
         subject: 'Reset your password',
         react: ResetPasswordEmail({resetUrl: url}),
-        failureContext: 'resend:sendResetPasswordEmailFailure',
-        errorContext: 'resend:sendResetPasswordEmailError',
+        rejectionContext: 'resend:sendResetPasswordEmailRejection',
+        exceptionContext: 'resend:sendResetPasswordEmailException',
       })
     },
 
@@ -240,8 +240,8 @@ export const authOptions = {
       //     user,
       //     subject: 'Confirm your updated email',
       //     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
-      //     failureContext: 'resend:sendChangePasswordEmailFailure',
-      //     errorContext: 'resend:sendChangePasswordEmailError',
+      //     rejectionContext: 'resend:sendChangePasswordEmailRejection',
+      //     exceptionContext: 'resend:sendChangePasswordEmailException',
       //   })
       // },
     },

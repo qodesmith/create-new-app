@@ -1,4 +1,3 @@
-import {isProd} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {errorsTable} from '@/server/db/schema/appSchema'
@@ -8,7 +7,6 @@ import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRo
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
 import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
 import {bestEffort} from '@/server/utils/bestEffort'
-import {log} from '@/server/utils/logger'
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
@@ -32,18 +30,14 @@ export const honoServer = new Hono()
     } catch (error) {
       const db = getDatabase()
 
-      if (isProd) {
-        bestEffort(() => {
-          db.insert(errorsTable)
-            .values({
-              error: errorToObject(error),
-              context: 'topLevel:betterAuth',
-            })
-            .run()
-        })
-      } else {
-        log.error('[BETTER AUTH]', errorToObject(error))
-      }
+      bestEffort(() => {
+        db.insert(errorsTable)
+          .values({
+            error: errorToObject(error),
+            context: 'betterAuth:topLevelException',
+          })
+          .run()
+      })
 
       throw error
     }
@@ -145,7 +139,10 @@ export const honoServer = new Hono()
 
     bestEffort(() => {
       db.insert(errorsTable)
-        .values({error: errorToObject(error), context: 'topLevel:hono'})
+        .values({
+          error: errorToObject(error),
+          context: 'hono:topLevelException',
+        })
         .run()
     })
 

@@ -13,14 +13,14 @@ export async function sendEmail({
   user,
   subject,
   react,
-  failureContext,
-  errorContext,
+  rejectionContext,
+  exceptionContext,
 }: {
   user: {email: string}
   subject: string
   react: JSX.Element
-  failureContext: ErrorContext
-  errorContext: ErrorContext
+  rejectionContext: ErrorContext
+  exceptionContext: ErrorContext
 }) {
   const apiKey = getEnvVar('RESEND_API_KEY')
   const resend = new Resend(apiKey)
@@ -36,7 +36,7 @@ export async function sendEmail({
         const metadata = res.headers !== null ? {headers: res.headers} : null
 
         db.insert(errorsTable)
-          .values({context: errorContext, error, metadata})
+          .values({context: rejectionContext, error, metadata})
           .run()
       }
     })
@@ -44,6 +44,6 @@ export async function sendEmail({
       const db = getDatabase()
       const error = errorToObject(e)
 
-      db.insert(errorsTable).values({context: failureContext, error}).run()
+      db.insert(errorsTable).values({context: exceptionContext, error}).run()
     })
 }

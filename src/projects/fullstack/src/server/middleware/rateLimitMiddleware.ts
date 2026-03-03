@@ -36,7 +36,7 @@ export function getRateLimitMiddleware({
             bestEffort(() => {
               db.insert(errorsTable)
                 .values({
-                  context: 'rateLimitMiddleware',
+                  context: 'hono:rateLimitException',
                   error: {
                     message: 'unknownIpAddress',
                     connectionInfo: info,

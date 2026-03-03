@@ -15,8 +15,8 @@ import {logClientError} from '@/client/lib/utils'
 import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
 
 import {useAtomValue} from 'jotai'
-import {Fingerprint, KeyRound, Pencil, Plus, Trash2} from 'lucide-react'
-import {useCallback, useEffect, useRef, useState} from 'react'
+import {Fingerprint, KeyRound, Plus, Trash2} from 'lucide-react'
+import {useCallback, useEffect, useState} from 'react'
 import {toast} from 'sonner'
 
 type Passkey = AuthSchemaSelect['passkeys']
@@ -33,12 +33,6 @@ export function Passkeys() {
   const deleteDialog = useBoolean()
   const [deleteTarget, setDeleteTarget] = useState<Passkey | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  // Rename dialog state
-  const renameDialog = useBoolean()
-  const [renameTarget, setRenameTarget] = useState<Passkey | null>(null)
-  const [renameName, setRenameName] = useState('')
-  const [isRenaming, setIsRenaming] = useState(false)
 
   const fetchPasskeys = useCallback(async () => {
     try {
@@ -131,40 +125,6 @@ export function Passkeys() {
     }
   }
 
-  const handleRename = async () => {
-    if (!(renameTarget && renameName.trim())) return
-
-    setIsRenaming(true)
-
-    try {
-      const {error} = await authClient.passkey.updatePasskey({
-        id: renameTarget.id,
-        name: renameName.trim(),
-      })
-
-      if (error) {
-        toast.error(error.message || 'Failed to rename passkey')
-        logClientError({
-          error,
-          context: 'client:passkeyRenameFailure',
-          apiClient,
-        })
-        return
-      }
-
-      toast.success('Passkey renamed')
-      renameDialog.setFalse()
-      setRenameTarget(null)
-      setRenameName('')
-      return fetchPasskeys()
-    } catch (error) {
-      toast.error('Failed to rename passkey')
-      logClientError({error, context: 'client:passkeyRenameError', apiClient})
-    } finally {
-      setIsRenaming(false)
-    }
-  }
-
   if (isLoading) {
     return <p className="text-muted-foreground text-sm">Loading passkeys...</p>
   }
@@ -219,31 +179,17 @@ export function Passkeys() {
                   </p>
                 </div>
               </div>
-              <div className="flex shrink-0 gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8"
-                  onClick={() => {
-                    setRenameTarget(passkey)
-                    setRenameName(passkey.name || '')
-                    renameDialog.setTrue()
-                  }}
-                >
-                  <Pencil className="size-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 text-destructive hover:text-destructive"
-                  onClick={() => {
-                    setDeleteTarget(passkey)
-                    deleteDialog.setTrue()
-                  }}
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 shrink-0 text-destructive hover:text-destructive"
+                onClick={() => {
+                  setDeleteTarget(passkey)
+                  deleteDialog.setTrue()
+                }}
+              >
+                <Trash2 className="size-3.5" />
+              </Button>
             </li>
           ))}
         </ul>
@@ -288,92 +234,7 @@ export function Passkeys() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Rename dialog */}
-      <RenameDialog
-        open={renameDialog.value}
-        onClose={() => {
-          renameDialog.setFalse()
-          setRenameTarget(null)
-          setRenameName('')
-        }}
-        name={renameName}
-        onNameChange={setRenameName}
-        onSubmit={handleRename}
-        isRenaming={isRenaming}
-      />
     </div>
-  )
-}
-
-function RenameDialog({
-  open,
-  onClose,
-  name,
-  onNameChange,
-  onSubmit,
-  isRenaming,
-}: {
-  open: boolean
-  onClose: () => void
-  name: string
-  onNameChange: (name: string) => void
-  onSubmit: () => void
-  isRenaming: boolean
-}) {
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  return (
-    <Dialog
-      open={open}
-      onOpenChange={o => {
-        if (!o) onClose()
-      }}
-    >
-      <DialogContent
-        className="sm:max-w-sm"
-        onOpenAutoFocus={e => {
-          e.preventDefault()
-          inputRef.current?.focus()
-          inputRef.current?.select()
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>Rename passkey</DialogTitle>
-          <DialogDescription>
-            Enter a new name for this passkey.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-            onSubmit()
-          }}
-        >
-          <Input
-            ref={inputRef}
-            value={name}
-            onChange={e => onNameChange(e.target.value)}
-            placeholder="Passkey name"
-            required
-            disabled={isRenaming}
-          />
-          <DialogFooter className="mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isRenaming}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isRenaming || !name.trim()}>
-              {isRenaming ? 'Saving...' : 'Save'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
   )
 }
 

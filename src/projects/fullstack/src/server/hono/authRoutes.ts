@@ -81,12 +81,11 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
 
   // Get avatar
   .get('/avatar', c => {
-    const userId = +c.get('user').id
     const db = getDatabase()
     const avatar = db
       .select()
       .from(avatarsTable)
-      .where(eq(avatarsTable.userId, userId))
+      .where(eq(avatarsTable.userId, c.get('user').id))
       .get()
 
     if (!avatar) {

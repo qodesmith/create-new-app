@@ -53,12 +53,12 @@ export const errorsTable = sqliteTable('errors', {
   context: text().$type<ErrorContext>().notNull(),
   metadata: text({mode: 'json'}).$type<Record<string, unknown>>(),
   // The potentially logged-in user.
-  userId: integer().references(() => users.id, {onDelete: 'cascade'}), // DO NOT add `.notNull()`
+  userId: text().references(() => users.id, {onDelete: 'cascade'}), // DO NOT add `.notNull()`
 })
 
 export const avatarsTable = sqliteTable('avatars', {
   ...commonFields,
-  userId: integer()
+  userId: text()
     .references(() => users.id, {onDelete: 'cascade'})
     .notNull()
     .unique(),

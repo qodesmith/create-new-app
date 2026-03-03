@@ -1,7 +1,6 @@
 import type {BetterAuthOptions} from 'better-auth'
 import type {DrizzleAdapterConfig} from 'better-auth/adapters/drizzle'
 import type {Password} from 'bun'
-import type {AuthSchemaSelect} from '@/server/types'
 import type {Prettify} from '@/shared/types'
 
 import {
@@ -146,24 +145,11 @@ export const authOptions = {
       }
 
       if (pathname === `${betterAuthBasePath}/change-email`) {
-        /**
-         * https://github.com/better-auth/better-auth/issues/2349#issuecomment-2817112648
-         *
-         * Better Auth returns user.id as a string despite
-         * `useNumberId: true` in `authOptions.advanced.database`, and they
-         * have no plans to change this. So we coerce to a number here.
-         */
-        const userId = +user.id
-
-        if (Number.isNaN(userId)) {
-          throw new Error('Invalid user id for changing email')
-        }
-
         const db = getDatabase()
         const userFromDb = db
           .select()
           .from(users)
-          .where(eq(users.id, userId))
+          .where(eq(users.id, user.id))
           .get()
 
         if (!userFromDb) {
@@ -316,10 +302,6 @@ export const authOptions = {
      * and avoid confusion, secure cookies are only enabled in production.
      */
     useSecureCookies: isProd,
-    database: {
-      // Generate integer id's for schemas.
-      generateId: 'serial',
-    },
   },
 
   onAPIError: {
@@ -363,26 +345,7 @@ export const drizzleAdapterOptions = {
   camelCase: true,
 } satisfies DrizzleAdapterConfig
 
-const _auth = betterAuth({
+export const auth = betterAuth({
   ...authOptions,
   database: drizzleAdapter(getDatabase(), drizzleAdapterOptions),
 })
-
-type _Session = typeof _auth.$Infer.Session
-
-/**
- * Better-auth hardcodes user.id as string in its core Zod schema, regardless
- * of the actual db column type. Our users table uses an integer id, so we
- * override user.id at the source so everything that infers from `auth` gets
- * the correct type.
- */
-export const auth = _auth as unknown as Omit<typeof _auth, '$Infer'> & {
-  // biome-ignore-start lint/style/useNamingConvention: names come from Better Auth
-  $Infer: Omit<typeof _auth.$Infer, 'Session'> & {
-    Session: Omit<_Session, 'user'> & {
-      // Ensure the user id is a number, not a string.
-      user: Omit<_Session['user'], 'id'> & {id: AuthSchemaSelect['users']['id']}
-    }
-  }
-  // biome-ignore-end lint/style/useNamingConvention: names come from Better Auth
-}

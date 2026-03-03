@@ -1,4 +1,4 @@
-import type {AuthSchemaSelect} from '@/shared/types'
+import type {AuthSchemaInsert} from '@/shared/types'
 
 import {Button} from '@/client/components/ui/button'
 import {
@@ -19,7 +19,7 @@ import {Fingerprint, KeyRound, Plus, Trash2} from 'lucide-react'
 import {useCallback, useEffect, useState} from 'react'
 import {toast} from 'sonner'
 
-type Passkey = AuthSchemaSelect['passkeys']
+type Passkey = AuthSchemaInsert['passkeys']
 
 export function Passkeys() {
   const authClient = useAtomValue(authClientAtom)
@@ -85,8 +85,20 @@ export function Passkeys() {
       setAddName('')
       return fetchPasskeys()
     } catch (error) {
-      // User dismissed WebAuthn prompt
-      if (isWebAuthnCancellation(error)) return
+      /**
+       * Detects when the user cancelled the browser's native WebAuthn prompt.
+       *
+       * Flow:
+       * 1. User clicks "Add Passkey" button
+       * 2. `authClient.passkey.addPasskey()` triggers the browser's native WebAuthn
+       *    prompt (fingerprint/security key)
+       * 3. User dismisses/cancels that prompt
+       * 4. Browser throws a `NotAllowedError` DOMException
+       * 5. Catch block silently swallows it (no error toast, since it's intentional)
+       */
+      const isWebAuthnCancellation =
+        error instanceof DOMException && error.name === 'NotAllowedError'
+      if (isWebAuthnCancellation) return
 
       toast.error('Failed to add passkey')
       logClientError({error, context: 'client:passkeyAddError', apiClient})
@@ -236,19 +248,4 @@ export function Passkeys() {
       </Dialog>
     </div>
   )
-}
-
-/**
- * Detects when the user cancelled the browser's native WebAuthn prompt.
- *
- * Flow:
- * 1. User clicks "Add Passkey" button
- * 2. `authClient.passkey.addPasskey()` triggers the browser's native WebAuthn
- *    prompt (fingerprint/security key)
- * 3. User dismisses/cancels that prompt
- * 4. Browser throws a `NotAllowedError` DOMException
- * 5. Catch block silently swallows it (no error toast, since it's intentional)
- */
-function isWebAuthnCancellation(error: unknown): boolean {
-  return error instanceof DOMException && error.name === 'NotAllowedError'
 }

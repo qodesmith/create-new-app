@@ -106,15 +106,11 @@ export const honoServer = new Hono()
       const {error, context, metadata} = c.req.valid('json')
 
       /**
-       * https://github.com/better-auth/better-auth/issues/2349#issuecomment-2817112648
-       *
        * This route doesn't go through authMiddleware, so we call getSession
-       * directly. Better Auth returns user.id as a string despite
-       * `useNumberId: true` in `authOptions.advanced.database`, and they
-       * have no plans to change this. So we coerce to a number here.
+       * directly to see if we have an authenticated user to grab their id.
        */
       const session = await auth.api.getSession({headers: c.req.raw.headers})
-      const userId = session ? +session.user.id : undefined
+      const userId = session?.user.id
 
       bestEffort(() => {
         db.insert(errorsTable).values({error, context, userId, metadata}).run()

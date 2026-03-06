@@ -1,6 +1,7 @@
 ---
 name: write-a-skill
 description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
+argument-hint: "[skill-name]"
 ---
 
 # Writing Skills
@@ -101,7 +102,7 @@ Scripts save tokens and improve reliability vs generated code.
 
 Split into separate files when:
 
-- SKILL.md exceeds 100 lines
+- SKILL.md exceeds ~100 lines
 - Content has distinct domains (finance vs sales schemas)
 - Advanced features are rarely needed
 
@@ -110,7 +111,7 @@ Split into separate files when:
 After drafting, verify:
 
 - [ ] Description includes triggers ("Use when...")
-- [ ] SKILL.md under 100 lines
+- [ ] Aim for SKILL.md under 100 lines; split to reference files when exceeding
 - [ ] No time-sensitive info
 - [ ] Consistent terminology
 - [ ] Concrete examples included

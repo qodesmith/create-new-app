@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "WebSearch",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(bun pm:*)",
+      "Bash(bun add:*)",
+      "Bash(npx tsc:*)",
+      "Bash(bun run:*)",
+      "Bash(rm:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(bun outdated:*)",
+      "Bash(xargs cat:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(npx:*)",
+      "Bash(chmod +x:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/use-bun-bunx.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

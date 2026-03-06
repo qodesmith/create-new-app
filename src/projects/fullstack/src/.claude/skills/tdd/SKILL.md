@@ -1,5 +1,7 @@
 ---
+name: tdd
 description: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
+argument-hint: "[feature-or-bug]"
 ---
 
 # Test-Driven Development
@@ -94,6 +96,10 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 - [ ] Run tests after each refactor step
 
 **Never refactor while RED.** Get to GREEN first.
+
+## Project-Specific Patterns
+
+See [add-test](../add-test/SKILL.md) for this project's test tooling: Bun test runner, Hono testClient, happy-dom, testing-library, Playwright, and code templates.
 
 ## Checklist Per Cycle
 

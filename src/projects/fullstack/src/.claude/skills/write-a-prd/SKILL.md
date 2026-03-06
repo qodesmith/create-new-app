@@ -1,5 +1,7 @@
 ---
-description: Create a PRD through collaborative interview and codebase exploration, submitted as a GitHub issue
+name: write-a-prd
+description: Create a PRD through collaborative interview and codebase exploration, submitted as a GitHub issue. Use when user wants to write a PRD, define product requirements, create a spec, or plan a new feature.
+argument-hint: "[feature-idea]"
 ---
 
 This skill will be invoked when the user wants to create a PRD. You should go through the steps below. You may skip steps if you don't consider them necessary.

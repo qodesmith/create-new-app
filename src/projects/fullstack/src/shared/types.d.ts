@@ -41,9 +41,18 @@ export type DateToString<T> = T extends Date
 export type ServerAuth = typeof auth
 
 /**
- * Rejections are errors returned from API endpoints (the server responded, but
- * the operation was rejected). Exceptions are errors caught in a catch
- * statement (something unexpected broke).
+ * Naming convention: `<service>:<operation><Suffix>`
+ *
+ * 1. Client API calls get a Rejection/Exception pair:
+ *    `client:<operation>Rejection` - API responded (2xx) but returned an error
+ *    `client:<operation>Exception` - error caught in the catch clause
+ *
+ * 2. Server-side async calls to external services also get a pair:
+ *    `<service>:<operation>Rejection` - service responded but indicated failure
+ *    `<service>:<operation>Exception` - error caught in the catch clause
+ *
+ * 3. Standalone error scenarios (less common) only get Exception:
+ *    `<area>:<name>Exception` - catch-all or one-off error handler
  */
 export type ErrorContext =
   // Server

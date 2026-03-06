@@ -23,33 +23,36 @@ Ask the developer before scaffolding:
 
 Each step validates before next:
 
-1. DB table in `appSchema.ts` if needed — see [DB_REFERENCE.md](DB_REFERENCE.md)
-2. API endpoint in correct route group — see [API_REFERENCE.md](API_REFERENCE.md)
-3. ErrorContext entries — see [add-error-context skill](../add-error-context/SKILL.md)
-4. Route file(s) in `src/client/routes/` — see [ROUTE_REFERENCE.md](ROUTE_REFERENCE.md)
-5. Colocated components (`-ComponentName.tsx`) or shared components as needed
-6. Install missing Shadcn components: `bunx shadcn@latest add <name>`
-7. Wire frontend to backend via Hono RPC atoms (`apiClientAtom` / `apiAuthClientAtom`)
+1. DB table if needed — see [add-db-table](../add-db-table/SKILL.md)
+2. API endpoint in correct route group — see [add-api-endpoint](../add-api-endpoint/SKILL.md)
+3. ErrorContext entries — see [add-error-context](../add-error-context/SKILL.md)
+4. Route file(s) — see [add-route](../add-route/SKILL.md)
+5. Components — see [add-component](../add-component/SKILL.md)
+6. Wire frontend to backend via Hono RPC atoms (`apiClientAtom` / `apiAuthClientAtom`)
 
 ## Finalize
 
-- Run `biome check --write <files>` on all created/edited files
 - If schema changed: remind to stop dev server, run `bun run db:init`
 - Verify Hono RPC types flow (server type export → client atom consumption)
 
-## NEVER
-
-- Use npm/node — always Bun
-- Use raw `fetch` — always Hono RPC via `apiClientAtom` or `apiAuthClientAtom`
-- Use raw Radix — always Shadcn components
-- Touch `routeTree.gen.ts`, `src/server/db/drizzle/`, or `authSchema.ts`
-- Modify build/dev scripts, Dockerfiles, fly.toml, .env, tsconfig, biome config without permission
-
 ## Error Logging
 
+Client:
 ```ts
 import {logClientError} from '@/client/lib/utils'
 logClientError({error, context: 'client:featureNameException', apiClient})
+```
+
+Server:
+```ts
+import {bestEffort} from '@/server/utils/bestEffort'
+import {errorToObject} from '@qodestack/utils'
+
+bestEffort(() => {
+  db.insert(errorsTable)
+    .values({error: errorToObject(error), context: 'server:featureNameException'})
+    .run()
+})
 ```
 
 ## RPC Wiring
@@ -61,3 +64,5 @@ const apiAuthClient = useAtomValue(apiAuthClientAtom)
 const res = await apiAuthClient.myEndpoint.$post({json: data})
 const result = await res.json()
 ```
+
+See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

@@ -16,11 +16,11 @@ argument-hint: "[endpoint-description]"
 
 ## Route Group Selection
 
-| Auth level     | File              | Variable         |
-|----------------|-------------------|------------------|
-| Authenticated  | `authRoutes.ts`   | `authRoutes`     |
-| Admin-only     | `adminRoutes.ts`  | `adminRoutes`    |
-| Public         | `honoServer.ts`   | `honoServer`     |
+| Auth level     | File              | Variable         | Middleware        |
+|----------------|-------------------|------------------|-------------------|
+| Authenticated  | `authRoutes.ts`   | `authRoutes`     | `authMiddleware`  |
+| Admin-only     | `adminRoutes.ts`  | `adminRoutes`    | `adminMiddleware` |
+| Public         | `honoServer.ts`   | `honoServer`     | None              |
 
 All in `src/server/hono/`.
 
@@ -30,7 +30,7 @@ All in `src/server/hono/`.
 import {arktypeValidator} from '@hono/arktype-validator'
 import {type} from 'arktype'
 
-// Chain onto authRoutes
+// Chain onto authRoutes in authRoutes.ts
 .post(
   '/items',
   arktypeValidator('json', type({title: 'string', body: 'string'})),
@@ -74,16 +74,21 @@ Chain BEFORE `.notFound()` — order matters.
 - Only when endpoint receives client data (POST/PUT/PATCH with body)
 - Position: second-to-last arg, right before handler
 
+## Fire-and-Forget
+
+For non-critical async operations, use the `bestEffort` server utility (logs errors instead of silently swallowing them):
+
+```ts
+import {bestEffort} from '@/server/utils/bestEffort'
+bestEffort(() => asyncOp())
+```
+
+## Querying the Database
+
+See [query-database](../query-database/SKILL.md) for sync API terminators and common patterns.
+
 ## ErrorContext
 
 See [add-error-context skill](../add-error-context/SKILL.md) for naming convention.
 
-## Finalize
-
-- Run `biome check --write <files>` on all created/edited files
-
-## NEVER
-
-- Use raw `fetch` on client — always Hono RPC via atoms
-- Use npm/node — always Bun
-- Modify build scripts, Dockerfiles, .env without permission
+See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

@@ -64,15 +64,4 @@ export function ItemCard({title}: {title: string}) {
 
 Import from route: `import {ItemCard} from './-ItemCard'`
 
-## Conventions
-
-- Use `cn()` from `@/client/lib/utils` for className merging
-
-## Finalize
-
-- Run `biome check --write <files>` on all created/edited files
-
-## NEVER
-
-- Use raw Radix — Radix is an implementation detail of Shadcn. Always use Shadcn components.
-- Use npm/node — always Bun (`bunx` not `npx`)
+See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

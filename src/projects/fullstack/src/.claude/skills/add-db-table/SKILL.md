@@ -65,13 +65,13 @@ Stop the dev server, then run `bun run db:init`. This will:
 3. Apply the migration files
 4. Seed dev database
 
-## Finalize
+## Querying the Database
 
-- Run `biome check --write <files>` on all created/edited files
+See [query-database](../query-database/SKILL.md) for sync API terminators and common patterns.
 
-## NEVER
+## Rules
 
-- Touch `authSchema.ts` — managed by Better Auth
-- Touch `src/server/db/drizzle/` — auto-generated migrations
-- Forget `commonFields` spread
-- Use npm/node — always Bun
+- Always spread `commonFields`
+- Foreign keys: `.references(() => table.id, {onDelete: 'cascade'})`
+
+See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

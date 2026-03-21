@@ -11,6 +11,7 @@ import {getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
 const cleanupIntervalMs = getUnitInMs(1, 'h')
+let started = false
 
 /**
  * Purges stale data from the database:
@@ -58,6 +59,9 @@ function purgeStaleRecords() {
  * `--is-primary`) to avoid duplicate work across replicas.
  */
 export function startDbCleanup() {
+  if (started) return
+  started = true
+
   if (isProd) {
     const args = process.argv.slice(2)
     const isPrimary = args.includes('--is-primary')

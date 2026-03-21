@@ -77,7 +77,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     for (const srcFileName of files) {
       // Remove absolute path plus leading slash.
       const relativePath = srcFileName.slice(fullProjectPath.length + 1)
-      const {base: fileName} = parse(srcFileName)
+      const {base: fileName, dir} = parse(srcFileName)
       let fileContents = await Bun.file(srcFileName).text()
       let destPath = join(targetDir, relativePath)
       const isTemplateFile = getIsTemplateFile({
@@ -96,6 +96,11 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
       // Rename `-keep` files - name.ext-keep => name.ext
       if (fileName.endsWith('-keep')) {
         destPath = destPath.slice(0, -5) // Remove "-keep" from path
+      }
+
+      // Rename `-keep` directories - .dirname-keep => .dirname
+      if (dir.includes('-keep')) {
+        destPath = destPath.replaceAll('-keep/', '/')
       }
 
       ensureDir(dirname(destPath))

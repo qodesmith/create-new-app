@@ -11,7 +11,6 @@ export default {
     'src/client/app.tsx',
     'src/client/routes/__root.tsx',
     'buildDrizzleStudio.ts',
-    'initDevDb.ts',
   ],
 
   // Files to care about within the dependency graph of entry files above.

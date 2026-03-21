@@ -76,7 +76,7 @@ Chain BEFORE `.notFound()` — order matters.
 
 ## Fire-and-Forget
 
-For non-critical async operations, use the `bestEffort` server utility (logs errors instead of silently swallowing them):
+For non-critical async operations, use the `bestEffort` server utility, guaranteed to not throw:
 
 ```ts
 import {bestEffort} from '@/server/utils/bestEffort'

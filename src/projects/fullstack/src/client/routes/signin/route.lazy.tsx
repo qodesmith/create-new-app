@@ -1,141 +1,170 @@
-import type {FileRouteTypes} from '@/client/routeTree.gen'
-
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
+import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {Button} from '@/client/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/client/components/ui/dialog'
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/client/components/ui/card'
 import {Input} from '@/client/components/ui/input'
-import {useBoolean} from '@/client/hooks/useBoolean'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {MagicCard} from '@/client/components/ui/magic-card'
+import {defaultAuthedPath} from '@/client/constants'
+import {isValidRoute} from '@/client/lib/isValidRoute'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {ResetPasswordDialog} from '@/client/routes/signin/-ResetPasswordDialog'
+import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
-import {useAtomValue} from 'jotai'
+import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
+import {useAtomValue, useSetAtom} from 'jotai'
 import {toast} from 'sonner'
 
-export function ResetPasswordDialog({
-  dialogInitialOpen,
-}: {
-  dialogInitialOpen: boolean
-}) {
+export const Route = createLazyFileRoute('/signin')({
+  component: SignInPage,
+})
+
+function SignInPage() {
+  const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
-  const {value: isOpen, setValue: setIsOpen} = useBoolean(dialogInitialOpen)
+  const setIsSignedIn = useSetAtom(isSignedInAtom)
+  const {redirect, dialogInitialOpen} = Route.useSearch()
+  const redirectPath = isValidRoute(router, redirect)
+    ? redirect
+    : defaultAuthedPath
 
   const form = useForm({
-    defaultValues: {email: ''},
+    defaultValues: {
+      email: '',
+      password: '',
+    },
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
       try {
-        const resetPasswordPath: FileRouteTypes['to'] = '/reset-password'
-        const {error} = await authClient.requestPasswordReset({
+        const result = await authClient.signIn.email({
           email: value.email,
-
-          // This is the return url sent in an email to the user
-          redirectTo: resetPasswordPath,
+          password: value.password,
         })
 
-        if (error) {
-          toast.error('Failed to send reset email')
-          logClientError({
-            error,
-            context: 'client:requestPasswordResetRejection',
-            apiClient,
-          })
-        } else {
-          toast.success('Check your email for a link to reset your password.')
+        if (result.error) {
+          toast.error(result.error.message || 'Failed to sign in')
+          return
         }
 
-        setIsOpen(false)
-      } catch (error) {
+        setIsSignedIn(true)
+        await router.navigate({to: redirectPath})
+      } catch {
         toast.error('An unexpected error occurred')
-        logClientError({
-          error,
-          context: 'client:requestPasswordResetException',
-          apiClient,
-        })
       }
     },
   })
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={open => {
-        setIsOpen(open)
+    <div className="flex h-full justify-center overflow-auto bg-background p-4">
+      <MagicCard
+        className="my-auto w-full max-w-sm rounded-2xl py-6"
+        spotlightGradientColor="rgba(255,255,255,.1)"
+        borderGradientFrom="rgba(255,0,255,1)"
+        borderGradientTo="cornflowerblue"
+      >
+        <CardHeader className="gap-0 pb-6 text-center">
+          <CardTitle className="text-3xl">Welcome back</CardTitle>
+          <CardDescription>Sign in to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            className="space-y-6"
+            onSubmit={e => {
+              e.preventDefault()
+              e.stopPropagation()
+              form.handleSubmit()
+            }}
+          >
+            <form.Field name="email">
+              {field => (
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block pb-1 font-medium text-foreground text-sm"
+                  >
+                    Email address
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={field.state.value}
+                    onChange={e => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+              )}
+            </form.Field>
 
-        if (!open) {
-          form.reset()
-        }
-      }}
-    >
-      <DialogTrigger asChild>
-        <button type="button">
-          <span className="link-animated text-primary">Reset it here</span>
-        </button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Reset password</DialogTitle>
-          <DialogDescription>
-            Enter your email and we'll send you a link to reset your password.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          className="space-y-4"
-          onSubmit={e => {
-            e.preventDefault()
-            e.stopPropagation()
-            form.handleSubmit()
-          }}
-        >
-          <form.Field name="email">
-            {field => (
-              <div>
-                <label
-                  htmlFor="reset-email"
-                  className="block pb-1 font-medium text-foreground text-sm"
-                >
-                  Email address
-                </label>
-                <Input
-                  id="reset-email"
-                  type="email"
-                  placeholder="you@example.com"
+            <form.Field
+              name="password"
+              validators={{
+                onSubmit: ({value}) => {
+                  if (value.length < minPasswordLength) {
+                    return `Password must be at least ${minPasswordLength} characters`
+                  }
+                },
+              }}
+            >
+              {field => (
+                <PasswordInput
+                  id="password"
                   value={field.state.value}
                   onChange={e => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  autoComplete="email"
+                  autoComplete="current-password"
+                  minLength={minPasswordLength}
                   required
+                  label="Password"
+                  labelClassName="block pb-1 font-medium text-foreground text-sm"
                 />
-              </div>
-            )}
-          </form.Field>
+              )}
+            </form.Field>
 
-          <form.Subscribe>
-            {({canSubmit, isSubmitting}) => (
-              <Button
-                type="submit"
-                disabled={!canSubmit || isSubmitting}
-                className="w-full"
+            <form.Subscribe>
+              {({canSubmit, isSubmitting}) => (
+                <Button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting}
+                  className="w-full"
+                >
+                  {isSubmitting ? (
+                    <AudioLoader width={20} height={20} gap={1} rounded={2} />
+                  ) : (
+                    'Sign in'
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+          </form>
+
+          <div className="pt-6 text-center text-muted-foreground text-sm">
+            <p>
+              Forgot your password?{' '}
+              <ResetPasswordDialog dialogInitialOpen={!!dialogInitialOpen} />
+            </p>
+            <p>
+              Don't have an account?{' '}
+              <Link
+                to="/signup"
+                className="font-medium text-foreground transition-colors hover:text-muted-foreground"
               >
-                {isSubmitting ? (
-                  <AudioLoader width={20} height={20} gap={1} rounded={2} />
-                ) : (
-                  'Send reset link'
-                )}
-              </Button>
-            )}
-          </form.Subscribe>
-        </form>
-      </DialogContent>
-    </Dialog>
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </CardContent>
+      </MagicCard>
+    </div>
   )
 }

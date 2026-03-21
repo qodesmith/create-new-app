@@ -9,9 +9,9 @@ import {sql} from 'drizzle-orm'
 
 import {is0000, isProd, port} from './constants'
 import {migrateDbSchema} from './db/migrate'
+import {startDbCleanup} from './dbCleanup'
 import {honoServer} from './hono/honoServer'
 import indexHtml from './index.html'
-import {startReaper} from './reaper'
 import {handleBunServerError} from './utils/handleBunServerError'
 import {log} from './utils/logger'
 
@@ -69,4 +69,4 @@ if (is0000) {
 
 log.success(`🚀 Server running at ${bunServer.url.href}`)
 
-startReaper()
+startDbCleanup()

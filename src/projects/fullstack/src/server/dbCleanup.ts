@@ -10,16 +10,19 @@ import {emailVerificationExpiryInMs} from '@/shared/constants'
 import {getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
-const reaperIntervalMs = getUnitInMs(1, 'h')
+const cleanupIntervalMs = getUnitInMs(1, 'h')
 
-function reap() {
+/**
+ * Purges stale data from the database:
+ * - Unverified users past the verification window (cascade deletes clean up
+ *   accounts, sessions, and passkeys)
+ * - Expired verification tokens (sign-up, email change, password reset)
+ * - Rate limit entries older than the cleanup interval
+ */
+function purgeStaleRecords() {
   const db = getDatabase()
   const now = Date.now()
 
-  /**
-   * Unverified users past the verification window. Cascade deletes clean up
-   * accounts, sessions, and passkeys.
-   */
   const cutoff = new Date(now - emailVerificationExpiryInMs)
   const staleUsers = db
     .delete(users)
@@ -27,17 +30,15 @@ function reap() {
     .returning()
     .all()
 
-  // Expired verification tokens (sign-up, email change, password reset).
   const expiredVerifications = db
     .delete(verifications)
     .where(lt(verifications.expiresAt, new Date(now)))
     .returning()
     .all()
 
-  // Stale rate limit entries.
   const staleRateLimits = db
     .delete(ratelimits)
-    .where(lt(ratelimits.lastRequest, now - reaperIntervalMs))
+    .where(lt(ratelimits.lastRequest, now - cleanupIntervalMs))
     .returning()
     .all()
 
@@ -46,22 +47,27 @@ function reap() {
 
   if (total > 0) {
     log.text(
-      `[REAPER] Purged ${staleUsers.length} stale users, ${expiredVerifications.length} expired verifications, ${staleRateLimits.length} stale rate limits`
+      `[DB_CLEANUP] Purged ${staleUsers.length} stale users, ${expiredVerifications.length} expired verifications, ${staleRateLimits.length} stale rate limits`
     )
   }
 }
 
-export function startReaper() {
+/**
+ * Starts a recurring background job that purges stale database records every
+ * hour. In production, only runs on the primary node (started with
+ * `--is-primary`) to avoid duplicate work across replicas.
+ */
+export function startDbCleanup() {
   if (isProd) {
     const args = process.argv.slice(2)
     const isPrimary = args.includes('--is-primary')
 
     if (!isPrimary) {
-      log.text('Skipping reaper on non-primary node')
+      log.text('Skipping database cleanup on non-primary node')
       return
     }
   }
 
-  bestEffort(reap)
-  setInterval(() => bestEffort(reap), reaperIntervalMs)
+  bestEffort(purgeStaleRecords)
+  setInterval(() => bestEffort(purgeStaleRecords), cleanupIntervalMs)
 }

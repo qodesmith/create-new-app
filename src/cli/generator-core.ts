@@ -122,7 +122,7 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
     await run('bunx biomeInit --no-include-biome-config', targetDir)
   })
 
-  // Update VSCode settings if they exist
+  // Update VSCode settings if they exist - biomeInit above should create it.
   const vscodeSettingsPath = `${targetDir}/.vscode/settings.json`
   if (existsSync(vscodeSettingsPath)) {
     await withSpinner('Updating VS Code settings...', async () => {
@@ -132,9 +132,9 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         unknown
       >
       const additionalSettings = {
-        'typescript.preferences.preferTypeOnlyAutoImports': true,
-        'typescript.preferences.importModuleSpecifier': 'non-relative',
-        'typescript.preferences.includePackageJsonAutoImports': 'auto',
+        'js/ts.preferences.preferTypeOnlyAutoImports': true,
+        'js/ts.preferences.importModuleSpecifier': 'non-relative',
+        'js/ts.preferences.includePackageJsonAutoImports': 'auto',
       }
 
       await Bun.write(

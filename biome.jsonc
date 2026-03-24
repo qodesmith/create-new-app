@@ -4,7 +4,7 @@
   "extends": ["@qodestack/biome-config/react"],
   "files": {
     "ignoreUnknown": true,
-    "includes": ["!**/node_modules", "!dist", "!*.lock"]
+    "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
   },
   "overrides": [
     // General rules for client-side code.

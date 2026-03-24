@@ -5,6 +5,7 @@
   "files": {
     "ignoreUnknown": true,
     "includes": [
+      "**",
       "!**/node_modules",
       "!dist",
       "!*.lock",

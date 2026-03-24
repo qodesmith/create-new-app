@@ -37,7 +37,7 @@
     "hono-rate-limiter": "^0.5.3",
     "jotai": "^2.18.0",
     "jotai-family": "^1.0.1",
-    "lucide-react": "^0.576.0",
+    "lucide-react": "^1.0.1",
     "motion": "^12.34.3",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
@@ -62,6 +62,6 @@
     "open": "^11.0.0",
     "picocolors": "^1.1.1",
     "react-email": "^5.2.9",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }

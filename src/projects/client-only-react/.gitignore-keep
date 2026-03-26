@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.**
+
+# caches
+*.tsbuildinfo
+
+# TanStack temp dir
+.tanstack
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private keys / certs
+*.pem

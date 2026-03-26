@@ -4,17 +4,18 @@
   "extends": ["@qodestack/biome-config/react"],
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!dist",
+      "!*.lock",
+      "!src/routeTree.gen.ts"
+    ]
   },
   "overrides": [
     // General rules for client-side code.
     {
-      "includes": [
-        "src/projects/fullstack/src/client/**/*.ts",
-        "src/projects/fullstack/src/client/**/*.tsx",
-        "src/projects/client-only-react/src/**/*.ts",
-        "src/projects/client-only-react/src/**/*.tsx"
-      ],
+      "includes": ["src/**/*.ts", "src/**/*.tsx"],
       "linter": {
         "rules": {
           "correctness": {
@@ -37,26 +38,11 @@
     // Allow Tanstack routes & Shadcn components to export more than components.
     {
       "includes": [
-        "src/projects/fullstack/src/client/routes/**/*.tsx",
-        "src/projects/fullstack/src/client/components/**/*.tsx",
-        "src/projects/fullstack/src/client/components/**/*.ts",
-        "src/projects/client-only-react/src/routes/**/*.tsx",
-        "src/projects/client-only-react/src/components/**/*.tsx",
-        "src/projects/client-only-react/src/components/**/*.ts"
+        "src/routes/**/*.tsx",
+        "src/components/**/*.tsx",
+        "src/components/**/*.ts"
       ],
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
-    },
-
-    // Don't re-order package.json keys.
-    {
-      "includes": ["**/package.json"],
-      "assist": {
-        "actions": {
-          "source": {
-            "useSortedKeys": "off"
-          }
-        }
-      }
     }
   ]
 }

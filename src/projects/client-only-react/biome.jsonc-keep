@@ -43,6 +43,12 @@
         "src/components/**/*.ts"
       ],
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Avoid Shadcn linting noise.
+    {
+      "includes": ["src/components/ui/**/*.tsx"],
+      "linter": {"rules": {"suspicious": {"noArrayIndexKey": "off"}}}
     }
   ]
 }

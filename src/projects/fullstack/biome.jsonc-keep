@@ -46,6 +46,12 @@
       "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
     },
 
+    // Avoid Shadcn linting noise.
+    {
+      "includes": ["src/client/components/ui/**/*.tsx"],
+      "linter": {"rules": {"suspicious": {"noArrayIndexKey": "off"}}}
+    },
+
     // Disallow importing server constants (i.e. `localhost`) into startDev.ts.
     {
       "includes": ["startDev.ts"],

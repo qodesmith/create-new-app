@@ -59,10 +59,11 @@ export default function Email({verificationUrl}: SignUpVerificationEmailProps) {
                 .split('')
                 .map((letter, i, arr) => {
                   const color = appNameColorStops[i]
+                  const key = `${i}${letter}`
 
                   return (
                     <span
-                      key={i + letter}
+                      key={key}
                       style={{
                         paddingRight: i === arr.length - 1 ? undefined : '15px',
                         color,

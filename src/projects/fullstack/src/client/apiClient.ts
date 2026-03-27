@@ -19,7 +19,7 @@ import {hc} from 'hono/client'
  */
 export function getApiClient() {
   return hc<HonoServer>(
-    typeof window !== 'undefined' ? window.location.origin : '',
+    typeof window === 'undefined' ? '' : window.location.origin,
 
     // Send cookies with every request.
     {init: {credentials: 'include'}}

@@ -59,9 +59,10 @@ function RouteComponent() {
           <h1 className="flex justify-center gap-3">
             {appName.split('').map((letter, i) => {
               const color = appNameColorStops[i]
+              const key = `${i}${letter}`
 
               return (
-                <span key={i + letter} style={{color}}>
+                <span key={key} style={{color}}>
                   {letter}
                 </span>
               )
@@ -155,9 +156,10 @@ function RouteComponent() {
           highlight the inner workings of this app.{' '}
           {happyCoding.split('').map((letter, i) => {
             const color = happyCodingColorStops[i]
+            const key = `${i}${letter}`
 
             return (
-              <span key={i + letter} style={{color}} className="italic">
+              <span key={key} style={{color}} className="italic">
                 {letter}
               </span>
             )

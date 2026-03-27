@@ -33,7 +33,7 @@ export async function sendEmail({
       if (res.error !== null) {
         const db = getDatabase()
         const error = errorToObject(res.error)
-        const metadata = res.headers !== null ? {headers: res.headers} : null
+        const metadata = res.headers === null ? null : {headers: res.headers}
 
         db.insert(errorsTable)
           .values({context: rejectionContext, error, metadata})

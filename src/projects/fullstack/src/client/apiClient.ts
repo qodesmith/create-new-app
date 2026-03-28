@@ -29,7 +29,7 @@ export function getApiClient() {
 // Authenticated api routes
 export function getApiAuthClient() {
   return hc<HonoAuthServer>(
-    `${typeof window !== 'undefined' ? window.location.origin : ''}${authRoutePath}`,
+    `${typeof window === 'undefined' ? '' : window.location.origin}${authRoutePath}`,
 
     // Send cookies with every request.
     {init: {credentials: 'include'}}

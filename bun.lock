@@ -6,7 +6,7 @@
       "name": "create-new-app",
       "dependencies": {
         "@clack/prompts": "^1.1.0",
-        "@qodestack/biome-config": "^2.4.9",
+        "@qodestack/biome-config": "^2.4.10",
         "picocolors": "^1.1.1",
       },
       "devDependencies": {
@@ -543,7 +543,7 @@
 
     "@prisma/studio-core": ["@prisma/studio-core@0.13.1", "", { "peerDependencies": { "@types/react": "^18.0.0 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-agdqaPEePRHcQ7CexEfkX1RvSH9uWDb6pXrZnhCRykhDFAV0/0P3d07WtfiY8hZWb7oRU4v+NkT4cGFHkQJIPg=="],
 
-    "@qodestack/biome-config": ["@qodestack/biome-config@2.4.9", "", { "dependencies": { "@biomejs/biome": "2.4.9", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-onTDutCud1A6OMarDw6w/hYv3KkMcMU5bsuSHJ41bPL11QUrze8vcu20miFdhgFIJ3uxUFWTMEbcaGNpAApuZg=="],
+    "@qodestack/biome-config": ["@qodestack/biome-config@2.4.10", "", { "dependencies": { "@biomejs/biome": "2.4.9", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-+HeF8N4vDOktSLSz7LwXlWUngWYrNZGlQU8X0Fo2aHllNTXOZ/UYtaE6qrHbsj2fPEsPR9erI3v7Jg2DS9Oi2g=="],
 
     "@qodestack/utils": ["@qodestack/utils@2.28.0", "", { "peerDependencies": { "typescript": "^5.9.2" } }, "sha512-Xs1o6Mx+a4XuQRgTlE/j1JpBfcZ95j41uC3+5tPHm8AIr1BhmHCORJpXdyPiVsZA62T/nD1Gz2+gxeEBdrVGyA=="],
 

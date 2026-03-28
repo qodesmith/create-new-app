@@ -141,6 +141,8 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
         vscodeSettingsPath,
         JSON.stringify({...vscodeSettings, ...additionalSettings}, null, 2)
       )
+
+      await run(`bunx biome format --write "${vscodeSettingsPath}"`, targetDir)
     })
   }
 

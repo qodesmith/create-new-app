@@ -47,7 +47,11 @@ export async function syncDeps(): Promise<void> {
   // Update mismatched: root devDeps that differ from project version
   for (const [name, version] of projectDeps) {
     if (name in rootDevDeps && rootDevDeps[name] !== version) {
-      updated.push({package: name, previous: rootDevDeps[name], updated: version})
+      updated.push({
+        package: name,
+        previous: rootDevDeps[name] as string,
+        updated: version,
+      })
       rootDevDeps[name] = version
     }
   }

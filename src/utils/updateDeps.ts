@@ -177,6 +177,9 @@ async function updateDeps(): Promise<void> {
     return
   }
 
+  // Install dependencies now that package.json has been updated.
+  await $`bun i`
+
   updates.sort((a, b) => a.package.localeCompare(b.package))
   console.log(`\nUpdated ${updates.length} dependencies:`)
   console.table(updates)
@@ -212,7 +215,8 @@ async function syncPackageManager(
     await Bun.write(file, JSON.stringify(pkg, null, 2))
     await $`bunx biome format --write ${file}`.quiet()
 
-    const label = file === rootPkgPath ? 'package.json' : file.split('/projects/')[1]
+    const label =
+      file === rootPkgPath ? 'package.json' : file.split('/projects/')[1]
     console.log(
       `Updated packageManager in ${label}: ${previous ?? '(none)'} → ${expected}`
     )

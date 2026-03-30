@@ -7,10 +7,10 @@ rmSync('./dist', {recursive: true, force: true})
 
 /**
  * This will build the dev server and client together. Bun discovers client
- * assets by traversing the dependency graph from devServer.ts → index.html.
+ * assets by traversing the dependency graph from bunServer.ts → index.html.
  */
 await build({
-  entrypoints: ['./devServer.ts'],
+  entrypoints: ['./bunServer.ts'],
   target: 'bun',
   outdir: './dist',
   plugins: [bunPluginTailwind],

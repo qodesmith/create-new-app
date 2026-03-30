@@ -157,7 +157,7 @@ async function pipeConsoleOutput(
 }
 
 const tanstackTmpPath = path.resolve(import.meta.dirname, './.tanstack')
-const serverPath = path.resolve(import.meta.dirname, './devServer.ts')
+const serverPath = path.resolve(import.meta.dirname, './bunServer.ts')
 const spawnOptions = {
   stdout: 'pipe',
   stderr: 'pipe',

@@ -7,7 +7,7 @@ export default {
      * Any `.ts` files called from a package.json script are automatically
      * included here via Knip's Bun plugin (i.e. dev, dev:all, etc.).
      */
-    'devServer.ts',
+    'bunServer.ts',
     'src/app.tsx',
     'src/routes/__root.tsx',
   ],

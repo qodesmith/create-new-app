@@ -10,7 +10,7 @@ const port = process.env.PORT ?? 9001
 const is0000 = process.env.ALL_CONNECTIONS === 'true'
 const isProd = process.env.NODE_ENV === 'production'
 
-const devServer = serve({
+const bunServer = serve({
   routes: {'/': indexHtml},
 
   /**
@@ -42,4 +42,4 @@ if (is0000) {
   }
 }
 
-console.log(`Server running at ${devServer.url.href}`)
+console.log(`Server running at ${bunServer.url.href}`)

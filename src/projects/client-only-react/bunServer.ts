@@ -11,16 +11,7 @@ const is0000 = process.env.ALL_CONNECTIONS === 'true'
 const isProd = process.env.NODE_ENV === 'production'
 
 const bunServer = serve({
-  routes: {'/': indexHtml},
-
-  /**
-   * SPA fallback - any request that isn't a static file gets index.html.
-   * Bun automatically serves static assets found via the index.html import.
-   */
-  fetch() {
-    return new Response(Bun.file(indexHtml))
-  },
-
+  routes: {'/*': indexHtml},
   hostname: is0000 ? '0.0.0.0' : undefined,
   port,
   development: isProd

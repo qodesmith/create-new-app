@@ -247,9 +247,9 @@ function RouteComponent() {
           description="TypeScript configuration"
           iconJsx={<SettingsIcon size={iconSize} />}
         >
-          A single <Code>tsconfig.json</Code> with a base config (
-          <Code>tsconfig.base.json</Code>) handles the whole project. The path
-          alias <Code>@/*</Code> maps to <Code>./src/*</Code> for clean imports.
+          A single <Code>tsconfig.json</Code> handles the whole project. The
+          path alias <Code>@/*</Code> maps to <Code>./src/*</Code> for clean
+          imports.
         </FileCard>
 
         {/* startDev.ts */}

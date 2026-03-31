@@ -2,7 +2,7 @@
 
 import type {Subprocess} from 'bun'
 
-import {serve, spawn} from 'bun'
+import {serve, sleep, spawn} from 'bun'
 import {existsSync, rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -97,11 +97,26 @@ async function waitForRouteTree() {
 
 /**
  * Returns a promise that resolves when the dev server is running on localhost.
+ * Use a for-loop to avoid a stack overflow.
  */
 async function checkLocalhost(): Promise<void> {
-  return fetch(localhost)
-    .then(res => (res.ok ? undefined : checkLocalhost()))
-    .catch(checkLocalhost)
+  const maxAttempts = 50
+  const delayMs = 200
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      const res = await fetch(localhost)
+      if (res.ok) return
+    } catch {
+      // Server not ready yet.
+    }
+
+    await sleep(delayMs)
+  }
+
+  throw new Error(
+    `The dev server failed to start after ${(maxAttempts * delayMs) / 1000}s`
+  )
 }
 
 let hasLoggedProcessIds = false

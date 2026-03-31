@@ -21,9 +21,10 @@ if (!existsSync(path.join(process.cwd(), 'node_modules'))) {
  */
 async function genDevServerPort(initialPort: number | string) {
   const immediatelyStopConnections = true
+  const maxDevPort = 65_535
   let port = +initialPort
 
-  while (true) {
+  while (port <= maxDevPort) {
     try {
       const server = serve({port, routes: {'/': () => new Response()}})
       await server.stop(immediatelyStopConnections)

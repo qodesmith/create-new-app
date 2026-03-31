@@ -54,8 +54,10 @@ await build({
  * we manually change those imports to be absolute in index.html.
  */
 const indexHtml = await Bun.file(`${outdir}/index.html`).text()
-const newIndexHtml = indexHtml.replaceAll('./', '/')
-await Bun.write(`${outdir}/index.html`, newIndexHtml)
+const newHtml = indexHtml
+  .replaceAll('src="./', 'src="/')
+  .replaceAll('href="./', 'href="/')
+await Bun.write(`${outdir}/index.html`, newHtml)
 
 const assets: StaticAsset[] = []
 

@@ -26,4 +26,7 @@ await build({
  * be absolute so we manually change those imports.
  */
 const indexHtml = await Bun.file('./dist/index.html').text()
-await Bun.write('./dist/index.html', indexHtml.replaceAll('./', '/'))
+const newHtml = indexHtml
+  .replaceAll('src="./', 'src="/')
+  .replaceAll('href="./', 'href="/')
+await Bun.write('./dist/index.html', newHtml)

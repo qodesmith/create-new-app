@@ -10,7 +10,6 @@
     // not using TypeScript to generate anything!
     "outDir": "./dist",
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "noUncheckedIndexedAccess": true,
     "paths": {
       "@/shared/*": ["../shared/*"],

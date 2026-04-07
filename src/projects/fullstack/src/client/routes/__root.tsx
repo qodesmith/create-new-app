@@ -48,6 +48,11 @@ function RootComponent() {
   )
 }
 
+/**
+ * Syncs the Jotai theme atom with the actual theme. The useLayoutEffect ensures
+ * the atom is corrected before the browser paints, pairing with the inline
+ * script in index.html which handles the CSS class for FOUC prevention.
+ */
 function ThemeSetter() {
   const setTheme = useSetAtom(_themeAtom_INTERNAL_USE_ONLY)
   const themeSetting = useAtomValue(themeSettingAtom)

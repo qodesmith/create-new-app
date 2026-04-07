@@ -8,6 +8,7 @@
     "dev:all": "NODE_ENV=development ALL_CONNECTIONS=true bun --bun run ./startDev.ts",
     "build": "bun run build.ts",
     "docker:build": "docker build -t client-only .",
+    "typecheck": "bunx tsc --noEmit",
     "knip": "knip"
   },
   "dependencies": {

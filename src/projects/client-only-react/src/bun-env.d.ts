@@ -2,6 +2,12 @@
  * Allows for importing assets in client code to get their path as a string.
  */
 
+/////////
+// CSS //
+/////////
+
+declare module '*.css'
+
 ////////////
 // IMAGES //
 ////////////

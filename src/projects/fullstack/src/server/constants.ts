@@ -4,13 +4,11 @@ import {getEnvVar} from './utils/getEnvVar'
 
 export const port = getEnvVar('PORT')
 
-// TODO - update these variables with your actual domain name.
-export const domain = '{{PROJECT_NAME}}.com' as const
-export const origin = 'https://{{PROJECT_NAME}}.com' as const
-export const originWww = 'https://www.{{PROJECT_NAME}}.com' as const
+export const domain = getEnvVar('DOMAIN') // 'example.com'
+export const origin = `https://${domain}` as const
+export const originWww = `https://www.${domain}` as const
 
 export const localhost = `http://localhost:${port}` as const
-
 export const localhost0 = `http://0.0.0.0:${port}` as const
 
 // Add new user roles by adding strings to this array. Keep `as const`!

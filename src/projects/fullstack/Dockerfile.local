@@ -13,7 +13,7 @@ COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
 COPY build.ts bunfig.toml ./
-COPY dev.sqlite ./{{PROJECT_NAME}}.sqlite
+COPY {{PROJECT_NAME}}.sqlite ./{{PROJECT_NAME}}.sqlite
 COPY src ./src/
 
 RUN NODE_ENV=production bun --bun run ./build.ts

@@ -36,7 +36,48 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const bunServer = serve({
-  routes: {'/': indexHtml},
+  routes: {
+    /**
+     * In production, we wrap the response with security headers since Bun's
+     * `routes` bypass Hono (and its `secureHeaders` middleware) entirely.
+     *
+     * In development, we use the plain import to preserve Bun's HMR injection.
+     * Security headers in dev are handled by Hono for all non-`/` routes.
+     */
+    '/': isProd
+      ? () =>
+          new Response(indexHtml.index, {
+            headers: {
+              'Content-Type': 'text/html;charset=utf-8',
+
+              /**
+               * Prevents browsers from MIME-sniffing the response away from the
+               * declared Content-Type.
+               */
+              'X-Content-Type-Options': 'nosniff',
+
+              /**
+               * Prevents the page from being embedded in iframes (clickjacking
+               * protection).
+               */
+              'X-Frame-Options': 'DENY',
+
+              /**
+               * Controls how much referrer info is sent with navigations and
+               * requests to other origins.
+               */
+              'Referrer-Policy': 'no-referrer',
+
+              /**
+               * Tells the browser to always use HTTPS for this domain for the
+               * next 2 years.
+               */
+              'Strict-Transport-Security':
+                'max-age=63072000; includeSubDomains',
+            },
+          })
+      : indexHtml,
+  },
   fetch: honoServer.fetch,
 
   /**

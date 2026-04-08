@@ -6,6 +6,7 @@ import {authRoutes} from '@/server/hono/authRoutes'
 import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRoutes'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
 import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
+import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddleware'
 import {bestEffort} from '@/server/utils/bestEffort'
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
@@ -18,6 +19,12 @@ import {csrf} from 'hono/csrf'
 export type HonoServer = typeof honoServer
 
 export const honoServer = new Hono()
+  /////////////////////
+  // SECURITY HEADERS //
+  /////////////////////
+
+  .use('*', secureHeadersMiddleware)
+
   //////////
   // AUTH //
   //////////

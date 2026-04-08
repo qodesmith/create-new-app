@@ -137,7 +137,7 @@ function SignUpPage() {
                       htmlFor="lastName"
                       className="block pb-1 font-medium text-foreground text-sm"
                     >
-                      First name
+                      Last name
                     </label>
                     <Input
                       id="lastName"

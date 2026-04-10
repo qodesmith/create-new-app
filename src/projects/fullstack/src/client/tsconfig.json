@@ -1,19 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Indicates to TypeScript that this "project" can be referenced by other
-    // "projects". This is required in order to use references.
-    "composite": true,
-
-    // `outDir` is required when `composite: true` is set because TypeScript
-    // insists on knowing where to put the generated files even thought we're
-    // not using TypeScript to generate anything!
-    "outDir": "./dist",
     "jsx": "react-jsx",
     "noUncheckedIndexedAccess": true,
+
+    // Why do we have two entries?
+    // 1st - relative to tsconfig.base.json (satisfies Bun runtime)
+    // 2nd - relative to this file's directory (satisfies IDE / TypeScript)
     "paths": {
-      "@/shared/*": ["../shared/*"],
-      "@/client/*": ["./*"]
+      "@/shared/*": ["./src/shared/*", "../shared/*"],
+      "@/client/*": ["./src/client/*", "./*"]
     }
   },
   "references": [{"path": "../shared"}],

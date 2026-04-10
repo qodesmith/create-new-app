@@ -69,8 +69,13 @@ COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/
 
-EXPOSE 9001
+ARG PORT=9001
 
+# This is purely for documentation.
+EXPOSE ${PORT}
+
+ENV PORT=${PORT}
+ENV DOMAIN={{PROJECT_NAME}}.com
 ENV NODE_ENV=production
 ENV SQLITE_PATH=/litefs/{{PROJECT_NAME}}.sqlite
 ENV TZ=America/New_York

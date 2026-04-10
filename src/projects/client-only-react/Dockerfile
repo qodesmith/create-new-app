@@ -10,7 +10,15 @@ RUN bun run build
 FROM oven/bun:1-slim
 WORKDIR /app
 COPY --from=build /app/dist .
+
+ARG PORT=3000
+
+# This is purely for documentation.
+EXPOSE ${PORT}
+ENV PORT=${PORT}
 ENV NODE_ENV=production
-ENV PORT=3000
-EXPOSE 3000
+
+# Use a non-root user
+USER bun
+
 CMD ["bun", "run", "./bunServer.js"]

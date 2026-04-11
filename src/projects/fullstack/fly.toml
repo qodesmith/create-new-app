@@ -3,8 +3,6 @@
 app = "{{PROJECT_NAME}}"
 primary_region = "ewr" # https://fly.io/docs/reference/regions/
 
-[build]
-
 [http_service]
   internal_port = 8080
   force_https = true
@@ -12,6 +10,17 @@ primary_region = "ewr" # https://fly.io/docs/reference/regions/
   auto_start_machines = true
   min_machines_running = 1 # Keeps 1 Machine always running in primary region
   processes = ['app']
+
+# LiteFS needs time to mount FUSE, acquire a consul lease, and start its HTTP
+# proxy on :8080 before Fly's deploy check snapshots open sockets.
+# This grace period avoids "The app is not listening on the expected address and
+# will not be reachable by fly-proxy" warnings (even though the app works).
+[[http_service.checks]]
+  grace_period = "15s"
+  interval = "15s"
+  method = "GET"
+  timeout = "5s"
+  path = "/"
 
 [[vm]]
   memory = "512mb"

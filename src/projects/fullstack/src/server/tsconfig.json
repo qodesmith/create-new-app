@@ -7,8 +7,8 @@
     // 1st - relative to tsconfig.base.json (satisfies Bun runtime)
     // 2nd - relative to this file's directory (satisfies IDE / TypeScript)
     "paths": {
-      "@/shared/*": ["./src/shared/*", "../shared/*"],
-      "@/client/*": ["./src/client/*", "./*"]
+      "@/server/*": ["./src/server/*", "./*"],
+      "@/shared/*": ["./src/shared/*", "../shared/*"]
     }
   },
   "references": [{"path": "../shared"}],

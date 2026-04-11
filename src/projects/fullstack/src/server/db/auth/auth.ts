@@ -7,9 +7,9 @@ import {
   domain,
   isProd,
   localhost,
-  localhost0,
+  localOriginList,
   origin,
-  originWww,
+  prodOriginList,
   userRoles,
 } from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
@@ -330,13 +330,13 @@ export const authOptions = {
 
       // TODO - update rpName to a semantic name for your app.
       // Human-readable name shown in browser prompts.
-      rpName: '{{PROJECT_NAME}}',
+      rpName: 'fullstack',
 
       // Fully qualified URL where passkey actions happen.
-      origin: isProd ? [origin, originWww] : [localhost, localhost0],
+      origin: isProd ? prodOriginList : localOriginList,
     }),
   ],
-  trustedOrigins: isProd ? [origin, originWww] : [localhost, localhost0],
+  trustedOrigins: isProd ? prodOriginList : localOriginList,
 } as const satisfies BetterAuthOptions
 
 export const drizzleAdapterOptions = {

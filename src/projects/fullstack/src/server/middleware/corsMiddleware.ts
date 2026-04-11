@@ -1,10 +1,4 @@
-import {
-  isProd,
-  localhost,
-  localhost0,
-  origin,
-  originWww,
-} from '@/server/constants'
+import {isProd, localOriginList, prodOriginList} from '@/server/constants'
 
 import {cors} from 'hono/cors'
 import {createMiddleware} from 'hono/factory'
@@ -29,7 +23,7 @@ const corsHandler = cors({
    * https://api.example.com (just as an example), the domain must be found in
    * this array otherwise the browser blocks the request.
    */
-  origin: isProd ? [origin, originWww] : [localhost, localhost0],
+  origin: isProd ? prodOriginList : localOriginList,
 
   /**
    * HEADER - Access-Control-Allow-Methods

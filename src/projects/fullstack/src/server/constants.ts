@@ -6,10 +6,14 @@ export const port = getEnvVar('PORT')
 
 export const domain = getEnvVar('DOMAIN') // 'example.com'
 export const origin = `https://${domain}` as const
-export const originWww = `https://www.${domain}` as const
-
+const originWww = `https://www.${domain}`
 export const localhost = `http://localhost:${port}` as const
-export const localhost0 = `http://0.0.0.0:${port}` as const
+
+const flyAppName = getEnvVar('FLY_APP_NAME', {shouldThrow: false})
+export const prodOriginList = flyAppName
+  ? [origin, originWww, `https://${flyAppName}.fly.dev`]
+  : [origin, originWww]
+export const localOriginList = [localhost, `http://0.0.0.0:${port}`]
 
 // Add new user roles by adding strings to this array. Keep `as const`!
 const _userRoles = ['admin', 'user'] as const

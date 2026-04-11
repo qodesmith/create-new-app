@@ -32,6 +32,15 @@ const buildAssets = await build({
   splitting: true,
   sourcemap: 'linked', // Ensure production errors trace back to unminified code.
   define: {'process.env.NODE_ENV': JSON.stringify('production')},
+
+  /**
+   * Sharp is a C++ image processing library with platform-specific native
+   * addons (.node files). Bun's bundler can't inline native addons, so bundling
+   * sharp would produce broken imports. Marking it external keeps the
+   * require/import as-is, letting Bun resolve it from node_modules at runtime
+   * where the correct prebuilt binary is available.
+   */
+  external: ['sharp'],
 })
 
 /**

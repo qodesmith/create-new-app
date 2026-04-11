@@ -9,7 +9,7 @@ ENV IN_DOCKER_BUILD=true
 
 WORKDIR /app
 
-COPY package.json bun.lock
+COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
 COPY build.ts bunfig.toml ./
@@ -51,8 +51,10 @@ COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
 
 FROM oven/bun:alpine
 
-# Needed dependencies in order for LiteFS to work (curl is just for convenience)
-RUN apk add --no-cache ca-certificates fuse3 sqlite curl
+# ca-certificates, fuse3, and sqlite are needed for LiteFS to work.
+# curl is insatlled just for convenience.
+# vips is required by sharp for image processing
+RUN apk add --no-cache ca-certificates fuse3 sqlite curl vips
 
 # Pull in the litefs binary by copying it from the official Docker image.
 COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
@@ -65,6 +67,16 @@ WORKDIR /app
 COPY bunfig.toml /app
 COPY --from=mainapp /dist /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
+
+# Sharp is used to resize/convert avatar uploads to WebP. It has 3 runtime
+# dependencies: @img (platform-specific native binary + colour util),
+# detect-libc, and semver. Because sharp relies on a native .node addon that
+# can't be inlined by a JS bundler, we mark it as external in build.ts and copy
+# it with its dependencies from the build stage's node_modules.
+COPY --from=mainapp /app/node_modules/sharp /app/node_modules/sharp
+COPY --from=mainapp /app/node_modules/@img /app/node_modules/@img
+COPY --from=mainapp /app/node_modules/detect-libc /app/node_modules/detect-libc
+COPY --from=mainapp /app/node_modules/semver /app/node_modules/semver
 
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/
@@ -81,7 +93,8 @@ ENV SQLITE_PATH=/litefs/{{PROJECT_NAME}}.sqlite
 ENV TZ=America/New_York
 ENV START_APP_CMD="bun ./bunServer.js"
 
-# Use a non-root user
-USER bun
+# LiteFS requires root to mount the FUSE filesystem, so we can't use a non-root
+# user when deploying to Fly.io.
+# USER bun => DON'T DO THIS
 
 ENTRYPOINT ["litefs", "mount"]

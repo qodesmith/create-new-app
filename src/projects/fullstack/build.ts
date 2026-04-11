@@ -1,16 +1,17 @@
 import type {StaticAsset} from './src/server/hono/staticAssetsFromBuildRoutes'
 
 import {build} from 'bun'
-import {readdirSync, rmSync, writeFileSync} from 'node:fs'
+import {readdirSync, rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
 import bunPluginTailwind from 'bun-plugin-tailwind'
 
 const inDockerBuild = process.env.IN_DOCKER_BUILD === 'true' // Defined in the Dockerfile
-const excludedAssets: string[] = ['bunServer.js', 'index.html'].flatMap(
-  name => [name, `${name}.map`]
-)
+const excludedAssetsFromHonoServer: string[] = [
+  'bunServer.js',
+  'index.html',
+].flatMap(name => [name, `${name}.map`])
 
 if (!inDockerBuild) {
   rmSync('./dist', {recursive: true, force: true})
@@ -66,7 +67,7 @@ buildAssets.outputs.forEach(output => {
   const {base: fileName} = path.parse(output.path)
 
   // Avoid creating a Hono route for excluded assets - Bun already serves these.
-  if (!excludedAssets.includes(fileName)) {
+  if (!excludedAssetsFromHonoServer.includes(fileName)) {
     assets.push({fileName, isProtected: false})
   }
 }, [])
@@ -84,7 +85,7 @@ const dirents = readdirSync('./src/server/assets', {
 
 for (const {name, parentPath} of dirents) {
   // Avoid creating a Hono route for excluded assets - Bun already serves these.
-  if (excludedAssets.includes(name)) continue
+  if (excludedAssetsFromHonoServer.includes(name)) continue
 
   const file = Bun.file(path.resolve(parentPath, name))
 
@@ -96,6 +97,4 @@ for (const {name, parentPath} of dirents) {
 }
 
 // Write the data to a file so we can create Hono routes for them later.
-writeFileSync(`${outdir}/assets.json`, JSON.stringify(assets, null, 2), {
-  encoding: 'utf8',
-})
+await Bun.write(`${outdir}/assets.json`, JSON.stringify(assets, null, 2))

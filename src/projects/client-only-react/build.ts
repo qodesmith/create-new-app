@@ -29,4 +29,5 @@ const indexHtml = await Bun.file('./dist/index.html').text()
 const newHtml = indexHtml
   .replaceAll('src="./', 'src="/')
   .replaceAll('href="./', 'href="/')
+
 await Bun.write('./dist/index.html', newHtml)

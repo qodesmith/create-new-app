@@ -35,6 +35,11 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
+// In deployed production, `indexHtml.index` will be a file path.
+const prodIndexHtmlContent = isProd
+  ? await Bun.file(indexHtml.index).text()
+  : null
+
 const bunServer = serve({
   routes: {
     /**
@@ -46,7 +51,7 @@ const bunServer = serve({
      */
     '/': isProd
       ? () =>
-          new Response(indexHtml.index, {
+          new Response(prodIndexHtmlContent, {
             headers: {
               'Content-Type': 'text/html;charset=utf-8',
 

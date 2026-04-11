@@ -19,7 +19,9 @@ primary_region = "ewr" # https://fly.io/docs/reference/regions/
   cpus = 1
 
 [mounts]
-  source = "litefs"
+  # The volume name. A volume is a persistent disk attached to the machine that
+  # survives restarts because the default filesystem is ephemeral.
+  source = "litefs_volume"
 
   # Must match `data.dir` in litefs.yml exactly.
   destination = "/var/lib/litefs"

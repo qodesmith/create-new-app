@@ -51,7 +51,7 @@ export const noDirectRequestMiddleware = createMiddleware(async (c, next) => {
       </body>
     `
     c.res = new Response(html, {
-      status: 200,
+      status: 403,
       headers: {'Content-Type': 'text/html'},
     })
   } else {

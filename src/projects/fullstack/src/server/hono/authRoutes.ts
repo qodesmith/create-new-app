@@ -3,7 +3,11 @@ import type {SessionData} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {avatarsTable} from '@/server/db/schema/appSchema'
 import {authMiddleware} from '@/server/middleware/authMiddleware'
-import {maxAvatarUploadSize} from '@/shared/constants'
+import {
+  maxAvatarDimension,
+  maxAvatarFileSize,
+  maxAvatarUploadSize,
+} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
 import {bytesToSize} from '@qodestack/utils'
@@ -40,21 +44,27 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
 
       try {
         const buffer = Buffer.from(await avatar.arrayBuffer())
-
-        webpBuffer = await sharp(buffer)
-          .resize(128, 128, {fit: 'cover'})
-          .webp({quality: 90})
-          .toBuffer()
-
         let quality = 90
 
-        // If still over 20KB, reduce quality
-        while (webpBuffer.byteLength > 20 * 1024) {
+        webpBuffer = await sharp(buffer)
+          .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
+          .webp({quality})
+          .toBuffer()
+
+        /**
+         * If still over the max size, reduce the quality. Prevent an infinite
+         * loop by setting a floor on the quality.
+         */
+        while (webpBuffer.byteLength > maxAvatarFileSize && quality > 5) {
           quality -= 5
           webpBuffer = await sharp(buffer)
-            .resize(128, 128, {fit: 'cover'})
+            .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
             .webp({quality})
             .toBuffer()
+        }
+
+        if (webpBuffer.byteLength > maxAvatarFileSize) {
+          return c.json({error: 'Image too large after compression'}, 400)
         }
       } catch {
         return c.json({error: 'Unsupported image format'}, 400)

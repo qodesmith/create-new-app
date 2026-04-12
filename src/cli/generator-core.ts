@@ -3,7 +3,7 @@ import type {GuidedOptions} from './guided-mode'
 
 import {randomBytes} from 'node:crypto'
 import {existsSync} from 'node:fs'
-import {dirname, join, parse} from 'node:path'
+import {join, parse, resolve} from 'node:path'
 import process from 'node:process'
 
 import {log} from '@clack/prompts'
@@ -22,7 +22,8 @@ import {withSpinner} from '../utils/withSpinner'
  * Get the path to a project template
  */
 function getProjectPath(type: ProjectType): string {
-  const templatesRoot = join(dirname(import.meta.dir), 'projects')
+  const absolutePathToThisFile = import.meta.dir
+  const templatesRoot = resolve(absolutePathToThisFile, '../projects')
 
   switch (type) {
     case 'fullstack':
@@ -72,39 +73,65 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
 
   // Copy and process template files
   await withSpinner('Copying project files...', async () => {
-    const files = getFilesRecursive(fullProjectPath)
+    // const files = getFilesRecursive(fullProjectPath)
+    const sharedDirAbsolute = resolve(import.meta.dir, '../shared')
 
-    for (const srcFileName of files) {
-      // Remove absolute path plus leading slash.
-      const relativePath = srcFileName.slice(fullProjectPath.length + 1)
-      const {base: fileName, dir} = parse(srcFileName)
-      let fileContents = await Bun.file(srcFileName).text()
-      let destPath = join(targetDir, relativePath)
-      const isTemplateFile = getIsTemplateFile({
-        fileContents,
-        placeholderReplacements,
-      })
+    const sourcePaths = [fullProjectPath, sharedDirAbsolute]
 
-      // Files that contain placeholders for replacement.
-      if (isTemplateFile) {
-        fileContents = replacePlaceholders(
-          fileContents,
-          placeholderReplacements
+    for (const sourcePath of sourcePaths) {
+      const files = getFilesRecursive(sourcePath)
+
+      for (const srcFileAbsolutePath of files) {
+        /**
+         * Get the relative path where the file will sit in the new project:
+         *
+         * ↓--------- Remove this from the path ----------↓
+         * /Users/me/create-new-app/src/projects/fullstack/src/client/constants.ts
+         *
+         * Before:
+         * /Users/me/create-new-app/src/projects/fullstack/src/client/constants.ts
+         *
+         * After:
+         * src/client/constants.ts
+         */
+        const relativePathInProject = srcFileAbsolutePath.replace(
+          `${sourcePath}/`,
+          ''
         )
-      }
+        const {base: fileName, dir: sourceDir} = parse(srcFileAbsolutePath)
+        const isKeepFile = fileName.endsWith('-keep')
+        const isKeepDir = sourceDir.includes('-keep')
 
-      // Rename `-keep` files - name.ext-keep => name.ext
-      if (fileName.endsWith('-keep')) {
-        destPath = destPath.slice(0, -5) // Remove "-keep" from path
-      }
+        // Read the file to determine if it's a template file.
+        let fileContents = await Bun.file(srcFileAbsolutePath).text()
+        let destFilePath = join(targetDir, relativePathInProject)
+        const isTemplateFile = getIsTemplateFile({
+          fileContents,
+          placeholderReplacements,
+        })
 
-      // Rename `-keep` directories - .dirname-keep => .dirname
-      if (dir.includes('-keep')) {
-        destPath = destPath.replaceAll('-keep/', '/')
-      }
+        // Files that contain placeholders for replacement.
+        if (isTemplateFile) {
+          fileContents = replacePlaceholders(
+            fileContents,
+            placeholderReplacements
+          )
+        }
 
-      ensureDir(dirname(destPath))
-      await Bun.write(destPath, fileContents)
+        // Rename `-keep` files - name.ext-keep => name.ext
+        if (isKeepFile) {
+          destFilePath = destFilePath.slice(0, -5) // Remove "-keep" from path
+        }
+
+        // Rename `-keep` directories - .dirname-keep => .dirname
+        if (isKeepDir) {
+          destFilePath = destFilePath.replaceAll('-keep/', '/')
+        }
+
+        const parentDirForFile = resolve(destFilePath, '..')
+        ensureDir(parentDirForFile) // Creates the dir recursively if needed.
+        await Bun.write(destFilePath, fileContents)
+      }
     }
   })
 

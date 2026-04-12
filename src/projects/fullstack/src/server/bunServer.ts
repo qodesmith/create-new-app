@@ -3,17 +3,17 @@
 import {$, serve} from 'bun'
 import {networkInterfaces} from 'node:os'
 
+import {is0000, isProd, port} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
+import {migrateDbSchema} from '@/server/db/migrate'
+import {startDbCleanup} from '@/server/dbCleanup'
+import {honoServer} from '@/server/hono/honoServer'
+import indexHtml from '@/server/index.html'
+import {prodSecurityHeaders} from '@/server/middleware/secureHeadersMiddleware'
+import {handleBunServerError} from '@/server/utils/handleBunServerError'
+import {log} from '@/server/utils/logger'
 
 import {sql} from 'drizzle-orm'
-
-import {is0000, isProd, port} from './constants'
-import {migrateDbSchema} from './db/migrate'
-import {startDbCleanup} from './dbCleanup'
-import {honoServer} from './hono/honoServer'
-import indexHtml from './index.html'
-import {handleBunServerError} from './utils/handleBunServerError'
-import {log} from './utils/logger'
 
 if (process.env.NODE_ENV === 'production') {
   /**
@@ -53,32 +53,8 @@ const bunServer = serve({
       ? () =>
           new Response(prodIndexHtmlContent, {
             headers: {
+              ...prodSecurityHeaders,
               'Content-Type': 'text/html;charset=utf-8',
-
-              /**
-               * Prevents browsers from MIME-sniffing the response away from the
-               * declared Content-Type.
-               */
-              'X-Content-Type-Options': 'nosniff',
-
-              /**
-               * Prevents the page from being embedded in iframes (clickjacking
-               * protection).
-               */
-              'X-Frame-Options': 'DENY',
-
-              /**
-               * Controls how much referrer info is sent with navigations and
-               * requests to other origins.
-               */
-              'Referrer-Policy': 'no-referrer',
-
-              /**
-               * Tells the browser to always use HTTPS for this domain for the
-               * next 2 years.
-               */
-              'Strict-Transport-Security':
-                'max-age=63072000; includeSubDomains',
             },
           })
       : indexHtml,

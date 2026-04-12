@@ -120,9 +120,13 @@ export function exportDatabase() {
    *
    * This approach is ideal for backups as it ensures data integrity while
    * allowing normal database operations to continue uninterrupted.
+   *
+   * VACUUM INTO doesn't accept bound parameters — sql.raw inlines the value
+   * directly into the SQL string. Quotes are needed because it's a file path
+   * (SQL string literal), not a numeric value.
    */
   const backupPath = `${sqlitePath}.${Date.now()}.backup`
-  db.run(sql`VACUUM INTO ${backupPath}`)
+  db.run(sql`VACUUM INTO ${sql.raw(`'${backupPath}'`)}`)
 
   return {
     bunFile: Bun.file(backupPath),

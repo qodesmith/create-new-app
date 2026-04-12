@@ -5,7 +5,6 @@ import {Database} from 'bun:sqlite'
 import fs from 'node:fs'
 import path from 'node:path'
 
-import {isProd} from '@/server/constants'
 import * as appSchema from '@/server/db/schema/appSchema'
 import * as authSchema from '@/server/db/schema/authSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
@@ -51,42 +50,40 @@ export function getDatabase() {
   if (!db) {
     db = drizzle({client: new Database(sqlitePath), schema, casing})
 
-    if (isProd) {
-      /**
-       * https://www.sqlite.org/pragma.html#pragma_foreign_keys
-       *
-       * SQLite defaults to having foreign keys off.
-       *
-       * Ensure foreign key support is on. Without this, updating a primary key
-       * will not cascade to any tables referencing is as a foreign key.
-       */
-      db.run(sql`PRAGMA foreign_keys = ON;`)
+    /**
+     * https://www.sqlite.org/pragma.html#pragma_foreign_keys
+     *
+     * SQLite defaults to having foreign keys off.
+     *
+     * Ensure foreign key support is on. Without this, updating a primary key
+     * will not cascade to any tables referencing it as a foreign key.
+     */
+    db.run(sql`PRAGMA foreign_keys = ON;`)
 
-      /**
-       * This sets the busy timeout which helps prevent "database is locked"
-       * errors by allowing SQLite to wait longer for locked resources to become
-       * available. It's a good practice to set this pragma, especially in
-       * multi-threaded applications or when you have increased simultaneous
-       * read/write operations.
-       *
-       * This setting is per-connection, so it should be set each time a new
-       * database connection is opened.
-       *
-       * Why the sql.raw inside sql? https://orm.drizzle.team/docs/sql#sqlraw
-       */
-      const busyTimeout = 10_000
-      db.run(sql`PRAGMA busy_timeout = ${sql.raw(busyTimeout.toString())};`)
+    /**
+     * This sets the busy timeout which helps prevent "database is locked"
+     * errors by allowing SQLite to wait longer for locked resources to become
+     * available. It's a good practice to set this pragma, especially in
+     * multi-threaded applications or when you have increased simultaneous
+     * read/write operations.
+     *
+     * This setting is per-connection, so it should be set each time a new
+     * database connection is opened.
+     *
+     * Why the sql.raw inside sql? https://orm.drizzle.team/docs/sql#sqlraw
+     */
+    const busyTimeout = 10_000
+    db.run(sql`PRAGMA busy_timeout = ${sql.raw(busyTimeout.toString())};`)
 
-      /**
-       * https://bun.sh/docs/api/sqlite#wal-mode
-       *
-       * SQLite supports write-ahead log mode (WAL) which dramatically improves
-       * performance, especially in situations with many concurrent readers and
-       * a single writer. It's broadly recommended to enable WAL mode for most
-       * typical applications.
-       */
-      db.run(sql`PRAGMA journal_mode = WAL;`)
-    }
+    /**
+     * https://bun.sh/docs/api/sqlite#wal-mode
+     *
+     * SQLite supports write-ahead log mode (WAL) which dramatically improves
+     * performance, especially in situations with many concurrent readers and a
+     * single writer. It's broadly recommended to enable WAL mode for most
+     * typical applications.
+     */
+    db.run(sql`PRAGMA journal_mode = WAL;`)
   }
 
   return db

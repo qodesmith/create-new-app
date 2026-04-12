@@ -87,9 +87,9 @@ ARG PORT=9001
 EXPOSE ${PORT}
 
 ENV PORT=${PORT}
-ENV DOMAIN={{PROJECT_NAME}}.com
 ENV NODE_ENV=production
 ENV SQLITE_PATH=/litefs/{{PROJECT_NAME}}.sqlite
+ENV DOMAIN={{PROJECT_NAME}}.com
 ENV TZ=America/New_York
 ENV START_APP_CMD="bun ./bunServer.js"
 

@@ -87,20 +87,8 @@ export function replacePlaceholders(
  * Get all files in a directory recursively
  */
 export function getFilesRecursive(dir: string): string[] {
-  const files: string[] = []
+  if (!existsSync(dir)) return []
 
-  if (!existsSync(dir)) return files
-
-  const entries = readdirSync(dir, {withFileTypes: true})
-
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name)
-    if (entry.isDirectory()) {
-      files.push(...getFilesRecursive(fullPath))
-    } else {
-      files.push(fullPath)
-    }
-  }
-
-  return files
+  const glob = new Bun.Glob('**/*')
+  return Array.from(glob.scanSync({cwd: dir, absolute: true, dot: true}))
 }

@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development bun --bun run ./startDev.ts",
     "dev:all": "NODE_ENV=development ALL_CONNECTIONS=true bun --bun run ./startDev.ts",
-    "build": "bun run build.ts",
-    "docker:build": "docker build -t client-only .",
+    "docker:build": "NODE_ENV=production docker build -t {{PROJECT_NAME}} .",
     "typecheck": "bunx tsc --noEmit",
     "knip": "knip"
   },

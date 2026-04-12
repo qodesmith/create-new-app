@@ -9,7 +9,6 @@
     "dev:email": "email dev -d ./src/server/email",
     "docker:local": "NODE_ENV=production docker build -f Dockerfile.local -t {{PROJECT_NAME}}:latest .",
     "typecheck": "bunx tsc --noEmit",
-    "build": "bun run build.ts",
     "deploy": "bun run deploy.ts",
     "db:view": "NODE_ENV=development bun --bun run src/server/db/drizzleStudioLocal.ts",
     "db:init": "NODE_ENV=development bun --bun run initDevDb.ts",

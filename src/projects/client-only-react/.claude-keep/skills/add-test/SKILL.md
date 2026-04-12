@@ -8,11 +8,11 @@ argument-hint: "[file-or-feature]"
 
 ## Test Pyramid
 
-| Level           | Tool                                      | When                      |
-|-----------------|-------------------------------------------|---------------------------|
-| Component       | happy-dom + @testing-library/react        | Testing UI behavior       |
-| Unit            | Bun test (no DOM)                         | Pure logic/utils only     |
-| E2E             | Playwright                                | Critical user paths only  |
+| Level     | Tool                               | When                     |
+|-----------|------------------------------------|--------------------------|
+| Component | happy-dom + @testing-library/react | Testing UI behavior      |
+| Unit      | Bun test (no DOM)                  | Pure logic/utils only    |
+| E2E       | Playwright                         | Critical user paths only |
 
 ## File Naming
 

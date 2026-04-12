@@ -10,10 +10,10 @@ argument-hint: "[route-path]"
 
 - Route name/path?
 - Needs search params?
-- Code-split (lazy)? Default: yes for larger features.
+- Code-split (lazy)? Default: yes for non-trivial pages.
 - Colocated components needed?
 
-## Public Route (no code-split)
+## Standard Route
 
 `src/routes/about.tsx`:
 ```ts
@@ -28,7 +28,9 @@ function AboutPage() {
 }
 ```
 
-## Code-Split Route
+## Code-Split Route (lazy)
+
+Use for non-trivial pages to keep the initial bundle small.
 
 `src/routes/items/route.tsx`:
 ```ts
@@ -49,6 +51,30 @@ function ItemsPage() {
   return <div>Items</div>
 }
 ```
+
+## Layout Route
+
+Use underscore-prefixed directories to group routes under a shared layout without affecting the URL.
+
+`src/routes/_layout.tsx`:
+```ts
+import {createFileRoute, Outlet} from '@tanstack/react-router'
+
+export const Route = createFileRoute('/_layout')({
+  component: LayoutComponent,
+})
+
+function LayoutComponent() {
+  return (
+    <div>
+      <nav>{/* shared nav */}</nav>
+      <Outlet />
+    </div>
+  )
+}
+```
+
+Child routes go in `src/routes/_layout/` and render inside the `<Outlet />`.
 
 ## Search Params
 

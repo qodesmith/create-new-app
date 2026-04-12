@@ -8,12 +8,12 @@ argument-hint: "[component-name]"
 
 ## Determine Location
 
-| Type             | Location                            | When                       |
-|------------------|-------------------------------------|----------------------------|
-| Shadcn           | `src/components/ui/`                | Standard UI primitive      |
-| 3rd-party Shadcn | `src/components/ui/`                | From shadcn registry/community |
-| Custom shared    | `src/components/custom/`            | Reusable across routes     |
-| Colocated        | Next to route file, `-Name.tsx`     | Route-specific only        |
+| Type             | Location                        | When                           |
+|------------------|---------------------------------|--------------------------------|
+| Shadcn           | `src/client/components/ui/`     | Standard UI primitive          |
+| 3rd-party Shadcn | `src/client/components/ui/`     | From shadcn registry/community |
+| Custom shared    | `src/client/components/custom/` | Reusable across routes         |
+| Colocated        | Next to route file, `-Name.tsx` | Route-specific only            |
 
 ## Shadcn — Install From Registry
 
@@ -34,11 +34,11 @@ Add URL comment at top of file for housekeeping:
 
 ## Custom Shared Component
 
-`src/components/custom/MyWidget.tsx`:
+`src/client/components/custom/MyWidget.tsx`:
 ```tsx
-import {cn} from '@/lib/utils'
-import {Button} from '@/components/ui/button'
-import {Card, CardContent} from '@/components/ui/card'
+import {cn} from '@/client/lib/utils'
+import {Button} from '@/client/components/ui/button'
+import {Card, CardContent} from '@/client/components/ui/card'
 
 export function MyWidget({className}: {className?: string}) {
   return (
@@ -55,7 +55,7 @@ Build custom components ON TOP of Shadcn primitives.
 
 ## Colocated Route Component
 
-`src/routes/items/-ItemCard.tsx`:
+`src/client/routes/_authenticated/items/-ItemCard.tsx`:
 ```tsx
 export function ItemCard({title}: {title: string}) {
   return <div>{title}</div>

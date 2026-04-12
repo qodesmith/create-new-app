@@ -1,6 +1,6 @@
 import type {MirrorMap} from '@/shared/types'
 
-import {getEnvVar} from './utils/getEnvVar'
+import {getEnvVar} from '@/server/utils/getEnvVar'
 
 export const port = getEnvVar('PORT')
 

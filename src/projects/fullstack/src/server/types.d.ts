@@ -1,9 +1,9 @@
-import type * as appSchema from './db/schema/appSchema'
-import type * as authSchema from './db/schema/authSchema'
+import type * as appSchema from '@/server/db/schema/appSchema'
+import type * as authSchema from '@/server/db/schema/authSchema'
 
-export type {auth} from './db/auth/auth'
-export type {HonoAuthServer} from './hono/authRoutes'
-export type {HonoServer} from './hono/honoServer'
+export type {auth} from '@/server/db/auth/auth'
+export type {HonoAuthServer} from '@/server/hono/authRoutes'
+export type {HonoServer} from '@/server/hono/honoServer'
 
 export type AppSchemaInsert = {
   [K in keyof typeof appSchema as '$inferInsert' extends keyof (typeof appSchema)[K]

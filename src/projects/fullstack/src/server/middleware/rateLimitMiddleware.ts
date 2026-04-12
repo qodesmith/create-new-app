@@ -51,5 +51,5 @@ export function getRateLimitMiddleware({
           return ipAddress
         },
       })
-    : devMiddleware
+    : devMiddleware // Rate limiting in dev just gets in the way.
 }

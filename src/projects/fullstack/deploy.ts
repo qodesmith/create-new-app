@@ -25,7 +25,7 @@ const hasBetterAuthSecret = !!flySecrets.find(
 if (!hasBetterAuthSecret) {
   const betterAuthSecret = randomBytes(32).toString('hex')
 
-  log.text('Setting Fly secret for BETTER_AUTH_SECRET:', betterAuthSecret)
+  log.text('Setting Fly secret for BETTER_AUTH_SECRET...')
   await $`fly secrets set BETTER_AUTH_SECRET=${betterAuthSecret}`
 }
 

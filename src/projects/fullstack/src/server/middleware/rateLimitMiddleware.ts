@@ -23,11 +23,16 @@ export function getRateLimitMiddleware({
         standardHeaders: 'draft-6',
         keyGenerator: c => {
           const info = getConnInfo(c)
+
+          /**
+           * Proxy-set headers are checked first because in production
+           * `remote.address` is typically the proxy's IP, not the client's.
+           */
           const ipAddress =
-            info.remote.address ||
-            c.req.header('x-forwarded-for') ||
+            c.req.header('cf-connecting-ip') ||
+            c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ||
             c.req.header('x-real-ip') ||
-            c.req.header('cf-connecting-ip') || // Cloudflare
+            info.remote.address ||
             'unknown'
 
           if (ipAddress === 'unknown' && logUnknownError) {

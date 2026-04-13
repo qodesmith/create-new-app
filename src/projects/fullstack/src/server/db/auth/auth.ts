@@ -230,6 +230,10 @@ export const authOptions = {
     },
     changeEmail: {
       enabled: true,
+      /**
+       * Why is this commented out? See my this comment in this Github issue:
+       * https://github.com/better-auth/better-auth/issues/3742#issuecomment-3975435786
+       */
       // sendChangeEmailVerification: async (
       //   {user, newEmail, url, token: _token},
       //   _request

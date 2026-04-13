@@ -1,9 +1,11 @@
+import {isProdEnv} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {errorsTable} from '@/server/db/schema/appSchema'
 import {adminRoutes} from '@/server/hono/adminRoutes'
 import {authRoutes} from '@/server/hono/authRoutes'
 import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRoutes'
+import indexHtml from '@/server/index.html'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
 import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
 import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddleware'
@@ -15,6 +17,8 @@ import {errorToObject, getUnitInMs} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
 import {Hono} from 'hono'
 import {csrf} from 'hono/csrf'
+
+let indexHtmlString: string | undefined
 
 export type HonoServer = typeof honoServer
 
@@ -125,21 +129,26 @@ export const honoServer = new Hono()
   // NOT FOUND / ERROR HANDLING //
   ////////////////////////////////
 
-  /**
-   * In production we simply return the `index.html` file to allow client-side
-   * routing to take control.
-   *
-   * Bun will build all the static assets, including the `index.html` file, on
-   * the fly when the `/` route is requested. That build result is inaccessible
-   * to Hono so we simply make a fetch call to get the text and serve it. This
-   * will allow client-side routing to take control.
-   */
+  // Return the index.html file contents to let client-side routing take effect.
   .notFound(async c => {
-    const homeUrl = new URL(c.req.url).origin
-    const res = await fetch(homeUrl)
-    const html = await res.text()
+    if (!indexHtmlString) {
+      if (isProdEnv) {
+        indexHtmlString = await Bun.file(indexHtml.index).text()
+      } else {
+        /**
+         * In dev, Bun will build all the static assets, including the
+         * `index.html` file, on the fly when the `/` route is requested. That
+         * build result is inaccessible to Hono so we simply make a fetch call
+         * to get the text and serve it. This will allow client-side routing to
+         * take control.
+         */
+        const homeUrl = new URL(c.req.url).origin
+        const res = await fetch(homeUrl)
+        indexHtmlString = await res.text()
+      }
+    }
 
-    return c.html(html)
+    return c.html(indexHtmlString)
   })
   .onError((error, c) => {
     const db = getDatabase()

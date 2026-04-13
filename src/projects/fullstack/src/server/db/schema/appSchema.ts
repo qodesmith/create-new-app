@@ -38,11 +38,11 @@ import {users} from './authSchema'
 
 const commonFields = {
   id: integer().primaryKey({autoIncrement: true}),
-  updatedAt: integer({mode: 'timestamp'})
+  updatedAt: integer({mode: 'timestamp_ms'})
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date())
     .notNull(),
-  createdAt: integer({mode: 'timestamp'})
+  createdAt: integer({mode: 'timestamp_ms'})
     .$defaultFn(() => new Date())
     .notNull(),
 } as const

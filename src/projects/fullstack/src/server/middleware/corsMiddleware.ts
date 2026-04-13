@@ -1,7 +1,6 @@
 import {isProd, localOriginList, prodOriginList} from '@/server/constants'
 
 import {cors} from 'hono/cors'
-import {createMiddleware} from 'hono/factory'
 
 /**
  * What is a cross-origin request?
@@ -14,7 +13,7 @@ import {createMiddleware} from 'hono/factory'
  * 2. Host (domain)     - example.com vs api.example.com
  * 3. Port              - :80 vs :9001
  */
-const corsHandler = cors({
+export const corsMiddleware = cors({
   /**
    * HEADER - Access-Control-Allow-Origin
    * Specifies which origins (domains) are allowed to access the resource.
@@ -89,8 +88,4 @@ const corsHandler = cors({
    * cannot read them even though they're in the response.
    */
   exposeHeaders: [],
-})
-
-export const corsMiddleware = createMiddleware(async (c, next) => {
-  return corsHandler(c, next)
 })

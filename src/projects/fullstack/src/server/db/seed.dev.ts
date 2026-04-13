@@ -62,7 +62,7 @@ if (nodeEnv) {
 
     if (!user) {
       log.text('Creating a verified user in the development database...')
-      const newAdmin = await auth.api.createUser({
+      const basicUser = await auth.api.createUser({
         body: {
           name: 'Basic',
           email: 'user@example.com',
@@ -75,7 +75,7 @@ if (nodeEnv) {
       })
 
       await auth.api.sendVerificationEmail({
-        body: {email: newAdmin.user.email},
+        body: {email: basicUser.user.email},
       })
 
       await auth.api.verifyEmail({query: {token}})

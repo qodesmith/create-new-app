@@ -13,7 +13,7 @@ COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
 COPY build.ts bunfig.toml ./
-COPY {{PROJECT_NAME}}.sqlite ./{{PROJECT_NAME}}.sqlite
+COPY {{PROJECT_NAME}}.sqlite* ./
 COPY src ./src/
 
 RUN NODE_ENV=production bun --bun run ./build.ts
@@ -66,11 +66,25 @@ COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
 
 FROM oven/bun:alpine
 
+# vips is required by sharp for image processing
+RUN apk add --no-cache vips
+
 WORKDIR /app
 
 COPY bunfig.toml /app
 COPY --from=mainapp /dist /app/
+COPY --from=mainapp /app/fullstack.sqlite* /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
+
+# Sharp is used to resize/convert avatar uploads to WebP. It has 3 runtime
+# dependencies: @img (platform-specific native binary + colour util),
+# detect-libc, and semver. Because sharp relies on a native .node addon that
+# can't be inlined by a JS bundler, we mark it as external in build.ts and copy
+# it with its dependencies from the build stage's node_modules.
+COPY --from=mainapp /app/node_modules/sharp /app/node_modules/sharp
+COPY --from=mainapp /app/node_modules/@img /app/node_modules/@img
+COPY --from=mainapp /app/node_modules/detect-libc /app/node_modules/detect-libc
+COPY --from=mainapp /app/node_modules/semver /app/node_modules/semver
 
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/
@@ -84,6 +98,7 @@ ENV PORT=${PORT}
 ENV NODE_ENV=production
 ENV SQLITE_PATH=/app/{{PROJECT_NAME}}.sqlite
 ENV DOMAIN={{PROJECT_NAME}}.com
+ENV BETTER_AUTH_SECRET=fake_better_auth_secret_only_for_local_containers
 ENV TZ=America/New_York
 ENV IS_LOCAL_CONTAINER=true
 

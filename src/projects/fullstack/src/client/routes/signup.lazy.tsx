@@ -25,7 +25,8 @@ export const Route = createLazyFileRoute('/signup')({
 
 function SignUpPage() {
   const router = useRouter()
-  const namePattern = '[a-zA-Z\\s]+'
+  // Matches the server-side pattern in auth.ts
+  const namePattern = '[a-zA-Z ]{2,}'
   const authClient = useAtomValue(authClientAtom)
   const apiClient = useAtomValue(apiClientAtom)
 

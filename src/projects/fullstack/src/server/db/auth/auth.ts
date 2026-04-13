@@ -53,7 +53,6 @@ export const authOptions = {
       if (ctx.path === '/sign-up/email') {
         const email = ctx.body.email as string | undefined
         const name = ctx.body.name as string | undefined
-        // TODO - decide to keep lastName in the user schema or not.
         const lastName = ctx.body.lastName as string | undefined
         const password = ctx.body.password as string | undefined
 
@@ -223,7 +222,6 @@ export const authOptions = {
 
   user: {
     additionalFields: {
-      // TODO - decide to keep lastName in the user schema or not.
       lastName: {
         type: 'string',
         required: true,

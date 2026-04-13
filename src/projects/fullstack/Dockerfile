@@ -52,7 +52,7 @@ COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
 FROM oven/bun:alpine
 
 # ca-certificates, fuse3, and sqlite are needed for LiteFS to work.
-# curl is insatlled just for convenience.
+# curl is installed just for convenience.
 # vips is required by sharp for image processing
 RUN apk add --no-cache ca-certificates fuse3 sqlite curl vips
 

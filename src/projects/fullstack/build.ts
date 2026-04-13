@@ -69,16 +69,16 @@ const newHtml = indexHtml
   .replaceAll('href="./', 'href="/')
 await Bun.write(`${outdir}/index.html`, newHtml)
 
-const assets: StaticAsset[] = []
-
 // Aggregate static assets that are not protected.
-buildAssets.outputs.forEach(output => {
+const assets = buildAssets.outputs.reduce<StaticAsset[]>((acc, output) => {
   const {base: fileName} = path.parse(output.path)
 
   // Avoid creating a Hono route for excluded assets - Bun already serves these.
   if (!excludedAssetsFromHonoServer.includes(fileName)) {
-    assets.push({fileName, isProtected: false})
+    acc.push({fileName, isProtected: false})
   }
+
+  return acc
 }, [])
 
 /**

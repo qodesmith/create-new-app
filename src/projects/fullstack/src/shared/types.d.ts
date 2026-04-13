@@ -65,6 +65,8 @@ export type ErrorContext =
   | 'resend:sendResetPasswordEmailException'
   | 'resend:sendChangePasswordEmailRejection'
   | 'resend:sendChangePasswordEmailException'
+  | 'resend:sendChangeEmailRejection'
+  | 'resend:sendChangeEmailException'
 
   // Client
   | 'client:topLevelException'

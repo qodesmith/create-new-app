@@ -163,8 +163,8 @@ export const authOptions = {
             verificationUrl: url,
             newEmail: user.email,
           }),
-          rejectionContext: 'resend:sendChangePasswordEmailRejection',
-          exceptionContext: 'resend:sendChangePasswordEmailException',
+          rejectionContext: 'resend:sendChangeEmailRejection',
+          exceptionContext: 'resend:sendChangeEmailException',
         })
       }
     },

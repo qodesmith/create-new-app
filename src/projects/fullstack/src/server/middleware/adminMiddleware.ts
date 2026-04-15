@@ -14,11 +14,11 @@ export const adminMiddleware = every(
 
     if (!user) {
       // Auth middleware was not run or the user is not authenticated.
-      return c.json('Unauthorized', 401)
+      return c.json({error: 'Unauthorized'}, 401)
     }
 
     if (!isAdminUser(user)) {
-      return c.json('Forbidden', 403)
+      return c.json({error: 'Forbidden'}, 403)
     }
 
     await next()

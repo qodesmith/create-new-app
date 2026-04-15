@@ -213,14 +213,6 @@ export const authOptions = {
     },
   },
 
-  session: {
-    // https://www.better-auth.com/docs/concepts/session-management#cookie-cache
-    cookieCache: {
-      enabled: true,
-      maxAge: getUnitInSeconds(1, 'h'),
-    },
-  },
-
   user: {
     additionalFields: {
       lastName: {

@@ -14,6 +14,7 @@ import {AccountAvatar} from './-AccountAvatar'
 import {Appearance} from './-Appearance'
 import {ChangeEmail} from './-ChangeEmail'
 import {ChangePassword} from './-ChangePassword'
+import {DeleteAccount} from './-DeleteAccount'
 import {Passkeys} from './-Passkeys'
 
 export const Route = createLazyFileRoute('/_authenticated/account')({
@@ -54,9 +55,17 @@ function AccountPage() {
         </AccountCard>
       </section>
 
+      {/* ADD PASSKEY */}
       <section>
         <AccountCard title="Passkeys">
           <Passkeys />
+        </AccountCard>
+      </section>
+
+      {/* DELETE ACCOUNT */}
+      <section>
+        <AccountCard title="Delete account">
+          <DeleteAccount />
         </AccountCard>
       </section>
     </div>

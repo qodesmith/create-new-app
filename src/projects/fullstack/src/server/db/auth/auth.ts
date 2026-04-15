@@ -15,6 +15,7 @@ import {
 import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
 import ChangeEmailVerificationEmail from '@/server/email/ChangeEmailVerificationEmail'
+import DeleteAccountVerificationEmail from '@/server/email/DeleteAccountVerificationEmail'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
 import SignUpVerificationEmail from '@/server/email/SignUpVerificationEmail'
 import {sendEmail} from '@/server/email/sendEmail'
@@ -249,8 +250,19 @@ export const authOptions = {
     },
     deleteUser: {
       enabled: true,
-      sendDeleteAccountVerification: async (_data, _request) => {
-        // TODO - integrate email client solution
+      sendDeleteAccountVerification: async (
+        {user, url, token: _token},
+        _request
+      ) => {
+        void sendEmail({
+          user,
+          subject: 'Confirm account deletion',
+          react: DeleteAccountVerificationEmail({verificationUrl: url}),
+          rejectionContext:
+            'resend:sendDeleteAccountVerificationEmailRejection',
+          exceptionContext:
+            'resend:sendDeleteAccountVerificationEmailException',
+        })
       },
     },
   },

@@ -67,6 +67,8 @@ export type ErrorContext =
   | 'resend:sendChangePasswordEmailException'
   | 'resend:sendChangeEmailRejection'
   | 'resend:sendChangeEmailException'
+  | 'resend:sendDeleteAccountVerificationEmailRejection'
+  | 'resend:sendDeleteAccountVerificationEmailException'
 
   // Client
   | 'client:topLevelException'
@@ -94,6 +96,8 @@ export type ErrorContext =
   | 'client:passkeyDeleteException'
   | 'client:passkeyRenameRejection'
   | 'client:passkeyRenameException'
+  | 'client:deleteAccountRejection'
+  | 'client:deleteAccountException'
   | 'client:passkeyListRejection'
   | 'client:passkeyListException'
   | 'client:passkeySignInRejection'

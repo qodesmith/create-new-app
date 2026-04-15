@@ -97,4 +97,19 @@ const form = useForm({
 Field → `form.Field`, submit → `form.Subscribe` for button state.
 See `signup.lazy.tsx` for complete example.
 
+### Password Manager Autofill
+
+For forms with password fields but no visible username or email field (e.g. change-password, delete-account), include `<PasswordManagerHint />` so password managers can associate the username with the password field:
+
+```tsx
+import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
+
+<form>
+  <PasswordManagerHint />
+  <PasswordInput autoComplete="current-password" />
+</form>
+```
+
+Not needed when the form already has a username or email field (e.g. login, signup).
+
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

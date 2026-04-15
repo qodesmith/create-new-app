@@ -1,4 +1,5 @@
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
+import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
 import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
 import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
@@ -67,14 +68,7 @@ export function ChangePassword() {
         changePasswordForm.handleSubmit()
       }}
     >
-      <input
-        type="text"
-        name="username"
-        autoComplete="username"
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden="true"
-      />
+      <PasswordManagerHint />
       <changePasswordForm.Field name="currentPassword">
         {field => (
           <PasswordInput

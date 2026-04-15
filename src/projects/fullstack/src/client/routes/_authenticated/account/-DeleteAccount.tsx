@@ -1,6 +1,7 @@
 import type {FileRouteTypes} from '@/client/routeTree.gen'
 
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
+import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
 import {
   Dialog,
@@ -94,14 +95,7 @@ export function DeleteAccount() {
               form.handleSubmit()
             }}
           >
-            <input
-              type="text"
-              name="username"
-              autoComplete="username"
-              className="sr-only"
-              tabIndex={-1}
-              aria-hidden="true"
-            />
+            <PasswordManagerHint />
             <form.Field name="password">
               {field => (
                 <PasswordInput

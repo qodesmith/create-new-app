@@ -94,8 +94,6 @@ export type ErrorContext =
   | 'client:passkeyAddException'
   | 'client:passkeyDeleteRejection'
   | 'client:passkeyDeleteException'
-  | 'client:passkeyRenameRejection'
-  | 'client:passkeyRenameException'
   | 'client:deleteAccountRejection'
   | 'client:deleteAccountException'
   | 'client:passkeyListRejection'

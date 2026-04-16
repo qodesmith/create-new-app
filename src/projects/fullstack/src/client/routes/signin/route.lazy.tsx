@@ -54,6 +54,11 @@ function SignInPage() {
 
         if (result.error) {
           toast.error(result.error.message || 'Failed to sign in')
+          logClientError({
+            error: result.error,
+            context: 'client:signInRejection',
+            apiClient,
+          })
           return
         }
 

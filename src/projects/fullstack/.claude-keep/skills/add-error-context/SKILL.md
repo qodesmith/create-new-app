@@ -46,3 +46,5 @@ Format: `<service>:<operation><Suffix>`
 - All names are camelCase after the colon
 - Place new entries in the correct section (Server or Client) with a comment if starting a new group
 - Check existing entries in the union to match naming style
+
+See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

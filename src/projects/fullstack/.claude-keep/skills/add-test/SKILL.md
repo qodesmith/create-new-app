@@ -10,12 +10,12 @@ argument-hint: "[file-or-feature]"
 
 Thick API integration middle, thin unit tests, small E2E suite.
 
-| Level           | Tool                                      | When                      |
-|-----------------|-------------------------------------------|---------------------------|
-| API integration | Hono `testClient` + SQLite `:memory:`     | Testing endpoints         |
-| Component       | happy-dom + @testing-library/react        | Testing UI behavior       |
-| Unit            | Bun test (no DOM)                         | Pure logic/utils only     |
-| E2E             | Playwright                                | Critical user paths only  |
+| Level           | Tool                                  | When                     |
+|-----------------|---------------------------------------|--------------------------|
+| API integration | Hono `testClient` + SQLite `:memory:` | Testing endpoints        |
+| Component       | happy-dom + @testing-library/react    | Testing UI behavior      |
+| Unit            | Bun test (no DOM)                     | Pure logic/utils only    |
+| E2E             | Playwright                            | Critical user paths only |
 
 ## File Naming
 

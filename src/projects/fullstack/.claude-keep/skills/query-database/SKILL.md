@@ -17,12 +17,12 @@ const db = getDatabase()
 
 SQLite is synchronous. Drizzle exposes sync APIs — always prefer these over async:
 
-| Terminator   | Returns                        | Use for                              |
-|--------------|--------------------------------|--------------------------------------|
-| `.all()`     | Array of objects               | SELECT returning multiple rows       |
-| `.get()`     | Single object or `undefined`   | SELECT expecting one row             |
-| `.values()`  | Array of raw value arrays      | Raw data without object overhead     |
-| `.run()`     | Execution metadata             | INSERT/UPDATE/DELETE without results |
+| Terminator  | Returns                      | Use for                              |
+|-------------|------------------------------|--------------------------------------|
+| `.all()`    | Array of objects             | SELECT returning multiple rows       |
+| `.get()`    | Single object or `undefined` | SELECT expecting one row             |
+| `.values()` | Array of raw value arrays    | Raw data without object overhead     |
+| `.run()`    | Execution metadata           | INSERT/UPDATE/DELETE without results |
 
 ## Common Patterns
 

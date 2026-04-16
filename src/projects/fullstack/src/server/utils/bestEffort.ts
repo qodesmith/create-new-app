@@ -5,6 +5,7 @@ import {errorToObject} from '@qodestack/utils'
 /**
  * Executes a callback and swallows any errors, logging them instead of throwing.
  * Useful for non-critical operations where failure shouldn't break the flow.
+ * Failures are intentionally silent, hence the name "best effort".
  *
  * @param cb - Sync or async callback to execute
  * @returns The callback result, or undefined if an error occurred

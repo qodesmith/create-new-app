@@ -9,6 +9,7 @@ import {
 } from '@/client/components/ui/card'
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
+import {Separator} from '@/client/components/ui/separator'
 import {defaultAuthedPath} from '@/client/constants'
 import {isValidRoute} from '@/client/lib/isValidRoute'
 import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
@@ -23,6 +24,8 @@ import {minPasswordLength} from '@/shared/constants'
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
+import {Fingerprint} from 'lucide-react'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 export const Route = createLazyFileRoute('/signin')({
@@ -38,6 +41,41 @@ function SignInPage() {
   const redirectPath = isValidRoute(router, redirect)
     ? redirect
     : defaultAuthedPath
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
+
+  const handlePasskeySignIn = async () => {
+    setIsPasskeyLoading(true)
+
+    try {
+      const result = await authClient.signIn.passkey()
+
+      if (result?.error) {
+        toast.error(result.error.message || 'Failed to sign in with passkey')
+        logClientError({
+          error: result.error,
+          context: 'client:passkeySignInRejection',
+          apiClient,
+        })
+        return
+      }
+
+      setIsSignedIn(true)
+      await router.navigate({to: redirectPath})
+    } catch (error) {
+      const isWebAuthnCancellation =
+        error instanceof DOMException && error.name === 'NotAllowedError'
+      if (isWebAuthnCancellation) return
+
+      toast.error('Failed to sign in with passkey')
+      logClientError({
+        error,
+        context: 'client:passkeySignInException',
+        apiClient,
+      })
+    } finally {
+      setIsPasskeyLoading(false)
+    }
+  }
 
   const form = useForm({
     defaultValues: {
@@ -150,7 +188,7 @@ function SignInPage() {
               {({canSubmit, isSubmitting}) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting}
+                  disabled={!canSubmit || isSubmitting || isPasskeyLoading}
                   className="w-full"
                 >
                   {isSubmitting ? (
@@ -162,6 +200,29 @@ function SignInPage() {
               )}
             </form.Subscribe>
           </form>
+
+          <div className="relative flex py-6">
+            <Separator />
+            <span className="text-muted-foreground text-xs">or</span>
+            <Separator />
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handlePasskeySignIn}
+            disabled={isPasskeyLoading || form.state.isSubmitting}
+          >
+            {isPasskeyLoading ? (
+              <AudioLoader width={20} height={20} gap={1} rounded={2} />
+            ) : (
+              <>
+                <Fingerprint className="mr-2 size-4" />
+                Sign in with passkey
+              </>
+            )}
+          </Button>
 
           <div className="pt-6 text-center text-muted-foreground text-sm">
             <p>

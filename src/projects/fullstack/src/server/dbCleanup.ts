@@ -10,7 +10,7 @@ import {emailVerificationExpiryInMs} from '@/shared/constants'
 import {getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
-const cleanupIntervalMs = getUnitInMs(1, 'h')
+const oneHourInMs = getUnitInMs(1, 'h')
 let started = false
 
 /**
@@ -39,7 +39,7 @@ function purgeStaleRecords() {
 
   const staleRateLimits = db
     .delete(ratelimits)
-    .where(lt(ratelimits.lastRequest, now - cleanupIntervalMs))
+    .where(lt(ratelimits.lastRequest, now - oneHourInMs))
     .returning()
     .all()
 
@@ -73,5 +73,5 @@ export function startDbCleanup() {
   }
 
   bestEffort(purgeStaleRecords)
-  setInterval(() => bestEffort(purgeStaleRecords), cleanupIntervalMs)
+  setInterval(() => bestEffort(purgeStaleRecords), oneHourInMs)
 }

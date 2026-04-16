@@ -16,11 +16,11 @@ argument-hint: "[endpoint-description]"
 
 ## Route Group Selection
 
-| Auth level     | File              | Variable         | Middleware        |
-|----------------|-------------------|------------------|-------------------|
-| Authenticated  | `authRoutes.ts`   | `authRoutes`     | `authMiddleware`  |
-| Admin-only     | `adminRoutes.ts`  | `adminRoutes`    | `adminMiddleware` |
-| Public         | `honoServer.ts`   | `honoServer`     | None              |
+| Auth level    | File             | Variable      | Middleware        |
+|---------------|------------------|---------------|-------------------|
+| Authenticated | `authRoutes.ts`  | `authRoutes`  | `authMiddleware`  |
+| Admin-only    | `adminRoutes.ts` | `adminRoutes` | `adminMiddleware` |
+| Public        | `honoServer.ts`  | `honoServer`  | None              |
 
 All in `src/server/hono/`.
 
@@ -81,6 +81,36 @@ For non-critical async operations, use the `bestEffort` server utility, guarante
 ```ts
 import {bestEffort} from '@/server/utils/bestEffort'
 bestEffort(() => asyncOp())
+```
+
+## Transactions
+
+Use `db.transaction()` when an endpoint performs multiple DB writes that must succeed or fail together. If any operation inside the callback throws, all changes roll back automatically.
+
+**When to use:** Multiple related inserts/updates/deletes where partial completion would leave data inconsistent (e.g., delete records + log the action).
+
+**When NOT to use:** Single DB operations (already atomic), multiple independent operations on unrelated tables where partial failure is acceptable, or non-DB side effects like file I/O that can't participate in a SQLite transaction.
+
+```ts
+.delete('/items', async c => {
+  const user = c.get('user')
+  const db = getDatabase()
+
+  const result = db.transaction(tx => {
+    const deleted = tx.delete(itemsTable)
+      .where(eq(itemsTable.userId, user.id))
+      .returning()
+      .all()
+
+    tx.insert(adminAuditLogsTable)
+      .values({userId: user.id, metadata: {deletedCount: deleted.length}})
+      .run()
+
+    return deleted
+  })
+
+  return c.json({deleted: result.length})
+})
 ```
 
 ## Querying the Database

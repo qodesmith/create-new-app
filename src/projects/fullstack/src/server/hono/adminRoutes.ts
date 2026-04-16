@@ -1,4 +1,7 @@
+import type {SessionData} from '@/server/db/auth/auth'
+
 import {exportDatabase, getDatabase} from '@/server/db/getDatabase'
+import {adminAuditLogsTable} from '@/server/db/schema/appSchema'
 import {users} from '@/server/db/schema/authSchema'
 import {adminMiddleware} from '@/server/middleware/adminMiddleware'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
@@ -6,7 +9,8 @@ import {emailVerificationExpiryInMs} from '@/shared/constants'
 import {and, eq, lt} from 'drizzle-orm'
 import {Hono} from 'hono'
 
-export const adminRoutes = new Hono()
+// biome-ignore lint/style/useNamingConvention: Hono uses `Variables`
+export const adminRoutes = new Hono<{Variables: SessionData}>()
   .use(adminMiddleware)
 
   /**
@@ -35,12 +39,24 @@ export const adminRoutes = new Hono()
    */
   .delete('/stale-users', c => {
     const db = getDatabase()
+    const user = c.get('user')
     const cutoff = new Date(Date.now() - emailVerificationExpiryInMs)
-    const result = db
-      .delete(users)
-      .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
-      .returning()
-      .all()
+    const result = db.transaction(tx => {
+      const deleted = tx
+        .delete(users)
+        .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
+        .returning()
+        .all()
+
+      tx.insert(adminAuditLogsTable)
+        .values({
+          userId: user.id,
+          metadata: {action: 'purge-stale-users', deletedCount: deleted.length},
+        })
+        .run()
+
+      return deleted
+    })
 
     return c.json({deleted: result.length})
   })
@@ -48,7 +64,14 @@ export const adminRoutes = new Hono()
   /**
    * Download the database for backup.
    */
-  .get('/backup-database', _c => {
+  .get('/backup-database', c => {
+    const db = getDatabase()
+    const user = c.get('user')
+
+    db.insert(adminAuditLogsTable)
+      .values({userId: user.id, metadata: {action: 'download-database'}})
+      .run()
+
     const {bunFile, fileName} = exportDatabase()
 
     return new Response(bunFile, {

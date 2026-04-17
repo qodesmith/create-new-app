@@ -131,24 +131,23 @@ export const honoServer = new Hono()
 
   // Return the index.html file contents to let client-side routing take effect.
   .notFound(async c => {
-    if (!indexHtmlString) {
-      if (isProdEnv) {
-        indexHtmlString = await Bun.file(indexHtml.index).text()
-      } else {
-        /**
-         * In dev, Bun will build all the static assets, including the
-         * `index.html` file, on the fly when the `/` route is requested. That
-         * build result is inaccessible to Hono so we simply make a fetch call
-         * to get the text and serve it. This will allow client-side routing to
-         * take control.
-         */
-        const homeUrl = new URL(c.req.url).origin
-        const res = await fetch(homeUrl)
-        indexHtmlString = await res.text()
-      }
+    if (isProdEnv) {
+      indexHtmlString ??= await Bun.file(indexHtml.index).text()
+      return c.html(indexHtmlString)
     }
 
-    return c.html(indexHtmlString)
+    /**
+     * IN DEV ONLY...
+     *
+     * Bun will build all the static assets, including `index.html`, on the fly
+     * when `/` is requested. Hono has no access to that build result so we
+     * simply make a fetch call to get the text and serve it. This will allow
+     * client-side routing to take control. We have to fetch fresh HTML on every
+     * request because Bun generates new bundle hashes on each rebuild.
+     */
+    const homeUrl = new URL(c.req.url).origin
+    const res = await fetch(homeUrl)
+    return c.html(await res.text())
   })
   .onError((error, c) => {
     const db = getDatabase()

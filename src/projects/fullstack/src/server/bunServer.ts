@@ -40,25 +40,25 @@ const prodIndexHtmlContent = isProd
   ? await Bun.file(indexHtml.index).text()
   : null
 
+/**
+ * In production, we wrap the response with security headers since Bun's
+ * `routes` bypass Hono (and its `secureHeaders` middleware) entirely.
+ *
+ * In development, we use the plain import to preserve Bun's HMR injection.
+ * Security headers in dev are handled by Hono for all non-`/` routes.
+ */
+const indexHandler = isProd
+  ? () =>
+      new Response(prodIndexHtmlContent, {
+        headers: {
+          ...prodSecurityHeaders,
+          'Content-Type': 'text/html;charset=utf-8',
+        },
+      })
+  : indexHtml
+
 const bunServer = serve({
-  routes: {
-    /**
-     * In production, we wrap the response with security headers since Bun's
-     * `routes` bypass Hono (and its `secureHeaders` middleware) entirely.
-     *
-     * In development, we use the plain import to preserve Bun's HMR injection.
-     * Security headers in dev are handled by Hono for all non-`/` routes.
-     */
-    '/': isProd
-      ? () =>
-          new Response(prodIndexHtmlContent, {
-            headers: {
-              ...prodSecurityHeaders,
-              'Content-Type': 'text/html;charset=utf-8',
-            },
-          })
-      : indexHtml,
-  },
+  routes: {'/': indexHandler},
   fetch: honoServer.fetch,
 
   /**

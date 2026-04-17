@@ -201,10 +201,10 @@ function SignInPage() {
             </form.Subscribe>
           </form>
 
-          <div className="relative flex py-6">
-            <Separator />
-            <span className="text-muted-foreground text-xs">or</span>
-            <Separator />
+          <div className="relative flex items-center py-6">
+            <Separator className="w-auto! grow" />
+            <div className="px-2 text-muted-foreground text-xs">or</div>
+            <Separator className="w-auto! grow" />
           </div>
 
           <Button

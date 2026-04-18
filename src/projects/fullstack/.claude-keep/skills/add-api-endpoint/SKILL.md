@@ -79,7 +79,7 @@ Chain BEFORE `.notFound()` — order matters.
 For non-critical async operations, use the `bestEffort` server utility, guaranteed to not throw:
 
 ```ts
-import {bestEffort} from '@/server/utils/bestEffort'
+import {bestEffort} from '@qodestack/utils'
 bestEffort(() => asyncOp())
 ```
 

@@ -3,11 +3,10 @@ import process from 'node:process'
 import {isProd} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
-import {bestEffort} from '@/server/utils/bestEffort'
 import {log} from '@/server/utils/logger'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
-import {getUnitInMs} from '@qodestack/utils'
+import {bestEffort, getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
 const oneHourInMs = getUnitInMs(1, 'h')
@@ -72,6 +71,6 @@ export function startDbCleanup() {
     }
   }
 
-  bestEffort(purgeStaleRecords)
-  setInterval(() => bestEffort(purgeStaleRecords), oneHourInMs)
+  bestEffort(purgeStaleRecords, {log: true})
+  setInterval(() => bestEffort(purgeStaleRecords, {log: true}), oneHourInMs)
 }

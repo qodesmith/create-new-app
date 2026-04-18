@@ -45,8 +45,7 @@ logClientError({error, context: 'client:featureNameException', apiClient})
 
 Server:
 ```ts
-import {bestEffort} from '@/server/utils/bestEffort'
-import {errorToObject} from '@qodestack/utils'
+import {bestEffort, errorToObject} from '@qodestack/utils'
 
 bestEffort(() => {
   db.insert(errorsTable)

@@ -17,15 +17,18 @@ import {isSignedInAtom} from '@/client/state/globalState'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {RouterProvider} from '@tanstack/react-router'
 import {createStore, Provider as JotaiProvider} from 'jotai'
-import {StrictMode, useRef, useState} from 'react'
+import {StrictMode, useState} from 'react'
 import {createRoot} from 'react-dom/client'
 
 import '@/client/app.css'
 
 // biome-ignore lint/style/useComponentExportOnlyModules: it's ok here
 function AppContainer({isSignedInOnAppLoad}: {isSignedInOnAppLoad: boolean}) {
-  const hasSetLoggedInRef = useRef(false)
-  const [store, setStore] = useState(() => createStore())
+  const [store, setStore] = useState(() => {
+    const s = createStore()
+    s.set(isSignedInAtom, isSignedInOnAppLoad)
+    return s
+  })
   const router = useStable(() => createTanstackRouter())
   const queryClient = useStable(() => createQueryClient())
   const resetApp = useStable(() => {
@@ -40,11 +43,6 @@ function AppContainer({isSignedInOnAppLoad}: {isSignedInOnAppLoad: boolean}) {
 
   // Route context is available within route loaders.
   const context: RouterContext = {router, store, queryClient, resetApp}
-
-  if (!hasSetLoggedInRef.current) {
-    hasSetLoggedInRef.current = true
-    store.set(isSignedInAtom, isSignedInOnAppLoad)
-  }
 
   return (
     <QueryClientProvider client={queryClient}>

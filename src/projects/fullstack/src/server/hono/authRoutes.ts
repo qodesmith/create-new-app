@@ -102,8 +102,23 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
       return c.body(null, 404)
     }
 
+    const etag = `W/"${avatar.updatedAt.getTime()}"`
+
+    // Weak validator the browser echoes back as `If-None-Match` on revalidation.
+    c.header('ETag', etag)
+
+    /**
+     * Force revalidation on every request but allow 304 responses, so a new
+     * upload is seen immediately instead of being masked by a stale cache.
+     */
+    c.header('Cache-Control', 'private, no-cache')
+
+    // If the client's cached ETag still matches, skip sending the image bytes.
+    if (c.req.header('If-None-Match') === etag) {
+      return c.body(null, 304)
+    }
+
     c.header('Content-Type', avatar.mimeType)
-    c.header('Cache-Control', 'private, max-age=3600')
     return c.body(new Uint8Array(avatar.data))
   })
 

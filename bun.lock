@@ -13,7 +13,7 @@
         "@better-auth/passkey": "^1.6.5",
         "@hono/arktype-validator": "^2.0.1",
         "@libsql/client": "^0.17.2",
-        "@qodestack/utils": "^2.28.1",
+        "@qodestack/utils": "^2.29.0",
         "@react-email/components": "^1.0.12",
         "@react-email/preview-server": "5.2.10",
         "@tailwindcss/typography": "^0.5.19",
@@ -545,7 +545,7 @@
 
     "@qodestack/biome-config": ["@qodestack/biome-config@2.4.12", "", { "dependencies": { "@biomejs/biome": "2.4.11", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-smVHTp5cHPd0GfL1ViazEMtKD6zDZsU/4U57WQGNeY3zgr/lwX5Zmz906LtGcLkG8xH+SKTkJN5RIxUmpc3i0w=="],
 
-    "@qodestack/utils": ["@qodestack/utils@2.28.1", "", { "peerDependencies": { "typescript": "^6.0.3" } }, "sha512-yV07t8tMx3qzPug76EcXDynbZwf75kmjx5B6dH8pYp14fe5Ir7FO4swaKzppnVeBpbVtSLSWworWHws9US2mIQ=="],
+    "@qodestack/utils": ["@qodestack/utils@2.29.0", "", { "peerDependencies": { "typescript": "^6.0.3" } }, "sha512-OBpiV7sM8vXXwIosq1WtZ73kIvAaN6LWmCiVKXBIXQrkZkWkB2qi+FzNlZUyVsH1DTVzOpiosExS9MmXDuHv+g=="],
 
     "@radix-ui/number": ["@radix-ui/number@1.1.1", "", {}, "sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g=="],
 

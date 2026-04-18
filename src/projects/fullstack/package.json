@@ -22,7 +22,7 @@
     "@better-auth/passkey": "^1.6.5",
     "@hono/arktype-validator": "^2.0.1",
     "@libsql/client": "^0.17.2",
-    "@qodestack/utils": "^2.28.1",
+    "@qodestack/utils": "^2.29.0",
     "@react-email/components": "^1.0.12",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-form": "^1.29.0",

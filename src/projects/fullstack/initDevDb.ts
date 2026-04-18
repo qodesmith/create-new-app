@@ -1,4 +1,6 @@
 import {$} from 'bun'
+import {existsSync, readdirSync, rmdirSync} from 'node:fs'
+import path from 'node:path'
 import process from 'node:process'
 
 import {createLogger} from '@qodestack/utils'
@@ -40,6 +42,17 @@ logLine()
 /////////////////////////////////////
 // GENERATE & APPLY SQL MIGRATIONS //
 /////////////////////////////////////
+
+/**
+ * drizzle-kit only initializes `meta/_journal.json` when the `meta` directory
+ * is missing. If `meta/` exists but is empty (e.g. a stale folder from a prior
+ * aborted run), drizzle-kit skips init and then crashes reading the missing
+ * journal file. Remove an empty `meta/` so drizzle-kit can initialize it.
+ */
+const metaDir = path.resolve('src/server/db/drizzle/meta')
+if (existsSync(metaDir) && readdirSync(metaDir).length === 0) {
+  rmdirSync(metaDir)
+}
 
 /**
  * https://orm.drizzle.team/docs/drizzle-kit-generate

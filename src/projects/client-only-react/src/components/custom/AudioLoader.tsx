@@ -33,9 +33,11 @@ export const AudioLoader = memo(function AudioLoader({
   }, [speed])
 
   // Randomize the start point within the animation sequence.
-  const maxDuration = Math.max(...animationDurations)
-  const negativeAnimationDelay = getRandomNumber(maxDuration * -100, 0)
-  const animationDelay = `${negativeAnimationDelay / 100}s`
+  const animationDelay = useMemo(() => {
+    const maxDuration = Math.max(...animationDurations)
+    const negativeAnimationDelay = getRandomNumber(maxDuration * -100, 0)
+    return `${negativeAnimationDelay / 100}s`
+  }, [animationDurations])
 
   const rectData = useMemo(() => {
     // Example of 4 bars:

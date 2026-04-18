@@ -15,11 +15,25 @@ declare global {
   }
 }
 
-export type Prettify<T> = T extends Date
+type BuiltIn =
+  | Date
+  | RegExp
+  | Error
+  | Map<any, any>
+  | Set<any>
+  | WeakMap<any, any>
+  | WeakSet<any>
+  | Promise<any>
+  | ArrayBuffer
+  | ((...args: any[]) => any)
+
+export type Prettify<T> = T extends BuiltIn
   ? T
-  : T extends Record<any, any>
-    ? {[K in keyof T]: Prettify<T[K]>} & {}
-    : T
+  : T extends Array<infer U>
+    ? Prettify<U>[]
+    : T extends object
+      ? {[K in keyof T]: Prettify<T[K]>} & {}
+      : T
 
 /**
  * Maps an `as const` string array into an object where keys equals the values.

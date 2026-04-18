@@ -2,15 +2,13 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-
-    // Why do we have two entries?
-    // 1st - relative to tsconfig.base.json (satisfies Bun runtime)
-    // 2nd - relative to this file's directory (satisfies IDE / TypeScript)
     "paths": {
-      "@/server/*": ["./src/server/*", "./*"],
-      "@/shared/*": ["./src/shared/*", "../shared/*"]
+      // Used directly by server source files.
+      "@/server/*": ["./*"],
+
+      // Used directly by server source files.
+      "@/shared/*": ["../shared/*"]
     }
   },
-  "references": [{"path": "../shared"}],
-  "include": ["./**/*", "../shared/*"]
+  "include": ["./**/*"]
 }

@@ -1,17 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "paths": {
-      "@/client/*": ["./src/client/*"],
-      "@/server/*": ["./src/server/*"],
-      "@/shared/*": ["./src/shared/*"]
+      "@/server/*": ["./src/server/*"]
     }
   },
-  "references": [
-    {"path": "./src/shared"},
-    {"path": "./src/client"},
-    {"path": "./src/server"}
-  ],
-  "files": []
+  "include": ["./*.ts"]
 }

@@ -1,10 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Indicates to TypeScript that this "project" can be referenced by other
-    // "projects". This is required because the server and client tsconfigs
-    // reference this tsconfig.
-    "composite": true
+    // Server .tsx files (email templates) get reached through the import
+    // chain (types.d.ts → server imports), so JSX must be configured here.
+    "jsx": "react-jsx",
+    "paths": {
+      // Needed because shared/types.d.ts imports from ../server/*, which
+      // drags server files into the program; those files use @/server/*
+      // internally and need to resolve from this tsconfig's context.
+      "@/server/*": ["../server/*"],
+
+      // Server files reached via the import chain also use @/shared/*.
+      "@/shared/*": ["./*"]
+    }
   },
   "include": ["./**/*"]
 }

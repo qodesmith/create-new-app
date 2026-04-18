@@ -52,7 +52,8 @@
       "linter": {"rules": {"suspicious": {"noArrayIndexKey": "off"}}}
     },
 
-    // Disallow importing server constants (i.e. `localhost`) into startDev.ts.
+    // Disallow importing server code into startDev.ts (dev orchestrator
+    // shouldn't require server modules to load).
     {
       "includes": ["startDev.ts"],
       "linter": {
@@ -61,9 +62,17 @@
             "noRestrictedImports": {
               "level": "error",
               "options": {
-                "paths": {
-                  "./src/server/constants": "Don't import server constants from startDev.ts"
-                }
+                "patterns": [
+                  {
+                    "group": [
+                      "@/server/*",
+                      "@/server/**",
+                      "**/server/*",
+                      "**/server/**"
+                    ],
+                    "message": "Don't import server code from startDev.ts."
+                  }
+                ]
               }
             }
           }
@@ -92,6 +101,60 @@
                   {
                     "group": ["@/server/**", "@/client/**"],
                     "message": "Use relative imports in this barrel — alias paths break cross-project type resolution and silently collapse types to `any`."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Client code must not import from server.
+    {
+      "includes": ["src/client/**/*.ts", "src/client/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/server/*",
+                      "@/server/**",
+                      "**/server/*",
+                      "**/server/**"
+                    ],
+                    "message": "Client code must not import from server."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Server code must not import from client.
+    {
+      "includes": ["src/server/**/*.ts", "src/server/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/client/*",
+                      "@/client/**",
+                      "**/client/*",
+                      "**/client/**"
+                    ],
+                    "message": "Server code must not import from client."
                   }
                 ]
               }

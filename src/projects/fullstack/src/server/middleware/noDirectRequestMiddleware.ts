@@ -21,7 +21,7 @@ import {createMiddleware} from 'hono/factory'
 export const noDirectRequestMiddleware = createMiddleware(async (c, next) => {
   const directRequestHeaders = safeJsonParse<[string, string][]>(
     // Providing your own headers via env var will override the default value.
-    getEnvVar('DIRECT_REQUEST_HEADERS', {shouldThrow: false}),
+    getEnvVar('DIRECT_REQUEST_HEADERS', {shouldThrow: false}) ?? '',
 
     // Default value.
     [

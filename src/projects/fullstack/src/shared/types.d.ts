@@ -35,18 +35,6 @@ export type Prettify<T> = T extends BuiltIn
       ? {[K in keyof T]: Prettify<T[K]>} & {}
       : T
 
-/**
- * Maps an `as const` string array into an object where keys equals the values.
- * T must be a readonly string array (i.e. declared with `as const`).
- */
-export type MirrorMap<T extends readonly string[]> = {[K in T[number]]: K}
-
-export type DateToString<T> = T extends Date
-  ? string
-  : T extends Record<any, any>
-    ? {[K in keyof T]: DateToString<T[K]>}
-    : T
-
 export type ServerAuth = typeof auth
 
 /**

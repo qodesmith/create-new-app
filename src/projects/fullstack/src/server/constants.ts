@@ -1,5 +1,3 @@
-import type {MirrorMap} from '@/shared/types'
-
 import {getEnvVar} from '@/server/utils/getEnvVar'
 
 export const port = getEnvVar('PORT')
@@ -15,17 +13,11 @@ export const prodOriginList = flyAppName
   : [origin, originWww]
 export const localOriginList = [localhost, `http://0.0.0.0:${port}`]
 
-// Add new user roles by adding strings to this array. Keep `as const`!
-const _userRoles = ['admin', 'user'] as const
-
-export const userRoles = _userRoles.reduce(
-  (acc, role) => {
-    // @ts-expect-error - TS can't correlate that key and value are the same K
-    acc[role] = role
-    return acc
-  },
-  {} as MirrorMap<typeof _userRoles>
-)
+// Add new user roles by adding matching key/value pairs.
+export const userRoles = Object.freeze({
+  admin: 'admin',
+  user: 'user',
+})
 
 /**
  * This variable is set inside Dockerfile.local. This Dockerfile is meant to

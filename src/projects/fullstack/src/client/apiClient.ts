@@ -37,7 +37,7 @@ export function getApiAuthClient() {
 }
 
 // Better-auth routes
-export function getAuthClient() {
+function createAuthClientInstance() {
   return createAuthClient({
     basePath: betterAuthBasePath,
     plugins: [
@@ -51,4 +51,17 @@ export function getAuthClient() {
       adminClient(),
     ],
   })
+}
+
+let authClientSingleton: ReturnType<typeof createAuthClientInstance> | undefined
+
+export function getAuthClient() {
+  /**
+   * SSR-safe: only memoize in the browser so server renders get a fresh
+   * per-request client and don't leak session state between users.
+   */
+  if (typeof window === 'undefined') return createAuthClientInstance()
+
+  authClientSingleton ??= createAuthClientInstance()
+  return authClientSingleton
 }

@@ -1,8 +1,8 @@
 import type {QueryClient} from '@tanstack/react-query'
 import type {Store} from 'jotai/vanilla/store'
 import type {
-  getApiAuthClient,
-  getApiClient,
+  createApiAuthClient,
+  createApiClient,
   getAuthClient,
 } from '@/client/apiClient'
 import type {createTanstackRouter} from '@/client/router'
@@ -14,9 +14,9 @@ export type RouterContext = {
   queryClient: QueryClient
 }
 
-export type ApiClient = ReturnType<typeof getApiClient>
+export type ApiClient = ReturnType<typeof createApiClient>
 
-export type ApiAuthClient = ReturnType<typeof getApiAuthClient>
+export type ApiAuthClient = ReturnType<typeof createApiAuthClient>
 
 export type AuthClient = ReturnType<typeof getAuthClient>
 

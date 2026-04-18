@@ -17,7 +17,7 @@ import {hc} from 'hono/client'
  * const users = await apiClient.users.$get().then(res => res.json())
  * ```
  */
-export function getApiClient() {
+export function createApiClient() {
   return hc<HonoServer>(
     typeof window === 'undefined' ? '' : window.location.origin,
 
@@ -27,7 +27,7 @@ export function getApiClient() {
 }
 
 // Authenticated api routes
-export function getApiAuthClient() {
+export function createApiAuthClient() {
   return hc<HonoAuthServer>(
     `${typeof window === 'undefined' ? '' : window.location.origin}${authRoutePath}`,
 

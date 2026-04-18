@@ -1,4 +1,8 @@
-import {getApiAuthClient, getApiClient, getAuthClient} from '@/client/apiClient'
+import {
+  createApiAuthClient,
+  createApiClient,
+  getAuthClient,
+} from '@/client/apiClient'
 
 import {atom} from 'jotai'
 import {atomWithLazy, atomWithStorage} from 'jotai/utils'
@@ -40,7 +44,7 @@ export const isSignedInAtom = atom(false)
 export const authClientAtom = atomWithLazy(getAuthClient)
 
 // Hono RPC for custom authenticated endpoints.
-export const apiAuthClientAtom = atomWithLazy(getApiAuthClient)
+export const apiAuthClientAtom = atomWithLazy(createApiAuthClient)
 
 // Hono RPC for custom public endpoints.
-export const apiClientAtom = atomWithLazy(getApiClient)
+export const apiClientAtom = atomWithLazy(createApiClient)

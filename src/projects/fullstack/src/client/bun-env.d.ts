@@ -2,126 +2,95 @@
  * Allows for importing assets in client code to get their path as a string.
  */
 
-/////////
-// CSS //
-/////////
-
+// CSS (side-effect import only)
 declare module '*.css'
 
-////////////
-// IMAGES //
-////////////
-
-// Allows TypeScript to understand importing the file type as a module
+// Images
 declare module '*.svg' {
-  const path: `${string}.svg` // The path of the import
-  export = path // This "module" default exports a string path
+  const path: string
+  export = path
 }
-
 declare module '*.jpg' {
-  const path: `${string}.jpg`
+  const path: string
   export = path
 }
-
 declare module '*.png' {
-  const path: `${string}.png`
+  const path: string
   export = path
 }
-
 declare module '*.gif' {
-  const path: `${string}.gif`
+  const path: string
   export = path
 }
-
 declare module '*.webp' {
-  const path: `${string}.webp`
+  const path: string
   export = path
 }
-
 declare module '*.ico' {
-  const path: `${string}.ico`
+  const path: string
   export = path
 }
-
 declare module '*.bmp' {
-  const path: `${string}.bmp`
+  const path: string
   export = path
 }
-
 declare module '*.tiff' {
-  const path: `${string}.tiff`
+  const path: string
   export = path
 }
-
 declare module '*.tif' {
-  const path: `${string}.tif`
+  const path: string
   export = path
 }
 
-///////////
-// AUDIO //
-///////////
-
+// Audio
 declare module '*.mp3' {
-  const path: `${string}.mp3`
+  const path: string
   export = path
 }
-
 declare module '*.wav' {
-  const path: `${string}.wav`
+  const path: string
   export = path
 }
-
 declare module '*.ogg' {
-  const path: `${string}.ogg`
+  const path: string
   export = path
 }
-
 declare module '*.oga' {
-  const path: `${string}.oga`
+  const path: string
   export = path
 }
-
 declare module '*.aac' {
-  const path: `${string}.aac`
+  const path: string
   export = path
 }
-
 declare module '*.flac' {
-  const path: `${string}.flac`
+  const path: string
   export = path
 }
 
-///////////
-// VIDEO //
-///////////
-
+// Video
 declare module '*.webm' {
-  const path: `${string}.webm`
+  const path: string
   export = path
 }
-
 declare module '*.mp4' {
-  const path: `${string}.mp4`
+  const path: string
   export = path
 }
-
 declare module '*.m4v' {
-  const path: `${string}.m4v`
+  const path: string
   export = path
 }
-
 declare module '*.ogv' {
-  const path: `${string}.ogv`
+  const path: string
   export = path
 }
-
 declare module '*.mov' {
-  const path: `${string}.mov`
+  const path: string
   export = path
 }
-
 declare module '*.avi' {
-  const path: `${string}.avi`
+  const path: string
   export = path
 }

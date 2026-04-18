@@ -1,3 +1,4 @@
+import type {AnyFormApi} from '@tanstack/react-form'
 import type {ClassValue} from 'clsx'
 import type {ApiClient} from '@/client/types'
 import type {ErrorContext} from '@/shared/types'
@@ -48,13 +49,9 @@ export function logClientError({
  * Helper to automatically create an error toast for all errors found on a
  * Tanstack form in the onSubmitInvalid handler in useForm.
  */
-export const handleFormSubmitInvalid = ({
-  formApi,
-}: {
-  formApi: {getAllErrors: () => {fields: Record<string, {errors: unknown[]}>}}
-}) => {
+export const handleFormSubmitInvalid = ({formApi}: {formApi: AnyFormApi}) => {
   Object.values(formApi.getAllErrors().fields).forEach(field => {
-    field.errors.forEach((errorMessage: unknown) => {
+    field.errors.forEach(errorMessage => {
       if (typeof errorMessage === 'string') {
         toast.error(errorMessage)
       }

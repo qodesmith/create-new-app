@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "noUncheckedIndexedAccess": true,
     "paths": {
       // Used directly by client source files.
       "@/client/*": ["./*"],

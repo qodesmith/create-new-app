@@ -125,7 +125,7 @@ if (task === 'createAdminUser' || task === 'createUser') {
   process.exit()
 }
 
-if (!(task in tasks)) {
+if (!(task && task in tasks)) {
   log.error(`"${task}" is not a valid argument. Valid arguments include:`)
 
   for (const validTask in tasks) {

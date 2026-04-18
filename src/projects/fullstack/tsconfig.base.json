@@ -9,6 +9,7 @@
     "allowJs": true,
     "checkJs": false,
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   }

@@ -1,10 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
 
-//////////////////////////////////////////////////////////////
-// DO NOT use alias imports (i.e. @/server) in this file!!! //
-// It will break TypeScript and type everything as `any`.   //
-//////////////////////////////////////////////////////////////
-
 import type {auth} from '../server/db/auth/auth'
 
 export type * from '../server/types.d'

@@ -69,6 +69,36 @@
           }
         }
       }
+    },
+
+    /**
+     * Cross-boundary barrel files: `src/server/types.d.ts` is re-exported by
+     * `src/shared/types.d.ts`, which the client consumes. Aliased imports
+     * (`@/server/*`, `@/client/*`) only resolve in the project whose tsconfig
+     * defines them — when the client pulls these types through the shared
+     * re-export, unresolved aliases silently collapse to `any`, which breaks
+     * Hono RPC autocomplete (and everything else downstream). Use relative
+     * imports in these files so resolution works from any consuming project.
+     */
+    {
+      "includes": ["src/server/types.d.ts", "src/shared/types.d.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["@/server/**", "@/client/**"],
+                    "message": "Use relative imports in this barrel — alias paths break cross-project type resolution and silently collapse types to `any`."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

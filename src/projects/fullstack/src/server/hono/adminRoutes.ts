@@ -67,12 +67,11 @@ export const adminRoutes = new Hono<{Variables: SessionData}>()
   .get('/backup-database', c => {
     const db = getDatabase()
     const user = c.get('user')
+    const {bunFile, fileName} = exportDatabase()
 
     db.insert(adminAuditLogsTable)
       .values({userId: user.id, metadata: {action: 'download-database'}})
       .run()
-
-    const {bunFile, fileName} = exportDatabase()
 
     return new Response(bunFile, {
       headers: {

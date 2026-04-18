@@ -17,7 +17,7 @@ import {bytesToSize} from '@qodestack/utils'
 import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
-import {useId, useMemo, useRef, useState} from 'react'
+import {useEffect, useId, useMemo, useRef, useState} from 'react'
 import {toast} from 'sonner'
 
 export function AccountAvatar() {
@@ -116,6 +116,13 @@ export function AccountAvatar() {
       setShowImage(true)
     },
   })
+
+  useEffect(
+    () => () => {
+      if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
+    },
+    [blobPreviewUrl]
+  )
 
   return (
     <>

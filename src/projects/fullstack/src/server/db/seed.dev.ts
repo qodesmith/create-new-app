@@ -11,7 +11,7 @@ import {eq} from 'drizzle-orm'
 const log = createLogger({includeTime: false})
 const nodeEnv = getEnvVar('NODE_ENV', {shouldThrow: false})
 
-if (nodeEnv) {
+if (nodeEnv === 'development') {
   const {auth} = await import('./auth/auth')
 
   let token = ''

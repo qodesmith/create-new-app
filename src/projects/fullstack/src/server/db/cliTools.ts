@@ -8,6 +8,7 @@ import {users} from '@/server/db/schema/authSchema'
 import {minPasswordLength} from '@/shared/constants'
 
 import {createLogger} from '@qodestack/utils'
+import {createEmailVerificationToken} from 'better-auth/api'
 import {eq} from 'drizzle-orm'
 
 const log = createLogger({includeTime: false})
@@ -55,8 +56,6 @@ const tasks = {
     lastName: string
     role?: keyof typeof userRoles
   }) => {
-    let token = ''
-    const origFxn = auth.options.emailVerification.sendVerificationEmail
     const userRoleValues = Object.values(userRoles)
 
     if (!userRoleValues.includes(role)) {
@@ -74,38 +73,28 @@ const tasks = {
       process.exit()
     }
 
-    try {
-      // @ts-expect-error - There's no way to get the token via the api
-      auth.options.emailVerification.sendVerificationEmail = (data: {
-        token: string
-      }) => {
-        token = data.token
-      }
+    const db = getDatabase()
+    const user = db.select().from(users).where(eq(users.email, email)).get()
 
-      const db = getDatabase()
-      const user = db.select().from(users).where(eq(users.email, email)).get()
+    if (user) {
+      log.warning('Account already exists. Not creating anything.')
+    } else {
+      log.warning(`Creating a verified ${role} in the production database...`)
 
-      if (user) {
-        log.warning('Account already exists. Not creating anything.')
-      } else {
-        log.warning(`Creating a verified ${role} in the production database...`)
+      const newUser = await auth.api.createUser({
+        body: {name, email, password, role, data: {lastName}},
+      })
 
-        const newUser = await auth.api.createUser({
-          body: {name, email, password, role, data: {lastName}},
-        })
+      const authCtx = await auth.$context
+      const token = await createEmailVerificationToken(
+        authCtx.secret,
+        newUser.user.email,
+        undefined,
+        auth.options.emailVerification.expiresIn
+      )
+      await auth.api.verifyEmail({query: {token}})
 
-        await auth.api.sendVerificationEmail({
-          body: {email: newUser.user.email},
-        })
-
-        await auth.api.verifyEmail({query: {token}})
-        token = ''
-
-        log.success('Account created!')
-      }
-    } finally {
-      // @ts-expect-error - Undo the previous overwrite
-      auth.options.emailVerification.sendVerificationEmail = origFxn
+      log.success('Account created!')
     }
   },
 }

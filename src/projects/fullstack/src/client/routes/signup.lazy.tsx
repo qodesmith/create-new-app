@@ -12,7 +12,12 @@ import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
 import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
 import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
-import {minPasswordLength} from '@/shared/constants'
+import {
+  minPasswordLength,
+  namePattern,
+  nameRegex,
+  nameValidationMessage,
+} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
@@ -25,8 +30,6 @@ export const Route = createLazyFileRoute('/signup')({
 
 function SignUpPage() {
   const router = useRouter()
-  // Matches the server-side pattern in auth.ts
-  const namePattern = '[a-zA-Z ]{2,}'
   const authClient = useAtomValue(authClientAtom)
   const apiClient = useAtomValue(apiClientAtom)
 
@@ -92,8 +95,8 @@ function SignUpPage() {
                 name="name"
                 validators={{
                   onSubmit: ({value}) => {
-                    if (value.length < 2) {
-                      return 'Name must be at least 2 characters'
+                    if (!nameRegex.test(value)) {
+                      return `First name ${nameValidationMessage}`
                     }
                   },
                 }}
@@ -126,8 +129,8 @@ function SignUpPage() {
                 name="lastName"
                 validators={{
                   onSubmit: ({value}) => {
-                    if (value.length < 2) {
-                      return 'Name must be at least 2 characters'
+                    if (!nameRegex.test(value)) {
+                      return `Last name ${nameValidationMessage}`
                     }
                   },
                 }}

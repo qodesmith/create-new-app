@@ -24,6 +24,8 @@ import {
   betterAuthBasePath,
   emailVerificationExpiryInSeconds,
   minPasswordLength,
+  nameRegex,
+  nameValidationMessage,
 } from '@/shared/constants'
 
 import {passkey} from '@better-auth/passkey'
@@ -58,7 +60,7 @@ export const authOptions = {
         const password = ctx.body.password as string | undefined
 
         // Validate with arktype.
-        const nameValidator = type(/^[a-zA-Z ]{2,}$/)
+        const nameValidator = type(nameRegex)
         const passwordValidator = type(`string >= ${minPasswordLength}`)
 
         const emailResult = emailValidator(email)
@@ -69,16 +71,14 @@ export const authOptions = {
         const nameResult = nameValidator(name)
         if (nameResult instanceof type.errors) {
           throw new APIError('BAD_REQUEST', {
-            message:
-              'Invalid name: must contain only letters and spaces and be at least 2 characters long',
+            message: `Invalid name: ${nameValidationMessage}`,
           })
         }
 
         const lastNameResult = nameValidator(lastName)
         if (lastNameResult instanceof type.errors) {
           throw new APIError('BAD_REQUEST', {
-            message:
-              'Invalid last name: must contain only letters and spaces and be at least 2 characters long',
+            message: `Invalid last name: ${nameValidationMessage}`,
           })
         }
 

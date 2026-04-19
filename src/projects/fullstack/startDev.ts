@@ -190,6 +190,8 @@ const subprocesses: Partial<
   Record<'watchRoutesProc' | 'serverProc', Subprocess<'ignore', 'pipe', 'pipe'>>
 > = {}
 
+let killed = false
+
 /**
  * A final "cleanup" function that:
  * - Removes the TanStack temporary folder
@@ -198,6 +200,9 @@ const subprocesses: Partial<
  * - Kills the current process.
  */
 function killAllTheThings() {
+  if (killed) return
+  killed = true
+
   // Remove the temp TanStack files when the process exits.
   rmSync(tanstackTmpPath, {recursive: true, force: true})
 

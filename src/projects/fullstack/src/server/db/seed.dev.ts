@@ -76,7 +76,7 @@ if (nodeEnv === 'development') {
   }
 } else {
   log.error('Refusing to seed the database with an admin and user.')
-  log.text('Run command as follows to see the databse:')
+  log.text('Run command as follows to see the database:')
   log.warning('  NODE_ENV=development bun db:seed')
   log.text('')
 }

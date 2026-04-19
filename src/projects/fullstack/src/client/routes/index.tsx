@@ -566,7 +566,7 @@ const techUsed = [
       'Powered by React Email, this makes email integration a breeze.',
   },
   {
-    tech: 'Arkytpe',
+    tech: 'Arkytype',
     description:
       'Prepare to have your mind blown by defining schema types with plain strings.',
   },

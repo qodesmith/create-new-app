@@ -22,7 +22,14 @@ export type HonoAuthServer = typeof authRoutes
 export const authRoutes = new Hono<{Variables: SessionData}>()
   .use(authMiddleware)
 
-  // Upload avatar - resize 128px at 20KB max.
+  /**
+   * Upload avatar - resize dimensions, reduce file size.
+   *
+   * SQLite handles small BLOBs well - there's a well-known SQLite benchmark
+   * ("35% Faster Than The Filesystem") showing that for blobs under roughly
+   * 100KB, SQLite can be faster than reading individual files off disk, because
+   * you save the per-file syscall overhead.
+   */
   .post(
     '/avatar',
     arktypeValidator('form', type({avatar: 'File'})),

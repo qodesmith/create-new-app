@@ -51,13 +51,14 @@ export const authOptions = {
   hooks: {
     before: createAuthMiddleware(async ctx => {
       const emailValidator = type('string.email')
+      const body = ctx.body as Record<string, string | undefined>
 
       // Server-side form validation when signing up.
       if (ctx.path === '/sign-up/email') {
-        const email = ctx.body.email as string | undefined
-        const name = ctx.body.name as string | undefined
-        const lastName = ctx.body.lastName as string | undefined
-        const password = ctx.body.password as string | undefined
+        const email = body.email
+        const name = body.name
+        const lastName = body.lastName
+        const password = body.password
 
         // Validate with arktype.
         const nameValidator = type(nameRegex)
@@ -92,7 +93,7 @@ export const authOptions = {
 
       // Server-side form validation when changing email.
       if (ctx.path === '/change-email') {
-        const newEmail = ctx.body.newEmail as string | undefined
+        const newEmail = body.newEmail
         const emailResult = emailValidator(newEmail)
 
         if (emailResult instanceof type.errors) {

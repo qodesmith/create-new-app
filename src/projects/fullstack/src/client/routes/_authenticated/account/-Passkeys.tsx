@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
-import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {authClientAtom} from '@/client/state/globalState'
 
@@ -29,7 +28,6 @@ export function Passkeys() {
   const logClientError = useLogClientError()
   const queryClient = useQueryClient()
   const [addName, setAddName] = useState('')
-  const deleteDialog = useBoolean()
   const [deleteTarget, setDeleteTarget] = useState<Passkey | null>(null)
 
   const {data: passkeys = [], isLoading} = useQuery<Passkey[]>({
@@ -108,7 +106,6 @@ export function Passkeys() {
       }
 
       toast.success('Passkey deleted')
-      deleteDialog.setFalse()
       setDeleteTarget(null)
       void queryClient.invalidateQueries({queryKey: passkeysQueryKey})
     },
@@ -185,10 +182,7 @@ export function Passkeys() {
                 variant="ghost"
                 size="icon"
                 className="size-8 shrink-0 text-destructive hover:text-destructive"
-                onClick={() => {
-                  setDeleteTarget(passkey)
-                  deleteDialog.setTrue()
-                }}
+                onClick={() => setDeleteTarget(passkey)}
               >
                 <Trash2 className="size-3.5" />
               </Button>
@@ -199,12 +193,9 @@ export function Passkeys() {
 
       {/* Delete confirmation dialog */}
       <Dialog
-        open={deleteDialog.value}
+        open={deleteTarget !== null}
         onOpenChange={open => {
-          if (!open) {
-            deleteDialog.setFalse()
-            setDeleteTarget(null)
-          }
+          if (!open) setDeleteTarget(null)
         }}
       >
         <DialogContent className="sm:max-w-sm">
@@ -218,10 +209,7 @@ export function Passkeys() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => {
-                deleteDialog.setFalse()
-                setDeleteTarget(null)
-              }}
+              onClick={() => setDeleteTarget(null)}
               disabled={deleteMutation.isPending}
             >
               Cancel

@@ -12,8 +12,9 @@ import {
   DialogTitle,
 } from '@/client/components/ui/dialog'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
 import {useAtomValue} from 'jotai'
@@ -21,7 +22,7 @@ import {toast} from 'sonner'
 
 export function DeleteAccount() {
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
   const deleteDialog = useBoolean()
 
   const form = useForm({
@@ -40,7 +41,6 @@ export function DeleteAccount() {
           logClientError({
             error,
             context: 'client:deleteAccountRejection',
-            apiClient,
           })
           return
         }
@@ -53,7 +53,6 @@ export function DeleteAccount() {
         logClientError({
           error,
           context: 'client:deleteAccountException',
-          apiClient,
         })
       }
     },

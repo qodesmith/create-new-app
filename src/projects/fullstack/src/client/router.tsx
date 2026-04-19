@@ -1,11 +1,9 @@
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {ErrorState} from '@/client/components/custom/ErrorState'
 import {Button} from '@/client/components/ui/button'
-import {logClientError} from '@/client/lib/utils'
-import {apiClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
 
 import {createRouter, useRouter} from '@tanstack/react-router'
-import {useAtomValue} from 'jotai'
 import {useEffect} from 'react'
 
 import {routeTree} from './routeTree.gen'
@@ -38,7 +36,7 @@ export function createTanstackRouter() {
 
     // Catches errors in the component's loader and render cycle.
     defaultErrorComponent: ({error, info, reset: resetErrorBoundary}) => {
-      const apiClient = useAtomValue(apiClientAtom)
+      const logClientError = useLogClientError()
       const isValidationError = 'code' in error && error.code === 'validation'
       const title = isValidationError
         ? 'Data failed to load'
@@ -55,9 +53,8 @@ export function createTanstackRouter() {
           error,
           context: 'client:topLevelException',
           metadata: info,
-          apiClient,
         })
-      }, [error, info, apiClient])
+      }, [logClientError, info, error])
 
       return (
         <ErrorState

@@ -11,8 +11,8 @@ import {
 } from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {authClientAtom} from '@/client/state/globalState'
 
 import {useAtomValue} from 'jotai'
 import {Fingerprint, KeyRound, Plus, Trash2} from 'lucide-react'
@@ -23,7 +23,7 @@ type Passkey = AuthSchemaInsert['passkeys']
 
 export function Passkeys() {
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
   const [passkeys, setPasskeys] = useState<Passkey[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [addName, setAddName] = useState('')
@@ -42,18 +42,17 @@ export function Passkeys() {
         logClientError({
           error,
           context: 'client:passkeyListRejection',
-          apiClient,
         })
         return
       }
 
       setPasskeys(data ?? [])
     } catch (error) {
-      logClientError({error, context: 'client:passkeyListException', apiClient})
+      logClientError({error, context: 'client:passkeyListException'})
     } finally {
       setIsLoading(false)
     }
-  }, [authClient, apiClient])
+  }, [logClientError, authClient])
 
   useEffect(() => {
     void fetchPasskeys()
@@ -76,7 +75,6 @@ export function Passkeys() {
         logClientError({
           error,
           context: 'client:passkeyAddRejection',
-          apiClient,
         })
         return
       }
@@ -101,7 +99,7 @@ export function Passkeys() {
       if (isWebAuthnCancellation) return
 
       toast.error('Failed to add passkey')
-      logClientError({error, context: 'client:passkeyAddException', apiClient})
+      logClientError({error, context: 'client:passkeyAddException'})
     } finally {
       setIsAdding(false)
     }
@@ -120,7 +118,6 @@ export function Passkeys() {
         logClientError({
           error,
           context: 'client:passkeyDeleteRejection',
-          apiClient,
         })
         return
       }
@@ -134,7 +131,6 @@ export function Passkeys() {
       logClientError({
         error,
         context: 'client:passkeyDeleteException',
-        apiClient,
       })
     } finally {
       setIsDeleting(false)

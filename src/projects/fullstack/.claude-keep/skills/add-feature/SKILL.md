@@ -39,8 +39,10 @@ Each step validates before next:
 
 Client:
 ```ts
-import {logClientError} from '@/client/lib/utils'
-logClientError({error, context: 'client:featureNameException', apiClient})
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+
+const logClientError = useLogClientError()
+logClientError({error, context: 'client:featureNameException'})
 ```
 
 Server:

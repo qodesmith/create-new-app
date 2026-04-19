@@ -3,8 +3,9 @@ import type {FileRouteTypes} from '@/client/routeTree.gen'
 import {Button} from '@/client/components/ui/button'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
 import {useAtomValue} from 'jotai'
@@ -12,7 +13,7 @@ import {toast} from 'sonner'
 
 export function ChangeEmail() {
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
 
   const changeEmailForm = useForm({
     defaultValues: {
@@ -40,7 +41,6 @@ export function ChangeEmail() {
           logClientError({
             error,
             context: 'client:changeEmailRejection',
-            apiClient,
           })
           return
         }
@@ -54,7 +54,6 @@ export function ChangeEmail() {
         logClientError({
           error,
           context: 'client:changeEmailException',
-          apiClient,
         })
       }
     },

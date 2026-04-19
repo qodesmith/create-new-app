@@ -11,14 +11,11 @@ import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {Separator} from '@/client/components/ui/separator'
 import {defaultAuthedPath} from '@/client/constants'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {isValidRoute} from '@/client/lib/isValidRoute'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {ResetPasswordDialog} from '@/client/routes/signin/-ResetPasswordDialog'
-import {
-  apiClientAtom,
-  authClientAtom,
-  isSignedInAtom,
-} from '@/client/state/globalState'
+import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -35,7 +32,7 @@ export const Route = createLazyFileRoute('/signin')({
 function SignInPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
   const setIsSignedIn = useSetAtom(isSignedInAtom)
   const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
@@ -54,7 +51,6 @@ function SignInPage() {
         logClientError({
           error: result.error,
           context: 'client:passkeySignInRejection',
-          apiClient,
         })
         return
       }
@@ -70,7 +66,6 @@ function SignInPage() {
       logClientError({
         error,
         context: 'client:passkeySignInException',
-        apiClient,
       })
     } finally {
       setIsPasskeyLoading(false)
@@ -95,7 +90,6 @@ function SignInPage() {
           logClientError({
             error: result.error,
             context: 'client:signInRejection',
-            apiClient,
           })
           return
         }
@@ -107,7 +101,6 @@ function SignInPage() {
         logClientError({
           error,
           context: 'client:signInException',
-          apiClient,
         })
       }
     },

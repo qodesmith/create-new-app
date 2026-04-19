@@ -9,8 +9,8 @@ import {Button} from '@/client/components/ui/button'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
-import {logClientError} from '@/client/lib/utils'
-import {apiAuthClientAtom, apiClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {apiAuthClientAtom} from '@/client/state/globalState'
 import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 
 import {bytesToSize} from '@qodestack/utils'
@@ -38,8 +38,8 @@ export function AccountAvatar() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarInputId = useId()
-  const apiClient = useAtomValue(apiClientAtom)
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
+  const logClientError = useLogClientError()
 
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
@@ -59,7 +59,6 @@ export function AccountAvatar() {
         logClientError({
           error: data,
           context: 'client:avatarUploadRejection',
-          apiClient,
         })
         return
       }
@@ -73,7 +72,6 @@ export function AccountAvatar() {
       logClientError({
         error,
         context: 'client:avatarUploadException',
-        apiClient,
       })
       setShowImage(false)
     },
@@ -97,7 +95,6 @@ export function AccountAvatar() {
         logClientError({
           error: data,
           context: 'client:avatarDeleteRejection',
-          apiClient,
         })
         setShowImage(true)
         return
@@ -111,7 +108,6 @@ export function AccountAvatar() {
       logClientError({
         error,
         context: 'client:avatarDeleteException',
-        apiClient,
       })
       setShowImage(true)
     },

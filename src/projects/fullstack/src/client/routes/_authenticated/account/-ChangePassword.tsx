@@ -1,8 +1,9 @@
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -11,7 +12,7 @@ import {toast} from 'sonner'
 
 export function ChangePassword() {
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
 
   const changePasswordForm = useForm({
     defaultValues: {
@@ -41,7 +42,6 @@ export function ChangePassword() {
           logClientError({
             error,
             context: 'client:changePasswordRejection',
-            apiClient,
           })
           return
         }
@@ -53,7 +53,6 @@ export function ChangePassword() {
         logClientError({
           error,
           context: 'client:changePasswordException',
-          apiClient,
         })
       }
     },

@@ -9,8 +9,9 @@ import {
 } from '@/client/components/ui/card'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -56,7 +57,7 @@ function NewPasswordForm({
 }) {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
 
   const form = useForm({
     defaultValues: {
@@ -76,7 +77,6 @@ function NewPasswordForm({
           logClientError({
             error,
             context: 'client:resetPasswordRejection',
-            apiClient,
           })
           showInvalidTokenView()
           return
@@ -89,7 +89,6 @@ function NewPasswordForm({
         logClientError({
           error,
           context: 'client:resetPasswordException',
-          apiClient,
         })
       }
     },

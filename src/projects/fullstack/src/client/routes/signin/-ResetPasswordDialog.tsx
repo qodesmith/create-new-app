@@ -12,8 +12,9 @@ import {
 } from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {handleFormSubmitInvalid, logClientError} from '@/client/lib/utils'
-import {apiClientAtom, authClientAtom} from '@/client/state/globalState'
+import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
 import {useAtomValue} from 'jotai'
@@ -25,7 +26,7 @@ export function ResetPasswordDialog({
   dialogInitialOpen: boolean
 }) {
   const authClient = useAtomValue(authClientAtom)
-  const apiClient = useAtomValue(apiClientAtom)
+  const logClientError = useLogClientError()
   const {value: isOpen, setValue: setIsOpen} = useBoolean(dialogInitialOpen)
 
   const form = useForm({
@@ -46,7 +47,6 @@ export function ResetPasswordDialog({
           logClientError({
             error,
             context: 'client:requestPasswordResetRejection',
-            apiClient,
           })
         } else {
           toast.success('Check your email for a link to reset your password.')
@@ -58,7 +58,6 @@ export function ResetPasswordDialog({
         logClientError({
           error,
           context: 'client:requestPasswordResetException',
-          apiClient,
         })
       }
     },

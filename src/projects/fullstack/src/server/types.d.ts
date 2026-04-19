@@ -29,9 +29,22 @@ export type AuthSchemaSelect = {
     : never]: (typeof authSchema)[K]['$inferSelect']
 }
 
-export type AdminAuditLogsMetadata =
+export type SharedAuditLogsMetadata =
   | {
       action: 'purge-stale-users'
       deletedCount: number
     }
+  | {
+      action: 'purge-expired-verifications'
+      deletedCount: number
+    }
+  | {
+      action: 'purge-stale-ratelimits'
+      deletedCount: number
+    }
+
+export type AdminAuditLogsMetadata =
+  | SharedAuditLogsMetadata
   | {action: 'download-database'}
+
+export type SystemAuditLogsMetadata = SharedAuditLogsMetadata

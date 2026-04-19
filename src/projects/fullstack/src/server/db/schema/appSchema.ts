@@ -30,7 +30,11 @@
   comments in `getDatabase.ts`.
 */
 
-import type {AdminAuditLogsMetadata, ErrorContext} from '@/shared/types'
+import type {
+  AdminAuditLogsMetadata,
+  ErrorContext,
+  SystemAuditLogsMetadata,
+} from '@/shared/types'
 
 import {blob, integer, sqliteTable, text} from 'drizzle-orm/sqlite-core'
 
@@ -62,6 +66,11 @@ export const adminAuditLogsTable = sqliteTable('adminAuditLogs', {
     .references(() => users.id, {onDelete: 'cascade'})
     .notNull(),
   metadata: text({mode: 'json'}).$type<AdminAuditLogsMetadata>().notNull(),
+})
+
+export const systemAuditLogsTable = sqliteTable('systemAuditLogs', {
+  ...commonFields,
+  metadata: text({mode: 'json'}).$type<SystemAuditLogsMetadata>().notNull(),
 })
 
 export const avatarsTable = sqliteTable('avatars', {

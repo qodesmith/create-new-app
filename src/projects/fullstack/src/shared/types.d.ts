@@ -66,6 +66,7 @@ export type ErrorContext =
   | 'resend:sendChangeEmailException'
   | 'resend:sendDeleteAccountVerificationEmailRejection'
   | 'resend:sendDeleteAccountVerificationEmailException'
+  | 'dbCleanup:purgeStaleRecordsException'
 
   // Client
   | 'client:topLevelException'

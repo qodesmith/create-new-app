@@ -2,10 +2,12 @@ import type {SessionData} from '@/server/db/auth/auth'
 
 import {exportDatabase, getDatabase} from '@/server/db/getDatabase'
 import {adminAuditLogsTable} from '@/server/db/schema/appSchema'
-import {users} from '@/server/db/schema/authSchema'
+import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
+import {purgeStaleRecords} from '@/server/dbCleanup'
 import {adminMiddleware} from '@/server/middleware/adminMiddleware'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
+import {getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 import {Hono} from 'hono'
 
@@ -16,49 +18,36 @@ export const adminRoutes = new Hono<{Variables: SessionData}>()
   /**
    * List unverified users past the verification window.
    */
-  .get('/stale-users', c => {
+  .get('/stale-records', c => {
     const db = getDatabase()
-    const cutoff = new Date(Date.now() - emailVerificationExpiryInMs)
+    const now = Date.now()
+    const oneHourInMs = getUnitInMs(1, 'h')
+    const cutoff = new Date(now - emailVerificationExpiryInMs)
+
     const staleUsers = db
-      .select({
-        id: users.id,
-        name: users.name,
-        lastName: users.lastName,
-        email: users.email,
-        createdAt: users.createdAt,
-      })
+      .select()
       .from(users)
       .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
       .all()
+    const staleVerifications = db
+      .select()
+      .from(verifications)
+      .where(lt(verifications.expiresAt, new Date(now)))
+      .all()
+    const staleRatelimits = db
+      .select()
+      .from(ratelimits)
+      .where(lt(ratelimits.lastRequest, now - oneHourInMs))
 
-    return c.json({count: staleUsers.length, users: staleUsers})
+    return c.json({staleUsers, staleVerifications, staleRatelimits})
   })
 
   /**
-   * Manually purge unverified users past the verification window.
+   * Manually purge stale records.
    */
-  .delete('/stale-users', c => {
-    const db = getDatabase()
+  .delete('/stale-records', c => {
     const user = c.get('user')
-    const cutoff = new Date(Date.now() - emailVerificationExpiryInMs)
-    const result = db.transaction(tx => {
-      const deleted = tx
-        .delete(users)
-        .where(and(eq(users.emailVerified, false), lt(users.createdAt, cutoff)))
-        .returning()
-        .all()
-
-      tx.insert(adminAuditLogsTable)
-        .values({
-          userId: user.id,
-          metadata: {action: 'purge-stale-users', deletedCount: deleted.length},
-        })
-        .run()
-
-      return deleted
-    })
-
-    return c.json({deleted: result.length})
+    return c.json(purgeStaleRecords({adminId: user.id}))
   })
 
   /**

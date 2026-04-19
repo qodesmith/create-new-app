@@ -51,6 +51,7 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
 
       try {
         const buffer = Buffer.from(await avatar.arrayBuffer())
+        const qualityReductionAmount = 5
         let quality = 90
 
         webpBuffer = await sharp(buffer)
@@ -63,7 +64,7 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
          * loop by setting a floor on the quality.
          */
         while (webpBuffer.byteLength > maxAvatarFileSize && quality > 5) {
-          quality -= 5
+          quality -= qualityReductionAmount
           webpBuffer = await sharp(buffer)
             .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
             .webp({quality})

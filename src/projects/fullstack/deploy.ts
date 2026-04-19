@@ -10,7 +10,7 @@ if (which('fly') === null) {
   log.error(
     'The fly CLI was not found. Please install it with `brew install flyctl`'
   )
-  process.exit()
+  process.exit(1)
 }
 
 type FlySecret = {

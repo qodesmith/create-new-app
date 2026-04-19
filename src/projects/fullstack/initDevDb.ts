@@ -9,7 +9,7 @@ const log = createLogger({includeTime: false})
 
 if (process.env.NODE_ENV !== 'development') {
   log.error('DB initialization is only for dev')
-  process.exit()
+  process.exit(1)
 }
 
 function logLine() {

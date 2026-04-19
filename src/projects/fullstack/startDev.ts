@@ -12,7 +12,7 @@ import colors from 'picocolors'
 
 if (!existsSync(path.join(process.cwd(), 'node_modules'))) {
   console.log(`First run ${colors.cyan('bun install')} to install dependencies`)
-  process.exit()
+  process.exit(1)
 }
 
 /**

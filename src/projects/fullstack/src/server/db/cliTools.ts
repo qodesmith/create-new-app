@@ -65,12 +65,12 @@ const tasks = {
         log.error(`  * ${userRole}`)
       }
 
-      process.exit()
+      process.exit(1)
     }
 
     if (password.length < minPasswordLength) {
       log.error(`The password must be at least ${minPasswordLength} characters`)
-      process.exit()
+      process.exit(1)
     }
 
     const db = getDatabase()
@@ -111,14 +111,14 @@ if (values.help || !positionalArgs.length) {
 
 if (positionalArgs.length > 1) {
   log.error('Only 1 argument can be made at a time')
-  process.exit()
+  process.exit(1)
 }
 
 if (task === 'createAdminUser' || task === 'createUser') {
   const {email, password, name, lastName} = values
   if (!(email && password && name && lastName)) {
     log.error('You must provide --email, --password, --name, and --lastName')
-    process.exit()
+    process.exit(1)
   }
 
   await tasks[task]({email, password, name, lastName})
@@ -132,5 +132,5 @@ if (!(task && task in tasks)) {
     log.error(`  * ${validTask}`)
   }
 
-  process.exit()
+  process.exit(1)
 }

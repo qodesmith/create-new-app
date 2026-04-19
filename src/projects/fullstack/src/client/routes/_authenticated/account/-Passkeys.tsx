@@ -14,66 +14,67 @@ import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {authClientAtom} from '@/client/state/globalState'
 
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {Fingerprint, KeyRound, Plus, Trash2} from 'lucide-react'
-import {useCallback, useEffect, useState} from 'react'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 type Passkey = AuthSchemaInsert['passkeys']
 
+const passkeysQueryKey = ['passkeys'] as const
+
 export function Passkeys() {
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
-  const [passkeys, setPasskeys] = useState<Passkey[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [addName, setAddName] = useState('')
-  const [isAdding, setIsAdding] = useState(false)
-
-  // Delete dialog state
   const deleteDialog = useBoolean()
   const [deleteTarget, setDeleteTarget] = useState<Passkey | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
 
-  const fetchPasskeys = useCallback(async () => {
-    try {
-      const {data, error} = await authClient.passkey.listUserPasskeys()
+  const {data: passkeys = [], isLoading} = useQuery<Passkey[]>({
+    queryKey: passkeysQueryKey,
+    queryFn: async () => {
+      let isRejection = false
 
-      if (error) {
-        logClientError({
-          error,
-          context: 'client:passkeyListRejection',
-        })
-        return
+      try {
+        const {data, error} = await authClient.passkey.listUserPasskeys()
+
+        if (error) {
+          isRejection = true
+          logClientError({error, context: 'client:passkeyListRejection'})
+          throw error
+        }
+
+        return data ?? []
+      } catch (error) {
+        if (!isRejection) {
+          logClientError({error, context: 'client:passkeyListException'})
+        }
+
+        /**
+         * Rethrow so react-query flips to error state, retries per the
+         * `queryClient` config, and lets `queryCache.onError` route 404s to
+         * `notFound()`. Swallowing here would resolve the query as successful
+         * with `undefined` data.
+         */
+        throw error
       }
+    },
+  })
 
-      setPasskeys(data ?? [])
-    } catch (error) {
-      logClientError({error, context: 'client:passkeyListException'})
-    } finally {
-      setIsLoading(false)
-    }
-  }, [logClientError, authClient])
-
-  useEffect(() => {
-    void fetchPasskeys()
-  }, [fetchPasskeys])
-
-  const handleAdd = async () => {
-    setIsAdding(true)
-
-    try {
-      const name = addName.trim() || `Passkey ${passkeys.length + 1}`
-      /**
-       * Triggers the browser's native WebAuthn dialog (e.g. "Use your
-       * fingerprint/security key"). If the user cancels that prompt, the
-       * browser throws a `NotAllowedError` DOMException caught below.
-       */
-      const {error} = await authClient.passkey.addPasskey({name})
-
-      if (error) {
-        toast.error(error.message || 'Failed to add passkey')
+  const addMutation = useMutation({
+    /**
+     * Triggers the browser's native WebAuthn dialog (e.g. "Use your
+     * fingerprint/security key"). If the user cancels that prompt, the
+     * browser throws a `NotAllowedError` DOMException handled in `onError`.
+     */
+    mutationFn: async (name: string) => authClient.passkey.addPasskey({name}),
+    onSuccess: result => {
+      if (result?.error) {
+        toast.error(result.error.message || 'Failed to add passkey')
         logClientError({
-          error,
+          error: result.error,
           context: 'client:passkeyAddRejection',
         })
         return
@@ -81,42 +82,26 @@ export function Passkeys() {
 
       toast.success('Passkey added')
       setAddName('')
-      return fetchPasskeys()
-    } catch (error) {
-      /**
-       * Detects when the user cancelled the browser's native WebAuthn prompt.
-       *
-       * Flow:
-       * 1. User clicks "Add Passkey" button
-       * 2. `authClient.passkey.addPasskey()` triggers the browser's native WebAuthn
-       *    prompt (fingerprint/security key)
-       * 3. User dismisses/cancels that prompt
-       * 4. Browser throws a `NotAllowedError` DOMException
-       * 5. Catch block silently swallows it (no error toast, since it's intentional)
-       */
-      const isWebAuthnCancellation =
-        error instanceof DOMException && error.name === 'NotAllowedError'
-      if (isWebAuthnCancellation) return
+      void queryClient.invalidateQueries({queryKey: passkeysQueryKey})
+    },
+    onError: error => {
+      // User dismissed the native WebAuthn prompt — intentional, not a failure.
+      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+        return
+      }
 
       toast.error('Failed to add passkey')
       logClientError({error, context: 'client:passkeyAddException'})
-    } finally {
-      setIsAdding(false)
-    }
-  }
+    },
+  })
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-    setIsDeleting(true)
-    try {
-      const {error} = await authClient.passkey.deletePasskey({
-        id: deleteTarget.id,
-      })
-
-      if (error) {
-        toast.error(error.message || 'Failed to delete passkey')
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => authClient.passkey.deletePasskey({id}),
+    onSuccess: result => {
+      if (result?.error) {
+        toast.error(result.error.message || 'Failed to delete passkey')
         logClientError({
-          error,
+          error: result.error,
           context: 'client:passkeyDeleteRejection',
         })
         return
@@ -125,16 +110,17 @@ export function Passkeys() {
       toast.success('Passkey deleted')
       deleteDialog.setFalse()
       setDeleteTarget(null)
-      return fetchPasskeys()
-    } catch (error) {
+      void queryClient.invalidateQueries({queryKey: passkeysQueryKey})
+    },
+    onError: error => {
       toast.error('Failed to delete passkey')
-      logClientError({
-        error,
-        context: 'client:passkeyDeleteException',
-      })
-    } finally {
-      setIsDeleting(false)
-    }
+      logClientError({error, context: 'client:passkeyDeleteException'})
+    },
+  })
+
+  const handleAdd = () => {
+    const name = addName.trim() || `Passkey ${passkeys.length + 1}`
+    addMutation.mutate(name)
   }
 
   if (isLoading) {
@@ -152,14 +138,18 @@ export function Passkeys() {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               e.preventDefault()
-              void handleAdd()
+              handleAdd()
             }
           }}
-          disabled={isAdding}
+          disabled={addMutation.isPending}
         />
-        <Button type="button" onClick={handleAdd} disabled={isAdding}>
+        <Button
+          type="button"
+          onClick={handleAdd}
+          disabled={addMutation.isPending}
+        >
           <Plus className="mr-1 size-4" />
-          {isAdding ? 'Adding...' : 'Add'}
+          {addMutation.isPending ? 'Adding...' : 'Add'}
         </Button>
       </div>
 
@@ -232,16 +222,18 @@ export function Passkeys() {
                 deleteDialog.setFalse()
                 setDeleteTarget(null)
               }}
-              disabled={isDeleting}
+              disabled={deleteMutation.isPending}
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
-              onClick={handleDelete}
-              disabled={isDeleting}
+              onClick={() => {
+                if (deleteTarget) deleteMutation.mutate(deleteTarget.id)
+              }}
+              disabled={deleteMutation.isPending}
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </Button>
           </DialogFooter>
         </DialogContent>

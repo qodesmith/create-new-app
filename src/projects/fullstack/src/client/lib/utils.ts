@@ -13,15 +13,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Helper to automatically create an error toast for all errors found on a
- * Tanstack form in the onSubmitInvalid handler in useForm.
+ * Helper for the onSubmitInvalid handler in useForm. Renders a single error
+ * toast summarizing the form's validation errors: the message itself when
+ * there's only one, or a count when there are multiple.
  */
 export const handleFormSubmitInvalid = ({formApi}: {formApi: AnyFormApi}) => {
-  Object.values(formApi.getAllErrors().fields).forEach(field => {
-    field.errors.forEach(errorMessage => {
-      if (typeof errorMessage === 'string') {
-        toast.error(errorMessage)
-      }
-    })
-  })
+  const messages = Object.values(formApi.getAllErrors().fields)
+    .flatMap(field => field.errors)
+    .filter((error): error is string => typeof error === 'string')
+
+  if (messages.length === 0) return
+
+  if (messages.length === 1) {
+    toast.error(messages[0])
+    return
+  }
+
+  toast.error(`Please fix ${messages.length} errors in the form`)
 }

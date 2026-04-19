@@ -1,10 +1,9 @@
 /** biome-ignore-all lint/correctness/noProcessGlobal: allows Bun to remove conditional code based on process.env.NODE_ENV */
 
-import {$, serve} from 'bun'
+import {serve} from 'bun'
 import {networkInterfaces} from 'node:os'
 
 import {is0000, isProd, port} from '@/server/constants'
-import {getDatabase} from '@/server/db/getDatabase'
 import {migrateDbSchema} from '@/server/db/migrate'
 import {startDbCleanup} from '@/server/dbCleanup'
 import {honoServer} from '@/server/hono/honoServer'
@@ -13,26 +12,12 @@ import {prodSecurityHeaders} from '@/server/middleware/secureHeadersMiddleware'
 import {handleBunServerError} from '@/server/utils/handleBunServerError'
 import {log} from '@/server/utils/logger'
 
-import {sql} from 'drizzle-orm'
-
 if (process.env.NODE_ENV === 'production') {
   /**
    * This expects the src/server/db/drizzle folder to be populated with a
    * generated schema. The schema should be checked into version control.
    */
   migrateDbSchema()
-}
-
-if (process.env.NODE_ENV === 'development') {
-  const db = getDatabase()
-  const tables = db.all<{name: string}>(
-    sql`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'`
-  )
-
-  // If the development database has no tables, initialize it.
-  if (!tables.length) {
-    await $`bun run initDevDb.ts`.cwd(process.cwd())
-  }
 }
 
 // In deployed production, `indexHtml.index` will be a file path.

@@ -2,7 +2,8 @@
 
 import type {Subprocess} from 'bun'
 
-import {serve, sleep, spawn} from 'bun'
+import {$, serve, sleep, spawn} from 'bun'
+import {Database} from 'bun:sqlite'
 import {existsSync, rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -13,6 +14,31 @@ import colors from 'picocolors'
 if (!existsSync(path.join(process.cwd(), 'node_modules'))) {
   console.log(`First run ${colors.cyan('bun install')} to install dependencies`)
   process.exit(1)
+}
+
+/**
+ * Initialize the dev database BEFORE spawning the hot-reloaded server. If we
+ * did this from inside `bunServer.ts`, each file written by `initDevDb.ts`
+ * (authSchema.ts, drizzle migration files, the SQLite file) would trigger
+ * `bun --hot` to re-run the server, which would spawn another `initDevDb.ts`,
+ * producing interleaved duplicate output.
+ *
+ * Check for tables rather than file existence — an empty or partially-created
+ * sqlite file (e.g. from a prior aborted run) should still trigger re-init.
+ */
+const sqlitePath = process.env.SQLITE_PATH
+if (!sqlitePath) {
+  throw new Error('process.env.SQLITE_PATH is undefined')
+}
+const sqliteDb = new Database(path.resolve(process.cwd(), sqlitePath))
+const tables = sqliteDb
+  .query<{name: string}, []>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+  )
+  .all()
+sqliteDb.close()
+if (!tables.length) {
+  await $`bun run initDevDb.ts`
 }
 
 /**

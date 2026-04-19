@@ -27,7 +27,7 @@ export function AccountAvatar() {
   })
   const initials = useMemo(() => {
     const first = user.name.trim()[0] ?? ''
-    const last = user.lastName?.trim?.()[0] ?? ''
+    const last = user.lastName.trim()[0] ?? ''
     return `${first}${last}` || (user.name || 'U').slice(0, 2)
   }, [user.lastName, user.name])
 

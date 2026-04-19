@@ -407,7 +407,7 @@ function ExternalLink({href, children}: {href: string; children: ReactNode}) {
     <a
       href={href}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       className="text-blue-500 no-underline hover:underline"
     >
       {children}

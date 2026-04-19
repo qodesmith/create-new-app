@@ -41,9 +41,11 @@ export function createTanstackRouter() {
         : 'Something went wrong'
       const {invalidate} = useRouter() // Will invalidate the current route's cache
       const onClick = () => {
-        isValidationError
-          ? invalidate() // Reloads the loader and resets the error boundary
-          : resetErrorBoundary() // Only resets the error boundary
+        if (isValidationError) {
+          invalidate() // Reloads the loader and resets the error boundary
+        } else {
+          resetErrorBoundary() // Only resets the error boundary
+        }
       }
 
       useEffect(() => {

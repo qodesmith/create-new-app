@@ -50,11 +50,10 @@ export const noDirectRequestMiddleware = createMiddleware(async (c, next) => {
         </video>
       </body>
     `
-    c.res = new Response(html, {
-      status: 403,
-      headers: {'Content-Type': 'text/html'},
-    })
-  } else {
-    await next()
+
+    c.status(403)
+    return c.html(html)
   }
+
+  await next()
 })

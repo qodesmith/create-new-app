@@ -14,6 +14,7 @@ import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 import {arktypeValidator} from '@hono/arktype-validator'
 import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
+import {sql} from 'drizzle-orm'
 import {Hono} from 'hono'
 import {csrf} from 'hono/csrf'
 
@@ -78,7 +79,22 @@ export const honoServer = new Hono()
   // HEALTH CHECK //
   //////////////////
 
-  .get('/health', async c => c.text('ok'))
+  .get(
+    '/health',
+    getRateLimitMiddleware({windowMs: getUnitInMs(60, 's'), limit: 60}),
+    async c => {
+      try {
+        /**
+         * Cheapest possible query — verifies the DB is reachable without
+         * touching any tables.
+         */
+        getDatabase().run(sql`SELECT 1`)
+        return c.text('ok')
+      } catch {
+        return c.text('db unavailable', 503)
+      }
+    }
+  )
 
   ///////////
   // ADMIN //

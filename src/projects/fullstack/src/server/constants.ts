@@ -54,6 +54,8 @@ export const is0000 = !isProd && _intendingToExposeAllLocalConnections
 
 export const errorRetentionPeriod = getUnitInMs(90, 'd')
 
+export const auditLogRetentionPeriod = getUnitInMs(1, 'y')
+
 /**
  * This should never happen, but just a safeguard in case it does.
  * ALL_CONNECTIONS is a dev-only flag that binds the server to 0.0.0.0, exposing

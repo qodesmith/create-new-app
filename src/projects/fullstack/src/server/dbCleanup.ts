@@ -2,7 +2,12 @@ import type {AuthSchemaSelect, SharedAuditLogsMetadata} from '@/server/types'
 
 import process from 'node:process'
 
-import {errorRetentionPeriod, isProd, userRoles} from '@/server/constants'
+import {
+  auditLogRetentionPeriod,
+  errorRetentionPeriod,
+  isProd,
+  userRoles,
+} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {
   adminAuditLogsTable,
@@ -13,12 +18,7 @@ import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
 import {log} from '@/server/utils/logger'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
-import {
-  bestEffort,
-  errorToObject,
-  getUnitInMs,
-  pluralize,
-} from '@qodestack/utils'
+import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
 const oneHourInMs = getUnitInMs(1, 'h')
@@ -37,17 +37,23 @@ export function purgeStaleRecords({
   purgeVerifications = true,
   purgeRatelimits = true,
   purgeErrors = true,
+  purgeAdminAuditLogs = true,
+  purgeSystemAuditLogs = true,
   ...opts
 }: ({adminId: AuthSchemaSelect['users']['id']} | {system: true}) & {
   purgeUsers?: boolean
   purgeVerifications?: boolean
   purgeRatelimits?: boolean
   purgeErrors?: boolean
+  purgeAdminAuditLogs?: boolean
+  purgeSystemAuditLogs?: boolean
 }): {
   usersPurged: number
   verificationsPurged: number
   ratelimitsPurged: number
   errorsPurged: number
+  adminAuditLogsPurged: number
+  systemAuditLogsPurged: number
   message?: string
 } {
   const db = getDatabase()
@@ -57,6 +63,8 @@ export function purgeStaleRecords({
     verificationsPurged: 0,
     ratelimitsPurged: 0,
     errorsPurged: 0,
+    adminAuditLogsPurged: 0,
+    systemAuditLogsPurged: 0,
   }
 
   // Sanity check, though this should never happen.
@@ -90,10 +98,12 @@ export function purgeStaleRecords({
       log.error(errorMsg)
 
       bestEffort(() => {
-        db.insert(errorsTable).values({
-          error: errorToObject(new Error(errorMsg)),
-          context: 'dbCleanup:purgeStaleRecordsException',
-        })
+        db.insert(errorsTable)
+          .values({
+            error: errorToObject(new Error(errorMsg)),
+            context: 'dbCleanup:purgeStaleRecordsException',
+          })
+          .run()
       })
 
       return {...nothingPurged, message: errorMsg}
@@ -151,7 +161,7 @@ export function purgeStaleRecords({
             .values({userId: opts.adminId, metadata})
             .run()
         } else {
-          tx.insert(systemAuditLogsTable).values({metadata})
+          tx.insert(systemAuditLogsTable).values({metadata}).run()
         }
 
         return deleted
@@ -176,7 +186,7 @@ export function purgeStaleRecords({
             .values({userId: opts.adminId, metadata})
             .run()
         } else {
-          tx.insert(systemAuditLogsTable).values({metadata})
+          tx.insert(systemAuditLogsTable).values({metadata}).run()
         }
 
         return deleted
@@ -203,41 +213,66 @@ export function purgeStaleRecords({
             .values({userId: opts.adminId, metadata})
             .run()
         } else {
-          tx.insert(systemAuditLogsTable).values({metadata})
+          tx.insert(systemAuditLogsTable).values({metadata}).run()
         }
 
         return deleted
       })
     : []
 
-  const total =
-    usersPurgedResults.length +
-    verificationsPurgedResults.length +
-    ratelimitsPurgedResults.length
+  const adminAuditLogsPurged = purgeAdminAuditLogs
+    ? db.transaction(tx => {
+        const deleted = tx
+          .delete(adminAuditLogsTable)
+          .where(
+            lt(
+              adminAuditLogsTable.createdAt,
+              new Date(now - auditLogRetentionPeriod)
+            )
+          )
+          .returning()
+          .all()
 
-  if (total > 0) {
-    const actor = isAdmin ? 'admin' : 'system'
-    const userResults = pluralize(usersPurgedResults.length, 'stale user')
-    const verificationResults = pluralize(
-      verificationsPurgedResults.length,
-      'expired verification'
-    )
-    const rateLimitResults = pluralize(
-      ratelimitsPurgedResults.length,
-      'stale rate limit'
-    )
+        return deleted
+      })
+    : []
 
-    log.text(
-      `[DB_CLEANUP][${actor}] Purged ${userResults}, ${verificationResults} , ${rateLimitResults}`
-    )
-  }
+  const systemAuditLogsPurged = purgeSystemAuditLogs
+    ? db.transaction(tx => {
+        const deleted = tx
+          .delete(systemAuditLogsTable)
+          .where(
+            lt(
+              systemAuditLogsTable.createdAt,
+              new Date(now - auditLogRetentionPeriod)
+            )
+          )
+          .returning()
+          .all()
 
-  return {
+        return deleted
+      })
+    : []
+
+  const dataPurged = {
     usersPurged: usersPurgedResults.length,
     verificationsPurged: verificationsPurgedResults.length,
     ratelimitsPurged: ratelimitsPurgedResults.length,
     errorsPurged: errorsPurgedResults.length,
+    adminAuditLogsPurged: adminAuditLogsPurged.length,
+    systemAuditLogsPurged: systemAuditLogsPurged.length,
   }
+
+  const total = Object.values(dataPurged).reduce((acc, num) => acc + num, 0)
+
+  if (total > 0) {
+    const actor = isAdmin ? 'admin' : 'system'
+
+    log.text(`[DB_CLEANUP][${actor}] Purged:`)
+    log.text(dataPurged)
+  }
+
+  return dataPurged
 }
 
 /**

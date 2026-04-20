@@ -12,7 +12,7 @@ import {useCallback} from 'react'
  *
  * @param error - The error object or unknown value to be logged
  * @param context - Used for observability and debugging in the logs
- * @param metadata - Optional adhoc data with no specific shape, used to provideadditional context
+ * @param metadata - Optional adhoc data with no specific shape, used to provide additional context
  */
 function logClientError({
   error,

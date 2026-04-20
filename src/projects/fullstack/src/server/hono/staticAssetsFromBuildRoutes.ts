@@ -54,8 +54,15 @@ function getRoutesAndData(): RouteData[] {
   const fileList = JSON.parse(
     readFileSync('/app/assets.json', {encoding: 'utf8'})
   ) as StaticAsset[]
+  const forbiddenChars = ['..', '/', '\\']
 
   return fileList.map(({fileName, isProtected}) => {
+    if (forbiddenChars.some(val => fileName.includes(val))) {
+      throw new Error(
+        `Malformed fileName present in /app/assets.json - "${fileName}"`
+      )
+    }
+
     return {
       route: `/${fileName}`,
       isProtected,

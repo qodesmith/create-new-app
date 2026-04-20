@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_authenticated')({
     const session = await authClient.getSession()
     const {pathname} = location
 
-    if (!(session.data?.session && session.data?.user)) {
+    if (!session.data) {
       sessionStorage.setItem(resetAppKey, 'true')
       context.store.set(isSignedInAtom, false)
 
@@ -35,7 +35,6 @@ export const Route = createFileRoute('/_authenticated')({
 
     return {
       user: session.data.user,
-      session: session.data.session,
     }
   },
   component: RouteComponent,

@@ -38,6 +38,7 @@ export const adminRoutes = new Hono<{Variables: SessionData}>()
       .select()
       .from(ratelimits)
       .where(lt(ratelimits.lastRequest, now - oneHourInMs))
+      .all()
 
     return c.json({staleUsers, staleVerifications, staleRatelimits})
   })

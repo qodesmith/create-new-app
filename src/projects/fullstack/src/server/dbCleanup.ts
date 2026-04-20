@@ -60,10 +60,12 @@ export function purgeStaleRecords({
     log.error(errorMsg)
 
     bestEffort(() => {
-      db.insert(errorsTable).values({
-        error: errorToObject(new Error(errorMsg)),
-        context: 'dbCleanup:purgeStaleRecordsException',
-      })
+      db.insert(errorsTable)
+        .values({
+          error: errorToObject(new Error(errorMsg)),
+          context: 'dbCleanup:purgeStaleRecordsException',
+        })
+        .run()
     })
 
     return {...nothingPurged, message: errorMsg}
@@ -119,7 +121,7 @@ export function purgeStaleRecords({
             .values({userId: opts.adminId, metadata})
             .run()
         } else {
-          tx.insert(systemAuditLogsTable).values({metadata})
+          tx.insert(systemAuditLogsTable).values({metadata}).run()
         }
 
         return deleted

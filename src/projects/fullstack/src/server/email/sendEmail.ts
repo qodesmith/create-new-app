@@ -6,7 +6,7 @@ import {getDatabase} from '@/server/db/getDatabase'
 import {errorsTable} from '@/server/db/schema/appSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
 
-import {errorToObject} from '@qodestack/utils'
+import {bestEffort, errorToObject} from '@qodestack/utils'
 import {Resend} from 'resend'
 
 export async function sendEmail({
@@ -35,15 +35,27 @@ export async function sendEmail({
         const error = errorToObject(res.error)
         const metadata = res.headers === null ? null : {headers: res.headers}
 
-        db.insert(errorsTable)
-          .values({context: rejectionContext, error, metadata})
-          .run()
+        bestEffort(
+          () => {
+            db.insert(errorsTable)
+              .values({context: rejectionContext, error, metadata})
+              .run()
+          },
+          {log: true}
+        )
       }
     })
     .catch(e => {
       const db = getDatabase()
       const error = errorToObject(e)
 
-      db.insert(errorsTable).values({context: exceptionContext, error}).run()
+      bestEffort(
+        () => {
+          db.insert(errorsTable)
+            .values({context: exceptionContext, error})
+            .run()
+        },
+        {log: true}
+      )
     })
 }

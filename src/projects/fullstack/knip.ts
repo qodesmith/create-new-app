@@ -37,7 +37,7 @@ export default {
   ignoreDependencies: [
     '@react-email/preview-server',
     '@tanstack/router-cli',
-    'auth',
+    'auth', // Better Auth CLI
   ],
   ignoreFiles: [
     'src/server/db/auth/authSchemaGenerator.ts',

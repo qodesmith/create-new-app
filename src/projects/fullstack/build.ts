@@ -5,7 +5,7 @@ import {readdirSync, rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
-import bunPluginTailwind from 'bun-plugin-tailwind'
+import bunPluginTailwind from './bunPluginTailwind'
 
 const inDockerBuild = process.env.IN_DOCKER_BUILD === 'true' // Defined in the Dockerfile
 const excludedAssetsFromHonoServer: string[] = [

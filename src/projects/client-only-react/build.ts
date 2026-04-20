@@ -1,7 +1,7 @@
 import {build} from 'bun'
 import {rmSync} from 'node:fs'
 
-import bunPluginTailwind from 'bun-plugin-tailwind'
+import bunPluginTailwind from './bunPluginTailwind'
 
 rmSync('./dist', {recursive: true, force: true})
 

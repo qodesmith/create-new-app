@@ -279,21 +279,6 @@ export const authOptions = {
     },
   },
 
-  account: {
-    accountLinking: {
-      enabled: false, // TODO - decide what to do with this feature.
-
-      // Enabling this increases the risk of account takeover.
-      allowDifferentEmails: false,
-
-      /**
-       * Avoid automatically linking to these providers if their email has not
-       * been confirmed by these providers.
-       */
-      trustedProviders: undefined,
-    },
-  },
-
   // By default this is enabled in production and disabled in development.
   rateLimit: {
     storage: 'database',

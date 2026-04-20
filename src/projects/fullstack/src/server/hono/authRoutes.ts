@@ -51,22 +51,20 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
 
       try {
         const buffer = Buffer.from(await avatar.arrayBuffer())
+        const raw = await sharp(buffer)
+          .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
+          .raw()
+          .toBuffer({resolveWithObject: true})
         const qualityReductionAmount = 5
         let quality = 90
 
-        webpBuffer = await sharp(buffer)
-          .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
+        webpBuffer = await sharp(raw.data, {raw: raw.info})
           .webp({quality})
           .toBuffer()
 
-        /**
-         * If still over the max size, reduce the quality. Prevent an infinite
-         * loop by setting a floor on the quality.
-         */
         while (webpBuffer.byteLength > maxAvatarFileSize && quality > 5) {
           quality -= qualityReductionAmount
-          webpBuffer = await sharp(buffer)
-            .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
+          webpBuffer = await sharp(raw.data, {raw: raw.info})
             .webp({quality})
             .toBuffer()
         }

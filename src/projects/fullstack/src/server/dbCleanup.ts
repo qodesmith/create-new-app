@@ -111,7 +111,7 @@ export function purgeStaleRecords({
   }
 
   const now = Date.now()
-  const staleUsersCuroff = new Date(now - emailVerificationExpiryInMs)
+  const staleUsersCutoff = new Date(now - emailVerificationExpiryInMs)
 
   const usersPurgedResults = purgeUsers
     ? db.transaction(tx => {
@@ -120,7 +120,7 @@ export function purgeStaleRecords({
           .where(
             and(
               eq(users.emailVerified, false),
-              lt(users.createdAt, staleUsersCuroff)
+              lt(users.createdAt, staleUsersCutoff)
             )
           )
           .returning()

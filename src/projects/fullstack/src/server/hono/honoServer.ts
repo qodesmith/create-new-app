@@ -111,7 +111,7 @@ export const honoServer = new Hono()
   .post(
     '/api/client-error',
     // Max 5 errors per second.
-    getRateLimitMiddleware({windowMs: getUnitInMs(1, 's'), limit: 5}),
+    getRateLimitMiddleware({windowMs: getUnitInMs(1, 's'), limit: 1}),
     arktypeValidator(
       'json',
       createInsertSchema(errorsTable).omit(

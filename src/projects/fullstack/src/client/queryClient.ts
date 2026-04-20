@@ -7,7 +7,11 @@ export function createQueryClient() {
     defaultOptions: {
       queries: {
         retry: (failureCount, error) => {
-          if (error instanceof DetailedError && error.statusCode === 404) {
+          if (
+            error instanceof DetailedError &&
+            error.statusCode >= 400 &&
+            error.statusCode < 500
+          ) {
             return false
           }
 

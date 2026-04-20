@@ -42,6 +42,10 @@ export type SharedAuditLogsMetadata =
       action: 'purge-stale-ratelimits'
       deletedCount: number
     }
+  | {
+      action: 'purge-stale-errors'
+      deletedCount: number
+    }
 
 export type AdminAuditLogsMetadata =
   | SharedAuditLogsMetadata

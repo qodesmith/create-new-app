@@ -1,5 +1,7 @@
 import {getEnvVar} from '@/server/utils/getEnvVar'
 
+import {getUnitInMs} from '@qodestack/utils'
+
 export const port = getEnvVar('PORT')
 
 export const domain = getEnvVar('DOMAIN') // 'example.com'
@@ -49,6 +51,8 @@ const _intendingToExposeAllLocalConnections =
  * locally at `http://0.0.0.0:<port>`
  */
 export const is0000 = !isProd && _intendingToExposeAllLocalConnections
+
+export const errorRetentionPeriod = getUnitInMs(90, 'd')
 
 /**
  * This should never happen, but just a safeguard in case it does.

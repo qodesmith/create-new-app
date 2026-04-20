@@ -2,7 +2,7 @@ import type {AuthSchemaSelect, SharedAuditLogsMetadata} from '@/server/types'
 
 import process from 'node:process'
 
-import {isProd, userRoles} from '@/server/constants'
+import {errorRetentionPeriod, isProd, userRoles} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {
   adminAuditLogsTable,
@@ -30,20 +30,24 @@ let started = false
  *   accounts, sessions, and passkeys)
  * - Expired verification tokens (sign-up, email change, password reset)
  * - Rate limit entries older than the cleanup interval
+ * - Errors older than the retention period
  */
 export function purgeStaleRecords({
   purgeUsers = true,
   purgeVerifications = true,
   purgeRatelimits = true,
+  purgeErrors = true,
   ...opts
 }: ({adminId: AuthSchemaSelect['users']['id']} | {system: true}) & {
   purgeUsers?: boolean
   purgeVerifications?: boolean
   purgeRatelimits?: boolean
+  purgeErrors?: boolean
 }): {
   usersPurged: number
   verificationsPurged: number
   ratelimitsPurged: number
+  errorsPurged: number
   message?: string
 } {
   const db = getDatabase()
@@ -52,6 +56,7 @@ export function purgeStaleRecords({
     usersPurged: 0,
     verificationsPurged: 0,
     ratelimitsPurged: 0,
+    errorsPurged: 0,
   }
 
   // Sanity check, though this should never happen.
@@ -178,6 +183,33 @@ export function purgeStaleRecords({
       })
     : []
 
+  const errorsPurgedResults = purgeErrors
+    ? db.transaction(tx => {
+        const deleted = tx
+          .delete(errorsTable)
+          .where(
+            lt(errorsTable.createdAt, new Date(now - errorRetentionPeriod))
+          )
+          .returning()
+          .all()
+
+        const metadata: SharedAuditLogsMetadata = {
+          action: 'purge-stale-errors',
+          deletedCount: deleted.length,
+        }
+
+        if (isAdmin) {
+          tx.insert(adminAuditLogsTable)
+            .values({userId: opts.adminId, metadata})
+            .run()
+        } else {
+          tx.insert(systemAuditLogsTable).values({metadata})
+        }
+
+        return deleted
+      })
+    : []
+
   const total =
     usersPurgedResults.length +
     verificationsPurgedResults.length +
@@ -204,6 +236,7 @@ export function purgeStaleRecords({
     usersPurged: usersPurgedResults.length,
     verificationsPurged: verificationsPurgedResults.length,
     ratelimitsPurged: ratelimitsPurgedResults.length,
+    errorsPurged: errorsPurgedResults.length,
   }
 }
 

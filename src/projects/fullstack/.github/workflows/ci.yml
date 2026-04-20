@@ -10,7 +10,7 @@
 #
 # After that, GitHub will prevent merging any PR where this workflow fails.
 
-name: Lint, Typecheck & Knip
+name: Lint, Typecheck, & Knip
 
 on:
   push:

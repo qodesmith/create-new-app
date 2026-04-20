@@ -176,7 +176,7 @@ export const authOptions = {
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
-    resetPasswordTokenExpiresIn: getUnitInSeconds(5, 'm'),
+    resetPasswordTokenExpiresIn: getUnitInSeconds(15, 'm'),
     minPasswordLength,
 
     /**

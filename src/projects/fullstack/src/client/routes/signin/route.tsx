@@ -28,9 +28,9 @@ export const Route = createFileRoute('/signin')({
     }
 
     const authClient = context.store.get(authClientAtom)
-    const session = await authClient.getSession()
+    const {data} = await authClient.getSession()
 
-    if (session.data?.session) {
+    if (data) {
       context.store.set(isSignedInAtom, true)
       throw redirect({to: defaultAuthedPath, replace: true})
     }

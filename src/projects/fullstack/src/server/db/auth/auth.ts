@@ -343,7 +343,10 @@ export const authOptions = {
      * https://www.better-auth.com/docs/plugins/admin
      * Adds user roles and various user management capabilities.
      */
-    admin({defaultRole: userRoles.user, adminRoles: [userRoles.admin]}),
+    admin({
+      defaultRole: userRoles.user,
+      adminRoles: [userRoles.admin],
+    }),
 
     /**
      * https://www.better-auth.com/docs/plugins/passkey

@@ -14,14 +14,13 @@ import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {useRouteContext} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
 import {Fingerprint, KeyRound, Plus, Trash2} from 'lucide-react'
-import {useState} from 'react'
+import {useMemo, useState} from 'react'
 import {toast} from 'sonner'
 
 type Passkey = AuthSchemaInsert['passkeys']
-
-const passkeysQueryKey = ['passkeys'] as const
 
 export function Passkeys() {
   const authClient = useAtomValue(authClientAtom)
@@ -29,6 +28,13 @@ export function Passkeys() {
   const queryClient = useQueryClient()
   const [addName, setAddName] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<Passkey | null>(null)
+  const user = useRouteContext({
+    from: '/_authenticated',
+    select: ({user}) => user,
+  })
+  const passkeysQueryKey = useMemo(() => {
+    return ['passkeys', user.id] as const
+  }, [user.id])
 
   const {data: passkeys = [], isLoading} = useQuery<Passkey[]>({
     queryKey: passkeysQueryKey,

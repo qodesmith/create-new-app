@@ -56,16 +56,7 @@ function AppContainer({isSignedInOnAppLoad}: {isSignedInOnAppLoad: boolean}) {
 async function start() {
   const root = createRoot(document.getElementById('root') as Element)
   const authClient = getAuthClient()
-  const sessionData = await authClient.getSession({
-    /**
-     * https://www.better-auth.com/docs/concepts/session-management
-     *
-     * This is the initial authentication check for the application. Force it
-     * to ignore cached cookies and query the database to ensure an accurate
-     * value for if the user is signed in or not.
-     */
-    query: {disableCookieCache: true},
-  })
+  const sessionData = await authClient.getSession()
   const isSignedInOnAppLoad =
     !!sessionData.data?.session && !!sessionData.data.user
 

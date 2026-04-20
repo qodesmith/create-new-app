@@ -214,6 +214,25 @@ export const authOptions = {
     },
   },
 
+  // https://www.better-auth.com/docs/concepts/session-management
+  session: {
+    /**
+     * Prevent GET /get-session from performing database writes and instead
+     * force the client to make an additional POST request to refresh a session.
+     */
+    deferSessionRefresh: true,
+
+    /**
+     * Cookie cache is disabled by default but it's worth doing it explicitly
+     * here so it's not opaque. This will force the client to fetch fresh
+     * sessions anywhere `authClient.getSession()` is called - in particular,
+     * authenticated routes.
+     */
+    cookieCache: {
+      enabled: false,
+    },
+  },
+
   user: {
     additionalFields: {
       lastName: {

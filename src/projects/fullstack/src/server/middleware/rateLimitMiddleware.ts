@@ -1,5 +1,7 @@
 import type {MiddlewareHandler} from 'hono'
 
+import process from 'node:process'
+
 import {isProd} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {errorsTable} from '@/server/db/schema/appSchema'
@@ -22,13 +24,14 @@ export function getRateLimitMiddleware({
         standardHeaders: 'draft-6',
         keyGenerator: c => {
           const info = getConnInfo(c)
+          const behindFly = !!process.env.FLY_APP_NAME
 
           /**
            * Proxy-set headers are checked first because in production
            * `remote.address` is typically the proxy's IP, not the client's.
            */
           const ipAddress =
-            c.req.header('fly-client-ip') ||
+            (behindFly && c.req.header('fly-client-ip')) ||
             c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ||
             c.req.header('x-real-ip') ||
             info.remote.address

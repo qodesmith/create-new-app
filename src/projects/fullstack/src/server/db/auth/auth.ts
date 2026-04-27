@@ -255,8 +255,8 @@ export const authOptions = {
       //     user,
       //     subject: 'Confirm your updated email',
       //     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
-      //     rejectionContext: 'resend:sendChangePasswordEmailRejection',
-      //     exceptionContext: 'resend:sendChangePasswordEmailException',
+      //     rejectionContext: 'resend:sendChangeEmailRejection',
+      //     exceptionContext: 'resend:sendChangeEmailException',
       //   })
       // },
     },

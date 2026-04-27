@@ -60,8 +60,6 @@ export type ErrorContext =
   | 'resend:sendSignUpVerificationEmailException'
   | 'resend:sendResetPasswordEmailRejection'
   | 'resend:sendResetPasswordEmailException'
-  | 'resend:sendChangePasswordEmailRejection'
-  | 'resend:sendChangePasswordEmailException'
   | 'resend:sendChangeEmailRejection'
   | 'resend:sendChangeEmailException'
   | 'resend:sendDeleteAccountVerificationEmailRejection'

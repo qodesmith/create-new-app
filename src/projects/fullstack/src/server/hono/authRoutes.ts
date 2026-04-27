@@ -32,16 +32,7 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
    */
   .post(
     '/avatar',
-    arktypeValidator('form', type({avatar: 'File'}), (result, c) => {
-      if (!result.success) {
-        /**
-         * `arktypeValidator` takes an optional 3rd "hook" argument that allows
-         * you to return a custom shape. This ensures the same error shape as
-         * returned in the handler below.
-         */
-        return c.json({error: 'Invalid file provided'}, 400)
-      }
-    }),
+    arktypeValidator('form', type({avatar: 'File'})),
     async c => {
       const {avatar} = c.req.valid('form')
 

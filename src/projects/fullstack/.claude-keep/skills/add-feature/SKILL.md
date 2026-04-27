@@ -58,12 +58,35 @@ bestEffort(() => {
 
 ## RPC Wiring
 
+Always wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
+
+In `onError`, branch on `error instanceof DetailedError` to split the log context: Rejection = server replied non-2xx, Exception = request never completed (network, CORS, code throw).
+
 ```ts
-// Server exports type automatically via Hono chaining
-// Client consumes via Jotai atom:
+import {useMutation} from '@tanstack/react-query'
+import {DetailedError, parseResponse} from 'hono/client'
+import {useAtomValue} from 'jotai'
+import {apiAuthClientAtom} from '@/client/state/globalState'
+
 const apiAuthClient = useAtomValue(apiAuthClientAtom)
-const res = await apiAuthClient.myEndpoint.$post({json: data})
-const result = await res.json()
+
+const myMutation = useMutation({
+  mutationFn: async (input: MyInput) => {
+    return parseResponse(apiAuthClient.myEndpoint.$post({json: input}))
+  },
+  onSuccess: data => { /* typed success body */ },
+  onError: error => {
+    const isRejection = error instanceof DetailedError
+
+    toast.error('Friendly message')
+    logClientError({
+      error,
+      context: isRejection
+        ? 'client:myFeatureRejection'
+        : 'client:myFeatureException',
+    })
+  },
+})
 ```
 
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

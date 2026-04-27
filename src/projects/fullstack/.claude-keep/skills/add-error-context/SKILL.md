@@ -19,8 +19,10 @@ Format: `<service>:<operation><Suffix>`
 | 'client:<operation>Exception'
 ```
 
-- **Rejection** — API responded (2xx) but returned an error object or otherwise communicated failure
-- **Exception** — error caught in the catch clause of the API call
+Hono RPC calls are wrapped with `parseResponse` from `hono/client` inside `useMutation` / `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx, so all failures land in `onError`. In the `onError` handler, branch on `error instanceof DetailedError` to pick the context tag:
+
+- **Rejection** — `error instanceof DetailedError` is `true`. Server replied with a non-2xx status; `parseResponse` threw `DetailedError`. Tag: `client:<operation>Rejection`.
+- **Exception** — `error instanceof DetailedError` is `false`. Anything else thrown inside `mutationFn` / `queryFn` (network/CORS failure, JSON parse error, code error). Tag: `client:<operation>Exception`.
 
 ### 2. Server-side async calls to external services — Rejection + Exception pair
 

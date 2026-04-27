@@ -74,6 +74,20 @@ Chain BEFORE `.notFound()` — order matters.
 - Only when endpoint receives client data (POST/PUT/PATCH with body)
 - Position: second-to-last arg, right before handler
 
+## Error Responses
+
+Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the entire error-logging contract.
+
+```ts
+// Right
+return c.json({error: 'No file provided'}, 400)
+
+// Wrong — c.json() defaults to 200
+return c.json({error: 'No file provided'})
+```
+
+Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message and gets logged via `logClientError` on failure.
+
 ## Fire-and-Forget
 
 For non-critical async operations, use the `bestEffort` server utility, guaranteed to not throw:

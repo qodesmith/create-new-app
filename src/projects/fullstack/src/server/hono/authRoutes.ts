@@ -39,7 +39,7 @@ export const authRoutes = new Hono<{Variables: SessionData}>()
          * you to return a custom shape. This ensures the same error shape as
          * returned in the handler below.
          */
-        return c.json({error: 'Invalid file provided'})
+        return c.json({error: 'Invalid file provided'}, 400)
       }
     }),
     async c => {

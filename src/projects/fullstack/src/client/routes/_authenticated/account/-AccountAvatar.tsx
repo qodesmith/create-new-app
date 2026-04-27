@@ -16,6 +16,7 @@ import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 import {bytesToSize} from '@qodestack/utils'
 import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
+import {DetailedError, parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
 import {useEffect, useId, useMemo, useRef, useState} from 'react'
 import {toast} from 'sonner'
@@ -50,28 +51,22 @@ export function AccountAvatar() {
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
-      const res = await apiAuthClient.avatar.$post({form: {avatar: file}})
-      return res.json()
+      return parseResponse(apiAuthClient.avatar.$post({form: {avatar: file}}))
     },
-    onSuccess: data => {
-      if ('error' in data) {
-        toast.error(data.error)
-        logClientError({
-          error: data,
-          context: 'client:avatarUploadRejection',
-        })
-        return
-      }
-
+    onSuccess: () => {
       toast.success('Avatar updated')
       setShowImage(true)
       clearPreview()
     },
     onError: error => {
+      const isRejection = error instanceof DetailedError
+
       toast.error(error.message)
       logClientError({
         error,
-        context: 'client:avatarUploadException',
+        context: isRejection
+          ? 'client:avatarUploadRejection'
+          : 'client:avatarUploadException',
       })
       setShowImage(false)
     },
@@ -79,35 +74,21 @@ export function AccountAvatar() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiAuthClient.avatar.$delete()
-      if (res.ok) return res
-
-      return {
-        error: 'Delete avatar failed',
-        status: res.status,
-        statusText: res.statusText,
-        headers: res.headers,
-      }
+      return parseResponse(apiAuthClient.avatar.$delete())
     },
-    onSuccess: data => {
-      if (data && 'error' in data) {
-        toast.error('Failed to remove avatar')
-        logClientError({
-          error: data,
-          context: 'client:avatarDeleteRejection',
-        })
-        setShowImage(true)
-        return
-      }
-
+    onSuccess: () => {
       toast.success('Avatar removed')
       setShowImage(false)
     },
     onError: error => {
+      const isRejection = error instanceof DetailedError
+
       toast.error('Failed to remove avatar')
       logClientError({
         error,
-        context: 'client:avatarDeleteException',
+        context: isRejection
+          ? 'client:avatarDeleteRejection'
+          : 'client:avatarDeleteException',
       })
       setShowImage(true)
     },

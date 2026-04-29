@@ -1,11 +1,11 @@
 import type {ImageLoadingStatus} from '@/client/components/ui/avatar'
 
+import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from '@/client/components/ui/avatar'
-import {Button} from '@/client/components/ui/button'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
@@ -168,37 +168,37 @@ export function AccountAvatar() {
         )}
         {blobPreviewUrl && (
           <div className="flex gap-2">
-            <Button
+            <LoadingButton
               type="button"
               size="sm"
-              disabled={uploadMutation.isPending}
+              loading={uploadMutation.isPending}
               onClick={() => {
                 if (selectedFile) uploadMutation.mutate(selectedFile)
               }}
             >
               Upload avatar
-            </Button>
-            <Button
+            </LoadingButton>
+            <LoadingButton
               type="button"
               variant="outline"
               size="sm"
-              disabled={uploadMutation.isPending}
+              loading={uploadMutation.isPending}
               onClick={clearPreview}
             >
               Clear avatar
-            </Button>
+            </LoadingButton>
           </div>
         )}
         {imageLoadingStatus === 'loaded' && !blobPreviewUrl && (
-          <Button
+          <LoadingButton
             type="button"
             variant="outline"
             size="sm"
-            disabled={deleteMutation.isPending}
+            loading={deleteMutation.isPending}
             onClick={() => deleteMutation.mutate()}
           >
             Remove avatar
-          </Button>
+          </LoadingButton>
         )}
       </div>
     </>

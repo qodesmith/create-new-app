@@ -4,14 +4,10 @@ import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {Button} from '@/client/components/ui/button'
 import {cn} from '@/client/lib/utils'
 
-type LoadingButtonProps = Omit<ComponentProps<typeof Button>, 'children'> &
-  ComponentProps<typeof AudioLoader> & {
-    text: string
-    loading?: boolean
-  }
+type LoadingButtonProps = ComponentProps<typeof Button> &
+  ComponentProps<typeof AudioLoader> & {loading?: boolean}
 
 export function LoadingButton({
-  text,
   loading,
   width = 20,
   height = 20,
@@ -20,6 +16,7 @@ export function LoadingButton({
   rounded = 2,
   speed,
   disabled,
+  children,
   ...props
 }: LoadingButtonProps) {
   return (
@@ -34,7 +31,7 @@ export function LoadingButton({
           speed={speed}
         />
       </span>
-      <span className={cn(loading && 'invisible')}>{text}</span>
+      <span className={cn(loading && 'invisible')}>{children}</span>
     </Button>
   )
 }

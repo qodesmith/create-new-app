@@ -1,7 +1,6 @@
 import type {FileRouteTypes} from '@/client/routeTree.gen'
 
-import {AudioLoader} from '@/client/components/custom/AudioLoader'
-import {Button} from '@/client/components/ui/button'
+import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {
   Dialog,
   DialogContent,
@@ -120,17 +119,14 @@ export function ResetPasswordDialog({
 
           <form.Subscribe>
             {({canSubmit, isSubmitting}) => (
-              <Button
+              <LoadingButton
                 type="submit"
-                disabled={!canSubmit || isSubmitting}
+                loading={isSubmitting}
+                disabled={!canSubmit}
                 className="w-full"
               >
-                {isSubmitting ? (
-                  <AudioLoader width={20} height={20} gap={1} rounded={2} />
-                ) : (
-                  'Send reset link'
-                )}
-              </Button>
+                Send reset link
+              </LoadingButton>
             )}
           </form.Subscribe>
         </form>

@@ -1,6 +1,5 @@
-import {AudioLoader} from '@/client/components/custom/AudioLoader'
+import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
-import {Button} from '@/client/components/ui/button'
 import {
   CardContent,
   CardDescription,
@@ -179,17 +178,14 @@ function SignInPage() {
 
             <form.Subscribe>
               {({canSubmit, isSubmitting}) => (
-                <Button
+                <LoadingButton
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || isPasskeyLoading}
+                  loading={isSubmitting}
+                  disabled={!canSubmit || isPasskeyLoading}
                   className="w-full"
                 >
-                  {isSubmitting ? (
-                    <AudioLoader width={20} height={20} gap={1} rounded={2} />
-                  ) : (
-                    'Sign in'
-                  )}
-                </Button>
+                  Sign in
+                </LoadingButton>
               )}
             </form.Subscribe>
           </form>
@@ -200,22 +196,19 @@ function SignInPage() {
             <Separator className="w-auto! grow" />
           </div>
 
-          <Button
+          <LoadingButton
             type="button"
             variant="outline"
             className="w-full"
             onClick={handlePasskeySignIn}
-            disabled={isPasskeyLoading || form.state.isSubmitting}
+            loading={form.state.isSubmitting}
+            disabled={isPasskeyLoading}
           >
-            {isPasskeyLoading ? (
-              <AudioLoader width={20} height={20} gap={1} rounded={2} />
-            ) : (
-              <>
-                <Fingerprint className="mr-2 size-4" />
-                Sign in with passkey
-              </>
-            )}
-          </Button>
+            <span className="flex items-center gap-2">
+              <Fingerprint className="size-4" />
+              Sign in with passkey
+            </span>
+          </LoadingButton>
 
           <div className="pt-6 text-center text-muted-foreground text-sm">
             <p>

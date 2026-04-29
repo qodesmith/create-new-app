@@ -1,4 +1,4 @@
-import {AudioLoader} from '@/client/components/custom/AudioLoader'
+import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {Button} from '@/client/components/ui/button'
 import {
@@ -172,17 +172,14 @@ function NewPasswordForm({
 
             <form.Subscribe>
               {({canSubmit, isSubmitting}) => (
-                <Button
+                <LoadingButton
                   type="submit"
-                  disabled={!canSubmit || isSubmitting}
+                  loading={isSubmitting}
+                  disabled={!canSubmit}
                   className="w-full"
                 >
-                  {isSubmitting ? (
-                    <AudioLoader width={20} height={20} gap={1} rounded={2} />
-                  ) : (
-                    'Reset password'
-                  )}
-                </Button>
+                  Reset password
+                </LoadingButton>
               )}
             </form.Subscribe>
           </form>

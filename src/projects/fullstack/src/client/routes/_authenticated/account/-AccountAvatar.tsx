@@ -157,8 +157,11 @@ export function AccountAvatar() {
             />
           </>
         )}
-        <p className="text-muted-foreground text-xs">
+        <p className="mb-0 text-muted-foreground text-xs">
           Images are resized to 128x128 and converted to WebP.
+        </p>
+        <p className="text-muted-foreground text-xs">
+          Maximum file upload size: {bytesToSize(maxAvatarUploadSize)}
         </p>
         {uploadMutation.isPending && (
           <p className="text-muted-foreground text-xs">Uploading...</p>

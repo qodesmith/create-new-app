@@ -1,5 +1,5 @@
 {
-  "name": "{{PROJECT_NAME}}",
+  "name": "create-new-app-template-fullstack",
   "version": "0.1.0",
   "type": "module",
   "packageManager": "bun@1.3.12",

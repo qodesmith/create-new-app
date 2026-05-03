@@ -64,9 +64,14 @@ export async function generateProject(options: GuidedOptions): Promise<void> {
   ensureDir(targetDir)
 
   // Replacements for files that have handlebars-style placeholders in them.
+  // The `create-new-app-template-*` strings are the literal `name` fields in
+  // each template's package.json — kept as real npm names on disk so the
+  // templates can be Bun workspace members of the root.
   const placeholderReplacements: Record<string, string> = {
     '{{PROJECT_NAME}}': name,
     '{{BETTER_AUTH_SECRET}}': randomBytes(32).toString('hex'),
+    'create-new-app-template-fullstack': name,
+    'create-new-app-template-client-only': name,
 
     // Add other placeholders here...
   }

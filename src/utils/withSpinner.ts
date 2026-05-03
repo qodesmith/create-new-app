@@ -1,9 +1,9 @@
-import process from 'node:process'
-
 import {spinner} from '@clack/prompts'
 
 /**
- * Display a spinner while running an async operation
+ * Display a spinner while running an async operation. On failure, stops the
+ * spinner with the error message (preserving the existing UX) and re-throws
+ * so the caller can decide whether to exit, retry, or recover.
  */
 export async function withSpinner<T>(
   message: string,
@@ -17,6 +17,6 @@ export async function withSpinner<T>(
     return result
   } catch (err) {
     s.stop(Error.isError(err) ? err.message : 'An error occurred')
-    process.exit(1)
+    throw err
   }
 }

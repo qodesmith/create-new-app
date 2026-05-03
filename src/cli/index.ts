@@ -9,6 +9,7 @@ import process from 'node:process'
 import {intro, note, outro} from '@clack/prompts'
 import colors from 'picocolors'
 
+import {ShellCommandError} from '../utils/run'
 import {runCliMode} from './cli-mode'
 import {generateProject} from './generator-core'
 import {runGuidedMode} from './guided-mode'
@@ -63,6 +64,10 @@ async function main() {
 }
 
 main().catch(err => {
+  if (err instanceof ShellCommandError) {
+    console.error(err.stderr || err.message)
+    process.exit(err.exitCode)
+  }
   console.error(err)
   process.exit(1)
 })

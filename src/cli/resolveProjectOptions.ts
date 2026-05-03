@@ -33,7 +33,7 @@ const PROJECT_TYPE_OPTIONS: {
   {value: 'vanilla', label: 'Vanilla', hint: 'Basic HTML/CSS/JS setup'},
 ]
 
-function getProjectNameError(name: string | undefined): string | null {
+export function getProjectNameError(name: string | undefined): string | null {
   if (!name || name.length === 0) {
     return 'Project name is required'
   }
@@ -49,7 +49,7 @@ function getProjectNameError(name: string | undefined): string | null {
   return null
 }
 
-function getProjectTypeError(type: string | undefined): string | null {
+export function getProjectTypeError(type: string | undefined): string | null {
   if (!type) return 'Project type is required'
   const valid: ProjectType[] = [
     'fullstack',

@@ -1,8 +1,5 @@
-import type {ProjectType} from '../src/utils/validation'
-
 import {describe, expect, it} from 'bun:test'
 
-import {validateCliOptions} from '../src/cli/cli-mode'
 import {getHelpText, parseCliArgs} from '../src/cli/options-parser'
 import {isValidProjectName, isValidProjectType} from '../src/utils/validation'
 
@@ -40,50 +37,6 @@ describe('parseCliArgs', () => {
   it('parses --version flag', () => {
     const result = parseCliArgs(['--version'])
     expect(result.options.version).toBe(true)
-  })
-})
-
-describe('validateCliOptions', () => {
-  it('validates valid options', () => {
-    const result = validateCliOptions({
-      name: 'my-app',
-      type: 'fullstack',
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(true)
-
-    if (result.success) {
-      expect(result.options.name).toBe('my-app')
-    }
-  })
-
-  it('fails without name', () => {
-    const result = validateCliOptions({
-      type: 'fullstack',
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(false)
-
-    if (!result.success) {
-      expect(result.errors).toContain(
-        'Project name is required. Usage: create-new-app <name>'
-      )
-    }
-  })
-
-  it('fails with invalid project type', () => {
-    const result = validateCliOptions({
-      name: 'my-app',
-      type: 'invalid' as ProjectType, // This is NOT a ProjectType - just to satisfy linting.
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(false)
   })
 })
 

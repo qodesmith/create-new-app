@@ -1,5 +1,5 @@
 import type {ProjectType} from '../utils/validation'
-import type {GuidedOptions} from './guided-mode'
+import type {ProjectOptions} from './resolveProjectOptions'
 
 import {randomBytes} from 'node:crypto'
 import {existsSync} from 'node:fs'
@@ -174,7 +174,7 @@ async function runPostInstall(targetDir: string): Promise<void> {
  * replacements map (including a fresh BETTER_AUTH_SECRET), plans the file
  * output, applies it, then runs post-install steps.
  */
-export async function generateProject(options: GuidedOptions): Promise<void> {
+export async function generateProject(options: ProjectOptions): Promise<void> {
   const {name, type} = options
   const targetDir = join(process.cwd(), name)
   const fullProjectPath = getProjectPath(type)

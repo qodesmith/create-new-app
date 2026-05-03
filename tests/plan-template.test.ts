@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'bun:test'
-
 import type {SourceReader} from '../src/cli/generateProject'
+
+import {describe, expect, it} from 'bun:test'
 
 import {planTemplate} from '../src/cli/generateProject'
 
@@ -38,9 +38,7 @@ describe('planTemplate', () => {
       reader,
     })
 
-    expect(plan).toEqual([
-      {destPath: `${TARGET}/hello.txt`, contents: 'hi'},
-    ])
+    expect(plan).toEqual([{destPath: `${TARGET}/hello.txt`, contents: 'hi'}])
   })
 
   it('substitutes placeholders only when at least one matches', async () => {
@@ -117,15 +115,15 @@ describe('planTemplate', () => {
   })
 
   it('lets later source dirs win on destination-path conflict', async () => {
-    const SRC_A = '/srcA'
-    const SRC_B = '/srcB'
+    const SrcA = '/srcA'
+    const SrcB = '/srcB'
     const reader = makeReader({
-      [`${SRC_A}/conflict.txt`]: 'from A',
-      [`${SRC_B}/conflict.txt`]: 'from B',
+      [`${SrcA}/conflict.txt`]: 'from A',
+      [`${SrcB}/conflict.txt`]: 'from B',
     })
 
     const plan = await planTemplate({
-      sources: [SRC_A, SRC_B],
+      sources: [SrcA, SrcB],
       targetDir: TARGET,
       replacements: {},
       reader,

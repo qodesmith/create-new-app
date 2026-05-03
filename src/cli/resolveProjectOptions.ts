@@ -1,14 +1,9 @@
-import type {ProjectType} from '../utils/validation'
+import type {ProjectOptions, ProjectType} from '../types'
 import type {CliOptions} from './options-parser'
 
 import process from 'node:process'
 
 import {cancel, isCancel, log, select, text} from '@clack/prompts'
-
-export type ProjectOptions = {
-  name: string
-  type: ProjectType
-}
 
 /**
  * Internal port for asking the user for missing values. The production

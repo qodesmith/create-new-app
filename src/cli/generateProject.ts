@@ -1,5 +1,4 @@
-import type {ProjectType} from '../utils/validation'
-import type {ProjectOptions} from './resolveProjectOptions'
+import type {ProjectOptions, ProjectType} from '../types'
 
 import {randomBytes} from 'node:crypto'
 import {existsSync} from 'node:fs'

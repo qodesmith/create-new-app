@@ -1,6 +1,6 @@
 import type {CliOptions} from '../src/cli/options-parser'
 import type {Prompter} from '../src/cli/resolveProjectOptions'
-import type {ProjectType} from '../src/utils/validation'
+import type {ProjectType} from '../src/types'
 
 import {describe, expect, it, mock} from 'bun:test'
 

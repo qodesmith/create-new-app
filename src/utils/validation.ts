@@ -1,3 +1,5 @@
+import type {ProjectType} from '../types'
+
 import {existsSync} from 'node:fs'
 
 /**
@@ -44,8 +46,6 @@ export function validateTargetDir(targetDir: string): string | null {
 /**
  * Validate project type
  */
-export type ProjectType = 'fullstack' | 'client-only' | 'library' | 'vanilla'
-
 export function isValidProjectType(type: string): type is ProjectType {
   return ['fullstack', 'client-only', 'library', 'vanilla'].includes(type)
 }

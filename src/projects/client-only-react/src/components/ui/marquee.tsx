@@ -53,6 +53,7 @@ export function Marquee({
     >
       {new Array(repeat).fill(0).map((_, i) => (
         <div
+          // biome-ignore lint/suspicious/noArrayIndexKey: vanilla shadcn
           key={`${i}-${repeat}`}
           className={cn('flex shrink-0 justify-around gap-(--gap)', {
             'animate-marquee flex-row': !vertical,

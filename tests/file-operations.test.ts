@@ -1,10 +1,9 @@
 import {afterEach, beforeEach, describe, expect, it} from 'bun:test'
-import {existsSync, mkdirSync, rmSync, writeFileSync} from 'node:fs'
+import {existsSync, mkdirSync, rmSync} from 'node:fs'
 import {join} from 'node:path'
 
 import {
   ensureDir,
-  isDirEmpty,
   pathExists,
   replacePlaceholders,
 } from '../src/utils/file-operations'
@@ -56,49 +55,34 @@ describe('file-operations', () => {
     })
   })
 
-  describe('isDirEmpty', () => {
-    it('returns true for empty directory', () => {
-      mkdirSync(TEST_DIR, {recursive: true})
-      expect(isDirEmpty(TEST_DIR)).toBe(true)
-    })
-
-    it('returns false for non-empty directory', () => {
-      mkdirSync(TEST_DIR, {recursive: true})
-      writeFileSync(join(TEST_DIR, 'file.txt'), 'content')
-      expect(isDirEmpty(TEST_DIR)).toBe(false)
-    })
-
-    it('returns true for non-existing directory', () => {
-      expect(isDirEmpty(join(TEST_DIR, 'nonexistent'))).toBe(true)
-    })
-  })
-
-  // biome-ignore-start lint/style/useNamingConvention: placeholder keys
   describe('replacePlaceholders', () => {
-    it('replaces single placeholder', () => {
-      const result = replacePlaceholders('Hello {{NAME}}!', {NAME: 'World'})
+    it('replaces a single placeholder using its literal key string', () => {
+      const result = replacePlaceholders('Hello {{NAME}}!', {
+        '{{NAME}}': 'World',
+      })
       expect(result).toBe('Hello World!')
     })
 
     it('replaces multiple placeholders', () => {
       const result = replacePlaceholders('{{GREETING}} {{NAME}}!', {
-        GREETING: 'Hello',
-        NAME: 'World',
+        '{{GREETING}}': 'Hello',
+        '{{NAME}}': 'World',
       })
       expect(result).toBe('Hello World!')
     })
 
-    it('replaces same placeholder multiple times', () => {
-      const result = replacePlaceholders('{{X}} + {{X}} = 2{{X}}', {X: '1'})
+    it('replaces all occurrences of the same placeholder', () => {
+      const result = replacePlaceholders('{{X}} + {{X}} = 2{{X}}', {
+        '{{X}}': '1',
+      })
       expect(result).toBe('1 + 1 = 21')
     })
 
-    it('leaves unmatched placeholders', () => {
+    it('leaves placeholders that are not in the replacements map untouched', () => {
       const result = replacePlaceholders('{{KNOWN}} {{UNKNOWN}}', {
-        KNOWN: 'yes',
+        '{{KNOWN}}': 'yes',
       })
       expect(result).toBe('yes {{UNKNOWN}}')
     })
   })
-  // biome-ignore-end lint/style/useNamingConvention: placeholder keys
 })

@@ -1,33 +1,4 @@
-import {existsSync, mkdirSync, readdirSync} from 'node:fs'
-import {dirname, join} from 'node:path'
-
-/**
- * Recursively copy a directory from src to dest
- */
-export async function copyDir(src: string, dest: string): Promise<void> {
-  ensureDir(dest)
-
-  const entries = readdirSync(src, {withFileTypes: true})
-
-  for (const entry of entries) {
-    const srcPath = join(src, entry.name)
-    const destPath = join(dest, entry.name)
-
-    if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath)
-    } else {
-      await Bun.write(destPath, Bun.file(srcPath))
-    }
-  }
-}
-
-/**
- * Copy a single file from src to dest
- */
-export async function copyFile(src: string, dest: string): Promise<void> {
-  ensureDir(dirname(dest))
-  await Bun.write(dest, Bun.file(src))
-}
+import {existsSync, mkdirSync} from 'node:fs'
 
 /**
  * Ensure a directory exists, creating it recursively if needed
@@ -43,14 +14,6 @@ export function ensureDir(dir: string): void {
  */
 export function pathExists(path: string): boolean {
   return existsSync(path)
-}
-
-/**
- * Check if a directory is empty
- */
-export function isDirEmpty(dir: string): boolean {
-  if (!existsSync(dir)) return true
-  return readdirSync(dir).length === 0
 }
 
 export function getIsTemplateFile({
@@ -70,7 +33,9 @@ export function getIsTemplateFile({
 }
 
 /**
- * Replace {{VAR}} placeholders in a string
+ * Replace placeholder substrings in `content`. Each key in `replacements` is
+ * matched as a literal string (no `{{...}}` wrapping is added) and every
+ * occurrence is replaced with its mapped value.
  */
 export function replacePlaceholders(
   content: string,
@@ -84,7 +49,7 @@ export function replacePlaceholders(
 }
 
 /**
- * Get all files in a directory recursively
+ * Get all files in a directory recursively (absolute paths, dotfiles included)
  */
 export function getFilesRecursive(dir: string): string[] {
   if (!existsSync(dir)) return []

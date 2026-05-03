@@ -4,6 +4,7 @@
   "description": "Generate a full-stack React application ready for production",
   "type": "module",
   "packageManager": "bun@1.3.12",
+  "workspaces": ["src/projects/*"],
   "bin": {
     "create-new-app": "./src/cli/index.ts",
     "cna": "./src/cli/index.ts"

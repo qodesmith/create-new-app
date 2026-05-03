@@ -10,7 +10,12 @@ import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 
 import {applyPlan, planTemplate} from '../src/cli/generateProject'
-import {getFilesRecursive} from '../src/utils/file-operations'
+
+function listFilesRecursive(dir: string): string[] {
+  return Array.from(
+    new Bun.Glob('**/*').scanSync({cwd: dir, absolute: true, dot: true})
+  )
+}
 
 /**
  * Integration test that exercises the real Bun.Glob source reader plus
@@ -50,7 +55,7 @@ describe('generateProject (integration)', () => {
     )
 
     const realReader = {
-      list: (dir: string) => getFilesRecursive(dir),
+      list: (dir: string) => listFilesRecursive(dir),
       read: (path: string) => Bun.file(path).text(),
     }
 
@@ -63,7 +68,7 @@ describe('generateProject (integration)', () => {
 
     await applyPlan(plan)
 
-    const writtenFiles = getFilesRecursive(targetDir)
+    const writtenFiles = listFilesRecursive(targetDir)
       .map(p => p.replace(`${targetDir}/`, ''))
       .sort()
 

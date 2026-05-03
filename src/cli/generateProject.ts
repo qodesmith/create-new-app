@@ -1,21 +1,30 @@
 import type {ProjectOptions, ProjectType} from '../types'
 
 import {randomBytes} from 'node:crypto'
-import {existsSync} from 'node:fs'
+import {existsSync, mkdirSync} from 'node:fs'
 import {join, parse, resolve} from 'node:path'
 import process from 'node:process'
 
 import {log} from '@clack/prompts'
 
-import {
-  ensureDir,
-  getFilesRecursive,
-  getIsTemplateFile,
-  pathExists,
-  replacePlaceholders,
-} from '../utils/file-operations'
 import {run} from '../utils/run'
 import {withSpinner} from '../utils/withSpinner'
+
+/**
+ * Replace placeholder substrings in `content`. Each key in `replacements` is
+ * matched as a literal string (no `{{...}}` wrapping is added) and every
+ * occurrence is replaced with its mapped value.
+ */
+export function replacePlaceholders(
+  content: string,
+  replacements: Record<string, string>
+): string {
+  let result = content
+  for (const [key, value] of Object.entries(replacements)) {
+    result = result.replaceAll(key, value)
+  }
+  return result
+}
 
 /**
  * A SourceReader walks template directories and reads file contents.
@@ -35,7 +44,10 @@ export type FileWrite = {
 }
 
 const DEFAULT_SOURCE_READER: SourceReader = {
-  list: dir => getFilesRecursive(dir),
+  list: dir =>
+    Array.from(
+      new Bun.Glob('**/*').scanSync({cwd: dir, absolute: true, dot: true})
+    ),
   read: path => Bun.file(path).text(),
 }
 
@@ -82,17 +94,11 @@ export async function planTemplate(args: {
       const isKeepFile = fileName.endsWith('-keep')
       const isKeepDir = sourceDir.includes('-keep')
 
-      let fileContents = await reader.read(srcFileAbsolutePath)
+      const fileContents = replacePlaceholders(
+        await reader.read(srcFileAbsolutePath),
+        replacements
+      )
       let destPath = join(targetDir, relativePathInProject)
-
-      if (
-        getIsTemplateFile({
-          fileContents,
-          placeholderReplacements: replacements,
-        })
-      ) {
-        fileContents = replacePlaceholders(fileContents, replacements)
-      }
 
       // Rename `-keep` files: `name.ext-keep` → `name.ext`
       if (isKeepFile) {
@@ -116,7 +122,7 @@ export async function planTemplate(args: {
  */
 export async function applyPlan(plan: FileWrite[]): Promise<void> {
   for (const {destPath, contents} of plan) {
-    ensureDir(resolve(destPath, '..'))
+    mkdirSync(resolve(destPath, '..'), {recursive: true})
     await Bun.write(destPath, contents)
   }
 }
@@ -178,13 +184,13 @@ export async function generateProject(options: ProjectOptions): Promise<void> {
   const targetDir = join(process.cwd(), name)
   const fullProjectPath = getProjectPath(type)
 
-  if (!pathExists(fullProjectPath)) {
+  if (!existsSync(fullProjectPath)) {
     log.error(`Template for "${type}" not found at ${fullProjectPath}`)
     process.exit(1)
   }
 
   log.step(`Creating project directory: ${name}`)
-  ensureDir(targetDir)
+  mkdirSync(targetDir, {recursive: true})
 
   // The `create-new-app-template-*` strings are the literal `name` fields in
   // each template's package.json — kept as real npm names on disk so the

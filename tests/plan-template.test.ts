@@ -2,7 +2,7 @@ import type {SourceReader} from '../src/cli/generateProject'
 
 import {describe, expect, it} from 'bun:test'
 
-import {planTemplate} from '../src/cli/generateProject'
+import {planTemplate, replacePlaceholders} from '../src/cli/generateProject'
 
 /**
  * Build an in-memory SourceReader from a flat map of absolutePath → contents.
@@ -165,5 +165,36 @@ describe('planTemplate', () => {
     const byPath = Object.fromEntries(plan.map(w => [w.destPath, w.contents]))
     expect(byPath[`${TARGET}/package.json`]).toBe('{"name":"my-app"}')
     expect(byPath[`${TARGET}/README.md`]).toBe('No placeholders here.')
+  })
+})
+
+describe('replacePlaceholders', () => {
+  it('replaces a single placeholder using its literal key string', () => {
+    const result = replacePlaceholders('Hello {{NAME}}!', {
+      '{{NAME}}': 'World',
+    })
+    expect(result).toBe('Hello World!')
+  })
+
+  it('replaces multiple placeholders', () => {
+    const result = replacePlaceholders('{{GREETING}} {{NAME}}!', {
+      '{{GREETING}}': 'Hello',
+      '{{NAME}}': 'World',
+    })
+    expect(result).toBe('Hello World!')
+  })
+
+  it('replaces all occurrences of the same placeholder', () => {
+    const result = replacePlaceholders('{{X}} + {{X}} = 2{{X}}', {
+      '{{X}}': '1',
+    })
+    expect(result).toBe('1 + 1 = 21')
+  })
+
+  it('leaves placeholders that are not in the replacements map untouched', () => {
+    const result = replacePlaceholders('{{KNOWN}} {{UNKNOWN}}', {
+      '{{KNOWN}}': 'yes',
+    })
+    expect(result).toBe('yes {{UNKNOWN}}')
   })
 })

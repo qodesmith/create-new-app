@@ -11,7 +11,7 @@ import colors from 'picocolors'
 
 import {ShellCommandError} from '../utils/run'
 import {runCliMode} from './cli-mode'
-import {generateProject} from './generator-core'
+import {generateProject} from './generateProject'
 import {runGuidedMode} from './guided-mode'
 import {getHelpText, getVersion, parseCliArgs} from './options-parser'
 

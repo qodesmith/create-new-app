@@ -5,14 +5,13 @@
     "": {
       "name": "create-new-app",
       "dependencies": {
-        "@clack/prompts": "^1.2.0",
-        "@qodestack/biome-config": "^2.4.12",
+        "@clack/prompts": "^1.3.0",
+        "@qodestack/biome-config": "^2.4.13",
         "picocolors": "^1.1.1",
       },
       "devDependencies": {
-        "@biomejs/biome": "^2.4.11",
-        "@types/bun": "^1.3.12",
-        "only-allow": "^1.2.1",
+        "@types/bun": "^1.3.13",
+        "only-allow": "^1.2.2",
         "typescript": "^6.0.3",
       },
       "peerDependencies": {
@@ -25,34 +24,34 @@
       "dependencies": {
         "@qodestack/utils": "^2.29.0",
         "@tailwindcss/typography": "^0.5.19",
-        "@tanstack/react-form": "^1.29.0",
-        "@tanstack/react-query": "^5.99.1",
-        "@tanstack/react-router": "^1.168.22",
+        "@tanstack/react-form": "^1.29.1",
+        "@tanstack/react-query": "^5.100.9",
+        "@tanstack/react-router": "^1.169.1",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "fast-deep-equal": "^3.1.3",
         "jotai": "^2.19.1",
         "jotai-family": "^1.0.1",
-        "lucide-react": "^1.8.0",
+        "lucide-react": "^1.14.0",
         "motion": "^12.38.0",
         "radix-ui": "^1.4.3",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
         "sonner": "^2.0.7",
         "tailwind-merge": "^3.5.0",
-        "tailwindcss": "^4.2.2",
+        "tailwindcss": "^4.2.4",
         "tw-animate-css": "^1.4.0",
       },
       "devDependencies": {
-        "@qodestack/biome-config": "^2.4.12",
-        "@tailwindcss/node": "^4.2.2",
-        "@tailwindcss/oxide": "^4.2.2",
+        "@qodestack/biome-config": "^2.4.13",
+        "@tailwindcss/node": "^4.2.4",
+        "@tailwindcss/oxide": "^4.2.4",
         "@tanstack/react-router-devtools": "^1.166.13",
-        "@tanstack/router-cli": "^1.166.33",
+        "@tanstack/router-cli": "^1.166.40",
         "@types/bun": "latest",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "knip": "^6.4.1",
+        "knip": "^6.11.0",
         "open": "^11.0.0",
         "picocolors": "^1.1.1",
         "typescript": "^6.0.3",
@@ -62,54 +61,54 @@
       "name": "create-new-app-template-fullstack",
       "version": "0.1.0",
       "dependencies": {
-        "@better-auth/passkey": "^1.6.5",
+        "@better-auth/passkey": "^1.6.9",
         "@hono/arktype-validator": "^2.0.1",
-        "@libsql/client": "^0.17.2",
+        "@libsql/client": "^0.17.3",
         "@qodestack/utils": "^2.29.0",
         "@react-email/components": "^1.0.12",
         "@tailwindcss/typography": "^0.5.19",
-        "@tanstack/react-form": "^1.29.0",
-        "@tanstack/react-query": "^5.99.1",
-        "@tanstack/react-router": "^1.168.22",
+        "@tanstack/react-form": "^1.29.1",
+        "@tanstack/react-query": "^5.100.9",
+        "@tanstack/react-router": "^1.169.1",
         "arktype": "^2.2.0",
-        "better-auth": "^1.6.5",
+        "better-auth": "^1.6.9",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "drizzle-arktype": "^0.1.3",
         "drizzle-kit": "^0.31.10",
         "drizzle-orm": "^0.45.2",
         "fast-deep-equal": "^3.1.3",
-        "hono": "^4.12.14",
+        "hono": "^4.12.16",
         "hono-rate-limiter": "^0.5.3",
         "jotai": "^2.19.1",
         "jotai-family": "^1.0.1",
-        "lucide-react": "^1.8.0",
+        "lucide-react": "^1.14.0",
         "motion": "^12.38.0",
         "radix-ui": "^1.4.3",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
-        "resend": "^6.12.0",
+        "resend": "^6.12.2",
         "sharp": "^0.34.5",
         "sonner": "^2.0.7",
         "tailwind-merge": "^3.5.0",
-        "tailwindcss": "^4.2.2",
+        "tailwindcss": "^4.2.4",
         "tw-animate-css": "^1.4.0",
       },
       "devDependencies": {
-        "@qodestack/biome-config": "^2.4.12",
+        "@qodestack/biome-config": "^2.4.13",
         "@react-email/preview-server": "5.2.10",
-        "@tailwindcss/node": "^4.2.2",
-        "@tailwindcss/oxide": "^4.2.2",
+        "@tailwindcss/node": "^4.2.4",
+        "@tailwindcss/oxide": "^4.2.4",
         "@tanstack/react-router-devtools": "^1.166.13",
-        "@tanstack/router-cli": "^1.166.33",
+        "@tanstack/router-cli": "^1.166.40",
         "@types/bun": "latest",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "auth": "^1.6.5",
-        "knip": "^6.4.1",
+        "auth": "^1.6.9",
+        "knip": "^6.11.0",
         "open": "^11.0.0",
         "picocolors": "^1.1.1",
-        "react-email": "^6.0.0",
+        "react-email": "^6.0.5",
         "typescript": "^6.0.3",
       },
     },
@@ -537,7 +536,7 @@
 
     "@peculiar/x509": ["@peculiar/x509@1.14.3", "", { "dependencies": { "@peculiar/asn1-cms": "^2.6.0", "@peculiar/asn1-csr": "^2.6.0", "@peculiar/asn1-ecc": "^2.6.0", "@peculiar/asn1-pkcs9": "^2.6.0", "@peculiar/asn1-rsa": "^2.6.0", "@peculiar/asn1-schema": "^2.6.0", "@peculiar/asn1-x509": "^2.6.0", "pvtsutils": "^1.3.6", "reflect-metadata": "^0.2.2", "tslib": "^2.8.1", "tsyringe": "^4.10.0" } }, "sha512-C2Xj8FZ0uHWeCXXqX5B4/gVFQmtSkiuOolzAgutjTfseNOHT3pUjljDZsTSxXFGgio54bCzVFqmEOUrIVk8RDA=="],
 
-    "@qodestack/biome-config": ["@qodestack/biome-config@2.4.12", "", { "dependencies": { "@biomejs/biome": "2.4.11", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-smVHTp5cHPd0GfL1ViazEMtKD6zDZsU/4U57WQGNeY3zgr/lwX5Zmz906LtGcLkG8xH+SKTkJN5RIxUmpc3i0w=="],
+    "@qodestack/biome-config": ["@qodestack/biome-config@2.4.13", "", { "dependencies": { "@biomejs/biome": "2.4.14", "gradient-string": "^3.0.0", "jsonc-parser": "^3.3.1", "picocolors": "^1.1.1" }, "bin": { "biomeInit": "src/cli.mjs" } }, "sha512-YOeS15RsXX4FowJmM3Nn41F6P/vlEbDLLermCpPIXQm0qhbnuc2F8Veq1DvPrqOc8ulNDEH2NOC3+6QJc7XBuw=="],
 
     "@qodestack/utils": ["@qodestack/utils@2.29.0", "", { "peerDependencies": { "typescript": "^6.0.3" } }, "sha512-OBpiV7sM8vXXwIosq1WtZ73kIvAaN6LWmCiVKXBIXQrkZkWkB2qi+FzNlZUyVsH1DTVzOpiosExS9MmXDuHv+g=="],
 
@@ -757,11 +756,11 @@
 
     "@tanstack/pacer-lite": ["@tanstack/pacer-lite@0.1.1", "", {}, "sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w=="],
 
-    "@tanstack/query-core": ["@tanstack/query-core@5.100.8", "", {}, "sha512-ceYwSFOqjPwET5TA6IOYxzxlGc0ekyH/gfOtWkP0PX43rzX9bxW48Iuw8KAduKCToi4rJAQ6nRy2kAe8gszdmg=="],
+    "@tanstack/query-core": ["@tanstack/query-core@5.100.9", "", {}, "sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ=="],
 
     "@tanstack/react-form": ["@tanstack/react-form@1.29.1", "", { "dependencies": { "@tanstack/form-core": "1.29.1", "@tanstack/react-store": "^0.9.1" }, "peerDependencies": { "react": "^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-hVHk4g0phd0HxRsv2ry6Xt8BqmalT55Q3cokhJBCC1St0hcGZhgwJJbohm9atao45BPG9e55DGvtbwExqZe35g=="],
 
-    "@tanstack/react-query": ["@tanstack/react-query@5.100.8", "", { "dependencies": { "@tanstack/query-core": "5.100.8" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-iNNEekixXU5vtAGKKZX2lx3jTooG5yNY+kv0wSgEdEYG0Mj0JM5bcuQtC35ZAP3nDopT6jciUK3xeX65U7AnfA=="],
+    "@tanstack/react-query": ["@tanstack/react-query@5.100.9", "", { "dependencies": { "@tanstack/query-core": "5.100.9" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-Oa44XkaI3kCNN6ME0KByU3xT3SEUNOMfZpHxL6+wFoTm+OeUFYHKdeYVe0aOXlRDm/f15sgLwEt2HDorIdW8+A=="],
 
     "@tanstack/react-router": ["@tanstack/react-router@1.169.1", "", { "dependencies": { "@tanstack/history": "1.161.6", "@tanstack/react-store": "^0.9.3", "@tanstack/router-core": "1.169.1", "isbot": "^5.1.22" }, "peerDependencies": { "react": ">=18.0.0 || >=19.0.0", "react-dom": ">=18.0.0 || >=19.0.0" } }, "sha512-MBtQKSvac3OCcsSa6oBpDrrN90IV47I6Gtv05NxhbFVh+gVjtqvs6HSU4XM9+y5sHZPgS+35eArflX4vM8GEnQ=="],
 
@@ -1387,8 +1386,6 @@
 
     "@esbuild-kit/core-utils/esbuild": ["esbuild@0.18.20", "", { "optionalDependencies": { "@esbuild/android-arm": "0.18.20", "@esbuild/android-arm64": "0.18.20", "@esbuild/android-x64": "0.18.20", "@esbuild/darwin-arm64": "0.18.20", "@esbuild/darwin-x64": "0.18.20", "@esbuild/freebsd-arm64": "0.18.20", "@esbuild/freebsd-x64": "0.18.20", "@esbuild/linux-arm": "0.18.20", "@esbuild/linux-arm64": "0.18.20", "@esbuild/linux-ia32": "0.18.20", "@esbuild/linux-loong64": "0.18.20", "@esbuild/linux-mips64el": "0.18.20", "@esbuild/linux-ppc64": "0.18.20", "@esbuild/linux-riscv64": "0.18.20", "@esbuild/linux-s390x": "0.18.20", "@esbuild/linux-x64": "0.18.20", "@esbuild/netbsd-x64": "0.18.20", "@esbuild/openbsd-x64": "0.18.20", "@esbuild/sunos-x64": "0.18.20", "@esbuild/win32-arm64": "0.18.20", "@esbuild/win32-ia32": "0.18.20", "@esbuild/win32-x64": "0.18.20" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA=="],
 
-    "@qodestack/biome-config/@biomejs/biome": ["@biomejs/biome@2.4.11", "", { "optionalDependencies": { "@biomejs/cli-darwin-arm64": "2.4.11", "@biomejs/cli-darwin-x64": "2.4.11", "@biomejs/cli-linux-arm64": "2.4.11", "@biomejs/cli-linux-arm64-musl": "2.4.11", "@biomejs/cli-linux-x64": "2.4.11", "@biomejs/cli-linux-x64-musl": "2.4.11", "@biomejs/cli-win32-arm64": "2.4.11", "@biomejs/cli-win32-x64": "2.4.11" }, "bin": { "biome": "bin/biome" } }, "sha512-nWxHX8tf3Opb/qRgZpBbsTOqOodkbrkJ7S+JxJAruxOReaDPPmPuLBAGQ8vigyUgo0QBB+oQltNEAvalLcjggA=="],
-
     "@react-email/components/@react-email/render": ["@react-email/render@2.0.6", "", { "dependencies": { "html-to-text": "^9.0.5", "prettier": "^3.5.3" }, "peerDependencies": { "react": "^18.0 || ^19.0 || ^19.0.0-rc", "react-dom": "^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-xOzaYkH3jLZKqN5MqrTXYnmqBYUnZSVbkxdb5PGGmDcK6sKDVMliaDiSwfXajRC9JtSHTcGc2tmGLHWuCgVpog=="],
 
     "@tailwindcss/oxide-wasm32-wasi/@emnapi/core": ["@emnapi/core@1.10.0", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.1", "tslib": "^2.4.0" }, "bundled": true }, "sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw=="],
@@ -1494,22 +1491,6 @@
     "@esbuild-kit/core-utils/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.18.20", "", { "os": "win32", "cpu": "ia32" }, "sha512-Wv7QBi3ID/rROT08SABTS7eV4hX26sVduqDOTe1MvGMjNd3EjOz4b7zeexIR62GTIEKrfJXKL9LFxTYgkyeu7g=="],
 
     "@esbuild-kit/core-utils/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.18.20", "", { "os": "win32", "cpu": "x64" }, "sha512-kTdfRcSiDfQca/y9QIkng02avJ+NCaQvrMejlsB3RRv5sE9rRoeBPISaZpKxHELzRxZyLvNts1P27W3wV+8geQ=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-darwin-arm64": ["@biomejs/cli-darwin-arm64@2.4.11", "", { "os": "darwin", "cpu": "arm64" }, "sha512-wOt+ed+L2dgZanWyL6i29qlXMc088N11optzpo10peayObBaAshbTcxKUchzEMp9QSY8rh5h6VfAFE3WTS1rqg=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-darwin-x64": ["@biomejs/cli-darwin-x64@2.4.11", "", { "os": "darwin", "cpu": "x64" }, "sha512-gZ6zR8XmZlExfi/Pz/PffmdpWOQ8Qhy7oBztgkR8/ylSRyLwfRPSadmiVCV8WQ8PoJ2MWUy2fgID9zmtgUUJmw=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-linux-arm64": ["@biomejs/cli-linux-arm64@2.4.11", "", { "os": "linux", "cpu": "arm64" }, "sha512-avdJaEElXrKceK0va9FkJ4P5ci3N01TGkc6ni3P8l3BElqbOz42Wg2IyX3gbh0ZLEd4HVKEIrmuVu/AMuSeFFA=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-linux-arm64-musl": ["@biomejs/cli-linux-arm64-musl@2.4.11", "", { "os": "linux", "cpu": "arm64" }, "sha512-+Sbo1OAmlegtdwqFE8iOxFIWLh1B3OEgsuZfBpyyN/kWuqZ8dx9ZEes6zVnDMo+zRHF2wLynRVhoQmV7ohxl2Q=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-linux-x64": ["@biomejs/cli-linux-x64@2.4.11", "", { "os": "linux", "cpu": "x64" }, "sha512-TagWV0iomp5LnEnxWFg4nQO+e52Fow349vaX0Q/PIcX6Zhk4GGBgp3qqZ8PVkpC+cuehRctMf3+6+FgQ8jCEFQ=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-linux-x64-musl": ["@biomejs/cli-linux-x64-musl@2.4.11", "", { "os": "linux", "cpu": "x64" }, "sha512-bexd2IklK7ZgPhrz6jXzpIL6dEAH9MlJU1xGTrypx+FICxrXUp4CqtwfiuoDKse+UlgAlWtzML3jrMqeEAHEhA=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.4.11", "", { "os": "win32", "cpu": "arm64" }, "sha512-RJhaTnY8byzxDt4bDVb7AFPHkPcjOPK3xBip4ZRTrN3TEfyhjLRm3r3mqknqydgVTB74XG8l4jMLwEACEeihVg=="],
-
-    "@qodestack/biome-config/@biomejs/biome/@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.4.11", "", { "os": "win32", "cpu": "x64" }, "sha512-A8D3JM/00C2KQgUV3oj8Ba15EHEYwebAGCy5Sf9GAjr5Y3+kJIYOiESoqRDeuRZueuMdCsbLZIUqmPhpYXJE9A=="],
 
     "accepts/mime-types/mime-db": ["mime-db@1.52.0", "", {}, "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg=="],
 

@@ -4,7 +4,16 @@
   "extends": ["@qodestack/biome-config/react"],
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/node_modules", "!dist", "!*.lock"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!dist",
+      "!*.lock",
+
+      // Avoid Biome's complaints around template interpolation. It expects
+      // spaces between curly braces like {{ TEMPLATE }} but we don't have that.
+      "!src/projects/**/*.html"
+    ]
   },
   "overrides": [
     // General rules for client-side code.

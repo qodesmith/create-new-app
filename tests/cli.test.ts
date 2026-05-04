@@ -1,10 +1,10 @@
-import type {ProjectType} from '../src/utils/validation'
-
 import {describe, expect, it} from 'bun:test'
 
-import {validateCliOptions} from '../src/cli/cli-mode'
 import {getHelpText, parseCliArgs} from '../src/cli/options-parser'
-import {isValidProjectName, isValidProjectType} from '../src/utils/validation'
+import {
+  getProjectNameError,
+  getProjectTypeError,
+} from '../src/cli/resolveProjectOptions'
 
 describe('parseCliArgs', () => {
   it('parses project name as positional', () => {
@@ -43,86 +43,55 @@ describe('parseCliArgs', () => {
   })
 })
 
-describe('validateCliOptions', () => {
-  it('validates valid options', () => {
-    const result = validateCliOptions({
-      name: 'my-app',
-      type: 'fullstack',
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(true)
-
-    if (result.success) {
-      expect(result.options.name).toBe('my-app')
-    }
+describe('getProjectNameError', () => {
+  it('returns null for valid names', () => {
+    expect(getProjectNameError('my-app')).toBeNull()
+    expect(getProjectNameError('my_app')).toBeNull()
+    expect(getProjectNameError('myapp123')).toBeNull()
+    expect(getProjectNameError('_private')).toBeNull()
   })
 
-  it('fails without name', () => {
-    const result = validateCliOptions({
-      type: 'fullstack',
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(false)
-
-    if (!result.success) {
-      expect(result.errors).toContain(
-        'Project name is required. Usage: create-new-app <name>'
-      )
-    }
+  it('returns the "required" message for empty or undefined', () => {
+    expect(getProjectNameError('')).toBe('Project name is required')
+    expect(getProjectNameError(undefined)).toBe('Project name is required')
   })
 
-  it('fails with invalid project type', () => {
-    const result = validateCliOptions({
-      name: 'my-app',
-      type: 'invalid' as ProjectType, // This is NOT a ProjectType - just to satisfy linting.
-      help: false,
-      version: false,
-      yes: true,
-    })
-    expect(result.success).toBe(false)
+  it('returns the "starts with a number" message', () => {
+    expect(getProjectNameError('123app')).toBe(
+      'Project name cannot start with a number'
+    )
+  })
+
+  it('returns the "starts with a hyphen" message', () => {
+    expect(getProjectNameError('-myapp')).toBe(
+      'Project name cannot start with a hyphen'
+    )
+  })
+
+  it('returns the "lowercase only" message for uppercase input', () => {
+    expect(getProjectNameError('MyApp')).toBe(
+      'Project name can only contain lowercase letters, numbers, hyphens, and underscores'
+    )
   })
 })
 
-describe('isValidProjectName', () => {
-  it('accepts valid names', () => {
-    expect(isValidProjectName('my-app')).toBe(true)
-    expect(isValidProjectName('my_app')).toBe(true)
-    expect(isValidProjectName('myapp123')).toBe(true)
-    expect(isValidProjectName('_private')).toBe(true)
+describe('getProjectTypeError', () => {
+  it('returns null for valid types', () => {
+    expect(getProjectTypeError('fullstack')).toBeNull()
+    expect(getProjectTypeError('client-only')).toBeNull()
+    expect(getProjectTypeError('library')).toBeNull()
+    expect(getProjectTypeError('vanilla')).toBeNull()
   })
 
-  it('rejects names starting with number', () => {
-    expect(isValidProjectName('123app')).toBe(false)
+  it('returns the "required" message when missing', () => {
+    expect(getProjectTypeError(undefined)).toBe('Project type is required')
   })
 
-  it('rejects names starting with hyphen', () => {
-    expect(isValidProjectName('-myapp')).toBe(false)
-  })
-
-  it('rejects uppercase', () => {
-    expect(isValidProjectName('MyApp')).toBe(false)
-  })
-
-  it('rejects empty string', () => {
-    expect(isValidProjectName('')).toBe(false)
-  })
-})
-
-describe('isValidProjectType', () => {
-  it('accepts valid types', () => {
-    expect(isValidProjectType('fullstack')).toBe(true)
-    expect(isValidProjectType('client-only')).toBe(true)
-    expect(isValidProjectType('library')).toBe(true)
-    expect(isValidProjectType('vanilla')).toBe(true)
-  })
-
-  it('rejects invalid types', () => {
-    expect(isValidProjectType('invalid')).toBe(false)
-    expect(isValidProjectType('')).toBe(false)
+  it('returns the "must be one of" message for invalid input', () => {
+    expect(getProjectTypeError('invalid')).toBe(
+      'Invalid project type "invalid". Must be one of: fullstack, client-only, library, vanilla'
+    )
+    expect(getProjectTypeError('')).toBe('Project type is required')
   })
 })
 

@@ -1,4 +1,4 @@
-import type {ProjectType} from '../utils/validation'
+import type {ProjectType} from '../types'
 
 import {parseArgs} from 'node:util'
 

@@ -54,7 +54,7 @@ FROM oven/bun:alpine
 # ca-certificates, fuse3, and sqlite are needed for LiteFS to work.
 # curl is installed just for convenience.
 # vips is required by sharp for image processing
-RUN apk add --no-cache ca-certificates fuse3 sqlite curl vips
+RUN apk update && apk add --no-cache ca-certificates fuse3 sqlite curl vips && rm -rf /var/cache/apk/*
 
 # Pull in the litefs binary by copying it from the official Docker image.
 COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs

@@ -1,16 +1,21 @@
+import type {AuthedSessionData} from '@/server/db/auth/auth'
+
 import {auth} from '@/server/db/auth/auth'
 
 import {createMiddleware} from 'hono/factory'
 
-export const authMiddleware = createMiddleware(async (c, next) => {
-  const session = await auth.api.getSession({headers: c.req.raw.headers})
+// biome-ignore lint/style/useNamingConvention: Hono api
+export const authMiddleware = createMiddleware<{Variables: AuthedSessionData}>(
+  async (c, next) => {
+    const session = await auth.api.getSession({headers: c.req.raw.headers})
 
-  if (!session) {
-    return c.json({error: 'Unauthorized'}, 401)
+    if (!session) {
+      return c.json({error: 'Unauthorized'}, 401)
+    }
+
+    c.set('session', session.session)
+    c.set('user', session.user)
+
+    await next()
   }
-
-  c.set('session', session.session)
-  c.set('user', session.user)
-
-  await next()
-})
+)

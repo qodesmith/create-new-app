@@ -1,5 +1,3 @@
-import type {SessionData} from '@/server/db/auth/auth'
-
 import {getDatabase} from '@/server/db/getDatabase'
 import {avatarsTable} from '@/server/db/schema/appSchema'
 import {authMiddleware} from '@/server/middleware/authMiddleware'
@@ -18,8 +16,7 @@ import sharp from 'sharp'
 
 export type HonoAuthServer = typeof authRoutes
 
-// biome-ignore lint/style/useNamingConvention: Hono expects `Variables` as a type argument
-export const authRoutes = new Hono<{Variables: SessionData}>()
+export const authRoutes = new Hono()
   .use(authMiddleware)
 
   /**

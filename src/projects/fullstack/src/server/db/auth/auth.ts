@@ -39,7 +39,10 @@ import {eq} from 'drizzle-orm'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 
-export type SessionData = Prettify<typeof auth.$Infer.Session>
+export type AuthedSessionData = Prettify<{
+  user: typeof auth.$Infer.Session.user
+  session: typeof auth.$Infer.Session.session
+}>
 
 export const authOptions = {
   appName: '{{PROJECT_NAME}}',

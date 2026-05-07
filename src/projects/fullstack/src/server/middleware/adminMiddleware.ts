@@ -1,4 +1,4 @@
-import type {SessionData} from '@/server/db/auth/auth'
+import type {MiddlewareEnv} from '@/server/types'
 
 import {authMiddleware} from '@/server/middleware/authMiddleware'
 import {isAdminUser} from '@/server/utils/validateUserRole'
@@ -6,21 +6,24 @@ import {isAdminUser} from '@/server/utils/validateUserRole'
 import {every} from 'hono/combine'
 import {createMiddleware} from 'hono/factory'
 
-export const adminMiddleware = every(
-  authMiddleware, // Sets `user` on the context object.
-  createMiddleware(async (c, next) => {
-    // Type casting here because types don't fall through from authMiddleware.
-    const user = c.get('user') as SessionData['user'] | undefined
+type AuthMiddlewareEnv = MiddlewareEnv<typeof authMiddleware>
 
-    if (!user) {
-      // Auth middleware was not run or the user is not authenticated.
-      return c.json({error: 'Unauthorized'}, 401)
-    }
+export const adminMiddleware = createMiddleware<AuthMiddlewareEnv>(
+  async (c, next) => {
+    const handler = every(
+      authMiddleware, // Sets `user` on the context object.
 
-    if (!isAdminUser(user)) {
-      return c.json({error: 'Forbidden'}, 403)
-    }
+      createMiddleware<AuthMiddlewareEnv>(async (innerContext, innerNext) => {
+        const user = innerContext.get('user')
 
-    await next()
-  })
+        if (!isAdminUser(user)) {
+          return innerContext.json({error: 'Forbidden'}, 403)
+        }
+
+        await innerNext()
+      })
+    )
+
+    return handler(c, next)
+  }
 )

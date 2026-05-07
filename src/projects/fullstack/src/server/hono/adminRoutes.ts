@@ -1,5 +1,3 @@
-import type {SessionData} from '@/server/db/auth/auth'
-
 import {exportDatabase, getDatabase} from '@/server/db/getDatabase'
 import {adminAuditLogsTable} from '@/server/db/schema/appSchema'
 import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
@@ -11,8 +9,7 @@ import {getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 import {Hono} from 'hono'
 
-// biome-ignore lint/style/useNamingConvention: Hono uses `Variables`
-export const adminRoutes = new Hono<{Variables: SessionData}>()
+export const adminRoutes = new Hono()
   .use(adminMiddleware)
 
   /**

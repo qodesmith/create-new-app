@@ -40,6 +40,13 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
 
 export const isSignedInAtom = atom(false)
 
+/**
+ * SSR-safe: `atomWithLazy` defers client construction until the atom is first
+ * read inside a store, so no `window` access happens at module scope and each
+ * per-request store gets its own client instances — preventing state leaks
+ * across concurrent server renders.
+ */
+
 // RPC for Better Auth endpoints.
 export const authClientAtom = atomWithLazy(getAuthClient)
 

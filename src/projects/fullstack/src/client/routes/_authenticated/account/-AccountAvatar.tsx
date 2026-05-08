@@ -10,14 +10,18 @@ import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {apiAuthClientAtom, userInitialsAtom} from '@/client/state/globalState'
+import {
+  apiAuthClientAtom,
+  userAvatarVersionAtom,
+  userInitialsAtom,
+} from '@/client/state/globalState'
 import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 
 import {bytesToSize} from '@qodestack/utils'
 import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
 import {DetailedError, parseResponse} from 'hono/client'
-import {useAtomValue} from 'jotai'
+import {useAtom, useAtomValue} from 'jotai'
 import {useEffect, useId, useRef, useState} from 'react'
 import {toast} from 'sonner'
 
@@ -37,6 +41,9 @@ export function AccountAvatar() {
   const avatarInputId = useId()
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
   const logClientError = useLogClientError()
+  const [userAvatarVersion, setUserAvatarVersion] = useAtom(
+    userAvatarVersionAtom
+  )
 
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
@@ -52,6 +59,7 @@ export function AccountAvatar() {
     onSuccess: () => {
       toast.success('Avatar updated')
       setShowImage(true)
+      setUserAvatarVersion(v => v + 1)
       clearPreview()
     },
     onError: error => {
@@ -75,6 +83,7 @@ export function AccountAvatar() {
     onSuccess: () => {
       toast.success('Avatar removed')
       setShowImage(false)
+      setUserAvatarVersion(v => v + 1)
     },
     onError: error => {
       const isRejection = error instanceof DetailedError
@@ -104,7 +113,9 @@ export function AccountAvatar() {
           <AvatarImage
             src={
               blobPreviewUrl ??
-              (showImage ? `${authRoutePath}/avatar` : undefined)
+              (showImage
+                ? `${authRoutePath}/avatar?=${userAvatarVersion}`
+                : undefined)
             }
             alt={user.email}
             onLoadingStatusChange={status => {

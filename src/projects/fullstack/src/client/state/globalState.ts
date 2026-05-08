@@ -41,6 +41,7 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
 )
 
 export const userAtom = atom<User | null>(null)
+export const userAvatarVersionAtom = atom(0)
 export const userInitialsAtom = atom<string>(get => {
   const user = get(userAtom)
 

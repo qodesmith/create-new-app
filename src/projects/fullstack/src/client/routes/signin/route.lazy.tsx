@@ -1,3 +1,5 @@
+import type {User} from '@/client/types'
+
 import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {
@@ -14,7 +16,7 @@ import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {isValidRoute} from '@/client/lib/isValidRoute'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {ResetPasswordDialog} from '@/client/routes/signin/-ResetPasswordDialog'
-import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {authClientAtom, userAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
@@ -32,7 +34,7 @@ function SignInPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
-  const setIsSignedIn = useSetAtom(isSignedInAtom)
+  const setUser = useSetAtom(userAtom)
   const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
     ? redirect
@@ -54,7 +56,7 @@ function SignInPage() {
         return
       }
 
-      setIsSignedIn(true)
+      setUser(result.data.user as User)
       await router.navigate({to: redirectPath})
     } catch (error) {
       const isWebAuthnCancellation =
@@ -93,7 +95,7 @@ function SignInPage() {
           return
         }
 
-        setIsSignedIn(true)
+        setUser(result.data.user)
         await router.navigate({to: redirectPath})
       } catch (error) {
         toast.error('An unexpected error occurred')

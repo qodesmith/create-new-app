@@ -190,7 +190,7 @@ function RouteComponent() {
           The Jotai store, TanStack router, and React Query client are all
           created here. The router context is populated and made available in
           all route loaders. An initial authentication check is made here and
-          stored in <Code>isSignedInAtom</Code>.
+          stored in <Code>userAtom</Code>.
         </FileCard>
 
         <FileCard
@@ -272,13 +272,6 @@ function RouteComponent() {
             <li>
               <HoverBadge text="apiClientAtom">
                 RPC for custom public endpoints requiring no authentication.
-              </HoverBadge>
-            </li>
-            <li>
-              <HoverBadge text="isSignedInAtom">
-                Convenience atom that tracks if the user is signed in or not.
-                Mainly used to track this status outside of the authenticated
-                client route tree. Authenticated routes are
               </HoverBadge>
             </li>
           </ul>

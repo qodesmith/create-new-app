@@ -1,7 +1,7 @@
 import type {SearchSchemaInput} from '@tanstack/react-router'
 
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
-import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {authClientAtom, userAtom} from '@/client/state/globalState'
 
 import {createFileRoute, redirect} from '@tanstack/react-router'
 
@@ -31,7 +31,7 @@ export const Route = createFileRoute('/signin')({
     const {data} = await authClient.getSession()
 
     if (data) {
-      context.store.set(isSignedInAtom, true)
+      context.store.set(userAtom, data.user)
       throw redirect({to: defaultAuthedPath, replace: true})
     }
   },

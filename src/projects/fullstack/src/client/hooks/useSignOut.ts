@@ -1,5 +1,5 @@
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {authClientAtom, userAtom} from '@/client/state/globalState'
 
 import {useRouteContext} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
@@ -7,7 +7,7 @@ import {useCallback, useState} from 'react'
 
 export function useSignOut() {
   const [isSigningOut, setIsSigningOut] = useState(false)
-  const setIsSignedIn = useSetAtom(isSignedInAtom)
+  const setUser = useSetAtom(userAtom)
   const {resetApp} = useRouteContext({from: '__root__'})
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
@@ -24,7 +24,7 @@ export function useSignOut() {
         logClientError({error, context: 'client:signOutRejection'})
       }
 
-      setIsSignedIn(!isSignedOut)
+      setUser(null)
 
       return isSignedOut
     } catch (error) {
@@ -33,7 +33,7 @@ export function useSignOut() {
     } finally {
       setIsSigningOut(false)
     }
-  }, [setIsSignedIn, resetApp, logClientError, authClient])
+  }, [setUser, resetApp, logClientError, authClient.signOut])
 
   return {signOut, isSigningOut}
 }

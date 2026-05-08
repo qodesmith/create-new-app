@@ -1,3 +1,5 @@
+import type {User} from '@/client/types'
+
 import {
   createApiAuthClient,
   createApiClient,
@@ -38,7 +40,16 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
   get(_themeAtom_INTERNAL_USE_ONLY)
 )
 
-export const isSignedInAtom = atom(false)
+export const userAtom = atom<User | null>(null)
+export const userInitialsAtom = atom<string>(get => {
+  const user = get(userAtom)
+
+  if (!user) return ''
+
+  const first = user.name.trim()[0] ?? ''
+  const last = user.lastName.trim()[0] ?? ''
+  return `${first}${last}` || (user.name || 'U').slice(0, 2)
+})
 
 /**
  * SSR-safe: `atomWithLazy` defers client construction until the atom is first

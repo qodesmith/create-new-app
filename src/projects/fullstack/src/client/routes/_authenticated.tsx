@@ -1,6 +1,6 @@
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
 import {isValidRoute} from '@/client/lib/isValidRoute'
-import {authClientAtom, isSignedInAtom} from '@/client/state/globalState'
+import {authClientAtom, userAtom} from '@/client/state/globalState'
 
 import {
   createFileRoute,
@@ -18,7 +18,7 @@ export const Route = createFileRoute('/_authenticated')({
 
     if (!session.data) {
       sessionStorage.setItem(resetAppKey, 'true')
-      context.store.set(isSignedInAtom, false)
+      context.store.set(userAtom, null)
 
       throw redirect({
         to: '/signin',
@@ -31,7 +31,7 @@ export const Route = createFileRoute('/_authenticated')({
       })
     }
 
-    context.store.set(isSignedInAtom, true)
+    context.store.set(userAtom, session.data.user)
 
     return {
       user: session.data.user,

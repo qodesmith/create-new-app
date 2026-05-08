@@ -10,7 +10,7 @@ import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {apiAuthClientAtom} from '@/client/state/globalState'
+import {apiAuthClientAtom, userInitialsAtom} from '@/client/state/globalState'
 import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 
 import {bytesToSize} from '@qodestack/utils'
@@ -18,7 +18,7 @@ import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
 import {DetailedError, parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
-import {useEffect, useId, useMemo, useRef, useState} from 'react'
+import {useEffect, useId, useRef, useState} from 'react'
 import {toast} from 'sonner'
 
 export function AccountAvatar() {
@@ -26,11 +26,7 @@ export function AccountAvatar() {
     from: '/_authenticated',
     select: ({user}) => user,
   })
-  const initials = useMemo(() => {
-    const first = user.name.trim()[0] ?? ''
-    const last = user.lastName.trim()[0] ?? ''
-    return `${first}${last}` || (user.name || 'U').slice(0, 2)
-  }, [user.lastName, user.name])
+  const initials = useAtomValue(userInitialsAtom)
 
   const [showImage, setShowImage] = useState(true)
   const [imageLoadingStatus, setImageLoadingStatus] =

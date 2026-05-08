@@ -69,8 +69,8 @@ export function AccountAvatar() {
       logClientError({
         error,
         context: isRejection
-          ? 'client:avatarUploadRejection'
-          : 'client:avatarUploadException',
+          ? 'client:avatarUpload:rejection'
+          : 'client:avatarUpload:exception',
       })
       setShowImage(false)
     },
@@ -92,8 +92,8 @@ export function AccountAvatar() {
       logClientError({
         error,
         context: isRejection
-          ? 'client:avatarDeleteRejection'
-          : 'client:avatarDeleteException',
+          ? 'client:avatarDelete:rejection'
+          : 'client:avatarDelete:exception',
       })
       setShowImage(true)
     },

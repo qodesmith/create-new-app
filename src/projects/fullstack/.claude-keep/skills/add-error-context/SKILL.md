@@ -10,34 +10,36 @@ Add a new entry to the `ErrorContext` union type in `src/shared/types.d.ts`.
 
 ## Naming Convention
 
-Format: `<service>:<operation><Suffix>`
+Format: `<service>:<operation>:<suffix>`
 
-### 1. Client API calls — Rejection + Exception pair
+Three colon-separated parts. `<suffix>` is always lowercase: `rejection` or `exception`.
+
+### 1. Client API calls — rejection + exception pair
 
 ```ts
-| 'client:<operation>Rejection'
-| 'client:<operation>Exception'
+| 'client:<operation>:rejection'
+| 'client:<operation>:exception'
 ```
 
 Hono RPC calls are wrapped with `parseResponse` from `hono/client` inside `useMutation` / `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx, so all failures land in `onError`. In the `onError` handler, branch on `error instanceof DetailedError` to pick the context tag:
 
-- **Rejection** — `error instanceof DetailedError` is `true`. Server replied with a non-2xx status; `parseResponse` threw `DetailedError`. Tag: `client:<operation>Rejection`.
-- **Exception** — `error instanceof DetailedError` is `false`. Anything else thrown inside `mutationFn` / `queryFn` (network/CORS failure, JSON parse error, code error). Tag: `client:<operation>Exception`.
+- **rejection** — `error instanceof DetailedError` is `true`. Server replied with a non-2xx status; `parseResponse` threw `DetailedError`. Tag: `client:<operation>:rejection`.
+- **exception** — `error instanceof DetailedError` is `false`. Anything else thrown inside `mutationFn` / `queryFn` (network/CORS failure, JSON parse error, code error). Tag: `client:<operation>:exception`.
 
-### 2. Server-side async calls to external services — Rejection + Exception pair
+### 2. Server-side async calls to external services — rejection + exception pair
 
 ```ts
-| '<service>:<operation>Rejection'
-| '<service>:<operation>Exception'
+| '<service>:<operation>:rejection'
+| '<service>:<operation>:exception'
 ```
 
-- Same Rejection/Exception distinction as client calls
+- Same rejection/exception distinction as client calls
 - `<service>` is the external service name (e.g. `resend`, `stripe`, etc.)
 
-### 3. Standalone error scenarios — Exception only
+### 3. Standalone error scenarios — exception only
 
 ```ts
-| '<area>:<name>Exception'
+| '<area>:<name>:exception'
 ```
 
 - For catch-all handlers or one-off error scenarios with no corresponding rejection
@@ -45,7 +47,7 @@ Hono RPC calls are wrapped with `parseResponse` from `hono/client` inside `useMu
 
 ## Rules
 
-- All names are camelCase after the colon
+- `<service>` and `<operation>` are camelCase; `<suffix>` is lowercase (`rejection` | `exception`)
 - Place new entries in the correct section (Server or Client) with a comment if starting a new group
 - Check existing entries in the union to match naming style
 

@@ -41,7 +41,7 @@ export function ChangePassword() {
           toast.error(error.message || 'Failed to change password')
           logClientError({
             error,
-            context: 'client:changePasswordRejection',
+            context: 'client:changePassword:rejection',
           })
           return
         }
@@ -52,7 +52,7 @@ export function ChangePassword() {
         toast.error('An unexpected error occurred while updating your password')
         logClientError({
           error,
-          context: 'client:changePasswordException',
+          context: 'client:changePassword:exception',
         })
       }
     },

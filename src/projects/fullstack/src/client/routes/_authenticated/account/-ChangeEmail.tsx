@@ -40,7 +40,7 @@ export function ChangeEmail() {
           toast.error(error.message || 'Failed to change email')
           logClientError({
             error,
-            context: 'client:changeEmailRejection',
+            context: 'client:changeEmail:rejection',
           })
           return
         }
@@ -53,7 +53,7 @@ export function ChangeEmail() {
         toast.error('An unexpected error occurred while updating your email')
         logClientError({
           error,
-          context: 'client:changeEmailException',
+          context: 'client:changeEmail:exception',
         })
       }
     },

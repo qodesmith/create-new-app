@@ -76,7 +76,7 @@ function NewPasswordForm({
           toast.error(error.message || 'Failed to reset password')
           logClientError({
             error,
-            context: 'client:resetPasswordRejection',
+            context: 'client:resetPassword:rejection',
           })
           showInvalidTokenView()
           return
@@ -88,7 +88,7 @@ function NewPasswordForm({
         toast.error('An unexpected error occurred')
         logClientError({
           error,
-          context: 'client:resetPasswordException',
+          context: 'client:resetPassword:exception',
         })
       }
     },

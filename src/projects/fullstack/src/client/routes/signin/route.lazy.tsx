@@ -51,7 +51,7 @@ function SignInPage() {
         toast.error(result.error.message || 'Failed to sign in with passkey')
         logClientError({
           error: result.error,
-          context: 'client:passkeySignInRejection',
+          context: 'client:passkeySignIn:rejection',
         })
         return
       }
@@ -66,7 +66,7 @@ function SignInPage() {
       toast.error('Failed to sign in with passkey')
       logClientError({
         error,
-        context: 'client:passkeySignInException',
+        context: 'client:passkeySignIn:exception',
       })
     } finally {
       setIsPasskeyLoading(false)
@@ -90,7 +90,7 @@ function SignInPage() {
           toast.error(result.error.message || 'Failed to sign in')
           logClientError({
             error: result.error,
-            context: 'client:signInRejection',
+            context: 'client:signIn:rejection',
           })
           return
         }
@@ -101,7 +101,7 @@ function SignInPage() {
         toast.error('An unexpected error occurred')
         logClientError({
           error,
-          context: 'client:signInException',
+          context: 'client:signIn:exception',
         })
       }
     },

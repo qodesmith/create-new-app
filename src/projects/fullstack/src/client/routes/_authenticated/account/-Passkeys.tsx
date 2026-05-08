@@ -46,14 +46,14 @@ export function Passkeys() {
 
         if (error) {
           isRejection = true
-          logClientError({error, context: 'client:passkeyListRejection'})
+          logClientError({error, context: 'client:passkeyList:rejection'})
           throw error
         }
 
         return data ?? []
       } catch (error) {
         if (!isRejection) {
-          logClientError({error, context: 'client:passkeyListException'})
+          logClientError({error, context: 'client:passkeyList:exception'})
         }
 
         /**
@@ -79,7 +79,7 @@ export function Passkeys() {
         toast.error(result.error.message || 'Failed to add passkey')
         logClientError({
           error: result.error,
-          context: 'client:passkeyAddRejection',
+          context: 'client:passkeyAdd:rejection',
         })
         return
       }
@@ -95,7 +95,7 @@ export function Passkeys() {
       }
 
       toast.error('Failed to add passkey')
-      logClientError({error, context: 'client:passkeyAddException'})
+      logClientError({error, context: 'client:passkeyAdd:exception'})
     },
   })
 
@@ -106,7 +106,7 @@ export function Passkeys() {
         toast.error(result.error.message || 'Failed to delete passkey')
         logClientError({
           error: result.error,
-          context: 'client:passkeyDeleteRejection',
+          context: 'client:passkeyDelete:rejection',
         })
         return
       }
@@ -117,7 +117,7 @@ export function Passkeys() {
     },
     onError: error => {
       toast.error('Failed to delete passkey')
-      logClientError({error, context: 'client:passkeyDeleteException'})
+      logClientError({error, context: 'client:passkeyDelete:exception'})
     },
   })
 

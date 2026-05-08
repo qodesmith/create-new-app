@@ -45,7 +45,7 @@ export const honoServer = new Hono()
         db.insert(errorsTable)
           .values({
             error: errorToObject(error),
-            context: 'betterAuth:topLevelException',
+            context: 'betterAuth:topLevel:exception',
           })
           .run()
       })
@@ -171,7 +171,7 @@ export const honoServer = new Hono()
       db.insert(errorsTable)
         .values({
           error: errorToObject(error),
-          context: 'hono:topLevelException',
+          context: 'hono:topLevel:exception',
         })
         .run()
     })

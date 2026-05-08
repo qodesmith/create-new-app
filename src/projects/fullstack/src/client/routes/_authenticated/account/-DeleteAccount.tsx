@@ -40,7 +40,7 @@ export function DeleteAccount() {
           toast.error(error.message || 'Failed to request account deletion')
           logClientError({
             error,
-            context: 'client:deleteAccountRejection',
+            context: 'client:deleteAccount:rejection',
           })
           return
         }
@@ -52,7 +52,7 @@ export function DeleteAccount() {
         toast.error('An unexpected error occurred while deleting your account')
         logClientError({
           error,
-          context: 'client:deleteAccountException',
+          context: 'client:deleteAccount:exception',
         })
       }
     },

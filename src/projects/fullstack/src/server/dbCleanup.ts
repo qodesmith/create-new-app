@@ -76,7 +76,7 @@ export function purgeStaleRecords({
       db.insert(errorsTable)
         .values({
           error: errorToObject(new Error(errorMsg)),
-          context: 'dbCleanup:purgeStaleRecordsException',
+          context: 'dbCleanup:purgeStaleRecords:exception',
         })
         .run()
     })
@@ -101,7 +101,7 @@ export function purgeStaleRecords({
         db.insert(errorsTable)
           .values({
             error: errorToObject(new Error(errorMsg)),
-            context: 'dbCleanup:purgeStaleRecordsException',
+            context: 'dbCleanup:purgeStaleRecords:exception',
           })
           .run()
       })

@@ -42,7 +42,7 @@ Client:
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 
 const logClientError = useLogClientError()
-logClientError({error, context: 'client:featureNameException'})
+logClientError({error, context: 'client:featureName:exception'})
 ```
 
 Server:
@@ -51,7 +51,7 @@ import {bestEffort, errorToObject} from '@qodestack/utils'
 
 bestEffort(() => {
   db.insert(errorsTable)
-    .values({error: errorToObject(error), context: 'server:featureNameException'})
+    .values({error: errorToObject(error), context: 'server:featureName:exception'})
     .run()
 })
 ```
@@ -82,8 +82,8 @@ const myMutation = useMutation({
     logClientError({
       error,
       context: isRejection
-        ? 'client:myFeatureRejection'
-        : 'client:myFeatureException',
+        ? 'client:myFeature:rejection'
+        : 'client:myFeature:exception',
     })
   },
 })

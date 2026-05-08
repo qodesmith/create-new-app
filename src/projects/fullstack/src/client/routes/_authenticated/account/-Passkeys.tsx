@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
@@ -24,7 +24,7 @@ type Passkey = AuthSchemaInsert['passkeys']
 
 export function Passkeys() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
   const queryClient = useQueryClient()
   const [addName, setAddName] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<Passkey | null>(null)
@@ -46,14 +46,13 @@ export function Passkeys() {
 
         if (error) {
           isRejection = true
-          logClientError({error, context: 'client:passkeyListRejection'})
           throw error
         }
 
         return data ?? []
       } catch (error) {
         if (!isRejection) {
-          logClientError({error, context: 'client:passkeyListException'})
+          captureError({error, context: 'client:passkeyList:exception'})
         }
 
         /**
@@ -77,10 +76,6 @@ export function Passkeys() {
     onSuccess: result => {
       if (result?.error) {
         toast.error(result.error.message || 'Failed to add passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeyAddRejection',
-        })
         return
       }
 
@@ -95,7 +90,7 @@ export function Passkeys() {
       }
 
       toast.error('Failed to add passkey')
-      logClientError({error, context: 'client:passkeyAddException'})
+      captureError({error, context: 'client:passkeyAdd:exception'})
     },
   })
 
@@ -104,10 +99,6 @@ export function Passkeys() {
     onSuccess: result => {
       if (result?.error) {
         toast.error(result.error.message || 'Failed to delete passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeyDeleteRejection',
-        })
         return
       }
 
@@ -117,7 +108,7 @@ export function Passkeys() {
     },
     onError: error => {
       toast.error('Failed to delete passkey')
-      logClientError({error, context: 'client:passkeyDeleteException'})
+      captureError({error, context: 'client:passkeyDelete:exception'})
     },
   })
 

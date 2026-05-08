@@ -9,7 +9,7 @@ import {
 } from '@/client/components/ui/card'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
@@ -57,7 +57,7 @@ function NewPasswordForm({
 }) {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const form = useForm({
     defaultValues: {
@@ -74,10 +74,6 @@ function NewPasswordForm({
 
         if (error) {
           toast.error(error.message || 'Failed to reset password')
-          logClientError({
-            error,
-            context: 'client:resetPasswordRejection',
-          })
           showInvalidTokenView()
           return
         }
@@ -86,9 +82,9 @@ function NewPasswordForm({
         await router.navigate({to: '/signin'})
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({
+        captureError({
           error,
-          context: 'client:resetPasswordException',
+          context: 'client:resetPassword:exception',
         })
       }
     },

@@ -2,6 +2,7 @@ import {isProdEnv} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {errorsTable} from '@/server/db/schema/appSchema'
+import {captureError} from '@/server/errorCapture/captureError'
 import {adminRoutes} from '@/server/hono/adminRoutes'
 import {authRoutes} from '@/server/hono/authRoutes'
 import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRoutes'
@@ -12,7 +13,7 @@ import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddlewa
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
-import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
+import {getUnitInMs} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
 import {sql} from 'drizzle-orm'
 import {Hono} from 'hono'
@@ -39,15 +40,10 @@ export const honoServer = new Hono()
       const res = await auth.handler(c.req.raw)
       return res
     } catch (error) {
-      const db = getDatabase()
-
-      bestEffort(() => {
-        db.insert(errorsTable)
-          .values({
-            error: errorToObject(error),
-            context: 'betterAuth:topLevelException',
-          })
-          .run()
+      captureError({
+        error,
+        context: 'betterAuth:topLevel:exception',
+        metadata: {url: c.req.url, httpMethod: c.req.method},
       })
 
       throw error
@@ -109,8 +105,8 @@ export const honoServer = new Hono()
   .route(authRoutePath, authRoutes)
 
   .post(
-    '/api/client-error',
-    // Max 5 errors per second.
+    '/api/error-captures',
+    // Max 1 capture per second.
     getRateLimitMiddleware({windowMs: getUnitInMs(1, 's'), limit: 1}),
     arktypeValidator(
       'json',
@@ -122,7 +118,6 @@ export const honoServer = new Hono()
       )
     ),
     async c => {
-      const db = getDatabase()
       const {error, context, metadata} = c.req.valid('json')
 
       /**
@@ -132,8 +127,16 @@ export const honoServer = new Hono()
       const session = await auth.api.getSession({headers: c.req.raw.headers})
       const userId = session?.user.id
 
-      bestEffort(() => {
-        db.insert(errorsTable).values({error, context, userId, metadata}).run()
+      captureError({
+        error,
+        context,
+        userId,
+        metadata: {
+          ...metadata,
+          url: c.req.url,
+          httpMethod: c.req.method,
+          userAgent: c.req.header('user-agent'),
+        },
       })
 
       return c.body(null)
@@ -165,15 +168,10 @@ export const honoServer = new Hono()
     return c.html(await res.text())
   })
   .onError((error, c) => {
-    const db = getDatabase()
-
-    bestEffort(() => {
-      db.insert(errorsTable)
-        .values({
-          error: errorToObject(error),
-          context: 'hono:topLevelException',
-        })
-        .run()
+    captureError({
+      error,
+      context: 'hono:topLevel:exception',
+      metadata: {url: c.req.url, httpMethod: c.req.method},
     })
 
     /**

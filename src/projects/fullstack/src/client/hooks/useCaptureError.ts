@@ -1,5 +1,5 @@
 import type {ApiClient} from '@/client/types'
-import type {ErrorContext} from '@/shared/types'
+import type {ErrorContext} from '@/shared/errorContext'
 
 import {apiClientAtom} from '@/client/state/globalState'
 
@@ -7,27 +7,20 @@ import {bestEffort, errorToObject} from '@qodestack/utils'
 import {useAtomValue} from 'jotai'
 import {useCallback} from 'react'
 
-/**
- * Logs client-side errors to the server for centralized error tracking.
- *
- * @param error - The error object or unknown value to be logged
- * @param context - Used for observability and debugging in the logs
- * @param metadata - Optional adhoc data with no specific shape, used to provide additional context
- */
-function logClientError({
+function captureClientError({
   error,
   context,
   metadata,
   apiClient,
 }: {
-  error: Error | unknown
+  error: unknown
   context: ErrorContext
   metadata?: Record<string, unknown>
   apiClient: ApiClient
 }): void {
   bestEffort(
     () => {
-      apiClient['client-error'].$post({
+      apiClient['error-captures'].$post({
         json: {error: errorToObject(error), context, metadata},
       })
     },
@@ -35,7 +28,10 @@ function logClientError({
   )
 }
 
-export function useLogClientError() {
+/**
+ * Captures browser-originated errors that the server cannot observe directly.
+ */
+export function useCaptureError() {
   const apiClient = useAtomValue(apiClientAtom)
 
   return useCallback(
@@ -44,11 +40,11 @@ export function useLogClientError() {
       context,
       metadata,
     }: {
-      error: Error | unknown
+      error: unknown
       context: ErrorContext
       metadata?: Record<string, unknown>
     }) => {
-      logClientError({error, context, metadata, apiClient})
+      captureClientError({error, context, metadata, apiClient})
     },
     [apiClient]
   )

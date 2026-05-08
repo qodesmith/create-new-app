@@ -32,9 +32,9 @@
 
 import type {
   AdminAuditLogsMetadata,
-  ErrorContext,
   SystemAuditLogsMetadata,
 } from '@/shared/types'
+import type {ErrorContext} from '@/shared/errorContext'
 
 import {blob, integer, sqliteTable, text} from 'drizzle-orm/sqlite-core'
 

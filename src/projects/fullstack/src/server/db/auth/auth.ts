@@ -143,8 +143,8 @@ export const authOptions = {
           user,
           subject: 'Verify your email address',
           react: SignUpVerificationEmail({verificationUrl: url}),
-          rejectionContext: 'resend:sendSignUpVerificationEmailRejection',
-          exceptionContext: 'resend:sendSignUpVerificationEmailException',
+          rejectionContext: 'resend:sendSignUpVerificationEmail:rejection',
+          exceptionContext: 'resend:sendSignUpVerificationEmail:exception',
         })
       }
 
@@ -167,8 +167,8 @@ export const authOptions = {
             verificationUrl: url,
             newEmail: user.email,
           }),
-          rejectionContext: 'resend:sendChangeEmailRejection',
-          exceptionContext: 'resend:sendChangeEmailException',
+          rejectionContext: 'resend:sendChangeEmail:rejection',
+          exceptionContext: 'resend:sendChangeEmail:exception',
         })
       }
     },
@@ -195,8 +195,8 @@ export const authOptions = {
         user,
         subject: 'Reset your password',
         react: ResetPasswordEmail({resetUrl: url}),
-        rejectionContext: 'resend:sendResetPasswordEmailRejection',
-        exceptionContext: 'resend:sendResetPasswordEmailException',
+        rejectionContext: 'resend:sendResetPasswordEmail:rejection',
+        exceptionContext: 'resend:sendResetPasswordEmail:exception',
       })
     },
 
@@ -258,8 +258,8 @@ export const authOptions = {
       //     user,
       //     subject: 'Confirm your updated email',
       //     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
-      //     rejectionContext: 'resend:sendChangeEmailRejection',
-      //     exceptionContext: 'resend:sendChangeEmailException',
+      //     rejectionContext: 'resend:sendChangeEmail:rejection',
+      //     exceptionContext: 'resend:sendChangeEmail:exception',
       //   })
       // },
     },
@@ -274,9 +274,9 @@ export const authOptions = {
           subject: 'Confirm account deletion',
           react: DeleteAccountVerificationEmail({verificationUrl: url}),
           rejectionContext:
-            'resend:sendDeleteAccountVerificationEmailRejection',
+            'resend:sendDeleteAccountVerificationEmail:rejection',
           exceptionContext:
-            'resend:sendDeleteAccountVerificationEmailException',
+            'resend:sendDeleteAccountVerificationEmail:exception',
         })
       },
     },

@@ -76,7 +76,7 @@ Chain BEFORE `.notFound()` — order matters.
 
 ## Error Responses
 
-Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the entire error-logging contract.
+Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the error-handling contract.
 
 ```ts
 // Right
@@ -86,7 +86,15 @@ return c.json({error: 'No file provided'}, 400)
 return c.json({error: 'No file provided'})
 ```
 
-Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message and gets logged via `logClientError` on failure.
+Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message. Expected 4xx validation responses should not be captured as persisted errors.
+
+Unexpected server failures should be captured server-side:
+
+```ts
+import {captureError} from '@/server/errorCapture/captureError'
+
+captureError({error, context: 'hono:myEndpoint:exception'})
+```
 
 ## Fire-and-Forget
 
@@ -96,6 +104,8 @@ For non-critical async operations, use the `bestEffort` server utility, guarante
 import {bestEffort} from '@qodestack/utils'
 bestEffort(() => asyncOp())
 ```
+
+For persisted error capture, use `captureError` instead of raw `bestEffort` + `errorsTable` inserts.
 
 ## Transactions
 

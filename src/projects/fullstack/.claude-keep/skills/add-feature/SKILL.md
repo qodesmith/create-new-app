@@ -25,7 +25,7 @@ Each step validates before next:
 
 1. DB table if needed — see [add-db-table](../add-db-table/SKILL.md)
 2. API endpoint in correct route group — see [add-api-endpoint](../add-api-endpoint/SKILL.md)
-3. ErrorContext entries — see [add-error-context](../add-error-context/SKILL.md)
+3. ErrorContext entries, only for failures worth persisting — see [add-error-context](../add-error-context/SKILL.md)
 4. Route file(s) — see [add-route](../add-route/SKILL.md)
 5. Components — see [add-component](../add-component/SKILL.md)
 6. Wire frontend to backend via Hono RPC atoms (`apiClientAtom` / `apiAuthClientAtom`)
@@ -35,40 +35,38 @@ Each step validates before next:
 - If schema changed: remind to stop dev server, run `bun run db:init`
 - Verify Hono RPC types flow (server type export → client atom consumption)
 
-## Error Logging
+## Error Capture
 
 Client:
 ```ts
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 
-const logClientError = useLogClientError()
-logClientError({error, context: 'client:featureNameException'})
+const captureError = useCaptureError()
+captureError({error, context: 'client:featureName:exception'})
 ```
 
 Server:
 ```ts
-import {bestEffort, errorToObject} from '@qodestack/utils'
+import {captureError} from '@/server/errorCapture/captureError'
 
-bestEffort(() => {
-  db.insert(errorsTable)
-    .values({error: errorToObject(error), context: 'server:featureNameException'})
-    .run()
-})
+captureError({error, context: 'server:featureName:exception'})
 ```
 
 ## RPC Wiring
 
 Always wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
 
-In `onError`, branch on `error instanceof DetailedError` to split the log context: Rejection = server replied non-2xx, Exception = request never completed (network, CORS, code throw).
+In `onError`, branch on `error instanceof DetailedError`. Detailed errors mean the server replied, so treat expected 4xx responses as user-facing UX and do not capture them. Capture only non-DetailedError failures from the client, because those are browser-side exceptions the server could not see.
 
 ```ts
 import {useMutation} from '@tanstack/react-query'
 import {DetailedError, parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {apiAuthClientAtom} from '@/client/state/globalState'
 
 const apiAuthClient = useAtomValue(apiAuthClientAtom)
+const captureError = useCaptureError()
 
 const myMutation = useMutation({
   mutationFn: async (input: MyInput) => {
@@ -79,12 +77,9 @@ const myMutation = useMutation({
     const isRejection = error instanceof DetailedError
 
     toast.error('Friendly message')
-    logClientError({
-      error,
-      context: isRejection
-        ? 'client:myFeatureRejection'
-        : 'client:myFeatureException',
-    })
+    if (!isRejection) {
+      captureError({error, context: 'client:myFeature:exception'})
+    }
   },
 })
 ```

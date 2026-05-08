@@ -200,7 +200,7 @@ function RouteComponent() {
           Configures global router defaults — preloading on intent, pending
           delay thresholds, a loading spinner via{' '}
           <Code>defaultPendingComponent</Code>, an error boundary via{' '}
-          <Code>defaultErrorComponent</Code> (with error logging and
+          <Code>defaultErrorComponent</Code> (with error capture and
           retry/reset), and a 404 fallback.
         </FileCard>
 
@@ -330,7 +330,7 @@ function RouteComponent() {
         {/* appSchema.ts */}
         <FileCard fileName="appSchema.ts" description="Custom database tables">
           Define your Drizzle tables here. Ships with an{' '}
-          <Code>errorsTable</Code> for logging client and server errors, plus a{' '}
+          <Code>errorsTable</Code> for captured client and server errors, plus a{' '}
           <Code>commonFields</Code> pattern for <Code>id</Code>,{' '}
           <Code>createdAt</Code>, and <Code>updatedAt</Code> fields.
         </FileCard>

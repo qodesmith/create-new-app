@@ -9,7 +9,7 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {apiAuthClientAtom} from '@/client/state/globalState'
 import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 
@@ -40,7 +40,7 @@ export function AccountAvatar() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarInputId = useId()
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
@@ -62,12 +62,9 @@ export function AccountAvatar() {
       const isRejection = error instanceof DetailedError
 
       toast.error(error.message)
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarUploadRejection'
-          : 'client:avatarUploadException',
-      })
+      if (!isRejection) {
+        captureError({error, context: 'client:avatarUpload:exception'})
+      }
       setShowImage(false)
     },
   })
@@ -84,12 +81,9 @@ export function AccountAvatar() {
       const isRejection = error instanceof DetailedError
 
       toast.error('Failed to remove avatar')
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarDeleteRejection'
-          : 'client:avatarDeleteException',
-      })
+      if (!isRejection) {
+        captureError({error, context: 'client:avatarDelete:exception'})
+      }
       setShowImage(true)
     },
   })

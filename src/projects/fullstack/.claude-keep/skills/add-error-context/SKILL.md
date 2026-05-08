@@ -1,43 +1,42 @@
 ---
 name: add-error-context
-description: Add a new entry to the ErrorContext union type in src/shared/types.d.ts. Use when adding error tracking for API calls, service calls, or catch-all handlers.
+description: Add a new entry to the ErrorContext union type in src/shared/errorContext.ts. Use when adding persisted error capture for service calls or catch-all handlers.
 argument-hint: "[error-context-description]"
 ---
 
 # Add ErrorContext Entry
 
-Add a new entry to the `ErrorContext` union type in `src/shared/types.d.ts`.
+Add a new entry to the `ErrorContext` union type in `src/shared/errorContext.ts`.
 
 ## Naming Convention
 
-Format: `<service>:<operation><Suffix>`
+Format: `<service>:<operation>:<outcome>`
 
-### 1. Client API calls — Rejection + Exception pair
+### 1. Client-side failures — Exception only
 
 ```ts
-| 'client:<operation>Rejection'
-| 'client:<operation>Exception'
+| 'client:<operation>:exception'
 ```
 
-Hono RPC calls are wrapped with `parseResponse` from `hono/client` inside `useMutation` / `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx, so all failures land in `onError`. In the `onError` handler, branch on `error instanceof DetailedError` to pick the context tag:
+Client capture is only for failures the server cannot observe directly, such as network/CORS failures, aborted requests, browser runtime exceptions, or render/loader failures.
 
-- **Rejection** — `error instanceof DetailedError` is `true`. Server replied with a non-2xx status; `parseResponse` threw `DetailedError`. Tag: `client:<operation>Rejection`.
-- **Exception** — `error instanceof DetailedError` is `false`. Anything else thrown inside `mutationFn` / `queryFn` (network/CORS failure, JSON parse error, code error). Tag: `client:<operation>Exception`.
+Do not add `client:*:rejection` contexts for expected product or validation outcomes. If the server returned the response, either it is expected UX (do not capture) or the server should capture it directly.
 
 ### 2. Server-side async calls to external services — Rejection + Exception pair
 
 ```ts
-| '<service>:<operation>Rejection'
-| '<service>:<operation>Exception'
+| '<service>:<operation>:rejection'
+| '<service>:<operation>:exception'
 ```
 
-- Same Rejection/Exception distinction as client calls
+- `rejection` means the external service responded but indicated failure
+- `exception` means the call threw before receiving a service response
 - `<service>` is the external service name (e.g. `resend`, `stripe`, etc.)
 
 ### 3. Standalone error scenarios — Exception only
 
 ```ts
-| '<area>:<name>Exception'
+| '<area>:<name>:exception'
 ```
 
 - For catch-all handlers or one-off error scenarios with no corresponding rejection
@@ -45,8 +44,11 @@ Hono RPC calls are wrapped with `parseResponse` from `hono/client` inside `useMu
 
 ## Rules
 
-- All names are camelCase after the colon
+- Use camelCase for `<service>` and `<operation>`
+- Use lowercase `rejection` or `exception` for `<outcome>`
 - Place new entries in the correct section (Server or Client) with a comment if starting a new group
 - Check existing entries in the union to match naming style
+- Capture server-known failures with `captureError` from `src/server/errorCapture/captureError.ts`
+- Capture browser-only failures with `useCaptureError` from `src/client/hooks/useCaptureError.ts`
 
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

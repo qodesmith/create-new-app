@@ -9,7 +9,7 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {
@@ -31,7 +31,7 @@ export const Route = createLazyFileRoute('/signup')({
 function SignUpPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const form = useForm({
     defaultValues: {
@@ -54,7 +54,6 @@ function SignUpPage() {
 
         if (error) {
           toast.error(error.message || 'Failed to sign up')
-          logClientError({error, context: 'client:signUpRejection'})
           return
         }
 
@@ -62,7 +61,7 @@ function SignUpPage() {
         await router.navigate({to: '/signin'})
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({error, context: 'client:signUpException'})
+        captureError({error, context: 'client:signUp:exception'})
       }
     },
   })

@@ -10,7 +10,7 @@ import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {Separator} from '@/client/components/ui/separator'
 import {defaultAuthedPath} from '@/client/constants'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {isValidRoute} from '@/client/lib/isValidRoute'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {ResetPasswordDialog} from '@/client/routes/signin/-ResetPasswordDialog'
@@ -31,7 +31,7 @@ export const Route = createLazyFileRoute('/signin')({
 function SignInPage() {
   const router = useRouter()
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
   const setIsSignedIn = useSetAtom(isSignedInAtom)
   const {redirect, dialogInitialOpen} = Route.useSearch()
   const redirectPath = isValidRoute(router, redirect)
@@ -47,10 +47,6 @@ function SignInPage() {
 
       if (result?.error) {
         toast.error(result.error.message || 'Failed to sign in with passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeySignInRejection',
-        })
         return
       }
 
@@ -62,9 +58,9 @@ function SignInPage() {
       if (isWebAuthnCancellation) return
 
       toast.error('Failed to sign in with passkey')
-      logClientError({
+      captureError({
         error,
-        context: 'client:passkeySignInException',
+        context: 'client:passkeySignIn:exception',
       })
     } finally {
       setIsPasskeyLoading(false)
@@ -86,10 +82,6 @@ function SignInPage() {
 
         if (result.error) {
           toast.error(result.error.message || 'Failed to sign in')
-          logClientError({
-            error: result.error,
-            context: 'client:signInRejection',
-          })
           return
         }
 
@@ -97,9 +89,9 @@ function SignInPage() {
         await router.navigate({to: redirectPath})
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({
+        captureError({
           error,
-          context: 'client:signInException',
+          context: 'client:signIn:exception',
         })
       }
     },

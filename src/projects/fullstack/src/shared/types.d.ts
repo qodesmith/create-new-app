@@ -38,61 +38,48 @@ export type Prettify<T> = T extends BuiltIn
 export type ServerAuth = typeof auth
 
 /**
- * Naming convention: `<service>:<operation><Suffix>`
+ * Naming convention: `<service>:<operation>:<suffix>`
  *
- * 1. Client API calls get a Rejection/Exception pair:
- *    `client:<operation>Rejection` - API responded (2xx) but returned an error
- *    `client:<operation>Exception` - error caught in the catch clause
+ * Suffix is one of:
+ *   `:exception` — code threw or a third-party call raised
+ *   `:rejection` — a third party returned a non-success response we treat as an
+ *                  error (e.g. Resend's API, Better Auth's handler returning 5xx)
  *
- * 2. Server-side async calls to external services also get a pair:
- *    `<service>:<operation>Rejection` - service responded but indicated failure
- *    `<service>:<operation>Exception` - error caught in the catch clause
- *
- * 3. Standalone error scenarios (less common) only get Exception:
- *    `<area>:<name>Exception` - catch-all or one-off error handler
+ * The DB only stores genuine errors. User-input failures (wrong password, bad
+ * file, expired token) are handled inline with a toast — they're not captured
+ * because the system is functioning correctly. Rejections originating on the
+ * server are captured server-side; the client never sends rejection data back.
+ * Hence every `client:*` context is `:exception` only.
  */
 export type ErrorContext =
   // Server
-  | 'hono:topLevelException'
-  | 'hono:rateLimitException'
-  | 'betterAuth:topLevelException'
-  | 'resend:sendSignUpVerificationEmailRejection'
-  | 'resend:sendSignUpVerificationEmailException'
-  | 'resend:sendResetPasswordEmailRejection'
-  | 'resend:sendResetPasswordEmailException'
-  | 'resend:sendChangeEmailRejection'
-  | 'resend:sendChangeEmailException'
-  | 'resend:sendDeleteAccountVerificationEmailRejection'
-  | 'resend:sendDeleteAccountVerificationEmailException'
-  | 'dbCleanup:purgeStaleRecordsException'
+  | 'hono:topLevel:exception'
+  | 'hono:rateLimit:exception'
+  | 'betterAuth:topLevel:exception'
+  | 'betterAuth:topLevel:rejection'
+  | 'resend:sendSignUpVerificationEmail:rejection'
+  | 'resend:sendSignUpVerificationEmail:exception'
+  | 'resend:sendResetPasswordEmail:rejection'
+  | 'resend:sendResetPasswordEmail:exception'
+  | 'resend:sendChangeEmail:rejection'
+  | 'resend:sendChangeEmail:exception'
+  | 'resend:sendDeleteAccountVerificationEmail:rejection'
+  | 'resend:sendDeleteAccountVerificationEmail:exception'
+  | 'dbCleanup:purgeStaleRecords:exception'
 
-  // Client
-  | 'client:topLevelException'
-  | 'client:signInRejection'
-  | 'client:signInException'
-  | 'client:signUpRejection'
-  | 'client:signUpException'
-  | 'client:signOutRejection'
-  | 'client:signOutException'
-  | 'client:resetPasswordRejection'
-  | 'client:resetPasswordException'
-  | 'client:requestPasswordResetRejection'
-  | 'client:requestPasswordResetException'
-  | 'client:changeEmailRejection'
-  | 'client:changeEmailException'
-  | 'client:changePasswordRejection'
-  | 'client:changePasswordException'
-  | 'client:avatarUploadRejection'
-  | 'client:avatarUploadException'
-  | 'client:avatarDeleteRejection'
-  | 'client:avatarDeleteException'
-  | 'client:passkeyAddRejection'
-  | 'client:passkeyAddException'
-  | 'client:passkeyDeleteRejection'
-  | 'client:passkeyDeleteException'
-  | 'client:deleteAccountRejection'
-  | 'client:deleteAccountException'
-  | 'client:passkeyListRejection'
-  | 'client:passkeyListException'
-  | 'client:passkeySignInRejection'
-  | 'client:passkeySignInException'
+  // Client (exceptions only — see header comment)
+  | 'client:topLevel:exception'
+  | 'client:signIn:exception'
+  | 'client:signUp:exception'
+  | 'client:signOut:exception'
+  | 'client:resetPassword:exception'
+  | 'client:requestPasswordReset:exception'
+  | 'client:changeEmail:exception'
+  | 'client:changePassword:exception'
+  | 'client:avatarUpload:exception'
+  | 'client:avatarDelete:exception'
+  | 'client:passkeyAdd:exception'
+  | 'client:passkeyDelete:exception'
+  | 'client:deleteAccount:exception'
+  | 'client:passkeyList:exception'
+  | 'client:passkeySignIn:exception'

@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/client/components/ui/dialog'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 
@@ -22,7 +22,7 @@ import {toast} from 'sonner'
 
 export function DeleteAccount() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
   const deleteDialog = useBoolean()
 
   const form = useForm({
@@ -38,10 +38,6 @@ export function DeleteAccount() {
 
         if (error) {
           toast.error(error.message || 'Failed to request account deletion')
-          logClientError({
-            error,
-            context: 'client:deleteAccountRejection',
-          })
           return
         }
 
@@ -50,10 +46,7 @@ export function DeleteAccount() {
         toast.success('Check your email to confirm account deletion')
       } catch (error) {
         toast.error('An unexpected error occurred while deleting your account')
-        logClientError({
-          error,
-          context: 'client:deleteAccountException',
-        })
+        captureError({error, context: 'client:deleteAccount:exception'})
       }
     },
   })

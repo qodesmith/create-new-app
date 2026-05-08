@@ -3,10 +3,9 @@ import type {MiddlewareHandler} from 'hono'
 import process from 'node:process'
 
 import {isProd} from '@/server/constants'
-import {getDatabase} from '@/server/db/getDatabase'
-import {errorsTable} from '@/server/db/schema/appSchema'
+import {captureError} from '@/server/utils/captureError'
 
-import {bestEffort, getUnitInMs} from '@qodestack/utils'
+import {getUnitInMs} from '@qodestack/utils'
 import {getConnInfo} from 'hono/bun'
 import {HTTPException} from 'hono/http-exception'
 import {rateLimiter} from 'hono-rate-limiter'
@@ -37,20 +36,14 @@ export function getRateLimitMiddleware({
             info.remote.address
 
           if (!ipAddress) {
-            const db = getDatabase()
-
-            bestEffort(() => {
-              db.insert(errorsTable)
-                .values({
-                  context: 'hono:rateLimitException',
-                  error: {
-                    message: 'unknownIpAddress',
-                    connectionInfo: info,
-                    url: c.req.url,
-                    httpMethod: c.req.method,
-                  },
-                })
-                .run()
+            captureError({
+              context: 'hono:rateLimit:exception',
+              error: {
+                message: 'unknownIpAddress',
+                connectionInfo: info,
+                url: c.req.url,
+                httpMethod: c.req.method,
+              },
             })
 
             throw new HTTPException(403, {message: 'Forbidden'})

@@ -2,11 +2,9 @@ import type {JSX} from 'react'
 import type {ErrorContext} from '@/shared/types'
 
 import {isProd} from '@/server/constants'
-import {getDatabase} from '@/server/db/getDatabase'
-import {errorsTable} from '@/server/db/schema/appSchema'
+import {captureError} from '@/server/utils/captureError'
 import {getEnvVar} from '@/server/utils/getEnvVar'
 
-import {bestEffort, errorToObject} from '@qodestack/utils'
 import {Resend} from 'resend'
 
 export async function sendEmail({
@@ -31,31 +29,14 @@ export async function sendEmail({
     .send({from, to, subject, react})
     .then(res => {
       if (res.error !== null) {
-        const db = getDatabase()
-        const error = errorToObject(res.error)
-        const metadata = res.headers === null ? null : {headers: res.headers}
-
-        bestEffort(
-          () => {
-            db.insert(errorsTable)
-              .values({context: rejectionContext, error, metadata})
-              .run()
-          },
-          {log: true}
-        )
+        captureError({
+          context: rejectionContext,
+          error: res.error,
+          metadata: res.headers === null ? undefined : {headers: res.headers},
+        })
       }
     })
-    .catch(e => {
-      const db = getDatabase()
-      const error = errorToObject(e)
-
-      bestEffort(
-        () => {
-          db.insert(errorsTable)
-            .values({context: exceptionContext, error})
-            .run()
-        },
-        {log: true}
-      )
+    .catch(error => {
+      captureError({context: exceptionContext, error})
     })
 }

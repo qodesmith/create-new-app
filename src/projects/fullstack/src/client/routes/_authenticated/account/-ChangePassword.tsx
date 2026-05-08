@@ -1,7 +1,7 @@
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
@@ -12,7 +12,7 @@ import {toast} from 'sonner'
 
 export function ChangePassword() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const changePasswordForm = useForm({
     defaultValues: {
@@ -39,10 +39,6 @@ export function ChangePassword() {
 
         if (error) {
           toast.error(error.message || 'Failed to change password')
-          logClientError({
-            error,
-            context: 'client:changePasswordRejection',
-          })
           return
         }
 
@@ -50,10 +46,7 @@ export function ChangePassword() {
         changePasswordForm.reset()
       } catch (error) {
         toast.error('An unexpected error occurred while updating your password')
-        logClientError({
-          error,
-          context: 'client:changePasswordException',
-        })
+        captureError({error, context: 'client:changePassword:exception'})
       }
     },
   })

@@ -76,7 +76,7 @@ Chain BEFORE `.notFound()` — order matters.
 
 ## Error Responses
 
-Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the entire error-logging contract.
+Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the entire flow.
 
 ```ts
 // Right
@@ -86,7 +86,13 @@ return c.json({error: 'No file provided'}, 400)
 return c.json({error: 'No file provided'})
 ```
 
-Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message and gets logged via `logClientError` on failure.
+Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message.
+
+### Capturing errors
+
+- **4xx responses are not errors.** They mean the request was bad (validation, wrong password, file too large). The system worked. Don't call `captureError`.
+- **5xx and unhandled throws** are captured automatically by Hono's `.onError` (`hono:topLevel:exception`). Prefer `throw new HTTPException(500, ...)` over manually returning 500 so onError fires.
+- **Third-party SDK failures** (e.g. Resend, Stripe) get explicit captures at the boundary with `<service>:<operation>:rejection` (SDK returned a failure result) or `<service>:<operation>:exception` (SDK call threw). Use `captureError` from `@/server/utils/captureError`.
 
 ## Fire-and-Forget
 

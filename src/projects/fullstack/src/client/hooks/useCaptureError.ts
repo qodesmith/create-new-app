@@ -8,13 +8,14 @@ import {useAtomValue} from 'jotai'
 import {useCallback} from 'react'
 
 /**
- * Logs client-side errors to the server for centralized error tracking.
+ * Persists a client-only error to the server's `errors` table via `/api/capture`.
  *
- * @param error - The error object or unknown value to be logged
- * @param context - Used for observability and debugging in the logs
- * @param metadata - Optional adhoc data with no specific shape, used to provide additional context
+ * Use only for genuine client-side problems: catch-block exceptions (network
+ * failures, unhandled JS errors), React error-boundary catches. Do NOT call
+ * for normal API rejections (wrong password, validation 400s) — those are
+ * expected UX, and any 5xx the server produced is captured server-side.
  */
-function logClientError({
+function captureError({
   error,
   context,
   metadata,
@@ -27,7 +28,7 @@ function logClientError({
 }): void {
   bestEffort(
     () => {
-      apiClient['client-error'].$post({
+      apiClient.capture.$post({
         json: {error: errorToObject(error), context, metadata},
       })
     },
@@ -35,7 +36,7 @@ function logClientError({
   )
 }
 
-export function useLogClientError() {
+export function useCaptureError() {
   const apiClient = useAtomValue(apiClientAtom)
 
   return useCallback(
@@ -48,7 +49,7 @@ export function useLogClientError() {
       context: ErrorContext
       metadata?: Record<string, unknown>
     }) => {
-      logClientError({error, context, metadata, apiClient})
+      captureError({error, context, metadata, apiClient})
     },
     [apiClient]
   )

@@ -15,10 +15,11 @@ import {
   systemAuditLogsTable,
 } from '@/server/db/schema/appSchema'
 import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
+import {captureError} from '@/server/utils/captureError'
 import {log} from '@/server/utils/logger'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
-import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
+import {bestEffort, getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt} from 'drizzle-orm'
 
 const oneHourInMs = getUnitInMs(1, 'h')
@@ -71,16 +72,10 @@ export function purgeStaleRecords({
   if (!(isAdmin || opts.system)) {
     const errorMsg = 'Refusing to purge stale records - unknown actor'
     log.error(errorMsg)
-
-    bestEffort(() => {
-      db.insert(errorsTable)
-        .values({
-          error: errorToObject(new Error(errorMsg)),
-          context: 'dbCleanup:purgeStaleRecordsException',
-        })
-        .run()
+    captureError({
+      context: 'dbCleanup:purgeStaleRecords:exception',
+      error: new Error(errorMsg),
     })
-
     return {...nothingPurged, message: errorMsg}
   }
 
@@ -96,16 +91,10 @@ export function purgeStaleRecords({
     if (!adminUser) {
       const errorMsg = `Refusing to purge stale records - admin user not found for id '${adminId}'`
       log.error(errorMsg)
-
-      bestEffort(() => {
-        db.insert(errorsTable)
-          .values({
-            error: errorToObject(new Error(errorMsg)),
-            context: 'dbCleanup:purgeStaleRecordsException',
-          })
-          .run()
+      captureError({
+        context: 'dbCleanup:purgeStaleRecords:exception',
+        error: new Error(errorMsg),
       })
-
       return {...nothingPurged, message: errorMsg}
     }
   }

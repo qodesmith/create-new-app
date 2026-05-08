@@ -9,10 +9,11 @@ import indexHtml from '@/server/index.html'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
 import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
 import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddleware'
+import {captureError} from '@/server/utils/captureError'
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
-import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
+import {getUnitInMs} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
 import {sql} from 'drizzle-orm'
 import {Hono} from 'hono'
@@ -37,19 +38,24 @@ export const honoServer = new Hono()
   .on(['POST', 'GET'], `${betterAuthBasePath}/*`, async c => {
     try {
       const res = await auth.handler(c.req.raw)
+
+      /**
+       * Better Auth normally throws on internal failure (caught below). It can
+       * also return 5xx without throwing — capture those rejections so server
+       * problems surface in the errors table without a client round-trip.
+       * 4xx (wrong password, validation, etc.) is expected UX, not an error.
+       */
+      if (res.status >= 500) {
+        const body = await res.clone().text()
+        captureError({
+          context: 'betterAuth:topLevel:rejection',
+          error: {status: res.status, body, url: c.req.url},
+        })
+      }
+
       return res
     } catch (error) {
-      const db = getDatabase()
-
-      bestEffort(() => {
-        db.insert(errorsTable)
-          .values({
-            error: errorToObject(error),
-            context: 'betterAuth:topLevelException',
-          })
-          .run()
-      })
-
+      captureError({context: 'betterAuth:topLevel:exception', error})
       throw error
     }
   })
@@ -109,8 +115,8 @@ export const honoServer = new Hono()
   .route(authRoutePath, authRoutes)
 
   .post(
-    '/api/client-error',
-    // Max 5 errors per second.
+    '/api/capture',
+    // Max 1 capture per second per IP.
     getRateLimitMiddleware({windowMs: getUnitInMs(1, 's'), limit: 1}),
     arktypeValidator(
       'json',
@@ -122,7 +128,6 @@ export const honoServer = new Hono()
       )
     ),
     async c => {
-      const db = getDatabase()
       const {error, context, metadata} = c.req.valid('json')
 
       /**
@@ -130,11 +135,8 @@ export const honoServer = new Hono()
        * directly to see if we have an authenticated user to grab their id.
        */
       const session = await auth.api.getSession({headers: c.req.raw.headers})
-      const userId = session?.user.id
 
-      bestEffort(() => {
-        db.insert(errorsTable).values({error, context, userId, metadata}).run()
-      })
+      captureError({context, error, metadata, userId: session?.user.id})
 
       return c.body(null)
     }
@@ -165,16 +167,7 @@ export const honoServer = new Hono()
     return c.html(await res.text())
   })
   .onError((error, c) => {
-    const db = getDatabase()
-
-    bestEffort(() => {
-      db.insert(errorsTable)
-        .values({
-          error: errorToObject(error),
-          context: 'hono:topLevelException',
-        })
-        .run()
-    })
+    captureError({context: 'hono:topLevel:exception', error})
 
     /**
      * Bun and Hono servers will both return 500 in their error handlers. They

@@ -9,7 +9,7 @@ import {
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {apiAuthClientAtom} from '@/client/state/globalState'
 import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
 
@@ -40,7 +40,7 @@ export function AccountAvatar() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarInputId = useId()
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
@@ -59,15 +59,12 @@ export function AccountAvatar() {
       clearPreview()
     },
     onError: error => {
-      const isRejection = error instanceof DetailedError
-
       toast.error(error.message)
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarUploadRejection'
-          : 'client:avatarUploadException',
-      })
+      // Server-known failures (DetailedError = non-2xx response) are captured
+      // server-side. Only true client exceptions need to round-trip.
+      if (!(error instanceof DetailedError)) {
+        captureError({error, context: 'client:avatarUpload:exception'})
+      }
       setShowImage(false)
     },
   })
@@ -81,15 +78,10 @@ export function AccountAvatar() {
       setShowImage(false)
     },
     onError: error => {
-      const isRejection = error instanceof DetailedError
-
       toast.error('Failed to remove avatar')
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarDeleteRejection'
-          : 'client:avatarDeleteException',
-      })
+      if (!(error instanceof DetailedError)) {
+        captureError({error, context: 'client:avatarDelete:exception'})
+      }
       setShowImage(true)
     },
   })

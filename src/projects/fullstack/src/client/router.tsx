@@ -1,7 +1,7 @@
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {ErrorState} from '@/client/components/custom/ErrorState'
 import {Button} from '@/client/components/ui/button'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 
 import {createRouter, useRouter} from '@tanstack/react-router'
 import {useEffect} from 'react'
@@ -36,7 +36,7 @@ export function createTanstackRouter() {
 
     // Catches errors in the component's loader and render cycle.
     defaultErrorComponent: ({error, info, reset: resetErrorBoundary}) => {
-      const logClientError = useLogClientError()
+      const captureError = useCaptureError()
       const isValidationError = 'code' in error && error.code === 'validation'
       const title = isValidationError
         ? 'Data failed to load'
@@ -51,12 +51,12 @@ export function createTanstackRouter() {
       }
 
       useEffect(() => {
-        logClientError({
+        captureError({
           error,
-          context: 'client:topLevelException',
+          context: 'client:topLevel:exception',
           metadata: info,
         })
-      }, [logClientError, info, error])
+      }, [captureError, info, error])
 
       return (
         <ErrorState

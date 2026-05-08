@@ -35,32 +35,33 @@ Each step validates before next:
 - If schema changed: remind to stop dev server, run `bun run db:init`
 - Verify Hono RPC types flow (server type export → client atom consumption)
 
-## Error Logging
+## Error Capture
 
-Client:
+Server-side (genuine system errors only — 4xx user-input outcomes are not errors):
+
 ```ts
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {captureError} from '@/server/utils/captureError'
 
-const logClientError = useLogClientError()
-logClientError({error, context: 'client:featureNameException'})
+// Inside a try/catch around your own code or a 3rd-party SDK
+captureError({context: 'myService:myOp:exception', error})
 ```
 
-Server:
-```ts
-import {bestEffort, errorToObject} from '@qodestack/utils'
+Client-side (catch blocks for genuine code/network failures only):
 
-bestEffort(() => {
-  db.insert(errorsTable)
-    .values({error: errorToObject(error), context: 'server:featureNameException'})
-    .run()
-})
+```ts
+import {useCaptureError} from '@/client/hooks/useCaptureError'
+
+const captureError = useCaptureError()
+
+// Inside a catch — never inside an `if (error)` branch from a structured response
+captureError({error, context: 'client:myFeature:exception'})
 ```
 
 ## RPC Wiring
 
-Always wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
+Wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
 
-In `onError`, branch on `error instanceof DetailedError` to split the log context: Rejection = server replied non-2xx, Exception = request never completed (network, CORS, code throw).
+In `onError`, `error instanceof DetailedError` means the server told us the request failed — that's already known to the server, so don't capture it. Only capture true client-side exceptions (e.g. network failures, JS errors):
 
 ```ts
 import {useMutation} from '@tanstack/react-query'
@@ -69,6 +70,7 @@ import {useAtomValue} from 'jotai'
 import {apiAuthClientAtom} from '@/client/state/globalState'
 
 const apiAuthClient = useAtomValue(apiAuthClientAtom)
+const captureError = useCaptureError()
 
 const myMutation = useMutation({
   mutationFn: async (input: MyInput) => {
@@ -76,15 +78,12 @@ const myMutation = useMutation({
   },
   onSuccess: data => { /* typed success body */ },
   onError: error => {
-    const isRejection = error instanceof DetailedError
-
-    toast.error('Friendly message')
-    logClientError({
-      error,
-      context: isRejection
-        ? 'client:myFeatureRejection'
-        : 'client:myFeatureException',
-    })
+    toast.error(error.message)
+    // DetailedError = server-known rejection. Server captures (or chooses not to)
+    // at its source. Only client-side exceptions need capture here.
+    if (!(error instanceof DetailedError)) {
+      captureError({error, context: 'client:myFeature:exception'})
+    }
   },
 })
 ```

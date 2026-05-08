@@ -11,7 +11,7 @@ import {
 } from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 
@@ -25,7 +25,7 @@ export function ResetPasswordDialog({
   dialogInitialOpen: boolean
 }) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
   const {value: isOpen, setValue: setIsOpen} = useBoolean(dialogInitialOpen)
 
   const form = useForm({
@@ -43,10 +43,6 @@ export function ResetPasswordDialog({
 
         if (error) {
           toast.error('Failed to send reset email')
-          logClientError({
-            error,
-            context: 'client:requestPasswordResetRejection',
-          })
         } else {
           toast.success('Check your email for a link to reset your password.')
         }
@@ -54,9 +50,9 @@ export function ResetPasswordDialog({
         setIsOpen(false)
       } catch (error) {
         toast.error('An unexpected error occurred')
-        logClientError({
+        captureError({
           error,
-          context: 'client:requestPasswordResetException',
+          context: 'client:requestPasswordReset:exception',
         })
       }
     },

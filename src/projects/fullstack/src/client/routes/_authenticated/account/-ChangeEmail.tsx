@@ -3,7 +3,7 @@ import type {FileRouteTypes} from '@/client/routeTree.gen'
 import {Button} from '@/client/components/ui/button'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useCaptureError} from '@/client/hooks/useCaptureError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 
@@ -13,7 +13,7 @@ import {toast} from 'sonner'
 
 export function ChangeEmail() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+  const captureError = useCaptureError()
 
   const changeEmailForm = useForm({
     defaultValues: {
@@ -38,10 +38,6 @@ export function ChangeEmail() {
 
         if (error) {
           toast.error(error.message || 'Failed to change email')
-          logClientError({
-            error,
-            context: 'client:changeEmailRejection',
-          })
           return
         }
 
@@ -51,10 +47,7 @@ export function ChangeEmail() {
         )
       } catch (error) {
         toast.error('An unexpected error occurred while updating your email')
-        logClientError({
-          error,
-          context: 'client:changeEmailException',
-        })
+        captureError({error, context: 'client:changeEmail:exception'})
       }
     },
   })

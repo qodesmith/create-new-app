@@ -24,7 +24,7 @@ const helpText = `
 Usage: create-new-app [project-name] [options]
 
 Options:
-  -t, --type <type>    Project type: fullstack, client-only, library, vanilla
+  -t, --type <type>    Project type: fullstack, client-only
   -y, --yes            Skip prompts, use defaults
   -h, --help           Show this help message
   -v, --version        Show version number

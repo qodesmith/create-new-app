@@ -54,12 +54,12 @@ describe('resolveProjectOptions (--yes path)', () => {
 
 describe('resolveProjectOptions (interactive path)', () => {
   it('skips the name prompt when name is on argv and valid', async () => {
-    const prompter = makePrompter({type: 'library'})
+    const prompter = makePrompter({type: 'client-only'})
     const result = await resolveProjectOptions(
       {...baseCliOptions, name: 'my-app'},
       prompter
     )
-    expect(result).toEqual({name: 'my-app', type: 'library'})
+    expect(result).toEqual({name: 'my-app', type: 'client-only'})
     expect(prompter.promptName).not.toHaveBeenCalled()
     expect(prompter.promptType).toHaveBeenCalledTimes(1)
   })
@@ -78,18 +78,18 @@ describe('resolveProjectOptions (interactive path)', () => {
   it('skips both prompts when both are on argv and valid', async () => {
     const prompter = makePrompter({})
     const result = await resolveProjectOptions(
-      {...baseCliOptions, name: 'my-app', type: 'vanilla'},
+      {...baseCliOptions, name: 'my-app', type: 'client-only'},
       prompter
     )
-    expect(result).toEqual({name: 'my-app', type: 'vanilla'})
+    expect(result).toEqual({name: 'my-app', type: 'client-only'})
     expect(prompter.promptName).not.toHaveBeenCalled()
     expect(prompter.promptType).not.toHaveBeenCalled()
   })
 
   it('prompts for both when neither is on argv', async () => {
-    const prompter = makePrompter({name: 'prompted-name', type: 'library'})
+    const prompter = makePrompter({name: 'prompted-name', type: 'client-only'})
     const result = await resolveProjectOptions(baseCliOptions, prompter)
-    expect(result).toEqual({name: 'prompted-name', type: 'library'})
+    expect(result).toEqual({name: 'prompted-name', type: 'client-only'})
     expect(prompter.promptName).toHaveBeenCalledTimes(1)
     expect(prompter.promptType).toHaveBeenCalledTimes(1)
   })

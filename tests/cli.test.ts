@@ -18,8 +18,8 @@ describe('parseCliArgs', () => {
   })
 
   it('parses -t shorthand', () => {
-    const result = parseCliArgs(['my-app', '-t', 'library'])
-    expect(result.options.type).toBe('library')
+    const result = parseCliArgs(['my-app', '-t', 'client-only'])
+    expect(result.options.type).toBe('client-only')
   })
 
   it('parses --yes flag', () => {
@@ -79,8 +79,6 @@ describe('getProjectTypeError', () => {
   it('returns null for valid types', () => {
     expect(getProjectTypeError('fullstack')).toBeNull()
     expect(getProjectTypeError('client-only')).toBeNull()
-    expect(getProjectTypeError('library')).toBeNull()
-    expect(getProjectTypeError('vanilla')).toBeNull()
   })
 
   it('returns the "required" message when missing', () => {
@@ -89,7 +87,7 @@ describe('getProjectTypeError', () => {
 
   it('returns the "must be one of" message for invalid input', () => {
     expect(getProjectTypeError('invalid')).toBe(
-      'Invalid project type "invalid". Must be one of: fullstack, client-only, library, vanilla'
+      'Invalid project type "invalid". Must be one of: fullstack, client-only'
     )
     expect(getProjectTypeError('')).toBe('Project type is required')
   })

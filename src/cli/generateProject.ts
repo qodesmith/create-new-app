@@ -59,10 +59,6 @@ function getProjectPath(type: ProjectType): string {
       return join(templatesRoot, 'fullstack')
     case 'client-only':
       return join(templatesRoot, 'client-only-react')
-    case 'library':
-      return join(templatesRoot, 'library')
-    case 'vanilla':
-      return join(templatesRoot, 'vanilla')
     default:
       throw new Error(`Unknown project type: ${type}`)
   }

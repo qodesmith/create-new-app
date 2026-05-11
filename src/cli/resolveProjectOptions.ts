@@ -29,8 +29,6 @@ const PROJECT_TYPE_OPTIONS: {
     label: 'Client-only SPA',
     hint: 'React single page application',
   },
-  {value: 'library', label: 'Library', hint: 'npm package for distribution'},
-  {value: 'vanilla', label: 'Vanilla', hint: 'Basic HTML/CSS/JS setup'},
 ]
 
 export function getProjectNameError(name: string | undefined): string | null {
@@ -51,12 +49,7 @@ export function getProjectNameError(name: string | undefined): string | null {
 
 export function getProjectTypeError(type: string | undefined): string | null {
   if (!type) return 'Project type is required'
-  const valid: ProjectType[] = [
-    'fullstack',
-    'client-only',
-    'library',
-    'vanilla',
-  ]
+  const valid: ProjectType[] = ['fullstack', 'client-only']
   if (!(valid as string[]).includes(type)) {
     return `Invalid project type "${type}". Must be one of: ${valid.join(', ')}`
   }

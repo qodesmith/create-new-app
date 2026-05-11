@@ -1,4 +1,4 @@
-export type ProjectType = 'fullstack' | 'client-only' | 'library' | 'vanilla'
+export type ProjectType = 'fullstack' | 'client-only'
 
 export type ProjectOptions = {
   name: string

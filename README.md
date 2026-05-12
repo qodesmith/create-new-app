@@ -39,12 +39,22 @@ If you want the old Express/MongoDB/sandbox CLI, install v7. v8 is a different t
 
 ---
 
-## Installation
+## Requirements
 
-You need [Bun](https://bun.sh) (≥1.3.12) - the CLI runs on Bun and so do the generated projects.
+**[Bun](https://bun.sh) is required.** This generator runs on Bun, and every project it generates runs on Bun too - dev server, bundler, test runner, SQLite driver, production server. No Node, no webpack, no Vite. Bun is fast, batteries-included, and a joy to work with - that's the whole point.
+
+If Bun isn't installed, the CLI prints an install hint and exits. Get Bun first:
+
+```shell
+curl -fsSL https://bun.sh/install | bash
+```
+
+## Installation
 
 ```shell
 bun install -g create-new-app
+# or with npm:
+npm install -g create-new-app
 # or use it ad-hoc:
 bunx create-new-app my-app
 ```
@@ -240,13 +250,14 @@ bun test              # Run the test suite
 bun test --watch      # Watch mode
 bun run check         # Biome check
 bun run check:fix     # Biome check + autofix
-bun run build         # Compile to a standalone binary via `bun build --compile`
 ```
 
 ### Project layout
 
 ```
 create-new-app/
+├── bin/
+│   └── cna.js                      # Node wrapper - checks for Bun, execs the CLI
 ├── src/
 │   ├── cli/
 │   │   ├── index.ts                # Entry - parse args, run, print next steps

@@ -1,3 +1,8 @@
+[install]
+# Refuse package versions published in the last 3 days. Mitigates supply-chain
+# attacks via freshly-published malicious versions.
+minimumReleaseAge = 259200
+
 [serve.static]
 plugins = ["./bunPluginTailwind.ts"]
 

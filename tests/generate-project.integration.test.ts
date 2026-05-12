@@ -1,4 +1,5 @@
 import {afterEach, beforeEach, describe, expect, it} from 'bun:test'
+import {createHash} from 'node:crypto'
 import {
   existsSync,
   mkdirSync,
@@ -7,7 +8,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import {tmpdir} from 'node:os'
-import {join} from 'node:path'
+import {join, resolve} from 'node:path'
 
 import {applyPlan, planTemplate} from '../src/cli/generateProject'
 
@@ -56,7 +57,8 @@ describe('generateProject (integration)', () => {
 
     const realReader = {
       list: (dir: string) => listFilesRecursive(dir),
-      read: (path: string) => Bun.file(path).text(),
+      read: async (path: string) =>
+        new Uint8Array(await Bun.file(path).arrayBuffer()),
     }
 
     const plan = await planTemplate({
@@ -91,5 +93,51 @@ describe('generateProject (integration)', () => {
     expect(
       await Bun.file(join(targetDir, '.vscode', 'settings.json')).text()
     ).toBe('{"editor.tabSize":2}')
+  })
+
+  it('copies a real binary asset byte-for-byte', async () => {
+    // Regression: text-decoding binary files in planTemplate corrupted assets
+    // like forbidden.webm. Round-trip the actual template asset through
+    // planTemplate + applyPlan and assert SHA-256 equality + byte length.
+    const fixture = resolve(
+      import.meta.dir,
+      '..',
+      'src',
+      'projects',
+      'fullstack',
+      'src',
+      'server',
+      'assets',
+      'forbidden.webm'
+    )
+
+    const realReader = {
+      list: (dir: string) => listFilesRecursive(dir),
+      read: async (path: string) =>
+        new Uint8Array(await Bun.file(path).arrayBuffer()),
+    }
+
+    const sourceWebm = join(sourceDir, 'forbidden.webm')
+    const sourceBytes = new Uint8Array(await Bun.file(fixture).arrayBuffer())
+    writeFileSync(sourceWebm, sourceBytes)
+
+    const plan = await planTemplate({
+      sources: [sourceDir],
+      targetDir,
+      // Pass realistic replacements; the binary must not be touched.
+      replacements: {'{{PROJECT_NAME}}': 'my-app'},
+      reader: realReader,
+    })
+
+    await applyPlan(plan)
+
+    const writtenBytes = new Uint8Array(
+      await Bun.file(join(targetDir, 'forbidden.webm')).arrayBuffer()
+    )
+
+    expect(writtenBytes.byteLength).toBe(sourceBytes.byteLength)
+    expect(createHash('sha256').update(writtenBytes).digest('hex')).toBe(
+      createHash('sha256').update(sourceBytes).digest('hex')
+    )
   })
 })

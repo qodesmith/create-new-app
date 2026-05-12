@@ -1,4 +1,4 @@
-import type {ProjectOptions, ProjectType} from '../types'
+import type {ProjectOptions, ProjectType, TemplateReplacements} from '../types'
 
 import {randomBytes} from 'node:crypto'
 import {existsSync, mkdirSync} from 'node:fs'
@@ -17,12 +17,14 @@ import {withSpinner} from '../utils/withSpinner'
  */
 export function replacePlaceholders(
   content: string,
-  replacements: Record<string, string>
+  replacements: TemplateReplacements
 ): string {
   let result = content
-  for (const [key, value] of Object.entries(replacements)) {
-    result = result.replaceAll(key, value)
+
+  for (const [templateStr, value] of Object.entries(replacements)) {
+    result = result.replaceAll(templateStr, value)
   }
+
   return result
 }
 
@@ -32,15 +34,19 @@ export function replacePlaceholders(
  * use an in-memory adapter so the planning step can be exercised without
  * touching disk. Exported alongside planTemplate / applyPlan as internal
  * seams — generateProject is the module's external interface.
+ *
+ * `read` returns raw bytes so binary template assets (images, fonts, .webm,
+ * etc.) survive the copy unchanged. Text substitution happens lazily inside
+ * planTemplate — see `maybeSubstitute`.
  */
 export type SourceReader = {
   list(dir: string): string[]
-  read(path: string): Promise<string>
+  read(path: string): Promise<Uint8Array>
 }
 
 export type FileWrite = {
   destPath: string
-  contents: string
+  contents: Uint8Array
 }
 
 const DEFAULT_SOURCE_READER: SourceReader = {
@@ -48,7 +54,28 @@ const DEFAULT_SOURCE_READER: SourceReader = {
     Array.from(
       new Bun.Glob('**/*').scanSync({cwd: dir, absolute: true, dot: true})
     ),
-  read: path => Bun.file(path).text(),
+  read: async path => new Uint8Array(await Bun.file(path).arrayBuffer()),
+}
+
+/**
+ * Run placeholder substitution only on files that look like text templates.
+ * We scan the raw bytes for any literal placeholder key; if none appear, the
+ * bytes pass through untouched. This keeps binary assets (webm, fonts, etc.)
+ * byte-identical to the source — a UTF-8 round trip would corrupt them.
+ */
+function maybeSubstitute(
+  bytes: Uint8Array,
+  replacements: TemplateReplacements
+): Uint8Array {
+  const templates = Object.keys(replacements)
+  if (templates.length === 0) return bytes
+
+  const buf = Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+  const hasTemplate = templates.some(template => buf.indexOf(template) !== -1)
+  if (!hasTemplate) return bytes
+
+  const replaced = replacePlaceholders(buf.toString('utf8'), replacements)
+  return new TextEncoder().encode(replaced)
 }
 
 function getProjectPath(type: ProjectType): string {
@@ -72,7 +99,7 @@ function getProjectPath(type: ProjectType): string {
 export async function planTemplate(args: {
   sources: string[]
   targetDir: string
-  replacements: Record<string, string>
+  replacements: TemplateReplacements
   reader: SourceReader
 }): Promise<FileWrite[]> {
   const {sources, targetDir, replacements, reader} = args
@@ -90,7 +117,7 @@ export async function planTemplate(args: {
       const isKeepFile = fileName.endsWith('-keep')
       const isKeepDir = sourceDir.includes('-keep')
 
-      const fileContents = replacePlaceholders(
+      const fileContents = maybeSubstitute(
         await reader.read(srcFileAbsolutePath),
         replacements
       )
@@ -191,7 +218,7 @@ export async function generateProject(options: ProjectOptions): Promise<void> {
   // The `create-new-app-template-*` strings are the literal `name` fields in
   // each template's package.json — kept as real npm names on disk so the
   // templates can be Bun workspace members of the root.
-  const replacements: Record<string, string> = {
+  const replacements: TemplateReplacements = {
     '{{PROJECT_NAME}}': name,
     '{{BETTER_AUTH_SECRET}}': randomBytes(32).toString('hex'),
     'create-new-app-template-fullstack': name,

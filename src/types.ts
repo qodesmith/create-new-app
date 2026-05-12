@@ -4,3 +4,4 @@ export type ProjectOptions = {
   name: string
   type: ProjectType
 }
+export type TemplateReplacements = Record<string, string>

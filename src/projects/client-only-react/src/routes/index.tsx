@@ -115,7 +115,8 @@ function RouteComponent() {
             other device on your network.
           </li>
           <li>
-            <Code>bun run build</Code> - builds the application for production.
+            <Code>bun run build.ts</Code> - builds the application for
+            production.
           </li>
           <li>
             <Code>bun knip</Code> - checks for unused code and dependencies.
@@ -158,7 +159,7 @@ function RouteComponent() {
           fileName="app.tsx"
           description="React application mount point"
         >
-          The Jotai store, TanStack router, and React Query client are all
+          The Jotai store, TanStack router, and TanStack Query client are all
           created here. The router context is populated and made available in
           all route loaders.
         </FileCard>
@@ -193,9 +194,13 @@ function RouteComponent() {
             </li>
             <li>
               <HoverBadge text="<ThemeSetter />">
-                Full runtime theme manager. This takes over theme management
-                once React mounts, syncing the user's preference to Jotai state
-                and <Code>localStorage</Code> for persistence across reloads.
+                Runtime theme manager. Pairs with the inline script in{' '}
+                <Code>index.html</Code> — reads <Code>themeSettingAtom</Code>,
+                resolves <Code>system</Code> to the actual <Code>light</Code>/
+                <Code>dark</Code> value, and applies the matching class to{' '}
+                <Code>&lt;html&gt;</Code>. <Code>localStorage</Code> persistence
+                is handled by <Code>themeSettingAtom</Code> via{' '}
+                <Code>atomWithStorage</Code>.
               </HoverBadge>
             </li>
             <li>
@@ -252,6 +257,41 @@ function RouteComponent() {
           imports.
         </FileCard>
 
+        {/* biome.jsonc */}
+        <FileCard
+          fileName="biome.jsonc"
+          description="Linter and formatter"
+          iconJsx={<SettingsIcon size={iconSize} />}
+        >
+          Biome handles lint and format in one tool, extending{' '}
+          <Code>@qodestack/biome-config/react</Code>. A few project-specific
+          rules are configured (hover for description):
+          <ul className="text-sm">
+            <li>
+              <HoverBadge text="ignored generated files">
+                <Code>src/routeTree.gen.ts</Code> (TanStack Router) and the{' '}
+                <Code>dist</Code> build output are excluded from linting since
+                they're regenerated.
+              </HoverBadge>
+            </li>
+            <li>
+              <HoverBadge text="useStable hook hint">
+                <Code>useExhaustiveDependencies</Code> is taught about the
+                custom <Code>useStable</Code> hook so it doesn't flag stable
+                results as missing dependencies.
+              </HoverBadge>
+            </li>
+            <li>
+              <HoverBadge text="contextual overrides">
+                TanStack route files and Shadcn components opt out of{' '}
+                <Code>useComponentExportOnlyModules</Code> so they can export
+                non-component values. Shadcn UI primitives opt out of{' '}
+                <Code>noArrayIndexKey</Code>.
+              </HoverBadge>
+            </li>
+          </ul>
+        </FileCard>
+
         {/* startDev.ts */}
         <FileCard
           fileName="startDev.ts"
@@ -273,7 +313,7 @@ function RouteComponent() {
         <FileCard fileName="build.ts" description="Production build script">
           Bundles the application for production with code splitting,
           minification, and sourcemaps. Run directly with{' '}
-          <Code>bun run build</Code>.
+          <Code>bun run build.ts</Code>.
         </FileCard>
       </section>
     </>
@@ -288,6 +328,11 @@ const techUsed = [
   {
     tech: 'TanStack Router',
     description: `It's ${new Date().getFullYear()}. Just use TanStack Router.`,
+  },
+  {
+    tech: 'TanStack Query',
+    description:
+      'Server state caching, deduping, and revalidation — on autopilot.',
   },
   {
     tech: 'Tailwind',

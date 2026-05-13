@@ -187,7 +187,7 @@ function RouteComponent() {
           fileName="app.tsx"
           description="React application mount point"
         >
-          The Jotai store, TanStack router, and React Query client are all
+          The Jotai store, TanStack router, and TanStack Query client are all
           created here. The router context is populated and made available in
           all route loaders. An initial authentication check is made here and
           stored in <Code>userAtom</Code>.
@@ -223,9 +223,13 @@ function RouteComponent() {
             </li>
             <li>
               <HoverBadge text="<ThemeSetter />">
-                Full runtime theme manager. This takes over theme management
-                once React mounts, syncing the user's preference to Jotai state
-                and <Code>localStorage</Code> for persistence across reloads.
+                Runtime theme manager. Pairs with the inline script in{' '}
+                <Code>index.html</Code> — reads <Code>themeSettingAtom</Code>,
+                resolves <Code>system</Code> to the actual <Code>light</Code>/
+                <Code>dark</Code> value, and applies the matching class to{' '}
+                <Code>&lt;html&gt;</Code>. <Code>localStorage</Code> persistence
+                is handled by <Code>themeSettingAtom</Code> via{' '}
+                <Code>atomWithStorage</Code>.
               </HoverBadge>
             </li>
             <li>
@@ -525,6 +529,11 @@ const techUsed = [
   {
     tech: 'TanStack Router',
     description: `It's ${new Date().getFullYear()}. Just use TanStack Router.`,
+  },
+  {
+    tech: 'TanStack Query',
+    description:
+      'Server state caching, deduping, and revalidation — on autopilot.',
   },
   {
     tech: 'Tailwind',

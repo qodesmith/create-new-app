@@ -7,9 +7,20 @@ import {createLogger} from '@qodestack/utils'
 const log = createLogger({includeTime: false})
 
 if (which('fly') === null) {
-  log.error(
-    'The fly CLI was not found. Please install it with `brew install flyctl`'
-  )
+  const installHint = (() => {
+    switch (process.platform) {
+      case 'darwin':
+        return '`brew install flyctl`'
+      case 'win32':
+        return '`pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"`'
+      case 'linux':
+        return '`curl -L https://fly.io/install.sh | sh`'
+      default:
+        return 'the instructions at https://fly.io/docs/flyctl/install/'
+    }
+  })()
+
+  log.error(`The fly CLI was not found. Please install it with ${installHint}`)
   process.exit(1)
 }
 

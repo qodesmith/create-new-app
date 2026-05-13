@@ -41,7 +41,7 @@ function getRoutesAndData(): RouteData[] {
     return serverProtectedAssetDirents.reduce<RouteData[]>((acc, dirent) => {
       if (dirent.isFile()) {
         const route = `/${dirent.name}`
-        const filePath = `${dirent.parentPath}/${dirent.name}`
+        const filePath = path.join(dirent.parentPath, dirent.name)
         const data = Bun.file(filePath)
 
         acc.push({route, isProtected: true, data})

@@ -3,7 +3,7 @@ import {rmSync} from 'node:fs'
 
 import bunPluginTailwind from './bunPluginTailwind'
 
-rmSync('./dist', {recursive: true, force: true})
+rmSync('dist', {recursive: true, force: true})
 
 /**
  * This will build the dev server and client together. Bun discovers client

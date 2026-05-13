@@ -2,7 +2,7 @@ import type {ProjectOptions, ProjectType, TemplateReplacements} from '../types'
 
 import {randomBytes} from 'node:crypto'
 import {existsSync, mkdirSync} from 'node:fs'
-import {join, parse, resolve} from 'node:path'
+import {join, parse, resolve, sep} from 'node:path'
 import process from 'node:process'
 
 import {log} from '@clack/prompts'
@@ -110,7 +110,7 @@ export async function planTemplate(args: {
 
     for (const srcFileAbsolutePath of files) {
       const relativePathInProject = srcFileAbsolutePath.replace(
-        `${sourcePath}/`,
+        `${sourcePath}${sep}`,
         ''
       )
       const {base: fileName, dir: sourceDir} = parse(srcFileAbsolutePath)
@@ -130,7 +130,7 @@ export async function planTemplate(args: {
 
       // Rename `-keep` directories: `.dirname-keep/` → `.dirname/`
       if (isKeepDir) {
-        destPath = destPath.replaceAll('-keep/', '/')
+        destPath = destPath.replaceAll(`-keep${sep}`, sep)
       }
 
       planByDest.set(destPath, {destPath, contents: fileContents})
@@ -165,7 +165,7 @@ async function runPostInstall(targetDir: string): Promise<void> {
     await run('bunx biomeInit --no-include-biome-config', targetDir)
   })
 
-  const vscodeSettingsPath = `${targetDir}/.vscode/settings.json`
+  const vscodeSettingsPath = join(targetDir, '.vscode', 'settings.json')
   if (existsSync(vscodeSettingsPath)) {
     await withSpinner('Updating VS Code settings...', async () => {
       const vscodeSettingsRaw = await Bun.file(vscodeSettingsPath).text()
@@ -184,7 +184,7 @@ async function runPostInstall(targetDir: string): Promise<void> {
         JSON.stringify({...vscodeSettings, ...additionalSettings}, null, 2)
       )
 
-      await run(`bunx biome format --write "${vscodeSettingsPath}"`, targetDir)
+      await run(`bunx biome format --write '${vscodeSettingsPath}'`, targetDir)
     })
   }
 

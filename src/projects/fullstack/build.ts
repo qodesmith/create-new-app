@@ -14,10 +14,10 @@ const excludedAssetsFromHonoServer: string[] = [
 ].flatMap(name => [name, `${name}.map`])
 
 if (!inDockerBuild) {
-  rmSync('./dist', {recursive: true, force: true})
+  rmSync('dist', {recursive: true, force: true})
 }
 
-const outdir = inDockerBuild ? '/dist' : './dist'
+const outdir = inDockerBuild ? '/dist' : 'dist'
 
 /**
  * This will build both the server and client sides of the application. All

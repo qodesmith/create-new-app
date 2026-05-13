@@ -111,6 +111,8 @@ cd my-app
 bun dev
 ```
 
+**Always use `bun` to run the generated project's scripts - not `npm run`.** The templates use inline env-var prefixes in `package.json` scripts (e.g. `NODE_ENV=development bun --bun run ./startDev.ts`), which is POSIX shell syntax. Bun's built-in shell handles this on every platform, including Windows. `npm run` dispatches through `cmd.exe` on Windows and fails with `'NODE_ENV' is not recognized`. Stick to `bun dev`, `bun run db:init`, and so on.
+
 Search the generated codebase for `TODO` to find the spots you'll want to address before deploying.
 
 ---

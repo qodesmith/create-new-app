@@ -8,7 +8,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import {tmpdir} from 'node:os'
-import {join, resolve} from 'node:path'
+import {join, resolve, sep} from 'node:path'
 
 import {applyPlan, planTemplate} from '../src/cli/generateProject'
 
@@ -71,12 +71,12 @@ describe('generateProject (integration)', () => {
     await applyPlan(plan)
 
     const writtenFiles = listFilesRecursive(targetDir)
-      .map(p => p.replace(`${targetDir}/`, ''))
+      .map(p => p.replace(`${targetDir}${sep}`, ''))
       .sort()
 
     expect(writtenFiles).toEqual([
       '.gitignore',
-      '.vscode/settings.json',
+      join('.vscode', 'settings.json'),
       'README.md',
       'package.json',
     ])

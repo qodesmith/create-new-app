@@ -108,7 +108,7 @@ function RouteComponent() {
         <h2>Getting Started</h2>
         <p className="text-justify">
           You've got a fullstack application here, ready to deploy! It's using
-          all the goodies you see above in the scolling marquees. Obviously
+          all the goodies you see above in the scrolling marquees. Obviously
           you've already figured out{' '}
           <Code className="whitespace-nowrap">bun dev</Code> starts the dev
           server. Here's a few helpful scripts when you're ready:
@@ -116,8 +116,8 @@ function RouteComponent() {
         <ul className="text-left">
           <li>
             <Code>bun dev:all</Code> - starts the dev server on{' '}
-            <Code>0.0.0.0</Code>, logging a local IP address accesible from any
-            other device on your network.
+            <Code>0.0.0.0</Code>, logging a local IP address accessible from
+            any other device on your network.
           </li>
           <li>
             <Code>bun db:view</Code> - starts Drizzle Studio, a UI to explore
@@ -298,8 +298,9 @@ function RouteComponent() {
         {/* bunServer.ts */}
         <FileCard fileName="bunServer.ts" description="Server entry point">
           Bun is the server for this fullstack application both in development
-          and production. Bun imports <Code>index.html</Code> and traversers the
-          client-side dependecy graph from there. Bun uses the Hono server (see{' '}
+          and production. Bun imports <Code>index.html</Code> and traverses the
+          client-side dependency graph from there. Bun uses the Hono server
+          (see{' '}
           <Code>honoServer.ts</Code> for details) to handle api requests.
         </FileCard>
 
@@ -342,45 +343,53 @@ function RouteComponent() {
           Infrastructure
         </SectionHeading>
 
-        {/* TypeScript Setup */}
+        {/* biome.jsonc */}
         <FileCard
-          fileName="TypeScript Setup"
-          description="Dev environment orchestrator"
+          fileName="biome.jsonc"
+          description="Linter, formatter, and architectural guardrails"
           iconJsx={<SettingsIcon size={iconSize} />}
         >
-          There are multiple <Code>tsconfig</Code> files that work together to
-          ensure <Code>/client</Code> and <Code>/server</Code> can't import from
-          each other. <Code>/shared</Code> can be imported from both (hover for
-          description):
+          Biome handles lint and format in one tool, extending{' '}
+          <Code>@qodestack/biome-config/react</Code>. Beyond style, it enforces
+          several architectural rules via <Code>noRestrictedImports</Code>{' '}
+          (hover for description):
           <ul className="text-sm">
             <li>
-              <HoverBadge text="<root>/tsconfig.base.json">
-                Settings that all other tsconfig files extend from.
+              <HoverBadge text="client ↔ server isolation">
+                <Code>/client</Code> and <Code>/server</Code> code can't import
+                from each other — covering both alias (<Code>@/server/*</Code>)
+                and relative (<Code>**/server/**</Code>) paths.{' '}
+                <Code>/shared</Code> can be imported from both.
               </HoverBadge>
             </li>
             <li>
-              <HoverBadge text="<root>/tsconfig.json">
-                The main TypeScript config - wires together all the other
-                tsconfigs.
+              <HoverBadge text="startDev.ts isolation">
+                The dev orchestrator can't import server modules, keeping it
+                lightweight and avoiding accidental server-side initialization
+                before the subprocess starts.
               </HoverBadge>
             </li>
             <li>
-              <HoverBadge text="shared/tsconfig.json">
-                Intentionally doesn't reference any other tsconfigs because it
-                is only meant to be imported{' '}
-                <span className="italic">from</span>.
+              <HoverBadge text="cross-boundary type barrels">
+                <Code>server/types.d.ts</Code> and <Code>shared/types.d.ts</Code>{' '}
+                must use relative imports — aliased paths silently collapse to{' '}
+                <Code>any</Code> when types are pulled across project
+                boundaries, breaking Hono RPC autocomplete downstream.
               </HoverBadge>
             </li>
             <li>
-              <HoverBadge text="client/tsconfig.json">
-                Prevents importing from server code. Can import from client and
-                shared code.
+              <HoverBadge text="ignored generated files">
+                <Code>src/server/db/drizzle</Code> (migrations) and{' '}
+                <Code>src/client/routeTree.gen.ts</Code> (TanStack Router) are
+                excluded from linting since they're regenerated.
               </HoverBadge>
             </li>
             <li>
-              <HoverBadge text="server/tsconfig.json">
-                Prevents importing from client code. Can import from server and
-                shared code.
+              <HoverBadge text="contextual overrides">
+                TanStack route files and Shadcn components opt out of{' '}
+                <Code>useComponentExportOnlyModules</Code> so they can export
+                non-component values. Shadcn UI primitives opt out of{' '}
+                <Code>noArrayIndexKey</Code>.
               </HoverBadge>
             </li>
           </ul>
@@ -429,7 +438,7 @@ function RouteComponent() {
           <ExternalLink href="https://fly.io/">fly.io</ExternalLink>. You're
           ready to go with{' '}
           <ExternalLink href="https://fly.io/docs/litefs/">
-            LightFS
+            LiteFS
           </ExternalLink>{' '}
           which <span className="font-mono text-xs">===</span> distributed
           SQLite. This also sets you up with Drizzle Studio{' '}

@@ -115,7 +115,7 @@ function RouteComponent() {
         </p>
         <ul className="text-left">
           <li>
-            <Code>bun dev:local</Code> - starts the dev server on{' '}
+            <Code>bun dev:all</Code> - starts the dev server on{' '}
             <Code>0.0.0.0</Code>, logging a local IP address accesible from any
             other device on your network.
           </li>
@@ -313,11 +313,11 @@ function RouteComponent() {
           routing.
         </FileCard>
 
-        {/* options.ts */}
-        <FileCard fileName="options.ts" description="Better Auth configuration">
+        {/* auth.ts */}
+        <FileCard fileName="auth.ts" description="Better Auth configuration">
           Configures authentication — email/password with Arktype validation,
-          passkeys, session cookie caching, admin roles, and email change
-          verification via Resend.
+          passkeys, admin roles, and verification emails (signup, password
+          reset, change-email, account deletion) via Resend.
         </FileCard>
 
         {/* appSchema.ts */}
@@ -559,7 +559,7 @@ const techUsed = [
       'Powered by React Email, this makes email integration a breeze.',
   },
   {
-    tech: 'Arkytype',
+    tech: 'Arktype',
     description:
       'Prepare to have your mind blown by defining schema types with plain strings.',
   },

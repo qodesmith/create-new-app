@@ -76,7 +76,7 @@ Chain BEFORE `.notFound()` — order matters.
 
 ## Error Responses
 
-Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and breaks the entire error-logging contract.
+Every error path MUST return a non-2xx status code. The client wraps RPC calls with `parseResponse` from `hono/client`, which throws `DetailedError` only on non-2xx — a 200 response with an error-shaped body silently flows through `onSuccess` and the user never sees the error toast.
 
 ```ts
 // Right
@@ -86,7 +86,9 @@ return c.json({error: 'No file provided'}, 400)
 return c.json({error: 'No file provided'})
 ```
 
-Do not pass a 3rd-argument hook to `arktypeValidator`. The default behavior already returns a 400 with the full validation breakdown, which is richer than a hand-written message and gets logged via `logClientError` on failure.
+The client never displays the server's error body — toasts use hardcoded client-side strings keyed off the action context. The response body is for debugging only.
+
+If an operation has no user-error failure mode (i.e. a 4xx/5xx points to a server-side bug worth investigating), log it inline at the point the response is generated. See [add-error-context](../add-error-context/SKILL.md) for when to add a `<service>:<operation>:rejection` context.
 
 ## Fire-and-Forget
 

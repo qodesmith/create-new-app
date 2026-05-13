@@ -37,11 +37,7 @@ export function ChangeEmail() {
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to change email')
-          logClientError({
-            error,
-            context: 'client:changeEmail:rejection',
-          })
+          toast.error('Failed to change email')
           return
         }
 

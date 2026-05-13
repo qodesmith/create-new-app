@@ -38,11 +38,7 @@ export function ChangePassword() {
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to change password')
-          logClientError({
-            error,
-            context: 'client:changePassword:rejection',
-          })
+          toast.error('Failed to change password')
           return
         }
 

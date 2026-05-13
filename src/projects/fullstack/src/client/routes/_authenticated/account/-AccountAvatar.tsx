@@ -63,16 +63,15 @@ export function AccountAvatar() {
       clearPreview()
     },
     onError: error => {
-      const isRejection = error instanceof DetailedError
-
-      toast.error(error.message)
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarUpload:rejection'
-          : 'client:avatarUpload:exception',
-      })
+      toast.error('Failed to upload avatar')
       setShowImage(false)
+
+      // Server returned a non-2xx (oversized file, bad format, etc.) — surface
+      // it via the toast above without logging; only log genuine client-side
+      // exceptions (network failures, etc.).
+      if (!(error instanceof DetailedError)) {
+        logClientError({error, context: 'client:avatarUpload:exception'})
+      }
     },
   })
 
@@ -86,16 +85,14 @@ export function AccountAvatar() {
       setUserAvatarVersion(v => v + 1)
     },
     onError: error => {
-      const isRejection = error instanceof DetailedError
-
       toast.error('Failed to remove avatar')
-      logClientError({
-        error,
-        context: isRejection
-          ? 'client:avatarDelete:rejection'
-          : 'client:avatarDelete:exception',
-      })
       setShowImage(true)
+
+      // Server-side throws bubble to hono:topLevel:exception; only log genuine
+      // client-side exceptions here.
+      if (!(error instanceof DetailedError)) {
+        logClientError({error, context: 'client:avatarDelete:exception'})
+      }
     },
   })
 

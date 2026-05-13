@@ -43,10 +43,6 @@ export function ResetPasswordDialog({
 
         if (error) {
           toast.error('Failed to send reset email')
-          logClientError({
-            error,
-            context: 'client:requestPasswordReset:rejection',
-          })
         } else {
           toast.success('Check your email for a link to reset your password.')
         }

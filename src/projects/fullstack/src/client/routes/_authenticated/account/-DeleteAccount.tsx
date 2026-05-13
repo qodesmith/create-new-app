@@ -37,11 +37,7 @@ export function DeleteAccount() {
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to request account deletion')
-          logClientError({
-            error,
-            context: 'client:deleteAccount:rejection',
-          })
+          toast.error('Failed to request account deletion')
           return
         }
 

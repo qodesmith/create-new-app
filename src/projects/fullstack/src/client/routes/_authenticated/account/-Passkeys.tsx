@@ -45,8 +45,8 @@ export function Passkeys() {
         const {data, error} = await authClient.passkey.listUserPasskeys()
 
         if (error) {
+          // Server logs this as betterAuth:passkeyList:rejection.
           isRejection = true
-          logClientError({error, context: 'client:passkeyList:rejection'})
           throw error
         }
 
@@ -76,11 +76,7 @@ export function Passkeys() {
     mutationFn: async (name: string) => authClient.passkey.addPasskey({name}),
     onSuccess: result => {
       if (result?.error) {
-        toast.error(result.error.message || 'Failed to add passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeyAdd:rejection',
-        })
+        toast.error('Failed to add passkey')
         return
       }
 
@@ -103,11 +99,8 @@ export function Passkeys() {
     mutationFn: async (id: string) => authClient.passkey.deletePasskey({id}),
     onSuccess: result => {
       if (result?.error) {
-        toast.error(result.error.message || 'Failed to delete passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeyDelete:rejection',
-        })
+        // Server logs this as betterAuth:passkeyDelete:rejection.
+        toast.error('Failed to delete passkey')
         return
       }
 

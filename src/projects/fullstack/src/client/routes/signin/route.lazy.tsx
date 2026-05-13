@@ -48,11 +48,7 @@ function SignInPage() {
       const result = await authClient.signIn.passkey()
 
       if (result?.error) {
-        toast.error(result.error.message || 'Failed to sign in with passkey')
-        logClientError({
-          error: result.error,
-          context: 'client:passkeySignIn:rejection',
-        })
+        toast.error('Failed to sign in with passkey')
         return
       }
 
@@ -87,11 +83,7 @@ function SignInPage() {
         })
 
         if (result.error) {
-          toast.error(result.error.message || 'Failed to sign in')
-          logClientError({
-            error: result.error,
-            context: 'client:signIn:rejection',
-          })
+          toast.error('Failed to sign in')
           return
         }
 

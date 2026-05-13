@@ -73,11 +73,7 @@ function NewPasswordForm({
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to reset password')
-          logClientError({
-            error,
-            context: 'client:resetPassword:rejection',
-          })
+          toast.error('Failed to reset password')
           showInvalidTokenView()
           return
         }

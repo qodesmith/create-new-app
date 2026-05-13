@@ -53,8 +53,7 @@ function SignUpPage() {
         })
 
         if (error) {
-          toast.error(error.message || 'Failed to sign up')
-          logClientError({error, context: 'client:signUp:rejection'})
+          toast.error('Failed to sign up')
           return
         }
 

@@ -149,12 +149,12 @@ my-app/
 │   │   ├── hooks/
 │   │   ├── lib/
 │   │   ├── state/       # Jotai atoms
-│   │   ├── apiClient.ts # Better Auth client
+│   │   ├── apiClient.ts # Hono RPC + Better Auth clients
 │   │   └── router.tsx
 │   ├── server/
 │   │   ├── bunServer.ts # Entry - Bun.serve()
 │   │   ├── hono/        # API routes, auth, static assets
-│   │   ├── middleware/  # auth, admin, CORS, rate-limit, security headers
+│   │   ├── middleware/  # auth, admin, CORS, no-direct-request, security headers
 │   │   ├── db/          # Drizzle schemas, migrations, seed, Drizzle Studio
 │   │   ├── email/       # React Email templates
 │   │   └── utils/       # logger, env helpers, error handling

@@ -1,3 +1,5 @@
+import type {ErrorContext} from '@/shared/types'
+
 import {isProdEnv} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
@@ -19,6 +21,18 @@ import {csrf} from 'hono/csrf'
 
 let indexHtmlString: string | undefined
 
+/**
+ * Maps a better-auth subpath to a rejection ErrorContext when the operation is
+ * worth logging on a non-2xx response. Operations not listed here either don't
+ * warrant logging (expected user-error rejections like wrong password) or are
+ * already covered by the top-level exception handler.
+ */
+const betterAuthRejectionContexts: Record<string, ErrorContext> = {
+  '/sign-out': 'betterAuth:signOut:rejection',
+  '/passkey/delete-passkey': 'betterAuth:passkeyDelete:rejection',
+  '/passkey/list-user-passkeys': 'betterAuth:passkeyList:rejection',
+}
+
 export type HonoServer = typeof honoServer
 
 export const honoServer = new Hono()
@@ -36,6 +50,31 @@ export const honoServer = new Hono()
   .on(['POST', 'GET'], `${betterAuthBasePath}/*`, async c => {
     try {
       const res = await auth.handler(c.req.raw)
+
+      if (res.status >= 400) {
+        const subpath = new URL(c.req.url).pathname.slice(
+          betterAuthBasePath.length
+        )
+        const context = betterAuthRejectionContexts[subpath]
+
+        if (context) {
+          // Clone so reading the body here doesn't consume the stream the
+          // client will read.
+          const body = await res.clone().text()
+          const db = getDatabase()
+
+          bestEffort(() => {
+            db.insert(errorsTable)
+              .values({
+                error: {status: res.status, body},
+                context,
+                metadata: {path: subpath},
+              })
+              .run()
+          })
+        }
+      }
+
       return res
     } catch (error) {
       const db = getDatabase()

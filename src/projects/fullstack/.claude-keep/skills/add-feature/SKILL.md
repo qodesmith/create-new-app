@@ -37,7 +37,7 @@ Each step validates before next:
 
 ## Error Logging
 
-Client:
+Client — only log genuine catch-clause exceptions, not non-2xx server responses:
 ```ts
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 
@@ -45,22 +45,22 @@ const logClientError = useLogClientError()
 logClientError({error, context: 'client:featureName:exception'})
 ```
 
-Server:
+Server — log inline at the rejection source when the operation has no user-error failure mode:
 ```ts
 import {bestEffort, errorToObject} from '@qodestack/utils'
 
 bestEffort(() => {
   db.insert(errorsTable)
-    .values({error: errorToObject(error), context: 'server:featureName:exception'})
+    .values({error: errorToObject(error), context: 'hono:featureName:rejection'})
     .run()
 })
 ```
 
 ## RPC Wiring
 
-Always wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
+Wrap the call with `parseResponse` from `hono/client` inside `useMutation` or `useQuery`. `parseResponse` returns the typed body on 2xx and throws `DetailedError` on non-2xx.
 
-In `onError`, branch on `error instanceof DetailedError` to split the log context: Rejection = server replied non-2xx, Exception = request never completed (network, CORS, code throw).
+In `onError`, use a hardcoded toast message keyed off the action context — never surface `error.message` to the user. Only log when the error is **not** a `DetailedError` (i.e. it's a real client-side exception, not a non-2xx response — those are already logged server-side if they warrant it).
 
 ```ts
 import {useMutation} from '@tanstack/react-query'
@@ -76,15 +76,11 @@ const myMutation = useMutation({
   },
   onSuccess: data => { /* typed success body */ },
   onError: error => {
-    const isRejection = error instanceof DetailedError
+    toast.error('Failed to do the thing')
 
-    toast.error('Friendly message')
-    logClientError({
-      error,
-      context: isRejection
-        ? 'client:myFeature:rejection'
-        : 'client:myFeature:exception',
-    })
+    if (!(error instanceof DetailedError)) {
+      logClientError({error, context: 'client:myFeature:exception'})
+    }
   },
 })
 ```

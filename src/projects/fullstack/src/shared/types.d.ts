@@ -40,21 +40,21 @@ export type ServerAuth = typeof auth
 /**
  * Naming convention: `<service>:<operation>:<suffix>`
  *
- * 1. Client API calls get a rejection/exception pair:
- *    `client:<operation>:rejection` - API responded (2xx) but returned an error
- *    `client:<operation>:exception` - error caught in the catch clause
+ * - `<service>:<operation>:rejection` - service responded but indicated failure
+ * - `<service>:<operation>:exception` - error caught in a catch clause
  *
- * 2. Server-side async calls to external services also get a pair:
- *    `<service>:<operation>:rejection` - service responded but indicated failure
- *    `<service>:<operation>:exception` - error caught in the catch clause
- *
- * 3. Standalone error scenarios (less common) only get exception:
- *    `<area>:<name>:exception` - catch-all or one-off error handler
+ * Rejections are only listed here when they represent a real bug signal
+ * (server-side state inconsistency, infra failure, etc.). Expected user-error
+ * rejections like wrong passwords, expired reset tokens, or oversized uploads
+ * are surfaced via the UI without being logged anywhere.
  */
 export type ErrorContext =
   // Server
   | 'hono:topLevel:exception'
   | 'betterAuth:topLevel:exception'
+  | 'betterAuth:signOut:rejection'
+  | 'betterAuth:passkeyDelete:rejection'
+  | 'betterAuth:passkeyList:rejection'
   | 'resend:sendSignUpVerificationEmail:rejection'
   | 'resend:sendSignUpVerificationEmail:exception'
   | 'resend:sendResetPasswordEmail:rejection'
@@ -67,31 +67,17 @@ export type ErrorContext =
 
   // Client
   | 'client:topLevel:exception'
-  | 'client:signIn:rejection'
   | 'client:signIn:exception'
-  | 'client:signUp:rejection'
   | 'client:signUp:exception'
-  | 'client:signOut:rejection'
   | 'client:signOut:exception'
-  | 'client:resetPassword:rejection'
   | 'client:resetPassword:exception'
-  | 'client:requestPasswordReset:rejection'
   | 'client:requestPasswordReset:exception'
-  | 'client:changeEmail:rejection'
   | 'client:changeEmail:exception'
-  | 'client:changePassword:rejection'
   | 'client:changePassword:exception'
-  | 'client:avatarUpload:rejection'
   | 'client:avatarUpload:exception'
-  | 'client:avatarDelete:rejection'
   | 'client:avatarDelete:exception'
-  | 'client:passkeyAdd:rejection'
   | 'client:passkeyAdd:exception'
-  | 'client:passkeyDelete:rejection'
   | 'client:passkeyDelete:exception'
-  | 'client:deleteAccount:rejection'
   | 'client:deleteAccount:exception'
-  | 'client:passkeyList:rejection'
   | 'client:passkeyList:exception'
-  | 'client:passkeySignIn:rejection'
   | 'client:passkeySignIn:exception'

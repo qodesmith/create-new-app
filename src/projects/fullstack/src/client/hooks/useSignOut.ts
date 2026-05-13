@@ -15,13 +15,11 @@ export function useSignOut() {
     setIsSigningOut(true)
 
     try {
-      const {data, error} = await authClient.signOut()
+      const {data} = await authClient.signOut()
       const isSignedOut = !!data?.success
 
       if (isSignedOut) {
         resetApp()
-      } else if (error) {
-        logClientError({error, context: 'client:signOut:rejection'})
       }
 
       setUser(null)

@@ -1,10 +1,10 @@
 import type {Input, MiddlewareHandler} from 'hono'
 import type {HandlerResponse} from 'hono/types'
 import type {Prettify} from '@/shared/types'
+import type {auth} from './db/auth/auth'
 import type * as appSchema from './db/schema/appSchema'
 import type * as authSchema from './db/schema/authSchema'
 
-export type {auth} from './db/auth/auth'
 export type {HonoAuthServer} from './hono/authRoutes'
 export type {HonoServer} from './hono/honoServer'
 
@@ -69,3 +69,11 @@ export type MiddlewareEnv<Handler> = Prettify<
     ? E
     : never
 >
+
+export type BetterAuthEndpoint = {
+  [K in keyof typeof auth.api]: (typeof auth.api)[K] extends {path: infer P}
+    ? string extends P
+      ? never
+      : P
+    : never
+}[keyof typeof auth.api]

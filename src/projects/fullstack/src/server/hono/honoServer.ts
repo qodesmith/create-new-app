@@ -1,4 +1,4 @@
-import type {ErrorContext} from '@/shared/types'
+import type {BetterAuthEndpoint, ErrorContext} from '@/shared/types'
 
 import {isProdEnv} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
@@ -27,7 +27,9 @@ let indexHtmlString: string | undefined
  * warrant logging (expected user-error rejections like wrong password) or are
  * already covered by the top-level exception handler.
  */
-const betterAuthRejectionContexts: Record<string, ErrorContext> = {
+const betterAuthRejectionContexts: Partial<
+  Record<BetterAuthEndpoint, ErrorContext>
+> = {
   '/sign-out': 'betterAuth:signOut:rejection',
   '/passkey/delete-passkey': 'betterAuth:passkeyDelete:rejection',
   '/passkey/list-user-passkeys': 'betterAuth:passkeyList:rejection',
@@ -54,12 +56,14 @@ export const honoServer = new Hono()
       if (res.status >= 400) {
         const subpath = new URL(c.req.url).pathname.slice(
           betterAuthBasePath.length
-        )
+        ) as BetterAuthEndpoint
         const context = betterAuthRejectionContexts[subpath]
 
         if (context) {
-          // Clone so reading the body here doesn't consume the stream the
-          // client will read.
+          /**
+           * Clone so reading the body here doesn't consume the stream the
+           * client will read.
+           */
           const body = await res.clone().text()
           const db = getDatabase()
 

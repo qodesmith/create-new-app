@@ -1,7 +1,7 @@
 import type {BetterAuthOptions} from 'better-auth'
 import type {DrizzleAdapterConfig} from 'better-auth/adapters/drizzle'
 import type {Password} from 'bun'
-import type {Prettify} from '@/shared/types'
+import type {BetterAuthEndpoint, Prettify} from '@/shared/types'
 
 import {
   domain,
@@ -55,9 +55,10 @@ export const authOptions = {
     before: createAuthMiddleware(async ctx => {
       const emailValidator = type('string.email')
       const body = ctx.body as Record<string, string | undefined>
+      const ctxPath = ctx.path as BetterAuthEndpoint
 
       // Server-side form validation when signing up.
-      if (ctx.path === '/sign-up/email') {
+      if (ctxPath === '/sign-up/email') {
         const email = body.email
         const name = body.name
         const lastName = body.lastName
@@ -95,7 +96,7 @@ export const authOptions = {
       }
 
       // Server-side form validation when changing email.
-      if (ctx.path === '/change-email') {
+      if (ctxPath === '/change-email') {
         const newEmail = body.newEmail
         const emailResult = emailValidator(newEmail)
 

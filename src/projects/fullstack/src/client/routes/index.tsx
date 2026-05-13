@@ -316,8 +316,8 @@ function RouteComponent() {
         {/* options.ts */}
         <FileCard fileName="options.ts" description="Better Auth configuration">
           Configures authentication — email/password with Arktype validation,
-          passkeys, session cookie caching, admin roles, rate limiting, and
-          email change verification via Resend.
+          passkeys, session cookie caching, admin roles, and email change
+          verification via Resend.
         </FileCard>
 
         {/* appSchema.ts */}

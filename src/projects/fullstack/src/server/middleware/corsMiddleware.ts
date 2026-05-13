@@ -83,9 +83,9 @@ export const corsMiddleware = cors({
    *
    * By default, only a handful of "CORS-safelisted" response headers are
    * accessible to JavaScript (like Content-Type). If your API returns useful
-   * information in custom headers—say, X-Total-Count for pagination or
-   * X-RateLimit-Remaining—you must list them here, or the frontend code simply
-   * cannot read them even though they're in the response.
+   * information in custom headers — say, X-Total-Count for pagination — you
+   * must list them here, or the frontend code simply cannot read them even
+   * though they're in the response.
    */
   exposeHeaders: [],
 })

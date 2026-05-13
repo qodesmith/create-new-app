@@ -54,7 +54,6 @@ export type ServerAuth = typeof auth
 export type ErrorContext =
   // Server
   | 'hono:topLevel:exception'
-  | 'hono:rateLimit:exception'
   | 'betterAuth:topLevel:exception'
   | 'resend:sendSignUpVerificationEmail:rejection'
   | 'resend:sendSignUpVerificationEmail:exception'

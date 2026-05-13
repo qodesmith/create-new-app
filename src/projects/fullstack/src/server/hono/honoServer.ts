@@ -7,12 +7,11 @@ import {authRoutes} from '@/server/hono/authRoutes'
 import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRoutes'
 import indexHtml from '@/server/index.html'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
-import {getRateLimitMiddleware} from '@/server/middleware/rateLimitMiddleware'
 import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddleware'
 import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
-import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
+import {bestEffort, errorToObject} from '@qodestack/utils'
 import {createInsertSchema} from 'drizzle-arktype'
 import {sql} from 'drizzle-orm'
 import {Hono} from 'hono'
@@ -79,22 +78,18 @@ export const honoServer = new Hono()
   // HEALTH CHECK //
   //////////////////
 
-  .get(
-    '/health',
-    getRateLimitMiddleware({windowMs: getUnitInMs(60, 's'), limit: 60}),
-    async c => {
-      try {
-        /**
-         * Cheapest possible query — verifies the DB is reachable without
-         * touching any tables.
-         */
-        getDatabase().run(sql`SELECT 1`)
-        return c.text('ok')
-      } catch {
-        return c.text('db unavailable', 503)
-      }
+  .get('/health', async c => {
+    try {
+      /**
+       * Cheapest possible query — verifies the DB is reachable without
+       * touching any tables.
+       */
+      getDatabase().run(sql`SELECT 1`)
+      return c.text('ok')
+    } catch {
+      return c.text('db unavailable', 503)
     }
-  )
+  })
 
   ///////////
   // ADMIN //
@@ -110,8 +105,6 @@ export const honoServer = new Hono()
 
   .post(
     '/api/client-error',
-    // Max 5 errors per second.
-    getRateLimitMiddleware({windowMs: getUnitInMs(1, 's'), limit: 1}),
     arktypeValidator(
       'json',
       createInsertSchema(errorsTable).omit(

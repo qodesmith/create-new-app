@@ -23,12 +23,17 @@ import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {useAtomValue, useSetAtom} from 'jotai'
 import {Fingerprint} from 'lucide-react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {toast} from 'sonner'
 
 export const Route = createLazyFileRoute('/signin')({
   component: SignInPage,
 })
+
+const signinErrorToastId = 'signin-error'
+const signinErrorToast = (message: string) => {
+  return toast.error(message, {id: signinErrorToastId})
+}
 
 function SignInPage() {
   const router = useRouter()
@@ -48,7 +53,7 @@ function SignInPage() {
       const result = await authClient.signIn.passkey()
 
       if (result?.error) {
-        toast.error('Failed to sign in with passkey')
+        signinErrorToast('Failed to sign in with passkey')
         return
       }
 
@@ -59,7 +64,7 @@ function SignInPage() {
         error instanceof DOMException && error.name === 'NotAllowedError'
       if (isWebAuthnCancellation) return
 
-      toast.error('Failed to sign in with passkey')
+      signinErrorToast('Failed to sign in with passkey')
       logClientError({
         error,
         context: 'client:passkeySignIn:exception',
@@ -83,14 +88,14 @@ function SignInPage() {
         })
 
         if (result.error) {
-          toast.error('Failed to sign in')
+          signinErrorToast('Failed to sign in')
           return
         }
 
         setUser(result.data.user)
         await router.navigate({to: redirectPath})
       } catch (error) {
-        toast.error('An unexpected error occurred')
+        signinErrorToast('An unexpected error occurred')
         logClientError({
           error,
           context: 'client:signIn:exception',
@@ -98,6 +103,12 @@ function SignInPage() {
       }
     },
   })
+
+  useEffect(() => {
+    return () => {
+      toast.dismiss(signinErrorToastId)
+    }
+  }, [])
 
   return (
     <div className="flex h-full justify-center overflow-auto bg-background p-4">

@@ -85,4 +85,6 @@ const myMutation = useMutation({
 })
 ```
 
+If the success path navigates away from the page, scope the error toast so it doesn't linger on the destination — see [Scoped Error Toasts](../add-route/SKILL.md#scoped-error-toasts) in add-route.
+
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

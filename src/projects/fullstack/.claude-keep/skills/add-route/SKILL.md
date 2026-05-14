@@ -112,4 +112,40 @@ import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHin
 
 Not needed when the form already has a username or email field (e.g. login, signup).
 
+## Scoped Error Toasts
+
+If the route shows an error toast AND navigates away on the success path, scope the toast so a stale "Failed to X" doesn't linger on the destination page after a quick retry succeeds (e.g. user mistypes password, sees "Failed to sign in", retypes the missing character, lands on `/account` — toast keeps showing for a few more seconds).
+
+**Apply when**: `toast.error(...)` on failure AND `router.navigate(...)` on success in the same component.
+
+**Skip when**: the form stays on the same page (e.g. ChangePassword, ChangeEmail) or the action just closes a dialog (e.g. ResetPasswordDialog). With no navigation, the stale-toast bug can't occur.
+
+Module-scope the ID + helper, then dismiss on unmount:
+
+```tsx
+const errorToastId = 'signin-error'
+const errorToast = (message: string) =>
+  toast.error(message, {id: errorToastId})
+
+function SignInPage() {
+  // ...
+
+  // every error site goes through the helper:
+  errorToast('Failed to sign in')
+
+  useEffect(() => {
+    return () => {
+      toast.dismiss(errorToastId)
+    }
+  }, [])
+}
+```
+
+Why it works:
+- Sonner de-dupes by `id` — repeated failures replace the toast instead of stacking.
+- Unmount cleanup catches every exit path (success navigate, sibling link, back button, tab close), not just the success branch.
+- No ref bookkeeping, no per-render hook noise.
+
+Canonical reference: `signin/route.lazy.tsx`.
+
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

@@ -22,17 +22,29 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
+import {useEffect} from 'react'
 import {toast} from 'sonner'
 
 export const Route = createLazyFileRoute('/reset-password')({
   component: ResetPasswordPage,
 })
 
+const resetPasswordErrorToastId = 'reset-password-error'
+const resetPasswordErrorToast = (message: string) => {
+  return toast.error(message, {id: resetPasswordErrorToastId})
+}
+
 function ResetPasswordPage() {
   const {token} = Route.useSearch()
   const {value: isTokenInvalid, setTrue: showInvalidTokenView} = useBoolean(
     !token
   )
+
+  useEffect(() => {
+    return () => {
+      toast.dismiss(resetPasswordErrorToastId)
+    }
+  }, [])
 
   return isTokenInvalid ? (
     <InvalidTokenView />
@@ -73,7 +85,7 @@ function NewPasswordForm({
         })
 
         if (error) {
-          toast.error('Failed to reset password')
+          resetPasswordErrorToast('Failed to reset password')
           showInvalidTokenView()
           return
         }
@@ -81,7 +93,7 @@ function NewPasswordForm({
         toast.success('Password reset successfully!')
         await router.navigate({to: '/signin'})
       } catch (error) {
-        toast.error('An unexpected error occurred')
+        resetPasswordErrorToast('An unexpected error occurred')
         logClientError({
           error,
           context: 'client:resetPassword:exception',

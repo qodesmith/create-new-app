@@ -112,4 +112,38 @@ const form = useForm({
 
 Field → `form.Field`, submit → `form.Subscribe` for button state.
 
+## Scoped Error Toasts
+
+If the route shows an error toast AND navigates away on the success path, scope the toast so a stale "Failed to X" doesn't linger on the destination page after a quick retry succeeds (e.g. user fixes a form error, second submit succeeds, page navigates — and the previous error toast keeps showing for a few more seconds on the destination).
+
+**Apply when**: `toast.error(...)` on failure AND `router.navigate(...)` (or `useNavigate`) on success in the same component.
+
+**Skip when**: the form stays on the same page or the action just closes a dialog. With no navigation, the stale-toast bug can't occur.
+
+Module-scope the ID + helper, then dismiss on unmount:
+
+```tsx
+const errorToastId = 'create-item-error'
+const errorToast = (message: string) =>
+  toast.error(message, {id: errorToastId})
+
+function CreateItemPage() {
+  // ...
+
+  // every error site goes through the helper:
+  errorToast('Failed to create item')
+
+  useEffect(() => {
+    return () => {
+      toast.dismiss(errorToastId)
+    }
+  }, [])
+}
+```
+
+Why it works:
+- Sonner de-dupes by `id` — repeated failures replace the toast instead of stacking.
+- Unmount cleanup catches every exit path (success navigate, sibling link, back button, tab close), not just the success branch.
+- No ref bookkeeping, no per-render hook noise.
+
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

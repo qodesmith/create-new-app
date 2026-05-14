@@ -22,11 +22,17 @@ import {
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
+import {useEffect} from 'react'
 import {toast} from 'sonner'
 
 export const Route = createLazyFileRoute('/signup')({
   component: SignUpPage,
 })
+
+const signupErrorToastId = 'signup-error'
+const signupErrorToast = (message: string) => {
+  return toast.error(message, {id: signupErrorToastId})
+}
 
 function SignUpPage() {
   const router = useRouter()
@@ -53,18 +59,24 @@ function SignUpPage() {
         })
 
         if (error) {
-          toast.error('Failed to sign up')
+          signupErrorToast('Failed to sign up')
           return
         }
 
         toast.success('Account created successfully! Please check your email.')
         await router.navigate({to: '/signin'})
       } catch (error) {
-        toast.error('An unexpected error occurred')
+        signupErrorToast('An unexpected error occurred')
         logClientError({error, context: 'client:signUp:exception'})
       }
     },
   })
+
+  useEffect(() => {
+    return () => {
+      toast.dismiss(signupErrorToastId)
+    }
+  }, [])
 
   return (
     <div className="flex h-full justify-center overflow-auto bg-background p-4">

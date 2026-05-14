@@ -30,6 +30,11 @@ export function ChangePassword() {
         return
       }
 
+      if (currentPassword === newPassword) {
+        toast.warning('Same password, nothing to change')
+        return
+      }
+
       try {
         const {error} = await authClient.changePassword({
           currentPassword,

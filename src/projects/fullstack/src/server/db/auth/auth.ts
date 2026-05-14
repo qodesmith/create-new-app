@@ -132,6 +132,9 @@ export const authOptions = {
       }
 
       const {pathname} = new URL(request.url)
+      const endpoint = pathname.slice(
+        betterAuthBasePath.length
+      ) as BetterAuthEndpoint
 
       /**
        * Using `void` (fire-and-forget) to prevent timing attacks. Without it,
@@ -139,7 +142,7 @@ export const authOptions = {
        * attackers discover valid accounts by measuring response latency.
        */
 
-      if (pathname === `${betterAuthBasePath}/sign-up/email`) {
+      if (endpoint === '/sign-up/email') {
         return void sendEmail({
           user,
           subject: 'Verify your email address',
@@ -149,7 +152,7 @@ export const authOptions = {
         })
       }
 
-      if (pathname === `${betterAuthBasePath}/change-email`) {
+      if (endpoint === '/change-email') {
         const db = getDatabase()
         const userFromDb = db
           .select()

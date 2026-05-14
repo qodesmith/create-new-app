@@ -54,8 +54,12 @@ export const authOptions = {
   hooks: {
     before: createAuthMiddleware(async ctx => {
       const emailValidator = type('string.email')
+      const passwordValidator = type(`string >= ${minPasswordLength}`)
       const body = ctx.body as Record<string, string | undefined>
       const ctxPath = ctx.path as BetterAuthEndpoint
+      const passwordError = new APIError('BAD_REQUEST', {
+        message: `Invalid password: must be at least ${minPasswordLength} characters long`,
+      })
 
       // Server-side form validation when signing up.
       if (ctxPath === '/sign-up/email') {
@@ -66,7 +70,6 @@ export const authOptions = {
 
         // Validate with arktype.
         const nameValidator = type(nameRegex)
-        const passwordValidator = type(`string >= ${minPasswordLength}`)
 
         const emailResult = emailValidator(email)
         if (emailResult instanceof type.errors) {
@@ -89,9 +92,7 @@ export const authOptions = {
 
         const passwordResult = passwordValidator(password)
         if (passwordResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {
-            message: `Invalid password: must be at least ${minPasswordLength} characters long`,
-          })
+          throw passwordError
         }
       }
 
@@ -102,6 +103,15 @@ export const authOptions = {
 
         if (emailResult instanceof type.errors) {
           throw new APIError('BAD_REQUEST', {message: 'Invalid email'})
+        }
+      }
+
+      if (ctxPath === '/change-password') {
+        const {password} = body
+        const passwordResult = passwordValidator(password)
+
+        if (passwordResult instanceof type.errors) {
+          throw passwordError
         }
       }
     }),

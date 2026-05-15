@@ -1,5 +1,5 @@
+import type {DrizzleAdapterConfig} from '@better-auth/drizzle-adapter'
 import type {BetterAuthOptions} from 'better-auth'
-import type {DrizzleAdapterConfig} from 'better-auth/adapters/drizzle'
 import type {Password} from 'bun'
 import type {BetterAuthEndpoint, Prettify} from '@/shared/types'
 
@@ -28,11 +28,11 @@ import {
   nameValidationMessage,
 } from '@/shared/constants'
 
+import {drizzleAdapter} from '@better-auth/drizzle-adapter'
 import {passkey} from '@better-auth/passkey'
 import {getUnitInSeconds} from '@qodestack/utils'
 import {type} from 'arktype'
 import {betterAuth} from 'better-auth'
-import {drizzleAdapter} from 'better-auth/adapters/drizzle'
 import {APIError, createAuthMiddleware} from 'better-auth/api'
 import {admin} from 'better-auth/plugins'
 import {eq} from 'drizzle-orm'

@@ -116,8 +116,8 @@ function RouteComponent() {
         <ul className="text-left">
           <li>
             <Code>bun dev:all</Code> - starts the dev server on{' '}
-            <Code>0.0.0.0</Code>, logging a local IP address accessible from
-            any other device on your network.
+            <Code>0.0.0.0</Code>, logging a local IP address accessible from any
+            other device on your network.
           </li>
           <li>
             <Code>bun db:view</Code> - starts Drizzle Studio, a UI to explore
@@ -303,8 +303,7 @@ function RouteComponent() {
         <FileCard fileName="bunServer.ts" description="Server entry point">
           Bun is the server for this fullstack application both in development
           and production. Bun imports <Code>index.html</Code> and traverses the
-          client-side dependency graph from there. Bun uses the Hono server
-          (see{' '}
+          client-side dependency graph from there. Bun uses the Hono server (see{' '}
           <Code>honoServer.ts</Code> for details) to handle api requests.
         </FileCard>
 
@@ -375,10 +374,11 @@ function RouteComponent() {
             </li>
             <li>
               <HoverBadge text="cross-boundary type barrels">
-                <Code>server/types.d.ts</Code> and <Code>shared/types.d.ts</Code>{' '}
-                must use relative imports — aliased paths silently collapse to{' '}
-                <Code>any</Code> when types are pulled across project
-                boundaries, breaking Hono RPC autocomplete downstream.
+                <Code>server/types.d.ts</Code> and{' '}
+                <Code>shared/types.d.ts</Code> must use relative imports —
+                aliased paths silently collapse to <Code>any</Code> when types
+                are pulled across project boundaries, breaking Hono RPC
+                autocomplete downstream.
               </HoverBadge>
             </li>
             <li>
@@ -441,9 +441,7 @@ function RouteComponent() {
           Dockerizes the app for easy deployment on{' '}
           <ExternalLink href="https://fly.io/">fly.io</ExternalLink>. You're
           ready to go with{' '}
-          <ExternalLink href="https://fly.io/docs/litefs/">
-            LiteFS
-          </ExternalLink>{' '}
+          <ExternalLink href="https://fly.io/docs/litefs/">LiteFS</ExternalLink>{' '}
           which <span className="font-mono text-xs">===</span> distributed
           SQLite. This also sets you up with Drizzle Studio{' '}
           <span className="italic">in production!</span>
@@ -532,8 +530,7 @@ const techUsed = [
   },
   {
     tech: 'TanStack Query',
-    description:
-      'Server state caching, deduping, and revalidation — on autopilot.',
+    description: 'The fetch GOAT.',
   },
   {
     tech: 'Tailwind',

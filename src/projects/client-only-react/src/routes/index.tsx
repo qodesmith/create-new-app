@@ -331,8 +331,7 @@ const techUsed = [
   },
   {
     tech: 'TanStack Query',
-    description:
-      'Server state caching, deduping, and revalidation — on autopilot.',
+    description: 'The fetch GOAT.',
   },
   {
     tech: 'Tailwind',

@@ -21,6 +21,7 @@
     "knip": "knip"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.10",
     "@better-auth/passkey": "^1.6.10",
     "@hono/arktype-validator": "^2.0.1",
     "@libsql/client": "^0.17.3",

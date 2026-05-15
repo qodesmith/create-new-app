@@ -53,27 +53,26 @@ export const authOptions = {
 
   hooks: {
     before: createAuthMiddleware(async ctx => {
+      // Arktype validators.
       const emailValidator = type('string.email')
       const passwordValidator = type(`string >= ${minPasswordLength}`)
+      const nameValidator = type(nameRegex)
+
       const body = ctx.body as Record<string, string | undefined>
       const ctxPath = ctx.path as BetterAuthEndpoint
       const passwordError = new APIError('BAD_REQUEST', {
         message: `Invalid password: must be at least ${minPasswordLength} characters long`,
       })
+      const emailError = new APIError('BAD_REQUEST', {message: 'Invalid email'})
 
       // Server-side form validation when signing up.
       if (ctxPath === '/sign-up/email') {
-        const email = body.email
-        const name = body.name
-        const lastName = body.lastName
-        const password = body.password
-
-        // Validate with arktype.
-        const nameValidator = type(nameRegex)
+        const {email, name, lastName, password} = body
+        // ---
 
         const emailResult = emailValidator(email)
         if (emailResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {message: 'Invalid email'})
+          throw emailError
         }
 
         const nameResult = nameValidator(name)
@@ -98,15 +97,15 @@ export const authOptions = {
 
       // Server-side form validation when changing email.
       if (ctxPath === '/change-email') {
-        const newEmail = body.newEmail
+        const {newEmail} = body
         const emailResult = emailValidator(newEmail)
 
         if (emailResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {message: 'Invalid email'})
+          throw emailError
         }
       }
 
-      if (ctxPath === '/change-password') {
+      if (ctxPath === '/change-password' || ctxPath === '/reset-password') {
         const {password} = body
         const passwordResult = passwordValidator(password)
 

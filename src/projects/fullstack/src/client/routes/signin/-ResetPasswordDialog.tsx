@@ -31,7 +31,7 @@ export function ResetPasswordDialog({
   const form = useForm({
     defaultValues: {email: ''},
     onSubmitInvalid: handleFormSubmitInvalid,
-    onSubmit: async ({value}) => {
+    onSubmit: async ({value, formApi}) => {
       try {
         const resetPasswordPath: FileRouteTypes['to'] = '/reset-password'
         const {error} = await authClient.requestPasswordReset({
@@ -48,6 +48,7 @@ export function ResetPasswordDialog({
         }
 
         setIsOpen(false)
+        formApi.reset()
       } catch (error) {
         toast.error('An unexpected error occurred')
         logClientError({

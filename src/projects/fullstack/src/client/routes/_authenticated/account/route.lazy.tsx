@@ -74,7 +74,7 @@ function AccountPage() {
 
 function AccountCard({title, children}: {title: string; children: ReactNode}) {
   return (
-    <Card className="group relative h-full">
+    <Card className="group relative h-full overflow-hidden">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

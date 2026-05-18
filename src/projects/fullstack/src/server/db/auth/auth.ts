@@ -3,6 +3,8 @@ import type {BetterAuthOptions} from 'better-auth'
 import type {Password} from 'bun'
 import type {BetterAuthEndpoint, Prettify} from '@/shared/types'
 
+import {randomBytes} from 'node:crypto'
+
 import {
   domain,
   isProd,
@@ -262,10 +264,27 @@ export const authOptions = {
         {user, newEmail, url, token: _token},
         _request
       ) => {
+        const confirmationUrl = new URL(url)
+
+        /**
+         * Better Auth only appends `error` to query params when the token is
+         * expired. It appends nothing when the token is valid, making it
+         * impossible to differentiate between a valid state or someone simply
+         * visiting the callbackURL directly.
+         *
+         * Therefore, we manually append a `data` query param as a custom
+         * convention to distinguish successful redirects from direct
+         * callbackURL visits inside the confirmation route's `beforeLoad`.
+         */
+        confirmationUrl.searchParams.set('data', randomBytes(8).toString('hex'))
+
         void sendEmail({
           user,
           subject: 'Confirm your email change request',
-          react: ChangeEmailConfirmationEmail({confirmationUrl: url, newEmail}),
+          react: ChangeEmailConfirmationEmail({
+            confirmationUrl: confirmationUrl.href,
+            newEmail,
+          }),
           rejectionContext: 'resend:sendChangeEmailConfirmation:rejection',
           exceptionContext: 'resend:sendChangeEmailConfirmation:exception',
         })

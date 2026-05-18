@@ -3,27 +3,23 @@ import {createFileRoute, notFound} from '@tanstack/react-router'
 export const Route = createFileRoute(
   '/_authenticated/change-email/_step1/confirmation'
 )({
-  validateSearch: (search: {
-    token?: string
-    error?: string
-  }): {token: string} | {error: string} | null => {
-    const {token, error} = search
+  beforeLoad: ctx => {
+    const search = ctx.search as {error?: string; data?: string}
 
-    if (token && !error) {
-      return {token}
-    }
-
-    if (error && !token) {
-      return {error}
-    }
-
-    return null
-  },
-  beforeLoad: ({search}) => {
-    if (search === null) {
+    /**
+     * Better Auth only appends `error` to query params when the token is
+     * expired. It appends nothing when the token is valid, making it impossible
+     * to differentiate between a valid state or someone simply visiting the
+     * callbackURL directly.
+     *
+     * Therefore, we manually append a `data` query param as a custom convention
+     * inside the `sendChangeEmailConfirmation` function to distinguish
+     * successful redirects from direct callbackURL visits.
+     */
+    if (!(search.error || search.data)) {
       throw notFound()
     }
 
-    return {changeEmailConfirmed: 'token' in search}
+    return {changeEmailConfirmed: !search.error}
   },
 })

@@ -101,7 +101,8 @@ export default function Email({
               You requested to change the email address on your {appName}{' '}
               account to{' '}
               <strong style={{color: mainTextColor}}>{newEmail}</strong>. Click
-              the button below to send a verification to the new email:
+              the button below to confirm and send a verification to the new
+              email:
             </Text>
           </Section>
 

@@ -159,11 +159,17 @@ export const authOptions = {
        * - STEP 2 (this function) - verify the ACTION to change email
        */
       if (endpoint === '/verify-email') {
+        const verificationUrl = new URL(url)
+        verificationUrl.searchParams.set(
+          'callbackURL',
+          changeEmailCallbackRoutes.step2
+        )
+
         return void sendEmail({
           user,
           subject: 'Verify your updated email',
           react: ChangeEmailVerificationEmail({
-            verificationUrl: changeEmailCallbackRoutes.step2,
+            verificationUrl: verificationUrl.href,
             newEmail: user.email,
           }),
           rejectionContext: 'resend:sendChangeEmailVerification:rejection',

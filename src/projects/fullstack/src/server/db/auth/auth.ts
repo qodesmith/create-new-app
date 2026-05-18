@@ -13,7 +13,7 @@ import {
   userRoles,
 } from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
-import {users} from '@/server/db/schema/authSchema'
+import ChangeEmailConfirmationEmail from '@/server/email/ChangeEmailConfirmationEmail'
 import ChangeEmailVerificationEmail from '@/server/email/ChangeEmailVerificationEmail'
 import DeleteAccountVerificationEmail from '@/server/email/DeleteAccountVerificationEmail'
 import ResetPasswordEmail from '@/server/email/ResetPasswordEmail'
@@ -22,6 +22,7 @@ import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
 import {
   betterAuthBasePath,
+  changeEmailCallbackRoutes,
   emailVerificationExpiryInSeconds,
   minPasswordLength,
   nameRegex,
@@ -35,7 +36,6 @@ import {type} from 'arktype'
 import {betterAuth} from 'better-auth'
 import {APIError, createAuthMiddleware} from 'better-auth/api'
 import {admin} from 'better-auth/plugins'
-import {eq} from 'drizzle-orm'
 
 const passwordAlgorithm: Password.Argon2Algorithm['algorithm'] = 'argon2id'
 
@@ -122,18 +122,9 @@ export const authOptions = {
     autoSignInAfterVerification: true,
 
     /**
-     * This single callback handles both sign-up and change-email verification.
-     *
-     * We intentionally avoid using `user.changeEmail.sendChangeEmailVerification`
-     * because Better Auth treats it as a fallback for `sendChangeEmailConfirmation`,
-     * triggering a 2-step flow that sends a redundant second email. Instead, we
-     * detect the flow via `request.url` and use the appropriate email template.
-     *
-     * https://github.com/better-auth/better-auth/issues/3742#issuecomment-3970358918
-     *
-     * The callback URL the user returns to is defined in client code:
-     * - POST /sign-up/email => `authClient.signUp.email` => `callbackURL`
-     * - POST /change-email => `authClient.changeEmail` => `callbackURL`
+     * This function is called by multiple endpoints that trigger any sort of
+     * verification process. We trigger different logic by distinguishing the
+     * endpoint by the url pathname.
      */
     sendVerificationEmail: async ({user, url, token: _token}, request) => {
       if (!request) {
@@ -161,27 +152,22 @@ export const authOptions = {
         })
       }
 
-      if (endpoint === '/change-email') {
-        const db = getDatabase()
-        const userFromDb = db
-          .select()
-          .from(users)
-          .where(eq(users.id, user.id))
-          .get()
-
-        if (!userFromDb) {
-          throw new Error('Could not find original user in database')
-        }
-
-        void sendEmail({
-          user: userFromDb,
-          subject: 'Confirm your updated email',
+      /**
+       * This is STEP 2 of a two-step process to change a user's email:
+       *
+       * - STEP 1 (sendChangeEmailConfirmation) - confirm the INTENT to change email
+       * - STEP 2 (this function) - verify the ACTION to change email
+       */
+      if (endpoint === '/verify-email') {
+        return void sendEmail({
+          user,
+          subject: 'Verify your updated email',
           react: ChangeEmailVerificationEmail({
-            verificationUrl: url,
+            verificationUrl: changeEmailCallbackRoutes.step2,
             newEmail: user.email,
           }),
-          rejectionContext: 'resend:sendChangeEmail:rejection',
-          exceptionContext: 'resend:sendChangeEmail:exception',
+          rejectionContext: 'resend:sendChangeEmailVerification:rejection',
+          exceptionContext: 'resend:sendChangeEmailVerification:exception',
         })
       }
     },
@@ -259,22 +245,25 @@ export const authOptions = {
     },
     changeEmail: {
       enabled: true,
+
       /**
-       * Why is this commented out? See my this comment in this Github issue:
-       * https://github.com/better-auth/better-auth/issues/3742#issuecomment-3975435786
+       * This is STEP 1 of a two-step process to change a user's email:
+       *
+       * - STEP 1 (this function) - confirm the INTENT to change email
+       * - STEP 2 (sendVerificationEmail) - verify the ACTION to change email
        */
-      // sendChangeEmailVerification: async (
-      //   {user, newEmail, url, token: _token},
-      //   _request
-      // ) => {
-      //   void sendEmail({
-      //     user,
-      //     subject: 'Confirm your updated email',
-      //     react: ChangeEmailVerificationEmail({verificationUrl: url, newEmail}),
-      //     rejectionContext: 'resend:sendChangeEmail:rejection',
-      //     exceptionContext: 'resend:sendChangeEmail:exception',
-      //   })
-      // },
+      sendChangeEmailConfirmation: async (
+        {user, newEmail, url, token: _token},
+        _request
+      ) => {
+        void sendEmail({
+          user,
+          subject: 'Confirm your email change request',
+          react: ChangeEmailConfirmationEmail({confirmationUrl: url, newEmail}),
+          rejectionContext: 'resend:sendChangeEmailConfirmation:rejection',
+          exceptionContext: 'resend:sendChangeEmailConfirmation:exception',
+        })
+      },
     },
     deleteUser: {
       enabled: true,

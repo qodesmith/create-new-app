@@ -1,11 +1,10 @@
-import type {FileRouteTypes} from '@/client/routeTree.gen'
-
 import {Button} from '@/client/components/ui/button'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
+import {changeEmailCallbackRoutes} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {useAtomValue} from 'jotai'
@@ -30,10 +29,20 @@ export function ChangeEmail() {
       }
 
       try {
-        const callbackURL: FileRouteTypes['to'] = '/account'
+        /**
+         * We've implemented Better Auth's change email functionality with a two
+         * step process:
+         *
+         * 1. CONFIRM the INTENT to change an email
+         * 2. VERIFY the ACTION to change an email
+         *
+         * `authClient.changeEmail` only takes in a single callbackURL which
+         * Better Auth uses for BOTH steps. We override the 2nd step callbackURL
+         * in auth.ts where these two steps are defined.
+         */
         const {error} = await authClient.changeEmail({
           newEmail: email.trim(),
-          callbackURL,
+          callbackURL: changeEmailCallbackRoutes.step1,
         })
 
         if (error) {

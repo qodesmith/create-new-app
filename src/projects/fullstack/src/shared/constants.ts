@@ -1,3 +1,5 @@
+import type {ClientRoute} from '@/shared/types'
+
 import {getUnitInSeconds} from '@qodestack/utils'
 
 export const authRoutePath = '/api/authenticated' as const
@@ -27,3 +29,11 @@ export const emailVerificationExpiryInSeconds = getUnitInSeconds(1, 'h')
 /** 1 hour */
 export const emailVerificationExpiryInMs =
   emailVerificationExpiryInSeconds * 1000
+
+export const changeEmailCallbackRoutes = {
+  step1: '/change-email/confirmation',
+  step2: '/change-email/verification',
+} satisfies {
+  step1: ClientRoute
+  step2: ClientRoute
+}

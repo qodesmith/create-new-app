@@ -1,8 +1,11 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
 
+import type {FileRouteTypes} from '../client/routeTree.gen'
 import type {auth} from '../server/db/auth/auth'
 
 export type * from '../server/types.d'
+
+export type ClientRoute = FileRouteTypes['to']
 
 declare global {
   namespace NodeJS {
@@ -59,8 +62,10 @@ export type ErrorContext =
   | 'resend:sendSignUpVerificationEmail:exception'
   | 'resend:sendResetPasswordEmail:rejection'
   | 'resend:sendResetPasswordEmail:exception'
-  | 'resend:sendChangeEmail:rejection'
-  | 'resend:sendChangeEmail:exception'
+  | 'resend:sendChangeEmailConfirmation:rejection'
+  | 'resend:sendChangeEmailConfirmation:exception'
+  | 'resend:sendChangeEmailVerification:rejection'
+  | 'resend:sendChangeEmailVerification:exception'
   | 'resend:sendDeleteAccountVerificationEmail:rejection'
   | 'resend:sendDeleteAccountVerificationEmail:exception'
   | 'dbCleanup:purgeStaleRecords:exception'

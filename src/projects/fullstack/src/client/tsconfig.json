@@ -1,19 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "paths": {
-      // Used directly by client source files.
-      "@/client/*": ["./*"],
-
-      // Client's program reaches server files through the import chain
-      // (shared/types.d.ts → server imports); those files use @/server/*
-      // and need to resolve from this tsconfig's context.
-      "@/server/*": ["../server/*"],
-
-      // Used directly by client source files, and also by server files
-      // reached via the import chain.
-      "@/shared/*": ["../shared/*"]
+      "@/shared/*": ["../shared/*"],
+      "@/client/*": ["./*"]
     }
   },
   "include": ["./**/*"]

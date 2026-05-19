@@ -1,13 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "paths": {
-      // Used directly by server source files.
-      "@/server/*": ["./*"],
-
-      // Used directly by server source files.
-      "@/shared/*": ["../shared/*"]
+      "@/shared/*": ["../shared/*"],
+      "@/server/*": ["./*"]
     }
   },
   "include": ["./**/*"]

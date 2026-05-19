@@ -2,9 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
+      "@/shared/*": ["./src/shared/*"],
       "@/client/*": ["./src/client/*"],
-      "@/server/*": ["./src/server/*"],
-      "@/shared/*": ["./src/shared/*"]
+      "@/server/*": ["./src/server/*"]
     }
   },
   "include": ["./*.ts"]

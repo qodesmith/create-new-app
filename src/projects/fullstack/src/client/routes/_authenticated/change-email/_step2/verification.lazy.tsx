@@ -7,5 +7,9 @@ export const Route = createLazyFileRoute(
 })
 
 function RouteComponent() {
-  return <p>This change email verification has expired.</p>
+  return (
+    <p className="p-2 text-center">
+      This change email verification has expired.
+    </p>
+  )
 }

@@ -37,3 +37,5 @@ export const changeEmailCallbackRoutes = {
   step1: ClientRoute
   step2: ClientRoute
 }
+
+export const callbackURLSuccessParam = '__data' as const

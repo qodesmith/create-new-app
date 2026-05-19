@@ -24,6 +24,7 @@ import {sendEmail} from '@/server/email/sendEmail'
 import {log} from '@/server/utils/logger'
 import {
   betterAuthBasePath,
+  callbackURLSuccessParam,
   changeEmailCallbackRoutes,
   emailVerificationExpiryInSeconds,
   minPasswordLength,
@@ -265,18 +266,40 @@ export const authOptions = {
         _request
       ) => {
         const confirmationUrl = new URL(url)
+        const callbackURL = confirmationUrl.searchParams.get('callbackURL')
+        const [callbackURLPath, callbackURLSearchStr] =
+          callbackURL?.split('?') ?? []
+
+        // This should NEVER be false.
+        if (!(callbackURL && callbackURLPath)) {
+          throw new Error('No callbackURL found in sendChangeEmailConfirmation')
+        }
 
         /**
-         * Better Auth only appends `error` to query params when the token is
-         * expired. It appends nothing when the token is valid, making it
-         * impossible to differentiate between a valid state or someone simply
-         * visiting the callbackURL directly.
-         *
-         * Therefore, we manually append a `data` query param as a custom
-         * convention to distinguish successful redirects from direct
-         * callbackURL visits inside the confirmation route's `beforeLoad`.
+         * The callbackURL is itself a query param on the `url` we get from
+         * Better Auth. It is where the user is redirected to. The callbackURL
+         * itself may contain query params that need to be maintained. This
+         * shouldn't be the case, but we play it safe regardless.
          */
-        confirmationUrl.searchParams.set('data', randomBytes(8).toString('hex'))
+        const callbackURLQueryParams = new URLSearchParams(callbackURLSearchStr)
+
+        /**
+         * Better Auth will append and `error` query param to the callbackURL
+         * when the token is expired. Unfortunately, no query params are
+         * appended when the token is still valid, making it impossible to
+         * distinguish between a valid state or someone simply visiting the
+         * callbackURL directly.
+         *
+         * Therefore, we manually append a custom query param as a convention to
+         * distinguish successful redirects from direct callbackURL visits
+         * inside the confirmation route's `beforeLoad`.
+         */
+        callbackURLQueryParams.set(
+          callbackURLSuccessParam,
+          randomBytes(2).toString('hex')
+        )
+        const newCallbackURL = `${callbackURLPath}?${callbackURLQueryParams}`
+        confirmationUrl.searchParams.set('callbackURL', newCallbackURL)
 
         void sendEmail({
           user,

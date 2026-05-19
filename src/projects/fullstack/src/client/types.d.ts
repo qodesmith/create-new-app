@@ -5,6 +5,7 @@ import type {
   createApiClient,
   getAuthClient,
 } from '@/client/apiClient'
+import type {AvatarImage} from '@/client/components/ui/avatar'
 import type {createTanstackRouter} from '@/client/router'
 
 export type RouterContext = {
@@ -21,3 +22,7 @@ export type ApiAuthClient = ReturnType<typeof createApiAuthClient>
 export type AuthClient = ReturnType<typeof getAuthClient>
 
 export type User = AuthClient['$Infer']['Session']['user']
+
+export type ImageLoadingStatus = Parameters<
+  NonNullable<React.ComponentProps<typeof AvatarImage>['onLoadingStatusChange']>
+>[0]

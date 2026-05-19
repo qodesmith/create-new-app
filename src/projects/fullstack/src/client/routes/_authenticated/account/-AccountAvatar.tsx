@@ -1,4 +1,4 @@
-import type {ImageLoadingStatus} from '@/client/components/ui/avatar'
+import type {ImageLoadingStatus} from '@/client/types'
 
 import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {
@@ -106,7 +106,7 @@ export function AccountAvatar() {
   return (
     <>
       <div className="flex items-center gap-4">
-        <Avatar className="h-14 w-14 rounded-full">
+        <Avatar className="size-14">
           <AvatarImage
             src={
               blobPreviewUrl ??
@@ -119,7 +119,7 @@ export function AccountAvatar() {
               if (!blobPreviewUrl) setImageLoadingStatus(status)
             }}
           />
-          <AvatarFallback className="rounded-lg font-semibold uppercase">
+          <AvatarFallback className="text-lg uppercase">
             {initials}
           </AvatarFallback>
         </Avatar>
@@ -162,7 +162,7 @@ export function AccountAvatar() {
           </>
         )}
         <p className="mb-0 text-muted-foreground text-xs">
-          Images are resized to 128x128 and converted to WebP.
+          Images are resized to 128x128
         </p>
         <p className="text-muted-foreground text-xs">
           Maximum file upload size: {bytesToSize(maxAvatarUploadSize)}

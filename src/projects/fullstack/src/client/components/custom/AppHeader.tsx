@@ -43,14 +43,12 @@ export function AppHeader() {
             <Button size="sm" onClick={signOut} disabled={isSigningOut}>
               Log out
             </Button>
-            <Avatar className="rounded-full">
+            <Avatar>
               <AvatarImage
                 src={`${authRoutePath}/avatar?v=${userAvatarVersion}`}
                 alt={user.email}
               />
-              <AvatarFallback className="rounded-lg text-xs uppercase">
-                {initials}
-              </AvatarFallback>
+              <AvatarFallback className="uppercase">{initials}</AvatarFallback>
             </Avatar>
           </>
         ) : (

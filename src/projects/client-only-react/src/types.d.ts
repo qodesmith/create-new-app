@@ -27,3 +27,7 @@ export type Prettify<T> = T extends Date
   : T extends Record<any, any>
     ? {[K in keyof T]: Prettify<T[K]>} & {}
     : T
+
+export type ImageLoadingStatus = Parameters<
+  NonNullable<React.ComponentProps<typeof AvatarImage>['onLoadingStatusChange']>
+>[0]

@@ -150,6 +150,7 @@ function SignInPage() {
                     aria-invalid={field.state.meta.errors.length > 0}
                     autoComplete="email"
                     required
+                    autoFocus
                   />
                 </div>
               )}

@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.4.0",
-    "@qodestack/biome-config": "^2.4.13",
+    "@qodestack/biome-config": "^2.4.14",
     "picocolors": "^1.1.1"
   },
   "devDependencies": {

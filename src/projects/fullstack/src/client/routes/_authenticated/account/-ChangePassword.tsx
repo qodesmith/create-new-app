@@ -14,7 +14,7 @@ export function ChangePassword() {
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
 
-  const changePasswordForm = useForm({
+  const form = useForm({
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -48,7 +48,7 @@ export function ChangePassword() {
         }
 
         toast.success('Password updated successfully')
-        changePasswordForm.reset()
+        form.reset()
       } catch (error) {
         toast.error('An unexpected error occurred while updating your password')
         logClientError({
@@ -65,11 +65,11 @@ export function ChangePassword() {
       onSubmit={event => {
         event.preventDefault()
         event.stopPropagation()
-        changePasswordForm.handleSubmit()
+        form.handleSubmit()
       }}
     >
       <PasswordManagerHint />
-      <changePasswordForm.Field name="currentPassword">
+      <form.Field name="currentPassword">
         {field => (
           <PasswordInput
             id="currentPassword"
@@ -82,9 +82,9 @@ export function ChangePassword() {
             required
           />
         )}
-      </changePasswordForm.Field>
+      </form.Field>
 
-      <changePasswordForm.Field
+      <form.Field
         name="newPassword"
         validators={{
           onSubmit: ({value}) => {
@@ -107,9 +107,9 @@ export function ChangePassword() {
             required
           />
         )}
-      </changePasswordForm.Field>
+      </form.Field>
 
-      <changePasswordForm.Field name="confirmNewPassword">
+      <form.Field name="confirmNewPassword">
         {field => (
           <PasswordInput
             id="confirmNewPassword"
@@ -123,9 +123,9 @@ export function ChangePassword() {
             required
           />
         )}
-      </changePasswordForm.Field>
+      </form.Field>
 
-      <changePasswordForm.Subscribe>
+      <form.Subscribe>
         {({canSubmit, isSubmitting}) => (
           <Button
             type="submit"
@@ -135,7 +135,7 @@ export function ChangePassword() {
             {isSubmitting ? 'Updating password...' : 'Update password'}
           </Button>
         )}
-      </changePasswordForm.Subscribe>
+      </form.Subscribe>
     </form>
   )
 }

@@ -14,7 +14,7 @@ export function ChangeEmail() {
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
 
-  const changeEmailForm = useForm({
+  const form = useForm({
     defaultValues: {
       email: '',
       confirmEmail: '',
@@ -50,7 +50,7 @@ export function ChangeEmail() {
           return
         }
 
-        changeEmailForm.reset()
+        form.reset()
         toast.success(
           'We sent a verification link to your current email. Please confirm the change.'
         )
@@ -70,10 +70,10 @@ export function ChangeEmail() {
       onSubmit={event => {
         event.preventDefault()
         event.stopPropagation()
-        changeEmailForm.handleSubmit()
+        form.handleSubmit()
       }}
     >
-      <changeEmailForm.Field
+      <form.Field
         name="email"
         validators={{
           onSubmit: ({value}) => {
@@ -95,9 +95,9 @@ export function ChangeEmail() {
             />
           </div>
         )}
-      </changeEmailForm.Field>
+      </form.Field>
 
-      <changeEmailForm.Field name="confirmEmail">
+      <form.Field name="confirmEmail">
         {field => (
           <div className="space-y-1 text-sm">
             <Label htmlFor="confirmEmail">Confirm new email</Label>
@@ -112,9 +112,9 @@ export function ChangeEmail() {
             />
           </div>
         )}
-      </changeEmailForm.Field>
+      </form.Field>
 
-      <changeEmailForm.Subscribe>
+      <form.Subscribe>
         {({canSubmit, isSubmitting}) => (
           <Button
             type="submit"
@@ -124,7 +124,7 @@ export function ChangeEmail() {
             {isSubmitting ? 'Sending verification...' : 'Update email'}
           </Button>
         )}
-      </changeEmailForm.Subscribe>
+      </form.Subscribe>
     </form>
   )
 }

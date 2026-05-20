@@ -91,7 +91,7 @@ function SignUpPage() {
           <CardTitle className="text-3xl">Create an account</CardTitle>
           <CardDescription>Join us and get started</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid gap-6">
           <form
             className="space-y-6"
             onSubmit={e => {
@@ -114,13 +114,8 @@ function SignUpPage() {
                 }}
               >
                 {field => (
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="block pb-1 font-medium text-foreground text-sm"
-                    >
-                      First name
-                    </label>
+                  <Field>
+                    <FieldLabel htmlFor="name">First name</FieldLabel>
                     <Input
                       id="name"
                       type="text"
@@ -132,7 +127,7 @@ function SignUpPage() {
                       aria-invalid={field.state.meta.errors.length > 0}
                       autoFocus
                     />
-                  </div>
+                  </Field>
                 )}
               </form.Field>
 
@@ -148,13 +143,8 @@ function SignUpPage() {
                 }}
               >
                 {field => (
-                  <div>
-                    <label
-                      htmlFor="lastName"
-                      className="block pb-1 font-medium text-foreground text-sm"
-                    >
-                      Last name
-                    </label>
+                  <Field>
+                    <FieldLabel htmlFor="lastName">Last name</FieldLabel>
                     <Input
                       id="lastName"
                       type="text"
@@ -165,7 +155,7 @@ function SignUpPage() {
                       pattern={namePattern}
                       aria-invalid={field.state.meta.errors.length > 0}
                     />
-                  </div>
+                  </Field>
                 )}
               </form.Field>
             </div>
@@ -182,13 +172,8 @@ function SignUpPage() {
               }}
             >
               {field => (
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block pb-1 font-medium text-foreground text-sm"
-                  >
-                    Email address
-                  </label>
+                <Field>
+                  <FieldLabel htmlFor="email">Email address</FieldLabel>
                   <Input
                     id="email"
                     type="email"
@@ -200,7 +185,7 @@ function SignUpPage() {
                     autoComplete="email"
                     required
                   />
-                </div>
+                </Field>
               )}
             </form.Field>
 
@@ -277,14 +262,12 @@ function SignUpPage() {
             </form.Subscribe>
           </form>
 
-          <div className="pt-6 text-center">
-            <p className="text-muted-foreground text-sm">
-              Already have an account?{' '}
-              <Link to="/signin" className="link-animated text-primary">
-                Sign in
-              </Link>
-            </p>
-          </div>
+          <p className="text-center text-muted-foreground text-sm">
+            Already have an account?{' '}
+            <Link to="/signin" className="link-animated text-primary">
+              Sign in
+            </Link>
+          </p>
         </CardContent>
       </MagicCard>
     </div>

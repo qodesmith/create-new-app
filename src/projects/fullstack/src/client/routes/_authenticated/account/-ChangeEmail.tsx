@@ -1,6 +1,6 @@
 import {Button} from '@/client/components/ui/button'
+import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
-import {Label} from '@/client/components/ui/label'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
@@ -82,8 +82,8 @@ export function ChangeEmail() {
         }}
       >
         {field => (
-          <div className="space-y-1 text-sm">
-            <Label htmlFor="newEmail">New email</Label>
+          <Field>
+            <FieldLabel htmlFor="newEmail">New email</FieldLabel>
             <Input
               id="newEmail"
               type="email"
@@ -93,14 +93,14 @@ export function ChangeEmail() {
               onBlur={field.handleBlur}
               required
             />
-          </div>
+          </Field>
         )}
       </form.Field>
 
       <form.Field name="confirmEmail">
         {field => (
-          <div className="space-y-1 text-sm">
-            <Label htmlFor="confirmEmail">Confirm new email</Label>
+          <Field>
+            <FieldLabel htmlFor="confirmEmail">Confirm new email</FieldLabel>
             <Input
               id="confirmEmail"
               type="email"
@@ -110,7 +110,7 @@ export function ChangeEmail() {
               onBlur={field.handleBlur}
               required
             />
-          </div>
+          </Field>
         )}
       </form.Field>
 

@@ -84,18 +84,53 @@ const user = useRouteContext({
 
 ## TanStack Form
 
-Use `@tanstack/react-form` for forms:
+Use `@tanstack/react-form` for forms, wrapped in the **Field design system** from `@/client/components/ui/field`. Never use the bare `<Label />` primitive or a raw `<label>` inside a form — always use `<Field>` + `<FieldLabel>`.
+
+`<FieldLabel>` composes `<Label>` and adds `data-slot="field-label"`, the `group/field-label` + `peer/field-label` hooks, parent-`<Field>` disabled-state styling, and card-style checked states for checkbox/radio. The plain `<Label>` is for one-off labels outside forms.
 
 ```tsx
+import {Field, FieldLabel} from '@/client/components/ui/field'
+import {Input} from '@/client/components/ui/input'
+import {useForm} from '@tanstack/react-form'
+
 const form = useForm({
-  defaultValues: {title: '', body: ''},
+  defaultValues: {email: ''},
   onSubmitInvalid: handleFormSubmitInvalid,
   onSubmit: async ({value}) => { /* API call via RPC */ },
 })
+
+<form.Field
+  name="email"
+  validators={{
+    onSubmit: ({value}) => (value ? undefined : 'Email is required'),
+  }}
+>
+  {field => (
+    <Field>
+      <FieldLabel htmlFor="email">Email</FieldLabel>
+      <Input
+        id="email"
+        type="email"
+        value={field.state.value}
+        onChange={e => field.handleChange(e.target.value)}
+        onBlur={field.handleBlur}
+        aria-invalid={field.state.meta.errors.length > 0}
+      />
+    </Field>
+  )}
+</form.Field>
 ```
 
-Field → `form.Field`, submit → `form.Subscribe` for button state.
-See `signup.lazy.tsx` for complete example.
+Rules:
+- One `<Field>` per logical input. Wrap multiple side-by-side fields in a flex container (see `signup.lazy.tsx` first/last name row).
+- `<FieldLabel htmlFor="...">` pairs with the input's `id`. Omit `htmlFor` only when the input has no `id` (rare).
+- Set `aria-invalid={field.state.meta.errors.length > 0}` on the input so the `data-invalid` styling on `<Field>` engages.
+- Submit button via `form.Subscribe` for `canSubmit` / `isSubmitting` state.
+- Errors surface via toast (`toast.error('Failed to ...')`) — not `<FieldError>` — to match the rest of the codebase. Use `onSubmitInvalid: handleFormSubmitInvalid` to toast validation failures.
+
+Other Field parts available when needed: `<FieldGroup>` (gap container for stacked fields), `<FieldDescription>` (helper text under the label), `<FieldSet>` + `<FieldLegend>` (grouped legend), `<FieldSeparator>`. Reach for them only if the form actually needs them.
+
+Canonical reference: `signup.lazy.tsx`. Also see `signin/route.lazy.tsx`, `reset-password.lazy.tsx`, `_authenticated/account/-Change*.tsx`.
 
 ### Password Manager Autofill
 

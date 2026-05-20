@@ -123,7 +123,7 @@ function SignInPage() {
           <CardTitle className="text-3xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid gap-6">
           <form
             className="space-y-6"
             onSubmit={e => {
@@ -193,7 +193,7 @@ function SignInPage() {
             </form.Subscribe>
           </form>
 
-          <div className="relative flex items-center gap-2 py-6">
+          <div className="relative flex items-center gap-2">
             <Separator className="w-auto! grow" />
             <div className="text-muted-foreground text-xs">or</div>
             <Separator className="w-auto! grow" />
@@ -213,17 +213,14 @@ function SignInPage() {
             </span>
           </LoadingButton>
 
-          <div className="pt-6 text-center text-muted-foreground text-sm">
+          <div className="text-center text-muted-foreground text-sm">
             <p>
               Forgot your password?{' '}
               <ResetPasswordDialog dialogInitialOpen={!!dialogInitialOpen} />
             </p>
             <p>
               Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="font-medium text-foreground transition-colors hover:text-muted-foreground"
-              >
+              <Link to="/signup" className="link-animated text-foreground">
                 Sign up
               </Link>
             </p>

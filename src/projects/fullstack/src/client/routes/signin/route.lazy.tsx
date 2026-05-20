@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/client/components/ui/card'
+import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {Separator} from '@/client/components/ui/separator'
@@ -133,13 +134,8 @@ function SignInPage() {
           >
             <form.Field name="email">
               {field => (
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block pb-1 font-medium text-foreground text-sm"
-                  >
-                    Email address
-                  </label>
+                <Field>
+                  <FieldLabel htmlFor="email">Email address</FieldLabel>
                   <Input
                     id="email"
                     type="email"
@@ -152,7 +148,7 @@ function SignInPage() {
                     required
                     autoFocus
                   />
-                </div>
+                </Field>
               )}
             </form.Field>
 
@@ -167,18 +163,19 @@ function SignInPage() {
               }}
             >
               {field => (
-                <PasswordInput
-                  id="password"
-                  value={field.state.value}
-                  onChange={e => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                  autoComplete="current-password"
-                  minLength={minPasswordLength}
-                  required
-                  label="Password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                />
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <PasswordInput
+                    id="password"
+                    value={field.state.value}
+                    onChange={e => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    autoComplete="current-password"
+                    minLength={minPasswordLength}
+                    required
+                  />
+                </Field>
               )}
             </form.Field>
 

@@ -1,6 +1,7 @@
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
+import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
@@ -71,16 +72,17 @@ export function ChangePassword() {
       <PasswordManagerHint />
       <form.Field name="currentPassword">
         {field => (
-          <PasswordInput
-            id="currentPassword"
-            label="Current password"
-            labelClassName="block pb-1 font-medium text-foreground text-sm"
-            value={field.state.value}
-            onChange={event => field.handleChange(event.target.value)}
-            onBlur={field.handleBlur}
-            autoComplete="current-password"
-            required
-          />
+          <Field>
+            <FieldLabel>Current password</FieldLabel>
+            <PasswordInput
+              id="currentPassword"
+              value={field.state.value}
+              onChange={event => field.handleChange(event.target.value)}
+              onBlur={field.handleBlur}
+              autoComplete="current-password"
+              required
+            />
+          </Field>
         )}
       </form.Field>
 
@@ -95,33 +97,35 @@ export function ChangePassword() {
         }}
       >
         {field => (
-          <PasswordInput
-            id="newPassword"
-            label="New password"
-            labelClassName="block pb-1 font-medium text-foreground text-sm"
-            value={field.state.value}
-            onChange={event => field.handleChange(event.target.value)}
-            onBlur={field.handleBlur}
-            autoComplete="new-password"
-            minLength={minPasswordLength}
-            required
-          />
+          <Field>
+            <FieldLabel>New password</FieldLabel>
+            <PasswordInput
+              id="newPassword"
+              value={field.state.value}
+              onChange={event => field.handleChange(event.target.value)}
+              onBlur={field.handleBlur}
+              autoComplete="new-password"
+              minLength={minPasswordLength}
+              required
+            />
+          </Field>
         )}
       </form.Field>
 
       <form.Field name="confirmNewPassword">
         {field => (
-          <PasswordInput
-            id="confirmNewPassword"
-            label="Confirm new password"
-            labelClassName="block pb-1 font-medium text-foreground text-sm"
-            value={field.state.value}
-            onChange={event => field.handleChange(event.target.value)}
-            onBlur={field.handleBlur}
-            autoComplete="new-password"
-            minLength={minPasswordLength}
-            required
-          />
+          <Field>
+            <FieldLabel>Confirm new password</FieldLabel>
+            <PasswordInput
+              id="confirmNewPassword"
+              value={field.state.value}
+              onChange={event => field.handleChange(event.target.value)}
+              onBlur={field.handleBlur}
+              autoComplete="new-password"
+              minLength={minPasswordLength}
+              required
+            />
+          </Field>
         )}
       </form.Field>
 

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/client/components/ui/card'
+import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
@@ -215,19 +216,20 @@ function SignUpPage() {
               }}
             >
               {field => (
-                <PasswordInput
-                  id="password"
-                  placeholder="Password"
-                  value={field.state.value}
-                  onChange={e => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                  autoComplete="new-password"
-                  minLength={minPasswordLength}
-                  required
-                  label="Password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                />
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <PasswordInput
+                    id="password"
+                    placeholder="Password"
+                    value={field.state.value}
+                    onChange={e => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    autoComplete="new-password"
+                    minLength={minPasswordLength}
+                    required
+                  />
+                </Field>
               )}
             </form.Field>
 
@@ -244,19 +246,20 @@ function SignUpPage() {
               }}
             >
               {field => (
-                <PasswordInput
-                  id="confirmPassword"
-                  placeholder="Password"
-                  value={field.state.value}
-                  onChange={e => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                  autoComplete="new-password"
-                  minLength={minPasswordLength}
-                  required
-                  label="Confirm password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                />
+                <Field>
+                  <FieldLabel>Confirm password</FieldLabel>
+                  <PasswordInput
+                    id="confirmPassword"
+                    placeholder="Password"
+                    value={field.state.value}
+                    onChange={e => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    autoComplete="new-password"
+                    minLength={minPasswordLength}
+                    required
+                  />
+                </Field>
               )}
             </form.Field>
 

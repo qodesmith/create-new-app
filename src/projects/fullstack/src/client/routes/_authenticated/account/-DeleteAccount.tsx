@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/client/components/ui/dialog'
+import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
@@ -93,16 +94,17 @@ export function DeleteAccount() {
             <PasswordManagerHint />
             <form.Field name="password">
               {field => (
-                <PasswordInput
-                  id="deleteAccountPassword"
-                  label="Password"
-                  labelClassName="block pb-1 font-medium text-foreground text-sm"
-                  value={field.state.value}
-                  onChange={event => field.handleChange(event.target.value)}
-                  onBlur={field.handleBlur}
-                  autoComplete="current-password"
-                  required
-                />
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <PasswordInput
+                    id="deleteAccountPassword"
+                    value={field.state.value}
+                    onChange={event => field.handleChange(event.target.value)}
+                    onBlur={field.handleBlur}
+                    autoComplete="current-password"
+                    required
+                  />
+                </Field>
               )}
             </form.Field>
             <DialogFooter>

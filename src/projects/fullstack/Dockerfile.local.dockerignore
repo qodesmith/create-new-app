@@ -1,19 +1,20 @@
-# Override used when building with `-f Dockerfile.local` (Docker BuildKit
-# picks this up automatically). Mirrors .dockerignore but permits the local
-# SQLite DB through, since Dockerfile.local bakes it into the image on
-# purpose for local container testing.
+# Override used when building with `-f Dockerfile.local` (Docker BuildKit picks
+# this up automatically). Mirrors .dockerignore but permits the local SQLite DB
+# through, since Dockerfile.local bakes it into the image on purpose for local
+# container testing.
 *
 
 # --- Allow-list ---
 !package.json
 !bun.lock
+!bunPluginTailwind.ts                                        
 !bunfig.toml
 !build.ts
 !buildDrizzleStudio.ts
 !src
-!fullstack.sqlite
-!fullstack.sqlite-shm
-!fullstack.sqlite-wal
+!{{PROJECT_NAME}}.sqlite
+!{{PROJECT_NAME}}.sqlite-shm
+!{{PROJECT_NAME}}.sqlite-wal
 
 # --- Re-exclude noise ---
 **/node_modules

@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-COPY build.ts bunfig.toml ./
+COPY build.ts bunPluginTailwind.ts bunfig.toml ./
 COPY {{PROJECT_NAME}}.sqlite* ./
 COPY src ./src/
 
@@ -71,9 +71,9 @@ RUN apk add --no-cache vips
 
 WORKDIR /app
 
-COPY bunfig.toml /app
+COPY bunPluginTailwind.ts bunfig.toml /app
 COPY --from=mainapp /dist /app/
-COPY --from=mainapp /app/fullstack.sqlite* /app/
+COPY --from=mainapp /app/{{PROJECT_NAME}}.sqlite* /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
 
 # Sharp is used to resize/convert avatar uploads to WebP. It has 3 runtime

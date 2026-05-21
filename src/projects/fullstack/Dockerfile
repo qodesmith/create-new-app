@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --production --frozen-lockfile
 
-COPY build.ts bunfig.toml ./
+COPY build.ts bunPluginTailwind.ts bunfig.toml ./
 COPY src ./src/
 
 RUN NODE_ENV=production bun --bun run ./build.ts
@@ -64,7 +64,7 @@ COPY litefs.yml /etc/litefs.yml
 
 WORKDIR /app
 
-COPY bunfig.toml /app
+COPY bunPluginTailwind.ts bunfig.toml /app
 COPY --from=mainapp /dist /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
 

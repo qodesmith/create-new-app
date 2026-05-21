@@ -6,6 +6,7 @@
 # --- Allow-list: files/dirs any Dockerfile in this repo may COPY ---
 !package.json
 !bun.lock
+!bunPluginTailwind.ts     
 !bunfig.toml
 !build.ts
 !buildDrizzleStudio.ts

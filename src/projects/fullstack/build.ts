@@ -64,9 +64,20 @@ await build({
  * we manually change those imports to be absolute in index.html.
  */
 const indexHtml = await Bun.file(`${outdir}/index.html`).text()
-const newHtml = indexHtml
-  .replaceAll('src="./', 'src="/')
-  .replaceAll('href="./', 'href="/')
+const newHtml = new HTMLRewriter()
+  .on('[src]', {
+    element(el) {
+      const src = el.getAttribute('src')
+      if (src?.startsWith('./')) el.setAttribute('src', `/${src.slice(2)}`)
+    },
+  })
+  .on('[href]', {
+    element(el) {
+      const href = el.getAttribute('href')
+      if (href?.startsWith('./')) el.setAttribute('href', `/${href.slice(2)}`)
+    },
+  })
+  .transform(indexHtml)
 await Bun.write(`${outdir}/index.html`, newHtml)
 
 const staticAssets = bunBuildAssets.outputs.reduce<StaticAsset[]>(

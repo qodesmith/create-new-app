@@ -45,7 +45,7 @@ export const noDirectRequestMiddleware = createMiddleware(async (c, next) => {
     const html = `
       <body style="height:100%;background:#000;color:#fff;display:grid;place-items:center;margin:0;">
         <video autoplay muted loop style="max-width:100vw;max-height:100vh;width:100%;height:100%;object-fit:contain;">
-          <source src="/forbidden.webm" type="video/webm">
+          <source src="/assets/forbidden.webm" type="video/webm">
           Please don't link directly to these assets.
         </video>
       </body>

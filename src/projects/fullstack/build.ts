@@ -1,7 +1,7 @@
 import type {StaticAsset} from './src/server/hono/staticAssetsFromBuildRoutes'
 
-import {build} from 'bun'
-import {readdirSync, rmSync} from 'node:fs'
+import {$, build, Glob} from 'bun'
+import {rmSync} from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
@@ -23,7 +23,7 @@ const outdir = inDockerBuild ? '/dist' : 'dist'
  * This will build both the server and client sides of the application. All
  * dependencies will get built and placed in a single directory.
  */
-const buildAssets = await build({
+const bunBuildAssets = await build({
   entrypoints: ['./src/server/bunServer.ts'],
   target: 'bun',
   outdir,
@@ -69,41 +69,96 @@ const newHtml = indexHtml
   .replaceAll('href="./', 'href="/')
 await Bun.write(`${outdir}/index.html`, newHtml)
 
-// Aggregate static assets that are not protected.
-const assets = buildAssets.outputs.reduce<StaticAsset[]>((acc, output) => {
-  const {base: fileName} = path.parse(output.path)
+const staticAssets = bunBuildAssets.outputs.reduce<StaticAsset[]>(
+  (acc, output) => {
+    const fileName = path.basename(output.path)
 
-  // Avoid creating a Hono route for excluded assets - Bun already serves these.
-  if (!excludedAssetsFromHonoServer.includes(fileName)) {
-    acc.push({fileName, isProtected: false})
-  }
+    // Avoid creating a Hono route for excluded assets - Bun already serves these.
+    if (!excludedAssetsFromHonoServer.includes(fileName)) {
+      acc.push({relativePath: fileName, isProtected: false})
+    }
 
-  return acc
-}, [])
+    return acc
+  },
+  []
+)
 
 /**
  * Assets found in this folder are referenced by explicit path in client code
  * (i.e. not imported as a string). These are protected from direct access by
  * the Hono server using a few tricks - i.e. the application can request the
  * asset but manually navigating to the same url will fail.
+ *
+ * Folder structure under assets-protected is mirrored into the output at
+ * `<outdir>/assets/...` and served by Hono at `/assets/...`.
  */
-const dirents = readdirSync('./src/server/assets', {
-  recursive: true,
-  withFileTypes: true,
+const protectedAssetsRoot = path.resolve('./src/server/assets-protected')
+
+const protectedAssetPathsSet = new Set(
+  new Glob('./src/server/assets-protected/**/*').scanSync({
+    absolute: true,
+    dot: true,
+    onlyFiles: true,
+  })
+)
+
+const gitIgnoredAssetsSet = await (async () => {
+  try {
+    const protectedAssetPaths = Array.from(protectedAssetPathsSet).join(' ')
+    const gitRes =
+      await $`git check-ignore ${{raw: protectedAssetPaths}}`.text()
+    return new Set(gitRes.split('\n').filter(Boolean))
+  } catch {
+    return new Set<string>()
+  }
+})()
+
+const protectedAssetsToProcess =
+  protectedAssetPathsSet.difference(gitIgnoredAssetsSet)
+
+/**
+ * Copy protected assets under <outdir>/assets in parallel, bounded to 64
+ * in-flight writes to avoid exhausting file descriptors.
+ *
+ * IMPORTANT: `.values()` returns a SINGLE stateful iterator object that all 64
+ * workers below share. Each `for...of` advances this one iterator via
+ * `.next()`, so every path is handed to exactly one worker.
+ *
+ * Contrast: iterating the Set directly (`for (const p of protectedAssetsToProcess)`)
+ * would call `Set[Symbol.iterator]()` per worker, creating 64 independent
+ * iterators - and every worker would process every file 64 times.
+ */
+const protectedAssetsIterator = protectedAssetsToProcess.values()
+
+/**
+ * 64 worker loops, NOT 64 copies of the same loop. Each worker pulls the next
+ * path from the shared `protectedAssetsIterator` whenever its previous
+ * `Bun.write` resolves, giving a sliding window of up to 64 concurrent writes
+ * (not batches of 64 - fast workers never wait for slow ones). When the
+ * iterator is exhausted, each worker's `for...of` exits naturally.
+ *
+ * JS is single-threaded, so `iterator.next()` and `staticAssets.push` are
+ * atomic between awaits - no races possible.
+ *
+ * 64 is an arbitrary cap on simultaneous I/O writers - tune it as needed. It
+ * sits well under the standard file-descriptor soft limits (macOS: 256,
+ * Linux: typically 1024), leaving plenty of headroom for the rest of the
+ * process.
+ */
+const protectedAssetWorkers = Array.from({length: 64}, async () => {
+  for (const protectedAssetPath of protectedAssetsIterator) {
+    const relativePath = path.relative(protectedAssetsRoot, protectedAssetPath)
+
+    await Bun.write(
+      path.resolve(outdir, 'assets', relativePath),
+      Bun.file(protectedAssetPath)
+    )
+
+    staticAssets.push({relativePath, isProtected: true})
+  }
 })
 
-for (const {name, parentPath} of dirents) {
-  // Avoid creating a Hono route for excluded assets - Bun already serves these.
-  if (excludedAssetsFromHonoServer.includes(name)) continue
-
-  const file = Bun.file(path.resolve(parentPath, name))
-
-  // Copy the protected asset to the destination folder.
-  await Bun.write(path.resolve(outdir, name), file)
-
-  // Aggregate static assets that are protected.
-  assets.push({fileName: name, isProtected: true})
-}
+await Promise.all(protectedAssetWorkers)
 
 // Write the data to a file so we can create Hono routes for them later.
-await Bun.write(`${outdir}/assets.json`, JSON.stringify(assets, null, 2))
+await Bun.write(`${outdir}/assets.json`, JSON.stringify(staticAssets, null, 2))

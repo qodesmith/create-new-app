@@ -1,3 +1,4 @@
+import type {Area, Point} from 'react-easy-crop'
 import type {ImageLoadingStatus} from '@/client/types'
 
 import {LoadingButton} from '@/client/components/custom/LoadingButton'
@@ -6,9 +7,19 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/client/components/ui/avatar'
+import {Button} from '@/client/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/client/components/ui/dialog'
 import {Input} from '@/client/components/ui/input'
 import {Label} from '@/client/components/ui/label'
 import {Separator} from '@/client/components/ui/separator'
+import {Slider} from '@/client/components/ui/slider'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {
   apiAuthClientAtom,
@@ -23,8 +34,13 @@ import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
 import {DetailedError, parseResponse} from 'hono/client'
 import {useAtomValue, useSetAtom} from 'jotai'
-import {useEffect, useId, useRef, useState} from 'react'
+import {ZoomInIcon, ZoomOutIcon} from 'lucide-react'
+import {useCallback, useEffect, useId, useRef, useState} from 'react'
+import Cropper from 'react-easy-crop'
 import {toast} from 'sonner'
+
+const minZoom = 1
+const maxZoom = 3
 
 export function AccountAvatar() {
   const user = useRouteContext({
@@ -39,6 +55,9 @@ export function AccountAvatar() {
     useState<ImageLoadingStatus>('idle')
   const [blobPreviewUrl, setBlobPreviewUrl] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [crop, setCrop] = useState<Point>({x: 0, y: 0})
+  const [zoom, setZoom] = useState(minZoom)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarInputId = useId()
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
@@ -46,10 +65,17 @@ export function AccountAvatar() {
   const setUserAvatarVersion = useSetAtom(userAvatarVersionAtom)
   const userAvatarUrl = useAtomValue(userAvatarUrlSelector)
 
+  const onCropComplete = useCallback((_: Area, pixels: Area) => {
+    setCroppedAreaPixels(pixels)
+  }, [])
+
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
     setBlobPreviewUrl(null)
     setSelectedFile(null)
+    setCrop({x: 0, y: 0})
+    setZoom(minZoom)
+    setCroppedAreaPixels(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -104,16 +130,29 @@ export function AccountAvatar() {
     [blobPreviewUrl]
   )
 
+  const handleConfirm = async () => {
+    if (!(blobPreviewUrl && croppedAreaPixels && selectedFile)) return
+    try {
+      const file = await renderCroppedFile(
+        blobPreviewUrl,
+        croppedAreaPixels,
+        selectedFile.name
+      )
+      uploadMutation.mutate(file)
+    } catch (error) {
+      toast.error('Failed to process image')
+      logClientError({error, context: 'client:avatarUpload:exception'})
+    }
+  }
+
   return (
     <>
       <div className="flex items-center gap-4">
         <Avatar className="size-14">
           <AvatarImage
-            src={blobPreviewUrl ?? (showImage ? userAvatarUrl : undefined)}
+            src={showImage ? userAvatarUrl : undefined}
             alt={user.email}
-            onLoadingStatusChange={status => {
-              if (!blobPreviewUrl) setImageLoadingStatus(status)
-            }}
+            onLoadingStatusChange={setImageLoadingStatus}
           />
           <AvatarFallback className="text-lg uppercase">
             {initials}
@@ -133,7 +172,7 @@ export function AccountAvatar() {
       <Separator className="my-2" />
 
       <div className="space-y-2 text-sm">
-        {imageLoadingStatus !== 'loaded' && !blobPreviewUrl && (
+        {imageLoadingStatus !== 'loaded' && (
           <>
             <Label htmlFor={avatarInputId}>Avatar</Label>
             <Input
@@ -156,6 +195,9 @@ export function AccountAvatar() {
                 if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
                 setBlobPreviewUrl(URL.createObjectURL(file))
                 setSelectedFile(file)
+                setCrop({x: 0, y: 0})
+                setZoom(minZoom)
+                setCroppedAreaPixels(null)
               }}
             />
           </>
@@ -166,33 +208,7 @@ export function AccountAvatar() {
         <p className="text-muted-foreground text-xs">
           Maximum file upload size: {bytesToSize(maxAvatarUploadSize)}
         </p>
-        {uploadMutation.isPending && (
-          <p className="text-muted-foreground text-xs">Uploading...</p>
-        )}
-        {blobPreviewUrl && (
-          <div className="flex gap-2">
-            <LoadingButton
-              type="button"
-              size="sm"
-              loading={uploadMutation.isPending}
-              onClick={() => {
-                if (selectedFile) uploadMutation.mutate(selectedFile)
-              }}
-            >
-              Upload avatar
-            </LoadingButton>
-            <LoadingButton
-              type="button"
-              variant="outline"
-              size="sm"
-              loading={uploadMutation.isPending}
-              onClick={clearPreview}
-            >
-              Clear avatar
-            </LoadingButton>
-          </div>
-        )}
-        {imageLoadingStatus === 'loaded' && !blobPreviewUrl && (
+        {imageLoadingStatus === 'loaded' && (
           <LoadingButton
             type="button"
             variant="outline"
@@ -204,6 +220,116 @@ export function AccountAvatar() {
           </LoadingButton>
         )}
       </div>
+
+      <Dialog
+        open={blobPreviewUrl !== null}
+        onOpenChange={open => {
+          if (!(open || uploadMutation.isPending)) clearPreview()
+        }}
+      >
+        <DialogContent
+          className="sm:max-w-md"
+          onEscapeKeyDown={event => {
+            if (uploadMutation.isPending) event.preventDefault()
+          }}
+          onInteractOutside={event => {
+            if (uploadMutation.isPending) event.preventDefault()
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Crop avatar</DialogTitle>
+            <DialogDescription>
+              Drag to reposition, scroll or use the slider to zoom.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative aspect-square w-full overflow-hidden rounded-md bg-muted">
+            {blobPreviewUrl && (
+              <Cropper
+                image={blobPreviewUrl}
+                crop={crop}
+                zoom={zoom}
+                minZoom={minZoom}
+                maxZoom={maxZoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <ZoomOutIcon className="size-4 shrink-0 text-muted-foreground" />
+            <Slider
+              min={minZoom}
+              max={maxZoom}
+              step={0.01}
+              value={[zoom]}
+              onValueChange={value => setZoom(value[0] ?? minZoom)}
+              aria-label="Zoom"
+            />
+            <ZoomInIcon className="size-4 shrink-0 text-muted-foreground" />
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={clearPreview}
+              disabled={uploadMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              type="button"
+              loading={uploadMutation.isPending}
+              disabled={!croppedAreaPixels}
+              onClick={handleConfirm}
+            >
+              Upload avatar
+            </LoadingButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
+}
+
+async function renderCroppedFile(
+  imageSrc: string,
+  pixelCrop: Area,
+  originalName: string
+): Promise<File> {
+  const image = await loadImage(imageSrc)
+  const canvas = document.createElement('canvas')
+  canvas.width = pixelCrop.width
+  canvas.height = pixelCrop.height
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Failed to get 2d context')
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  )
+  const blob = await new Promise<Blob | null>(resolve =>
+    canvas.toBlob(resolve, 'image/webp', 0.92)
+  )
+  if (!blob) throw new Error('Failed to encode cropped image')
+  const baseName = originalName.replace(/\.[^.]+$/, '')
+  return new File([blob], `${baseName}.webp`, {type: 'image/webp'})
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error('Failed to load image'))
+    img.src = src
+  })
 }

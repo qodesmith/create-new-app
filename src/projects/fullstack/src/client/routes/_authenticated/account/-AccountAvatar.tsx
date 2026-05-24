@@ -31,6 +31,7 @@ export function AccountAvatar() {
     select: ({user}) => user,
   })
   const initials = useAtomValue(userInitialsAtom)
+  const [emailName, emailDomain] = user.email.split('@')
 
   const [showImage, setShowImage] = useState(true)
   const [imageLoadingStatus, setImageLoadingStatus] =
@@ -123,11 +124,14 @@ export function AccountAvatar() {
             {initials}
           </AvatarFallback>
         </Avatar>
-        <div className="text-sm">
+        <div className="min-w-0 text-sm">
           <p className="font-medium">
             {user.name} {user.lastName}
           </p>
-          <p className="text-muted-foreground">{user.email}</p>
+          <p className="flex text-muted-foreground">
+            <span className="min-w-0 truncate">{emailName}</span>
+            <span className="shrink-0">@{emailDomain}</span>
+          </p>
         </div>
       </div>
 

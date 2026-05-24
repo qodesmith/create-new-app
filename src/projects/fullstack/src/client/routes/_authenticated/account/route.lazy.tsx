@@ -71,7 +71,7 @@ function AccountPage() {
 
       {/* DELETE ACCOUNT */}
       <section>
-        <AccountCard title="Delete account" className="border-destructive">
+        <AccountCard title="Delete account" isDestructive>
           <DeleteAccount />
         </AccountCard>
       </section>
@@ -82,20 +82,28 @@ function AccountPage() {
 function AccountCard({
   title,
   children,
-  className,
+  isDestructive,
 }: {
   title: string
   children: ReactNode
-  className?: string
+  isDestructive?: boolean
 }) {
   return (
-    <Card className={cn('group relative h-full overflow-hidden', className)}>
+    <Card
+      className={cn(
+        'group relative h-full overflow-hidden',
+        isDestructive && 'border-destructive/50'
+      )}
+    >
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">{children}</CardContent>
       <BorderBeam
-        className="overflow-hidden from-transparent via-cyan-400/80 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className={cn(
+          'overflow-hidden from-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100',
+          isDestructive ? 'via-destructive' : 'via-cyan-400/80'
+        )}
         size={240}
         duration={6}
       />

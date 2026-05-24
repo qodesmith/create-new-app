@@ -12,16 +12,17 @@ import {Separator} from '@/client/components/ui/separator'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {
   apiAuthClientAtom,
+  userAvatarUrlSelector,
   userAvatarVersionAtom,
   userInitialsAtom,
 } from '@/client/state/globalState'
-import {authRoutePath, maxAvatarUploadSize} from '@/shared/constants'
+import {maxAvatarUploadSize} from '@/shared/constants'
 
 import {bytesToSize} from '@qodestack/utils'
 import {useMutation} from '@tanstack/react-query'
 import {useRouteContext} from '@tanstack/react-router'
 import {DetailedError, parseResponse} from 'hono/client'
-import {useAtom, useAtomValue} from 'jotai'
+import {useAtomValue, useSetAtom} from 'jotai'
 import {useEffect, useId, useRef, useState} from 'react'
 import {toast} from 'sonner'
 
@@ -42,9 +43,8 @@ export function AccountAvatar() {
   const avatarInputId = useId()
   const apiAuthClient = useAtomValue(apiAuthClientAtom)
   const logClientError = useLogClientError()
-  const [userAvatarVersion, setUserAvatarVersion] = useAtom(
-    userAvatarVersionAtom
-  )
+  const setUserAvatarVersion = useSetAtom(userAvatarVersionAtom)
+  const userAvatarUrl = useAtomValue(userAvatarUrlSelector)
 
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
@@ -109,12 +109,7 @@ export function AccountAvatar() {
       <div className="flex items-center gap-4">
         <Avatar className="size-14">
           <AvatarImage
-            src={
-              blobPreviewUrl ??
-              (showImage
-                ? `${authRoutePath}/avatar?=${userAvatarVersion}`
-                : undefined)
-            }
+            src={blobPreviewUrl ?? (showImage ? userAvatarUrl : undefined)}
             alt={user.email}
             onLoadingStatusChange={status => {
               if (!blobPreviewUrl) setImageLoadingStatus(status)

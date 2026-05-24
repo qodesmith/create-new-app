@@ -12,7 +12,6 @@ import {bytesToSize} from '@qodestack/utils'
 import {type} from 'arktype'
 import {eq} from 'drizzle-orm'
 import {Hono} from 'hono'
-import sharp from 'sharp'
 
 export type HonoAuthServer = typeof authRoutes
 
@@ -47,23 +46,21 @@ export const authRoutes = new Hono()
       let webpBuffer: Buffer
 
       try {
-        const buffer = Buffer.from(await avatar.arrayBuffer())
-        const raw = await sharp(buffer)
-          .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'cover'})
-          .raw()
-          .toBuffer({resolveWithObject: true})
+        const inputBytes = new Uint8Array(await avatar.arrayBuffer())
         const qualityReductionAmount = 5
         let quality = 90
 
-        webpBuffer = await sharp(raw.data, {raw: raw.info})
+        webpBuffer = await new Bun.Image(inputBytes)
+          .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'inside'})
           .webp({quality})
-          .toBuffer()
+          .buffer()
 
         while (webpBuffer.byteLength > maxAvatarFileSize && quality > 5) {
           quality -= qualityReductionAmount
-          webpBuffer = await sharp(raw.data, {raw: raw.info})
+          webpBuffer = await new Bun.Image(inputBytes)
+            .resize(maxAvatarDimension, maxAvatarDimension, {fit: 'inside'})
             .webp({quality})
-            .toBuffer()
+            .buffer()
         }
 
         if (webpBuffer.byteLength > maxAvatarFileSize) {

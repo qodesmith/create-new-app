@@ -8,10 +8,9 @@ import {Button} from '@/client/components/ui/button'
 import {useSignOut} from '@/client/hooks/useSignOut'
 import {
   userAtom,
-  userAvatarVersionAtom,
+  userAvatarUrlSelector,
   userInitialsAtom,
 } from '@/client/state/globalState'
-import {authRoutePath} from '@/shared/constants'
 
 import {Link, useRouterState} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
@@ -21,7 +20,7 @@ export function AppHeader() {
   const user = useAtomValue(userAtom)
   const {signOut, isSigningOut} = useSignOut()
   const initials = useAtomValue(userInitialsAtom)
-  const userAvatarVersion = useAtomValue(userAvatarVersionAtom)
+  const userAvatarUrl = useAtomValue(userAvatarUrlSelector)
 
   return (
     <header className="flex items-center justify-between border-b p-2">
@@ -44,10 +43,7 @@ export function AppHeader() {
               Log out
             </Button>
             <Avatar>
-              <AvatarImage
-                src={`${authRoutePath}/avatar?v=${userAvatarVersion}`}
-                alt={user.email}
-              />
+              <AvatarImage src={userAvatarUrl} alt={user.email} />
               <AvatarFallback className="uppercase">{initials}</AvatarFallback>
             </Avatar>
           </>

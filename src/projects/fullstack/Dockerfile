@@ -53,8 +53,7 @@ FROM oven/bun:alpine
 
 # ca-certificates, fuse3, and sqlite are needed for LiteFS to work.
 # curl is installed just for convenience.
-# vips is required by sharp for image processing
-RUN apk update && apk add --no-cache ca-certificates fuse3 sqlite curl vips && rm -rf /var/cache/apk/*
+RUN apk update && apk add --no-cache ca-certificates fuse3 sqlite curl && rm -rf /var/cache/apk/*
 
 # Pull in the litefs binary by copying it from the official Docker image.
 COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
@@ -67,16 +66,6 @@ WORKDIR /app
 COPY bunPluginTailwind.ts bunfig.toml /app
 COPY --from=mainapp /dist /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
-
-# Sharp is used to resize/convert avatar uploads to WebP. It has 3 runtime
-# dependencies: @img (platform-specific native binary + colour util),
-# detect-libc, and semver. Because sharp relies on a native .node addon that
-# can't be inlined by a JS bundler, we mark it as external in build.ts and copy
-# it with its dependencies from the build stage's node_modules.
-COPY --from=mainapp /app/node_modules/sharp /app/node_modules/sharp
-COPY --from=mainapp /app/node_modules/@img /app/node_modules/@img
-COPY --from=mainapp /app/node_modules/detect-libc /app/node_modules/detect-libc
-COPY --from=mainapp /app/node_modules/semver /app/node_modules/semver
 
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/

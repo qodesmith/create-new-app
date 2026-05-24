@@ -48,7 +48,7 @@ COPY src ./src/
 
 # This is so buildDrizzleStudio.ts has the necessary packages installed
 # This node_modules & package.json will NOT be copied over into the final image
-RUN echo '{}' > package.json && bun install drizzle-kit drizzle-orm
+RUN echo '{}' > package.json && bun install drizzle-kit drizzle-orm @qodestack/utils
 
 # Ensure the drizzleStudio directory contains node_modules and package.json
 # This node_modules & package.json WILL be copied over into the final image
@@ -66,25 +66,12 @@ COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
 
 FROM oven/bun:alpine
 
-# vips is required by sharp for image processing
-RUN apk add --no-cache vips
-
 WORKDIR /app
 
 COPY bunPluginTailwind.ts bunfig.toml /app
 COPY --from=mainapp /dist /app/
 COPY --from=mainapp /app/{{PROJECT_NAME}}.sqlite* /app/
 COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
-
-# Sharp is used to resize/convert avatar uploads to WebP. It has 3 runtime
-# dependencies: @img (platform-specific native binary + colour util),
-# detect-libc, and semver. Because sharp relies on a native .node addon that
-# can't be inlined by a JS bundler, we mark it as external in build.ts and copy
-# it with its dependencies from the build stage's node_modules.
-COPY --from=mainapp /app/node_modules/sharp /app/node_modules/sharp
-COPY --from=mainapp /app/node_modules/@img /app/node_modules/@img
-COPY --from=mainapp /app/node_modules/detect-libc /app/node_modules/detect-libc
-COPY --from=mainapp /app/node_modules/semver /app/node_modules/semver
 
 # See migrate.ts - drizzle folder expected so DB migrations can be run.
 COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/

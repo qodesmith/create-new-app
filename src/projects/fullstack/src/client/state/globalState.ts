@@ -5,6 +5,7 @@ import {
   createApiClient,
   getAuthClient,
 } from '@/client/apiClient'
+import {authRoutePath} from '@/shared/constants'
 
 import {atom} from 'jotai'
 import {atomWithLazy, atomWithStorage} from 'jotai/utils'
@@ -42,6 +43,10 @@ export const themeSelector = atom<'light' | 'dark'>(get =>
 
 export const userAtom = atom<User | null>(null)
 export const userAvatarVersionAtom = atom(0)
+export const userAvatarUrlSelector = atom(get => {
+  const avatarVersion = get(userAvatarVersionAtom)
+  return `${authRoutePath}/avatar?v=${avatarVersion}`
+})
 export const userInitialsAtom = atom<string>(get => {
   const user = get(userAtom)
 

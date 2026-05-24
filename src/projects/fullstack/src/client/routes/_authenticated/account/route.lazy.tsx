@@ -7,12 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/client/components/ui/card'
+import {cn} from '@/client/lib/utils'
 
 import {createLazyFileRoute} from '@tanstack/react-router'
 
 import {AccountAvatar} from './-AccountAvatar'
 import {Appearance} from './-Appearance'
 import {ChangeEmail} from './-ChangeEmail'
+import {ChangeName} from './-ChangeName'
 import {ChangePassword} from './-ChangePassword'
 import {DeleteAccount} from './-DeleteAccount'
 import {Passkeys} from './-Passkeys'
@@ -55,8 +57,13 @@ function AccountPage() {
         </AccountCard>
       </section>
 
-      {/* ADD PASSKEY */}
-      <section>
+      <section className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+        {/* CHANGE NAME */}
+        <AccountCard title="Change name">
+          <ChangeName />
+        </AccountCard>
+
+        {/* ADD PASSKEY */}
         <AccountCard title="Passkeys">
           <Passkeys />
         </AccountCard>
@@ -64,7 +71,7 @@ function AccountPage() {
 
       {/* DELETE ACCOUNT */}
       <section>
-        <AccountCard title="Delete account">
+        <AccountCard title="Delete account" className="border-destructive">
           <DeleteAccount />
         </AccountCard>
       </section>
@@ -72,9 +79,17 @@ function AccountPage() {
   )
 }
 
-function AccountCard({title, children}: {title: string; children: ReactNode}) {
+function AccountCard({
+  title,
+  children,
+  className,
+}: {
+  title: string
+  children: ReactNode
+  className?: string
+}) {
   return (
-    <Card className="group relative h-full overflow-hidden">
+    <Card className={cn('group relative h-full overflow-hidden', className)}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

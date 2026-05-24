@@ -79,6 +79,7 @@ export type ErrorContext =
   | 'client:requestPasswordReset:exception'
   | 'client:changeEmail:exception'
   | 'client:changePassword:exception'
+  | 'client:changeName:exception'
   | 'client:avatarUpload:exception'
   | 'client:avatarDelete:exception'
   | 'client:passkeyAdd:exception'

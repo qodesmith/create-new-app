@@ -116,6 +116,25 @@ export const authOptions = {
           throw passwordError
         }
       }
+
+      // Server-side form validation when updating user name/lastName.
+      if (ctxPath === '/update-user') {
+        const {name, lastName} = body
+
+        const nameResult = nameValidator(name)
+        if (nameResult instanceof type.errors) {
+          throw new APIError('BAD_REQUEST', {
+            message: `Invalid name: ${nameValidationMessage}`,
+          })
+        }
+
+        const lastNameResult = nameValidator(lastName)
+        if (lastNameResult instanceof type.errors) {
+          throw new APIError('BAD_REQUEST', {
+            message: `Invalid last name: ${nameValidationMessage}`,
+          })
+        }
+      }
     }),
   },
 

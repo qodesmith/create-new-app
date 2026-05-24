@@ -153,9 +153,12 @@ export function Passkeys() {
       {passkeys.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-6 text-center">
           <Fingerprint className="size-8 text-muted-foreground" />
-          <p className="text-muted-foreground text-sm">
-            No passkeys yet. Add one to enable passwordless sign-in.
-          </p>
+          <div>
+            <p className="text-muted-foreground text-sm">No passkeys yet.</p>
+            <p className="text-muted-foreground text-sm">
+              Add one to enable passwordless sign-in.
+            </p>
+          </div>
         </div>
       ) : (
         <ul className="divide-y divide-border">

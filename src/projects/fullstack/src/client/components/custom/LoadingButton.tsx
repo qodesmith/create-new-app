@@ -31,7 +31,11 @@ export function LoadingButton({
           speed={speed}
         />
       </span>
-      <span className={cn(loading && 'invisible')}>{children}</span>
+      <span
+        className={cn('inline-flex items-center gap-2', loading && 'invisible')}
+      >
+        {children}
+      </span>
     </Button>
   )
 }

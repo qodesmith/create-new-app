@@ -138,6 +138,7 @@
   --radius-4xl: calc(var(--radius) + 1em);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-sonar: sonar 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 
   @keyframes marquee {
     from {
@@ -155,6 +156,18 @@
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+}
+
+@keyframes sonar {
+  75%,
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+@utility animation-delay-* {
+  animation-delay: calc(--value(integer) * 1ms);
 }
 
 @layer base {

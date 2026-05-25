@@ -1,5 +1,6 @@
 import type {ComponentProps, ReactNode} from 'react'
 
+import {SonarPulse} from '@/client/components/custom/SonarPulse'
 import {Badge} from '@/client/components/ui/badge'
 import {
   Card,
@@ -68,8 +69,9 @@ function RouteComponent() {
               )
             })}
           </h1>
-          <p className="text-center text-sm italic">
-            Brought to you by{' '}
+          <p className="flex items-center justify-center gap-1.5 text-sm italic">
+            <SonarPulse />
+            Brought to you by
             <a href="https://github.com/qodesmith/create-new-app">
               Create New App
             </a>

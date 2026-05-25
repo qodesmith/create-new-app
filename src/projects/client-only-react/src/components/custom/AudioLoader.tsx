@@ -56,7 +56,11 @@ export const AudioLoader = memo(function AudioLoader({
   }, [bars, gap, width])
 
   return (
-    <div style={{width, height}}>
+    /**
+     * `span` (not `div`) so this can live inside `<button>` without producing
+     * invalid HTML — `LoadingButton` mounts the loader inside a button.
+     */
+    <span className="inline-block" style={{width, height}}>
       <svg
         // size-auto is here to override Shadcn button's default svg styling
         className="size-auto fill-current"
@@ -88,6 +92,6 @@ export const AudioLoader = memo(function AudioLoader({
           })}
         </g>
       </svg>
-    </div>
+    </span>
   )
 })

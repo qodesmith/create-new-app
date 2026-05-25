@@ -49,6 +49,10 @@ type BorderBeamProps = {
    * The border width of the beam.
    */
   borderWidth?: number
+  /**
+   * The border color. Defaults to `border-transparent`.
+   */
+  borderColor?: string
 }
 
 // https://magicui.design/docs/components/border-beam
@@ -64,10 +68,14 @@ export const BorderBeam = ({
   reverse = false,
   initialOffset = 0,
   borderWidth = 1,
+  borderColor = 'border-transparent',
 }: BorderBeamProps) => {
   return (
     <div
-      className="border-(length:--border-beam-width) mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect pointer-events-none absolute inset-0 rounded-[inherit] border-transparent [mask-clip:padding-box,border-box]"
+      className={cn(
+        'border-(length:--border-beam-width) mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect pointer-events-none absolute inset-0 rounded-[inherit] [mask-clip:padding-box,border-box]',
+        borderColor
+      )}
       style={
         {
           '--border-beam-width': `${borderWidth}px`,

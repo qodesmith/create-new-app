@@ -240,7 +240,7 @@ export const adminRoutes = new Hono()
           bestEffort(() => {
             db.insert(errorsTable)
               .values({
-                error: errorToObject(streamError, {prettyStack: true}),
+                error: errorToObject(streamError),
                 context: 'db:backupStream:exception',
                 userId: user.id,
               })

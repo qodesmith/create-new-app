@@ -1,10 +1,14 @@
+import {Button} from '@/client/components/ui/button'
 import {AccountCard} from '@/client/routes/_authenticated/-AccountCard'
 
 import {createLazyFileRoute} from '@tanstack/react-router'
+import {PlusIcon} from 'lucide-react'
+import {toast} from 'sonner'
 
 import {AdminSection} from './-AdminSection'
 import {DatabaseBackup} from './-DatabaseBackup'
 import {StaleRecords} from './-StaleRecords'
+import {UsersTable} from './-UsersTable'
 
 export const Route = createLazyFileRoute('/_authenticated/admin')({
   component: AdminPage,
@@ -17,10 +21,19 @@ function AdminPage() {
         <h1 className="pt-0">Admin</h1>
       </header>
 
-      <AdminSection title="Users">
-        <p className="text-muted-foreground text-sm">
-          User management coming soon.
-        </p>
+      <AdminSection
+        title="Users"
+        action={
+          <Button
+            size="sm"
+            onClick={() => toast.info('Create user — coming soon')}
+          >
+            <PlusIcon className="size-4" />
+            Create user
+          </Button>
+        }
+      >
+        <UsersTable />
       </AdminSection>
 
       <AdminSection title="System">

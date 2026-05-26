@@ -23,6 +23,7 @@ import {toast} from 'sonner'
 import {BanUserDialog} from './-BanUserDialog'
 import {ChangeRoleDialog} from './-ChangeRoleDialog'
 import {EditUserDialog} from './-EditUserDialog'
+import {UserSessionsDialog} from './-UserSessionsDialog'
 
 type UserRowActionsProps = {
   user: TableUser
@@ -42,6 +43,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const banDialog = useBoolean()
   const unbanDialog = useBoolean()
   const changeRoleDialog = useBoolean()
+  const sessionsDialog = useBoolean()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
   const [isUnbanning, setIsUnbanning] = useState(false)
@@ -159,6 +161,9 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
               Impersonate
             </DropdownMenuItem>
           )}
+          <DropdownMenuItem onSelect={sessionsDialog.setTrue}>
+            Manage sessions
+          </DropdownMenuItem>
           {!(isSelf || isBanned) && (
             <DropdownMenuItem
               variant="destructive"
@@ -198,6 +203,12 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
       <ChangeRoleDialog
         open={changeRoleDialog.value}
         onOpenChange={changeRoleDialog.setValue}
+        user={user}
+      />
+
+      <UserSessionsDialog
+        open={sessionsDialog.value}
+        onOpenChange={sessionsDialog.setValue}
         user={user}
       />
 

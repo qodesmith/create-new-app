@@ -100,3 +100,5 @@ export type ErrorContext =
   | 'client:adminBanUser:exception'
   | 'client:adminUnbanUser:exception'
   | 'client:adminSetRole:exception'
+  | 'client:adminRevokeUserSession:exception'
+  | 'client:adminRevokeUserSessions:exception'

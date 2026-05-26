@@ -5,7 +5,7 @@ import {networkInterfaces} from 'node:os'
 
 import {is0000, isProd, port} from '@/server/constants'
 import {migrateDbSchema} from '@/server/db/migrate'
-import {startDbCleanup} from '@/server/dbCleanup'
+import {reconcileBackupAuditOnBoot, startDbCleanup} from '@/server/dbCleanup'
 import {honoServer} from '@/server/hono/honoServer'
 import indexHtml from '@/server/index.html'
 import {prodSecurityHeaders} from '@/server/middleware/secureHeadersMiddleware'
@@ -19,6 +19,14 @@ if (process.env.NODE_ENV === 'production') {
    */
   migrateDbSchema()
 }
+
+/**
+ * Must run before `serve()` — anything still marked `'started'` in the
+ * audit table belongs to a previous process and needs to be reaped before
+ * a fresh request can write a legitimate `'started'` row that we'd then
+ * incorrectly classify as an orphan.
+ */
+reconcileBackupAuditOnBoot()
 
 // In deployed production, `indexHtml.index` will be a file path.
 const prodIndexHtmlContent = isProd

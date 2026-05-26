@@ -1,4 +1,9 @@
-import type {AuthSchemaSelect, SharedAuditLogsMetadata} from '@/server/types'
+import type {
+  AdminAuditLogsMetadata,
+  AuthSchemaSelect,
+  DownloadDatabaseStatus,
+  SharedAuditLogsMetadata,
+} from '@/server/types'
 
 import process from 'node:process'
 
@@ -19,7 +24,7 @@ import {log} from '@/server/utils/logger'
 import {emailVerificationExpiryInMs} from '@/shared/constants'
 
 import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
-import {and, eq, lt} from 'drizzle-orm'
+import {and, eq, lt, sql} from 'drizzle-orm'
 
 const oneHourInMs = getUnitInMs(1, 'h')
 let started = false
@@ -273,6 +278,59 @@ export function purgeStaleRecords({
   }
 
   return dataPurged
+}
+
+/**
+ * One-shot startup reconciliation for the `download-database` audit rows.
+ *
+ * Reaps orphan `'started'` rows. By construction this process just booted,
+ * so any row in `'started'` is from a previous process that died before it
+ * could finalize. Flip them to `'fail'` and let `$onUpdate` record when the
+ * reap happened. Idempotent — re-running on subsequent boots is a no-op
+ * once nothing matches.
+ *
+ * Must run before the HTTP server starts accepting requests so a brand-new
+ * `'started'` row from the current process isn't mistakenly reaped.
+ *
+ * Gated on `--is-primary` in prod — replicas are read-only at the SQLite
+ * level under LiteFS.
+ */
+export function reconcileBackupAuditOnBoot() {
+  if (isProd) {
+    const isPrimary = process.argv.slice(2).includes('--is-primary')
+
+    if (!isPrimary) {
+      log.text('Skipping backup-audit reconciliation on non-primary node')
+      return
+    }
+  }
+
+  const db = getDatabase()
+  const action: AdminAuditLogsMetadata['action'] = 'download-database'
+  const startedStatus: DownloadDatabaseStatus = 'started'
+
+  bestEffort(
+    () => {
+      const reaped = db
+        .update(adminAuditLogsTable)
+        .set({metadata: {action: 'download-database', status: 'fail'}})
+        .where(
+          and(
+            sql`${adminAuditLogsTable.metadata} ->> 'action' = ${action}`,
+            sql`${adminAuditLogsTable.metadata} ->> 'status' = ${startedStatus}`
+          )
+        )
+        .returning({id: adminAuditLogsTable.id})
+        .all()
+
+      if (reaped.length > 0) {
+        log.text(
+          `[DB_BOOT] Reaped ${reaped.length} orphan backup attempt(s) from a previous process`
+        )
+      }
+    },
+    {log: true}
+  )
 }
 
 /**

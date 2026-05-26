@@ -1,13 +1,4 @@
-import type {ReactNode} from 'react'
-
-import {BorderBeam} from '@/client/components/ui/border-beam'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/client/components/ui/card'
-import {cn} from '@/client/lib/utils'
+import {AccountCard} from '@/client/routes/_authenticated/-AccountCard'
 
 import {createLazyFileRoute} from '@tanstack/react-router'
 
@@ -76,37 +67,5 @@ function AccountPage() {
         </AccountCard>
       </section>
     </div>
-  )
-}
-
-function AccountCard({
-  title,
-  children,
-  isDestructive,
-}: {
-  title: string
-  children: ReactNode
-  isDestructive?: boolean
-}) {
-  return (
-    <Card
-      className={cn(
-        'group relative h-full overflow-hidden',
-        isDestructive && 'border-destructive/50'
-      )}
-    >
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">{children}</CardContent>
-      <BorderBeam
-        className={cn(
-          'overflow-hidden from-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100',
-          isDestructive ? 'via-destructive' : 'via-cyan-400/80'
-        )}
-        size={240}
-        duration={6}
-      />
-    </Card>
   )
 }

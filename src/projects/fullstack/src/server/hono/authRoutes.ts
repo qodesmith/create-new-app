@@ -1,5 +1,5 @@
 import {getDatabase} from '@/server/db/getDatabase'
-import {avatarsTable} from '@/server/db/schema/appSchema'
+import {avatarsTable, errorsTable} from '@/server/db/schema/appSchema'
 import {authMiddleware} from '@/server/middleware/authMiddleware'
 import {
   maxAvatarDimension,
@@ -8,7 +8,7 @@ import {
 } from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
-import {bytesToSize} from '@qodestack/utils'
+import {bestEffort, bytesToSize, errorToObject} from '@qodestack/utils'
 import {type} from 'arktype'
 import {eq} from 'drizzle-orm'
 import {Hono} from 'hono'
@@ -66,7 +66,18 @@ export const authRoutes = new Hono()
         if (webpBuffer.byteLength > maxAvatarFileSize) {
           return c.json({error: 'Image too large after compression'}, 400)
         }
-      } catch {
+      } catch (err) {
+        bestEffort(() => {
+          getDatabase()
+            .insert(errorsTable)
+            .values({
+              error: errorToObject(err),
+              context: 'bunImage:avatarUpload:exception',
+              userId: c.get('user').id,
+            })
+            .run()
+        })
+
         return c.json({error: 'Unsupported image format'}, 400)
       }
 

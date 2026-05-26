@@ -10,7 +10,11 @@ import {staticAssetsFromBuildRoutes} from '@/server/hono/staticAssetsFromBuildRo
 import indexHtml from '@/server/index.html'
 import {corsMiddleware} from '@/server/middleware/corsMiddleware'
 import {secureHeadersMiddleware} from '@/server/middleware/secureHeadersMiddleware'
-import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
+import {
+  adminRoutePath,
+  authRoutePath,
+  betterAuthBasePath,
+} from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
 import {bestEffort, errorToObject} from '@qodestack/utils'
@@ -138,7 +142,7 @@ export const honoServer = new Hono()
   // ADMIN //
   ///////////
 
-  .route('/api/admin', adminRoutes)
+  .route(adminRoutePath, adminRoutes)
 
   /////////
   // API //

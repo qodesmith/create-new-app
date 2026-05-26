@@ -2,15 +2,14 @@ import type {Casing} from 'drizzle-orm'
 import type {BunSQLiteDatabase} from 'drizzle-orm/bun-sqlite'
 
 import {Database} from 'bun:sqlite'
-import fs from 'node:fs'
+import crypto from 'node:crypto'
+import os from 'node:os'
 import path from 'node:path'
 
 import * as appSchema from '@/server/db/schema/appSchema'
 import * as authSchema from '@/server/db/schema/authSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
-import {log} from '@/server/utils/logger'
 
-import {errorToObject} from '@qodestack/utils'
 import {sql} from 'drizzle-orm'
 import {drizzle} from 'drizzle-orm/bun-sqlite'
 
@@ -89,26 +88,33 @@ export function getDatabase() {
   return db
 }
 
+/**
+ * Creates a fresh SQLite snapshot via VACUUM INTO.
+ *
+ * The snapshot lives in the OS temp dir (NOT alongside the live DB) because
+ * the live DB sits inside the LiteFS FUSE mount — that directory is owned by
+ * LiteFS and writing non-DB files into it is unsupported. The caller is
+ * responsible for deleting `sqliteBackupPath` once it's done streaming.
+ *
+ * VACUUM INTO is atomic, doesn't block readers/writers, and produces a clean
+ * file with no WAL dependencies.
+ */
 export function exportDatabase() {
   const db = getDatabase()
-  const {dir, name, ext} = path.parse(sqlitePath)
-  const dbName = `${name}${ext}`
+  const {name, ext} = path.parse(sqlitePath)
+  const timestamp = Date.now()
+  const isoDate = new Date(timestamp).toISOString().replace(/[:.]/g, '-')
 
-  // Delete old backups
-  fs.readdirSync(dir).forEach(fileName => {
-    if (fileName.includes(dbName) && fileName.endsWith('.backup')) {
-      const backupName = path.join(dir, fileName)
-
-      try {
-        fs.unlinkSync(backupName)
-      } catch (e) {
-        log.error(
-          `Error deleting database backup file ${backupName}:`,
-          errorToObject(e, {prettyStack: true})
-        )
-      }
-    }
-  })
+  /**
+   * Random suffix lets concurrent backups coexist — two clicks in the same
+   * millisecond would otherwise produce the same path and clobber each other.
+   */
+  const unique = crypto.randomBytes(8).toString('hex')
+  const sqliteBackupPath = path.join(
+    os.tmpdir(),
+    `${name}${ext}.${timestamp}.${unique}.backup`
+  )
+  const downloadName = `${name}-${isoDate}${ext}.gz`
 
   /**
    * VACUUM INTO creates a complete, consistent backup of the database without
@@ -125,11 +131,7 @@ export function exportDatabase() {
    * directly into the SQL string. Quotes are needed because it's a file path
    * (SQL string literal), not a numeric value.
    */
-  const backupPath = `${sqlitePath}.${Date.now()}.backup`
-  db.run(sql`VACUUM INTO ${sql.raw(`'${backupPath}'`)}`)
+  db.run(sql`VACUUM INTO ${sql.raw(`'${sqliteBackupPath}'`)}`)
 
-  return {
-    bunFile: Bun.file(backupPath),
-    fileName: path.parse(backupPath).base,
-  }
+  return {sqliteBackupPath, downloadName}
 }

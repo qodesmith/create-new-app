@@ -3,7 +3,12 @@
   "compilerOptions": {
     "paths": {
       "@/shared/*": ["../shared/*"],
-      "@/client/*": ["./*"]
+      "@/client/*": ["./*"],
+
+      // This option is only here to allow shared types that are sourced from
+      // the server to resolve correctly, such as the various Hono RPC clients.
+      // Biome prevents actally importing anything from the server.
+      "@/server/*": ["../server/*"]
     }
   },
   "include": ["./**/*"]

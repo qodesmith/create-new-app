@@ -14,6 +14,7 @@ import {
 
 import {Link, useRouterState} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
+import {useMemo} from 'react'
 
 export function AppHeader() {
   const parsedLocation = useRouterState({select: s => s.location})
@@ -21,6 +22,7 @@ export function AppHeader() {
   const {signOut, isSigningOut} = useSignOut()
   const initials = useAtomValue(userInitialsAtom)
   const userAvatarUrl = useAtomValue(userAvatarUrlSelector)
+  const activeUnderline = useMemo(() => ({className: 'underline'}), [])
 
   return (
     <header className="flex items-center justify-between border-b p-2">
@@ -31,14 +33,19 @@ export function AppHeader() {
         </code>
       </div>
       <div className="flex items-center gap-8">
-        <Link to="/" className="" activeProps={{className: 'underline'}}>
+        <Link to="/" className="" activeProps={activeUnderline}>
           Home
         </Link>
         {user ? (
           <>
-            <Link to="/account" activeProps={{className: 'underline'}}>
+            <Link to="/account" activeProps={activeUnderline}>
               Account
             </Link>
+            {user.role === 'admin' && (
+              <Link to="/admin" activeProps={activeUnderline}>
+                Admin
+              </Link>
+            )}
             <Button size="sm" onClick={signOut} disabled={isSigningOut}>
               Log out
             </Button>
@@ -49,11 +56,11 @@ export function AppHeader() {
           </>
         ) : (
           <div className="flex gap-2">
-            <Link to="/signin" activeProps={{className: 'underline'}}>
+            <Link to="/signin" activeProps={activeUnderline}>
               Sign in
             </Link>
             <span>/</span>
-            <Link to="/signup" activeProps={{className: 'underline'}}>
+            <Link to="/signup" activeProps={activeUnderline}>
               Sign up
             </Link>
           </div>

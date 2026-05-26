@@ -5,6 +5,7 @@ import type {auth} from './db/auth/auth'
 import type * as appSchema from './db/schema/appSchema'
 import type * as authSchema from './db/schema/authSchema'
 
+export type {HonoAdminServer} from './hono/adminRoutes'
 export type {HonoAuthServer} from './hono/authRoutes'
 export type {HonoServer} from './hono/honoServer'
 
@@ -50,9 +51,21 @@ export type SharedAuditLogsMetadata =
       deletedCount: number
     }
 
+export type DownloadDatabaseStatus = 'started' | 'complete' | 'fail'
+
 export type AdminAuditLogsMetadata =
   | SharedAuditLogsMetadata
-  | {action: 'download-database'}
+  | {
+      action: 'download-database'
+      /**
+       * `started` — row was inserted at request start, stream not yet finalized.
+       * `complete` — stream piped to the client successfully (`updatedAt` is the
+       * completion time).
+       * `fail` — stream errored, was cancelled, or the row was reaped at boot
+       * as an orphan from a previous process.
+       */
+      status: DownloadDatabaseStatus
+    }
 
 export type SystemAuditLogsMetadata = SharedAuditLogsMetadata
 

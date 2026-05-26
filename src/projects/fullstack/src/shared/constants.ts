@@ -2,6 +2,8 @@ import type {ClientRoute} from '@/shared/types'
 
 import {getUnitInSeconds} from '@qodestack/utils'
 
+export const adminRoutePath = '/api/admin' as const
+
 export const authRoutePath = '/api/authenticated' as const
 
 export const betterAuthBasePath = '/api/app-auth' as const

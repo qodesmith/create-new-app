@@ -69,6 +69,9 @@ export type ErrorContext =
   | 'resend:sendDeleteAccountVerificationEmail:rejection'
   | 'resend:sendDeleteAccountVerificationEmail:exception'
   | 'dbCleanup:purgeStaleRecords:exception'
+  | 'db:backupSnapshot:exception'
+  | 'db:backupStream:exception'
+  | 'bunImage:avatarUpload:exception'
 
   // Client
   | 'client:topLevel:exception'
@@ -87,3 +90,5 @@ export type ErrorContext =
   | 'client:deleteAccount:exception'
   | 'client:passkeyList:exception'
   | 'client:passkeySignIn:exception'
+  | 'client:adminPurge:exception'
+  | 'client:adminBackup:exception'

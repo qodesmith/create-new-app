@@ -1,6 +1,7 @@
 import type {User} from '@/client/types'
 
 import {
+  createApiAdminClient,
   createApiAuthClient,
   createApiClient,
   getAuthClient,
@@ -64,11 +65,14 @@ export const userInitialsAtom = atom<string>(get => {
  * across concurrent server renders.
  */
 
-// RPC for Better Auth endpoints.
+// Better Auth RPC for authentication and user management.
 export const authClientAtom = atomWithLazy(getAuthClient)
 
-// Hono RPC for custom authenticated endpoints.
+// Hono RPC for authenticated endpoints.
 export const apiAuthClientAtom = atomWithLazy(createApiAuthClient)
 
-// Hono RPC for custom public endpoints.
+// Hono RPC for admin endpoints.
+export const apiAdminClientAtom = atomWithLazy(createApiAdminClient)
+
+// Hono RPC for public endpoints.
 export const apiClientAtom = atomWithLazy(createApiClient)

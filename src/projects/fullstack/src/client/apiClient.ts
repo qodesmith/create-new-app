@@ -1,6 +1,15 @@
-import type {HonoAuthServer, HonoServer, ServerAuth} from '@/shared/types'
+import type {
+  HonoAdminServer,
+  HonoAuthServer,
+  HonoServer,
+  ServerAuth,
+} from '@/shared/types'
 
-import {authRoutePath, betterAuthBasePath} from '@/shared/constants'
+import {
+  adminRoutePath,
+  authRoutePath,
+  betterAuthBasePath,
+} from '@/shared/constants'
 
 import {passkeyClient} from '@better-auth/passkey/client'
 import {adminClient, inferAdditionalFields} from 'better-auth/client/plugins'
@@ -30,6 +39,15 @@ export function createApiClient() {
 export function createApiAuthClient() {
   return hc<HonoAuthServer>(
     `${typeof window === 'undefined' ? '' : window.location.origin}${authRoutePath}`,
+
+    // Send cookies with every request.
+    {init: {credentials: 'include'}}
+  )
+}
+
+export function createApiAdminClient() {
+  return hc<HonoAdminServer>(
+    `${typeof window === 'undefined' ? '' : window.location.origin}${adminRoutePath}`,
 
     // Send cookies with every request.
     {init: {credentials: 'include'}}

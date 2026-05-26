@@ -6,6 +6,7 @@ import {
   createApiClient,
   getAuthClient,
 } from '@/client/apiClient'
+import {getUserInitials} from '@/client/lib/utils'
 import {authRoutePath} from '@/shared/constants'
 
 import {atom} from 'jotai'
@@ -50,12 +51,8 @@ export const userAvatarUrlSelector = atom(get => {
 })
 export const userInitialsAtom = atom<string>(get => {
   const user = get(userAtom)
-
   if (!user) return ''
-
-  const first = user.name.trim()[0] ?? ''
-  const last = user.lastName.trim()[0] ?? ''
-  return `${first}${last}` || (user.name || 'U').slice(0, 2)
+  return getUserInitials(user)
 })
 
 /**

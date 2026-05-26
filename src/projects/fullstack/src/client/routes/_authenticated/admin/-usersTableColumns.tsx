@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/client/components/ui/tooltip'
-import {cn} from '@/client/lib/utils'
+import {cn, getUserInitials} from '@/client/lib/utils'
 
 import {
   ArrowDownIcon,
@@ -76,14 +76,6 @@ function SortableHeader({
   )
 }
 
-function initialsFor(user: TableUser) {
-  const first = user.name?.trim()[0] ?? ''
-  const last = user.lastName?.trim()[0] ?? ''
-  const joined = `${first}${last}`.toUpperCase()
-  if (joined) return joined
-  return (user.name ?? user.email ?? 'U').slice(0, 2).toUpperCase()
-}
-
 function formatBanExpires(banExpires: TableUser['banExpires']) {
   if (!banExpires) return 'Permanent'
   const date = banExpires instanceof Date ? banExpires : new Date(banExpires)
@@ -126,7 +118,9 @@ export function getUsersColumns({
           <div className="flex items-center gap-3">
             <Avatar size="sm">
               {user.image ? <AvatarImage src={user.image} /> : null}
-              <AvatarFallback>{initialsFor(user)}</AvatarFallback>
+              <AvatarFallback className="uppercase">
+                {getUserInitials(user)}
+              </AvatarFallback>
             </Avatar>
             <span
               className={cn(

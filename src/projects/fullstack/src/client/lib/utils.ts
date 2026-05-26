@@ -1,5 +1,6 @@
 import type {AnyFormApi} from '@tanstack/react-form'
 import type {ClassValue} from 'clsx'
+import type {User} from '@/client/types'
 
 import {clsx} from 'clsx'
 import {toast} from 'sonner'
@@ -10,6 +11,17 @@ import {twMerge} from 'tailwind-merge'
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+/**
+ * Derives display initials from a user's first + last name, falling back to
+ * 'U' when neither is set. Casing is left to the caller (consumers typically
+ * add an `uppercase` class on the avatar fallback).
+ */
+export function getUserInitials(user: User) {
+  const first = user.name.trim()[0] ?? ''
+  const last = user.lastName.trim()[0] ?? ''
+  return `${first}${last}` || 'U'
 }
 
 /**

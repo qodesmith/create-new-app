@@ -8,11 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/client/components/ui/dropdown-menu'
+import {defaultAuthedPath} from '@/client/constants'
 import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {authClientAtom} from '@/client/state/globalState'
+import {authClientAtom, userAtom} from '@/client/state/globalState'
 
 import {useQueryClient} from '@tanstack/react-query'
+import {useNavigate, useRouter} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
 import {MoreHorizontalIcon} from 'lucide-react'
 import {useState} from 'react'
@@ -27,12 +29,26 @@ type UserRowActionsProps = {
 
 export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const authClient = useAtomValue(authClientAtom)
+  const currentUser = useAtomValue(userAtom)
   const logClientError = useLogClientError()
   const queryClient = useQueryClient()
+  const router = useRouter()
+  const navigate = useNavigate()
   const editDialog = useBoolean()
   const deleteDialog = useBoolean()
+  const impersonateDialog = useBoolean()
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isImpersonating, setIsImpersonating] = useState(false)
   const isSelf = user.id === currentUserId
+
+  const isTargetAdmin = user.role === 'admin'
+  const canImpersonateAdmins = currentUser?.role
+    ? authClient.admin.checkRolePermission({
+        role: currentUser.role as 'admin' | 'user',
+        permissions: {user: ['impersonate-admins']},
+      })
+    : false
+  const impersonateDisabled = isTargetAdmin && !canImpersonateAdmins
 
   async function handleDelete() {
     setIsDeleting(true)
@@ -58,6 +74,30 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
     }
   }
 
+  async function handleImpersonate() {
+    setIsImpersonating(true)
+    try {
+      const {error} = await authClient.admin.impersonateUser({userId: user.id})
+
+      if (error) {
+        toast.error(error.message ?? 'Failed to impersonate user')
+        return
+      }
+
+      impersonateDialog.setFalse()
+      await router.invalidate()
+      await navigate({to: defaultAuthedPath})
+    } catch (error) {
+      toast.error('An unexpected error occurred while impersonating the user')
+      logClientError({
+        error,
+        context: 'client:adminImpersonateUser:exception',
+      })
+    } finally {
+      setIsImpersonating(false)
+    }
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -77,6 +117,14 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
           </DropdownMenuItem>
           {!isSelf && (
             <DropdownMenuItem
+              onSelect={impersonateDialog.setTrue}
+              disabled={impersonateDisabled}
+            >
+              Impersonate
+            </DropdownMenuItem>
+          )}
+          {!isSelf && (
+            <DropdownMenuItem
               variant="destructive"
               onSelect={deleteDialog.setTrue}
             >
@@ -90,6 +138,16 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
         open={editDialog.value}
         onOpenChange={editDialog.setValue}
         user={user}
+      />
+
+      <ConfirmDialog
+        open={impersonateDialog.value}
+        onOpenChange={impersonateDialog.setValue}
+        title={`Impersonate ${user.email}?`}
+        description="You'll be signed in as this user. Use the banner at the top to stop impersonating and return to your admin session."
+        confirmLabel="Impersonate"
+        isPending={isImpersonating}
+        onConfirm={handleImpersonate}
       />
 
       <ConfirmDialog

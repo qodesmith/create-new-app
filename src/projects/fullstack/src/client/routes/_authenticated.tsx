@@ -1,3 +1,4 @@
+import {ImpersonationBanner} from '@/client/components/ImpersonationBanner'
 import {defaultAuthedPath, resetAppKey} from '@/client/constants'
 import {isValidRoute} from '@/client/lib/isValidRoute'
 import {authClientAtom, userAtom} from '@/client/state/globalState'
@@ -71,6 +72,7 @@ function RouteComponent() {
 
   return (
     <section>
+      <ImpersonationBanner />
       <Outlet />
     </section>
   )

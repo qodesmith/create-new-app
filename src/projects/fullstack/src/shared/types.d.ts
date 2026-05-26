@@ -95,3 +95,5 @@ export type ErrorContext =
   | 'client:adminUpdateUser:exception'
   | 'client:adminCreateUser:exception'
   | 'client:adminRemoveUser:exception'
+  | 'client:adminImpersonateUser:exception'
+  | 'client:adminStopImpersonating:exception'

@@ -402,6 +402,7 @@ export const authOptions = {
     admin({
       defaultRole: userRoles.user,
       adminRoles: [userRoles.admin],
+      impersonationSessionDuration: 60 * 60, // 1 hour
     }),
 
     /**

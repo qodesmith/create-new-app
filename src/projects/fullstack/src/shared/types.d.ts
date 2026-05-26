@@ -102,3 +102,4 @@ export type ErrorContext =
   | 'client:adminSetRole:exception'
   | 'client:adminRevokeUserSession:exception'
   | 'client:adminRevokeUserSessions:exception'
+  | 'client:adminSetUserPassword:exception'

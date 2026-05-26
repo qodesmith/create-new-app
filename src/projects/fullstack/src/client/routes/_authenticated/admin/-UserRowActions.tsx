@@ -23,6 +23,7 @@ import {toast} from 'sonner'
 import {BanUserDialog} from './-BanUserDialog'
 import {ChangeRoleDialog} from './-ChangeRoleDialog'
 import {EditUserDialog} from './-EditUserDialog'
+import {SetPasswordDialog} from './-SetPasswordDialog'
 import {UserSessionsDialog} from './-UserSessionsDialog'
 
 type UserRowActionsProps = {
@@ -44,6 +45,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const unbanDialog = useBoolean()
   const changeRoleDialog = useBoolean()
   const sessionsDialog = useBoolean()
+  const setPasswordDialog = useBoolean()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
   const [isUnbanning, setIsUnbanning] = useState(false)
@@ -164,6 +166,11 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
           <DropdownMenuItem onSelect={sessionsDialog.setTrue}>
             Manage sessions
           </DropdownMenuItem>
+          {!isSelf && (
+            <DropdownMenuItem onSelect={setPasswordDialog.setTrue}>
+              Set password
+            </DropdownMenuItem>
+          )}
           {!(isSelf || isBanned) && (
             <DropdownMenuItem
               variant="destructive"
@@ -209,6 +216,12 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
       <UserSessionsDialog
         open={sessionsDialog.value}
         onOpenChange={sessionsDialog.setValue}
+        user={user}
+      />
+
+      <SetPasswordDialog
+        open={setPasswordDialog.value}
+        onOpenChange={setPasswordDialog.setValue}
         user={user}
       />
 

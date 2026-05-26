@@ -131,17 +131,19 @@ export function purgeStaleRecords({
           .returning()
           .all()
 
-        const metadata: SharedAuditLogsMetadata = {
-          action: 'purge-stale-users',
-          deletedCount: deleted.length,
-        }
+        if (deleted.length > 0) {
+          const metadata: SharedAuditLogsMetadata = {
+            action: 'purge-stale-users',
+            deletedCount: deleted.length,
+          }
 
-        if (isAdmin) {
-          tx.insert(adminAuditLogsTable)
-            .values({userId: opts.adminId, metadata})
-            .run()
-        } else {
-          tx.insert(systemAuditLogsTable).values({metadata}).run()
+          if (isAdmin) {
+            tx.insert(adminAuditLogsTable)
+              .values({userId: opts.adminId, metadata})
+              .run()
+          } else {
+            tx.insert(systemAuditLogsTable).values({metadata}).run()
+          }
         }
 
         return deleted
@@ -156,17 +158,19 @@ export function purgeStaleRecords({
           .returning()
           .all()
 
-        const metadata: SharedAuditLogsMetadata = {
-          action: 'purge-expired-verifications',
-          deletedCount: deleted.length,
-        }
+        if (deleted.length > 0) {
+          const metadata: SharedAuditLogsMetadata = {
+            action: 'purge-expired-verifications',
+            deletedCount: deleted.length,
+          }
 
-        if (isAdmin) {
-          tx.insert(adminAuditLogsTable)
-            .values({userId: opts.adminId, metadata})
-            .run()
-        } else {
-          tx.insert(systemAuditLogsTable).values({metadata}).run()
+          if (isAdmin) {
+            tx.insert(adminAuditLogsTable)
+              .values({userId: opts.adminId, metadata})
+              .run()
+          } else {
+            tx.insert(systemAuditLogsTable).values({metadata}).run()
+          }
         }
 
         return deleted
@@ -181,17 +185,19 @@ export function purgeStaleRecords({
           .returning()
           .all()
 
-        const metadata: SharedAuditLogsMetadata = {
-          action: 'purge-stale-ratelimits',
-          deletedCount: deleted.length,
-        }
+        if (deleted.length > 0) {
+          const metadata: SharedAuditLogsMetadata = {
+            action: 'purge-stale-ratelimits',
+            deletedCount: deleted.length,
+          }
 
-        if (isAdmin) {
-          tx.insert(adminAuditLogsTable)
-            .values({userId: opts.adminId, metadata})
-            .run()
-        } else {
-          tx.insert(systemAuditLogsTable).values({metadata}).run()
+          if (isAdmin) {
+            tx.insert(adminAuditLogsTable)
+              .values({userId: opts.adminId, metadata})
+              .run()
+          } else {
+            tx.insert(systemAuditLogsTable).values({metadata}).run()
+          }
         }
 
         return deleted
@@ -208,17 +214,19 @@ export function purgeStaleRecords({
           .returning()
           .all()
 
-        const metadata: SharedAuditLogsMetadata = {
-          action: 'purge-stale-errors',
-          deletedCount: deleted.length,
-        }
+        if (deleted.length > 0) {
+          const metadata: SharedAuditLogsMetadata = {
+            action: 'purge-stale-errors',
+            deletedCount: deleted.length,
+          }
 
-        if (isAdmin) {
-          tx.insert(adminAuditLogsTable)
-            .values({userId: opts.adminId, metadata})
-            .run()
-        } else {
-          tx.insert(systemAuditLogsTable).values({metadata}).run()
+          if (isAdmin) {
+            tx.insert(adminAuditLogsTable)
+              .values({userId: opts.adminId, metadata})
+              .run()
+          } else {
+            tx.insert(systemAuditLogsTable).values({metadata}).run()
+          }
         }
 
         return deleted

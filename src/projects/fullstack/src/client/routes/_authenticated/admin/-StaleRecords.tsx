@@ -1,3 +1,4 @@
+import {ConfirmDialog} from '@/client/components/custom/ConfirmDialog'
 import {LoadingButton} from '@/client/components/custom/LoadingButton'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {apiAdminClientAtom} from '@/client/state/globalState'
@@ -5,6 +6,7 @@ import {apiAdminClientAtom} from '@/client/state/globalState'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {DetailedError, parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 const staleRecordsQueryKey = ['admin', 'stale-records'] as const
@@ -13,6 +15,7 @@ export function StaleRecords() {
   const adminClient = useAtomValue(apiAdminClientAtom)
   const queryClient = useQueryClient()
   const logClientError = useLogClientError()
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   const staleRecordsQuery = useQuery({
     queryKey: staleRecordsQueryKey,
@@ -23,10 +26,12 @@ export function StaleRecords() {
     mutationFn: () => parseResponse(adminClient['stale-records'].$delete()),
     onSuccess: () => {
       toast.success('Purged stale records')
+      setConfirmOpen(false)
       void queryClient.invalidateQueries({queryKey: staleRecordsQueryKey})
     },
     onError: error => {
       toast.error('Failed to purge stale records')
+      setConfirmOpen(false)
 
       if (!(error instanceof DetailedError)) {
         logClientError({error, context: 'client:adminPurge:exception'})
@@ -56,13 +61,19 @@ export function StaleRecords() {
           <div>{stale.staleRatelimits.length}</div>
         </div>
       ) : null}
-      <LoadingButton
-        loading={purgeMutation.isPending}
-        disabled={!hasStale}
-        onClick={() => purgeMutation.mutate()}
-      >
+      <LoadingButton disabled={!hasStale} onClick={() => setConfirmOpen(true)}>
         Purge stale records
       </LoadingButton>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Purge stale records?"
+        description="This permanently deletes unverified stale users, expired verifications, and stale rate-limits. This action cannot be undone."
+        confirmLabel="Purge"
+        variant="destructive"
+        isPending={purgeMutation.isPending}
+        onConfirm={() => purgeMutation.mutate()}
+      />
     </>
   )
 }

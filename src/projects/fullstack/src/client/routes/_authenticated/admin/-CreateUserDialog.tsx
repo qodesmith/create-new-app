@@ -25,6 +25,7 @@ import {
   namePattern,
   nameRegex,
   nameValidationMessage,
+  userRoles,
 } from '@/shared/constants'
 import {emailValidator, nameValidator} from '@/shared/validators'
 
@@ -36,8 +37,7 @@ import {CheckIcon, CopyIcon} from 'lucide-react'
 import {useCallback, useState} from 'react'
 import {toast} from 'sonner'
 
-// Mirrors `userRoles` in `src/server/constants.ts` (kept inline to avoid server imports).
-const userRoleOptions = ['user', 'admin'] as const
+const userRoleOptions = Object.values(userRoles)
 type UserRoleOption = (typeof userRoleOptions)[number]
 
 const passwordCharset =
@@ -74,7 +74,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
       name: '',
       lastName: '',
       password: '',
-      role: 'user' as UserRoleOption,
+      role: userRoles.user as UserRoleOption,
     },
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {

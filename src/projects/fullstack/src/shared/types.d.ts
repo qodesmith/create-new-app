@@ -99,3 +99,4 @@ export type ErrorContext =
   | 'client:adminStopImpersonating:exception'
   | 'client:adminBanUser:exception'
   | 'client:adminUnbanUser:exception'
+  | 'client:adminSetRole:exception'

@@ -12,7 +12,6 @@ import {
   localOriginList,
   origin,
   prodOriginList,
-  userRoles,
 } from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import ChangeEmailConfirmationEmail from '@/server/email/ChangeEmailConfirmationEmail'
@@ -29,6 +28,7 @@ import {
   emailVerificationExpiryInSeconds,
   minPasswordLength,
   nameValidationMessage,
+  userRoles,
 } from '@/shared/constants'
 import {
   emailValidator,

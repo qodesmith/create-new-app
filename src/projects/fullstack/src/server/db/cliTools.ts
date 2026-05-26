@@ -1,11 +1,10 @@
 import process from 'node:process'
 import {parseArgs} from 'node:util'
 
-import {userRoles} from '@/server/constants'
 import {auth} from '@/server/db/auth/auth'
 import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
-import {minPasswordLength} from '@/shared/constants'
+import {minPasswordLength, userRoles} from '@/shared/constants'
 
 import {createLogger} from '@qodestack/utils'
 import {createEmailVerificationToken} from 'better-auth/api'

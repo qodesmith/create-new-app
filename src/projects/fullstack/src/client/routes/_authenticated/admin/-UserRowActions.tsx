@@ -21,6 +21,7 @@ import {useState} from 'react'
 import {toast} from 'sonner'
 
 import {BanUserDialog} from './-BanUserDialog'
+import {ChangeRoleDialog} from './-ChangeRoleDialog'
 import {EditUserDialog} from './-EditUserDialog'
 
 type UserRowActionsProps = {
@@ -40,6 +41,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const impersonateDialog = useBoolean()
   const banDialog = useBoolean()
   const unbanDialog = useBoolean()
+  const changeRoleDialog = useBoolean()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
   const [isUnbanning, setIsUnbanning] = useState(false)
@@ -145,6 +147,11 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
             Edit user
           </DropdownMenuItem>
           {!isSelf && (
+            <DropdownMenuItem onSelect={changeRoleDialog.setTrue}>
+              Change role
+            </DropdownMenuItem>
+          )}
+          {!isSelf && (
             <DropdownMenuItem
               onSelect={impersonateDialog.setTrue}
               disabled={impersonateDisabled}
@@ -152,7 +159,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
               Impersonate
             </DropdownMenuItem>
           )}
-          {!isSelf && !isBanned && (
+          {!(isSelf || isBanned) && (
             <DropdownMenuItem
               variant="destructive"
               onSelect={banDialog.setTrue}
@@ -185,6 +192,12 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
       <BanUserDialog
         open={banDialog.value}
         onOpenChange={banDialog.setValue}
+        user={user}
+      />
+
+      <ChangeRoleDialog
+        open={changeRoleDialog.value}
+        onOpenChange={changeRoleDialog.setValue}
         user={user}
       />
 

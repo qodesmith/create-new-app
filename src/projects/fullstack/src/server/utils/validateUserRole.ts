@@ -1,6 +1,6 @@
 import type {AuthedSessionData} from '@/server/db/auth/auth'
 
-import {userRoles} from '@/server/constants'
+import {userRoles} from '@/shared/constants'
 
 /**
  * NOTE: roles defined in the `admin` plugin for `authOptions`.

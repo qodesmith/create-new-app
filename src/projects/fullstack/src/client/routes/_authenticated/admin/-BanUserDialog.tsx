@@ -47,13 +47,15 @@ const banPresetLabels: Record<BanPreset, string> = {
   custom: 'Custom',
 }
 
-const presetSeconds: Record<Exclude<BanPreset, 'permanent' | 'custom'>, number> =
-  {
-    '1h': 60 * 60,
-    '1d': 60 * 60 * 24,
-    '1w': 60 * 60 * 24 * 7,
-    '30d': 60 * 60 * 24 * 30,
-  }
+const presetSeconds: Record<
+  Exclude<BanPreset, 'permanent' | 'custom'>,
+  number
+> = {
+  '1h': 60 * 60,
+  '1d': 60 * 60 * 24,
+  '1w': 60 * 60 * 24 * 7,
+  '30d': 60 * 60 * 24 * 30,
+}
 
 const customUnitOptions = ['hours', 'days'] as const
 type CustomUnit = (typeof customUnitOptions)[number]
@@ -214,7 +216,9 @@ function BanUserForm({user, onOpenChange}: BanUserFormProps) {
               >
                 {field => (
                   <Field className="flex-1">
-                    <FieldLabel htmlFor="banUserCustomAmount">Amount</FieldLabel>
+                    <FieldLabel htmlFor="banUserCustomAmount">
+                      Amount
+                    </FieldLabel>
                     <Input
                       id="banUserCustomAmount"
                       type="number"

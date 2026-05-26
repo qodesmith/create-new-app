@@ -11,7 +11,6 @@ import {
   auditLogRetentionPeriod,
   errorRetentionPeriod,
   isProd,
-  userRoles,
 } from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {
@@ -21,7 +20,7 @@ import {
 } from '@/server/db/schema/appSchema'
 import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
 import {log} from '@/server/utils/logger'
-import {emailVerificationExpiryInMs} from '@/shared/constants'
+import {emailVerificationExpiryInMs, userRoles} from '@/shared/constants'
 
 import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
 import {and, eq, lt, sql} from 'drizzle-orm'

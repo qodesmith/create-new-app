@@ -1,7 +1,7 @@
-import {userRoles} from '@/server/constants'
 import {getDatabase} from '@/server/db/getDatabase'
 import {users} from '@/server/db/schema/authSchema'
 import {getEnvVar} from '@/server/utils/getEnvVar'
+import {userRoles} from '@/shared/constants'
 
 import {createLogger} from '@qodestack/utils'
 import {createEmailVerificationToken} from 'better-auth/api'

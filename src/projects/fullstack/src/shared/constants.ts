@@ -41,3 +41,9 @@ export const changeEmailCallbackRoutes = {
 }
 
 export const callbackURLSuccessParam = '__data' as const
+
+// Add new user roles by adding matching key/value pairs.
+export const userRoles = Object.freeze({
+  admin: 'admin',
+  user: 'user',
+})

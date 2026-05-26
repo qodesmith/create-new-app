@@ -11,7 +11,13 @@
       "@/server/*": ["../server/*"],
 
       // Server files reached via the import chain also use @/shared/*.
-      "@/shared/*": ["./*"]
+      "@/shared/*": ["./*"],
+
+      // Needed because shared/types.d.ts imports FileRouteTypes from
+      // ../client/routeTree.gen, which drags every client route (and their
+      // transitive component imports) into the program; those files use
+      // @/client/* internally and need to resolve from this tsconfig's context.
+      "@/client/*": ["../client/*"]
     }
   },
   "include": ["./**/*"]

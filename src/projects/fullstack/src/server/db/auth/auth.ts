@@ -403,6 +403,9 @@ export const authOptions = {
       defaultRole: userRoles.user,
       adminRoles: [userRoles.admin],
       impersonationSessionDuration: 60 * 60, // 1 hour
+      defaultBanReason: 'Account suspended',
+      bannedUserMessage:
+        'This account has been suspended. Contact support if you believe this is an error.',
     }),
 
     /**

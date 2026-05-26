@@ -20,6 +20,7 @@ import {MoreHorizontalIcon} from 'lucide-react'
 import {useState} from 'react'
 import {toast} from 'sonner'
 
+import {BanUserDialog} from './-BanUserDialog'
 import {EditUserDialog} from './-EditUserDialog'
 
 type UserRowActionsProps = {
@@ -37,9 +38,13 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const editDialog = useBoolean()
   const deleteDialog = useBoolean()
   const impersonateDialog = useBoolean()
+  const banDialog = useBoolean()
+  const unbanDialog = useBoolean()
   const [isDeleting, setIsDeleting] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
+  const [isUnbanning, setIsUnbanning] = useState(false)
   const isSelf = user.id === currentUserId
+  const isBanned = user.banned === true
 
   const isTargetAdmin = user.role === 'admin'
   const canImpersonateAdmins = currentUser?.role
@@ -71,6 +76,30 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
       })
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  async function handleUnban() {
+    setIsUnbanning(true)
+    try {
+      const {error} = await authClient.admin.unbanUser({userId: user.id})
+
+      if (error) {
+        toast.error(error.message ?? 'Failed to unban user')
+        return
+      }
+
+      toast.success(`User ${user.email} unbanned`)
+      await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
+      unbanDialog.setFalse()
+    } catch (error) {
+      toast.error('An unexpected error occurred while unbanning the user')
+      logClientError({
+        error,
+        context: 'client:adminUnbanUser:exception',
+      })
+    } finally {
+      setIsUnbanning(false)
     }
   }
 
@@ -123,6 +152,19 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
               Impersonate
             </DropdownMenuItem>
           )}
+          {!isSelf && !isBanned && (
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={banDialog.setTrue}
+            >
+              Ban user
+            </DropdownMenuItem>
+          )}
+          {!isSelf && isBanned && (
+            <DropdownMenuItem onSelect={unbanDialog.setTrue}>
+              Unban user
+            </DropdownMenuItem>
+          )}
           {!isSelf && (
             <DropdownMenuItem
               variant="destructive"
@@ -138,6 +180,22 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
         open={editDialog.value}
         onOpenChange={editDialog.setValue}
         user={user}
+      />
+
+      <BanUserDialog
+        open={banDialog.value}
+        onOpenChange={banDialog.setValue}
+        user={user}
+      />
+
+      <ConfirmDialog
+        open={unbanDialog.value}
+        onOpenChange={unbanDialog.setValue}
+        title={`Unban ${user.email}?`}
+        description="This user will be able to sign in again. Any sessions that were active when they were banned remain revoked, so they'll need to sign in fresh."
+        confirmLabel="Unban"
+        isPending={isUnbanning}
+        onConfirm={handleUnban}
       />
 
       <ConfirmDialog

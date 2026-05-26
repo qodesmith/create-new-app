@@ -92,3 +92,6 @@ export type ErrorContext =
   | 'client:passkeySignIn:exception'
   | 'client:adminPurge:exception'
   | 'client:adminBackup:exception'
+  | 'client:adminUpdateUser:exception'
+  | 'client:adminCreateUser:exception'
+  | 'client:adminRemoveUser:exception'

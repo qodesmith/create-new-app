@@ -28,9 +28,13 @@ import {
   changeEmailCallbackRoutes,
   emailVerificationExpiryInSeconds,
   minPasswordLength,
-  nameRegex,
   nameValidationMessage,
 } from '@/shared/constants'
+import {
+  emailValidator,
+  nameValidator,
+  passwordValidator,
+} from '@/shared/validators'
 
 import {drizzleAdapter} from '@better-auth/drizzle-adapter'
 import {passkey} from '@better-auth/passkey'
@@ -56,11 +60,6 @@ export const authOptions = {
 
   hooks: {
     before: createAuthMiddleware(async ctx => {
-      // Arktype validators.
-      const emailValidator = type('string.email')
-      const passwordValidator = type(`string >= ${minPasswordLength}`)
-      const nameValidator = type(nameRegex)
-
       const body = ctx.body as Record<string, string | undefined>
       const ctxPath = ctx.path as BetterAuthEndpoint
       const passwordError = new APIError('BAD_REQUEST', {

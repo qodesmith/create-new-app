@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/client/components/ui/table'
 import {TooltipProvider} from '@/client/components/ui/tooltip'
+import {useDebouncedValue} from '@/client/hooks/useDebouncedValue'
 import {cn} from '@/client/lib/utils'
 import {authClientAtom, userAtom} from '@/client/state/globalState'
 
@@ -28,7 +29,7 @@ import {keepPreviousData, useQuery} from '@tanstack/react-query'
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table'
 import {useAtomValue} from 'jotai'
 import {ChevronLeftIcon, ChevronRightIcon, SearchIcon} from 'lucide-react'
-import {useCallback, useEffect, useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 
 import {getUsersColumns} from './-usersTableColumns'
 
@@ -43,7 +44,6 @@ export function UsersTable() {
   const currentUserId = currentUser?.id
 
   const [searchValue, setSearchValue] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [searchField, setSearchField] = useState<SearchField>('email')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] =
@@ -53,14 +53,11 @@ export function UsersTable() {
     'desc'
   )
 
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setDebouncedSearch(searchValue)
-      setPage(1)
-    }, SEARCH_DEBOUNCE_MS)
-
-    return () => clearTimeout(id)
-  }, [searchValue])
+  const debouncedSearch = useDebouncedValue(
+    searchValue,
+    SEARCH_DEBOUNCE_MS,
+    () => setPage(1)
+  )
 
   const queryParams = {
     searchValue: debouncedSearch,

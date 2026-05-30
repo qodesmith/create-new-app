@@ -1,5 +1,6 @@
 import type {ColumnDef} from '@tanstack/react-table'
 import type {User} from '@/client/types'
+import type {SortDirection} from '@/shared/types'
 
 import {
   Avatar,
@@ -25,12 +26,11 @@ import {
 import {UserRowActions} from './-UserRowActions'
 
 export type UsersSortBy = 'name' | 'email' | 'role' | 'createdAt'
-export type UsersSortDirection = 'asc' | 'desc'
 
 type GetUsersColumnsOptions = {
   currentUserId: string | undefined
   sortBy: UsersSortBy
-  sortDirection: UsersSortDirection
+  sortDirection: SortDirection
   onSort: (key: UsersSortBy) => void
 }
 
@@ -44,7 +44,7 @@ function SortableHeader({
   label: string
   sortKey: UsersSortBy
   sortBy: UsersSortBy
-  sortDirection: UsersSortDirection
+  sortDirection: SortDirection
   onSort: (key: UsersSortBy) => void
 }) {
   const isActive = sortBy === sortKey

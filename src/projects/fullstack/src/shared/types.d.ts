@@ -30,6 +30,8 @@ type BuiltIn =
   | ArrayBuffer
   | ((...args: any[]) => any)
 
+export type SortDirection = 'asc' | 'desc'
+
 export type Prettify<T> = T extends BuiltIn
   ? T
   : T extends Array<infer U>

@@ -1,8 +1,6 @@
 import type {User} from '@/client/types'
-import type {
-  UsersSortBy,
-  UsersSortDirection,
-} from './-usersTableColumns'
+import type {SortDirection} from '@/shared/types'
+import type {UsersSortBy} from './-usersTableColumns'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {Button} from '@/client/components/ui/button'
@@ -51,7 +49,7 @@ export function UsersTable() {
   const [pageSize, setPageSize] =
     useState<(typeof PAGE_SIZE_OPTIONS)[number]>(25)
   const [sortBy, setSortBy] = useState<UsersSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<UsersSortDirection>('desc')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
   useEffect(() => {
     const id = setTimeout(() => {

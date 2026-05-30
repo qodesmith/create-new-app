@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {Button} from '@/client/components/ui/button'
 import {
@@ -68,7 +68,7 @@ const customUnitSeconds: Record<CustomUnit, number> = {
 type BanUserDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  user: TableUser | null
+  user: User | null
 }
 
 export function BanUserDialog({open, onOpenChange, user}: BanUserDialogProps) {
@@ -91,7 +91,7 @@ export function BanUserDialog({open, onOpenChange, user}: BanUserDialogProps) {
 }
 
 type BanUserFormProps = {
-  user: TableUser
+  user: User
   onOpenChange: (open: boolean) => void
 }
 

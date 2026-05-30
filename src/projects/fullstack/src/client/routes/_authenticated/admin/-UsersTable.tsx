@@ -1,5 +1,5 @@
+import type {User} from '@/client/types'
 import type {
-  TableUser,
   UsersSortBy,
   UsersSortDirection,
 } from './-usersTableColumns'
@@ -95,8 +95,13 @@ export function UsersTable() {
     placeholderData: keepPreviousData,
   })
 
-  const users = useMemo<TableUser[]>(
-    () => usersQuery.data?.users ?? [],
+  /**
+   * better-auth's admin plugin types listUsers' result as UserWithRole[], which
+   * omits additional fields configured via inferAdditionalFields (e.g.
+   * lastName). The server does return them, so cast through unknown.
+   */
+  const users = useMemo<User[]>(
+    () => (usersQuery.data?.users ?? []) as User[],
     [usersQuery.data]
   )
   const total = usersQuery.data?.total ?? 0

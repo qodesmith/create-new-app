@@ -1,5 +1,5 @@
 import type {ColumnDef} from '@tanstack/react-table'
-import type {AuthClient} from '@/client/types'
+import type {User} from '@/client/types'
 
 import {
   Avatar,
@@ -23,10 +23,6 @@ import {
 } from 'lucide-react'
 
 import {UserRowActions} from './-UserRowActions'
-
-export type TableUser = NonNullable<
-  Awaited<ReturnType<AuthClient['admin']['listUsers']>>['data']
->['users'][number]
 
 export type UsersSortBy = 'name' | 'email' | 'role' | 'createdAt'
 export type UsersSortDirection = 'asc' | 'desc'
@@ -76,7 +72,7 @@ function SortableHeader({
   )
 }
 
-function formatBanExpires(banExpires: TableUser['banExpires']) {
+function formatBanExpires(banExpires: User['banExpires']) {
   if (!banExpires) return 'Permanent'
   const date = banExpires instanceof Date ? banExpires : new Date(banExpires)
   if (Number.isNaN(date.getTime())) return 'Permanent'
@@ -95,7 +91,7 @@ export function getUsersColumns({
   sortBy,
   sortDirection,
   onSort,
-}: GetUsersColumnsOptions): ColumnDef<TableUser>[] {
+}: GetUsersColumnsOptions): ColumnDef<User>[] {
   return [
     {
       id: 'name',

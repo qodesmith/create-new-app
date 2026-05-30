@@ -2,7 +2,10 @@ import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  getSafeAuthErrorMessage,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {namePattern, nameRegex, nameValidationMessage} from '@/shared/constants'
 
@@ -39,7 +42,7 @@ export function ChangeName() {
         const {error} = await authClient.updateUser({name, lastName})
 
         if (error) {
-          toast.error('Failed to update name')
+          toast.error(getSafeAuthErrorMessage(error, 'Failed to update name'))
           return
         }
 

@@ -2,6 +2,8 @@ import type {AnyFormApi} from '@tanstack/react-form'
 import type {ClassValue} from 'clsx'
 import type {User} from '@/client/types'
 
+import {serverValidationErrorCode} from '@/shared/constants'
+
 import {clsx} from 'clsx'
 import {toast} from 'sonner'
 import {twMerge} from 'tailwind-merge'
@@ -22,6 +24,25 @@ export function getUserInitials(user: User) {
   const first = user.name.trim()[0] ?? ''
   const last = user.lastName.trim()[0] ?? ''
   return `${first}${last}` || 'U'
+}
+
+/**
+ * Better Auth surfaces two kinds of errors to the client: the validation errors
+ * we throw ourselves from the server `before` hook (auth.ts), and
+ * library-generated errors (e.g. "User already exists"). We only want to
+ * display the former — library messages can leak implementation details.
+ *
+ * Our server tags its own errors with `serverValidationErrorCode`, so we
+ * surface `error.message` only when that marker is present and fall back to
+ * the provided default message for everything else.
+ */
+export function getSafeAuthErrorMessage(
+  error: {code?: string; message?: string},
+  fallbackMessage: string
+) {
+  return error.code === serverValidationErrorCode && error.message
+    ? error.message
+    : fallbackMessage
 }
 
 /**

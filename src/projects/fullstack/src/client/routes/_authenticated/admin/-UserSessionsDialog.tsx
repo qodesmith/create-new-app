@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
 import {ConfirmDialog} from '@/client/components/custom/ConfirmDialog'
@@ -34,7 +34,7 @@ import {toast} from 'sonner'
 type UserSessionsDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  user: TableUser | null
+  user: User | null
 }
 
 export function UserSessionsDialog({
@@ -67,7 +67,7 @@ export function UserSessionsDialog({
 }
 
 type UserSessionsDialogBodyProps = {
-  user: TableUser
+  user: User
   onClose: () => void
 }
 

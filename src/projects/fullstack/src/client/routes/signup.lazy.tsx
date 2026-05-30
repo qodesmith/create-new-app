@@ -11,7 +11,10 @@ import {Input} from '@/client/components/ui/input'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  getSafeAuthErrorMessage,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {
   minPasswordLength,
@@ -60,7 +63,7 @@ function SignUpPage() {
         })
 
         if (error) {
-          signupErrorToast('Failed to sign up')
+          signupErrorToast(getSafeAuthErrorMessage(error, 'Failed to sign up'))
           return
         }
 

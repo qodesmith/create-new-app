@@ -2,7 +2,10 @@ import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  getSafeAuthErrorMessage,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {changeEmailCallbackRoutes} from '@/shared/constants'
 
@@ -46,7 +49,7 @@ export function ChangeEmail() {
         })
 
         if (error) {
-          toast.error('Failed to change email')
+          toast.error(getSafeAuthErrorMessage(error, 'Failed to change email'))
           return
         }
 

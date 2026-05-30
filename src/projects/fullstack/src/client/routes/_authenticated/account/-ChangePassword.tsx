@@ -3,7 +3,10 @@ import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHin
 import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  getSafeAuthErrorMessage,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
@@ -44,7 +47,9 @@ export function ChangePassword() {
         })
 
         if (error) {
-          toast.error('Failed to change password')
+          toast.error(
+            getSafeAuthErrorMessage(error, 'Failed to change password')
+          )
           return
         }
 

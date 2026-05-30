@@ -10,6 +10,14 @@ export const betterAuthBasePath = '/api/app-auth' as const
 
 export const minPasswordLength = 8
 
+/**
+ * Marker `code` attached to every `APIError` we throw from the Better Auth
+ * `before` hook (see auth.ts). The client uses this to distinguish OUR
+ * validation messages (safe to display) from library-generated errors (which
+ * may leak implementation details). See `getSafeAuthErrorMessage`.
+ */
+export const serverValidationErrorCode = 'SERVER_VALIDATION' as const
+
 export const namePattern = '[a-zA-Z ]{2,}' as const
 
 export const nameRegex = new RegExp(`^${namePattern}$`)

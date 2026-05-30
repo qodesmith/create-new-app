@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {ConfirmDialog} from '@/client/components/custom/ConfirmDialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
@@ -24,7 +24,7 @@ type RoleOption = (typeof roleOptions)[number]
 type ChangeRoleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  user: TableUser | null
+  user: User | null
 }
 
 export function ChangeRoleDialog({

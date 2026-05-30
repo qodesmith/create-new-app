@@ -28,6 +28,7 @@ import {
   emailVerificationExpiryInSeconds,
   minPasswordLength,
   nameValidationMessage,
+  serverValidationErrorCode,
   userRoles,
 } from '@/shared/constants'
 import {
@@ -62,10 +63,22 @@ export const authOptions = {
     before: createAuthMiddleware(async ctx => {
       const body = ctx.body as Record<string, string | undefined>
       const ctxPath = ctx.path as BetterAuthEndpoint
-      const passwordError = new APIError('BAD_REQUEST', {
+      const passwordError = new APIError('UNPROCESSABLE_ENTITY', {
+        code: serverValidationErrorCode,
         message: `Invalid password: must be at least ${minPasswordLength} characters long`,
       })
-      const emailError = new APIError('BAD_REQUEST', {message: 'Invalid email'})
+      const emailError = new APIError('UNPROCESSABLE_ENTITY', {
+        code: serverValidationErrorCode,
+        message: 'Invalid email',
+      })
+      const nameError = new APIError('UNPROCESSABLE_ENTITY', {
+        code: serverValidationErrorCode,
+        message: `Invalid name: ${nameValidationMessage}`,
+      })
+      const lastNameError = new APIError('UNPROCESSABLE_ENTITY', {
+        code: serverValidationErrorCode,
+        message: `Invalid last name: ${nameValidationMessage}`,
+      })
 
       // Server-side form validation when signing up.
       if (ctxPath === '/sign-up/email') {
@@ -79,16 +92,12 @@ export const authOptions = {
 
         const nameResult = nameValidator(name)
         if (nameResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {
-            message: `Invalid name: ${nameValidationMessage}`,
-          })
+          throw nameError
         }
 
         const lastNameResult = nameValidator(lastName)
         if (lastNameResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {
-            message: `Invalid last name: ${nameValidationMessage}`,
-          })
+          throw lastNameError
         }
 
         const passwordResult = passwordValidator(password)
@@ -122,16 +131,12 @@ export const authOptions = {
 
         const nameResult = nameValidator(name)
         if (nameResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {
-            message: `Invalid name: ${nameValidationMessage}`,
-          })
+          throw nameError
         }
 
         const lastNameResult = nameValidator(lastName)
         if (lastNameResult instanceof type.errors) {
-          throw new APIError('BAD_REQUEST', {
-            message: `Invalid last name: ${nameValidationMessage}`,
-          })
+          throw lastNameError
         }
       }
     }),
@@ -357,8 +362,6 @@ export const authOptions = {
   },
 
   logger: {
-    disabled: true, // Enable this for server-side logging to the console.
-    level: 'info',
     log: (level, message, ...args) => {
       const logLevel: keyof typeof log = (() => {
         switch (level) {
@@ -372,7 +375,7 @@ export const authOptions = {
         }
       })()
 
-      log[logLevel]('[Better Auth]', message, ...args)
+      log[logLevel](`[Better Auth][${level}]`, message, ...args)
     },
   },
 

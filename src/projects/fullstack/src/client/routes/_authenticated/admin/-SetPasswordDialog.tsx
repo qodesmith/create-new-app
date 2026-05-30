@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {Button} from '@/client/components/ui/button'
@@ -41,7 +41,7 @@ function generateStrongPassword(): string {
 type SetPasswordDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  user: TableUser | null
+  user: User | null
 }
 
 export function SetPasswordDialog({
@@ -108,7 +108,7 @@ export function SetPasswordDialog({
 }
 
 type SetPasswordFormProps = {
-  user: TableUser
+  user: User
   submitted: boolean
   savedAcknowledged: boolean
   onSubmitted: () => void

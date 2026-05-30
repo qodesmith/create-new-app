@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {Button} from '@/client/components/ui/button'
 import {
@@ -24,7 +24,7 @@ import {toast} from 'sonner'
 type EditUserDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  user: TableUser | null
+  user: User | null
 }
 
 export function EditUserDialog({
@@ -52,7 +52,7 @@ export function EditUserDialog({
 }
 
 type EditUserFormProps = {
-  user: TableUser
+  user: User
   onOpenChange: (open: boolean) => void
 }
 

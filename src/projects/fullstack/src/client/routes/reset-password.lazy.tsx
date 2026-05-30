@@ -11,7 +11,10 @@ import {Field, FieldLabel} from '@/client/components/ui/field'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  getSafeAuthErrorMessage,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
@@ -86,7 +89,9 @@ function NewPasswordForm({
         })
 
         if (error) {
-          resetPasswordErrorToast('Failed to reset password')
+          resetPasswordErrorToast(
+            getSafeAuthErrorMessage(error, 'Failed to reset password')
+          )
           showInvalidTokenView()
           return
         }

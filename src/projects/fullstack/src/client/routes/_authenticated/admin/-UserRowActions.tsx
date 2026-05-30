@@ -1,4 +1,4 @@
-import type {TableUser} from './-usersTableColumns'
+import type {User} from '@/client/types'
 
 import {ConfirmDialog} from '@/client/components/custom/ConfirmDialog'
 import {Button} from '@/client/components/ui/button'
@@ -27,7 +27,7 @@ import {SetPasswordDialog} from './-SetPasswordDialog'
 import {UserSessionsDialog} from './-UserSessionsDialog'
 
 type UserRowActionsProps = {
-  user: TableUser
+  user: User
   currentUserId: string | undefined
 }
 

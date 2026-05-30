@@ -30,7 +30,7 @@ export type UsersSortBy = 'name' | 'email' | 'role' | 'createdAt'
 type GetUsersColumnsOptions = {
   currentUserId: string | undefined
   sortBy: UsersSortBy
-  sortDirection: SortDirection
+  sortDirection: SortDirection | null
   onSort: (key: UsersSortBy) => void
 }
 
@@ -44,10 +44,10 @@ function SortableHeader({
   label: string
   sortKey: UsersSortBy
   sortBy: UsersSortBy
-  sortDirection: SortDirection
+  sortDirection: SortDirection | null
   onSort: (key: UsersSortBy) => void
 }) {
-  const isActive = sortBy === sortKey
+  const isActive = sortBy === sortKey && sortDirection !== null
   const Icon = isActive
     ? sortDirection === 'asc'
       ? ArrowUpIcon

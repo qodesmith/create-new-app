@@ -49,13 +49,16 @@ export function UsersTable() {
   const [pageSize, setPageSize] =
     useState<(typeof PAGE_SIZE_OPTIONS)[number]>(25)
   const [sortBy, setSortBy] = useState<UsersSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [sortDirection, setSortDirection] = useState<SortDirection | null>(
+    'desc'
+  )
 
   useEffect(() => {
     const id = setTimeout(() => {
       setDebouncedSearch(searchValue)
       setPage(1)
     }, SEARCH_DEBOUNCE_MS)
+
     return () => clearTimeout(id)
   }, [searchValue])
 
@@ -79,8 +82,7 @@ export function UsersTable() {
             : {}),
           limit: pageSize,
           offset: (page - 1) * pageSize,
-          sortBy,
-          sortDirection,
+          ...(sortDirection ? {sortBy, sortDirection} : {}),
         },
       })
 
@@ -105,17 +107,22 @@ export function UsersTable() {
   const total = usersQuery.data?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
-  const toggleSort = useCallback((key: UsersSortBy) => {
-    setSortBy(prev => {
-      if (prev === key) {
-        setSortDirection(d => (d === 'asc' ? 'desc' : 'asc'))
-        return prev
+  const toggleSort = useCallback(
+    (key: UsersSortBy) => {
+      if (sortBy === key) {
+        setSortDirection(d => {
+          if (d === 'asc') return 'desc'
+          if (d === 'desc') return null
+          return 'asc'
+        })
+      } else {
+        setSortBy(key)
+        setSortDirection('asc')
       }
-      setSortDirection('asc')
-      return key
-    })
-    setPage(1)
-  }, [])
+      setPage(1)
+    },
+    [sortBy]
+  )
 
   const columns = useMemo(
     () =>

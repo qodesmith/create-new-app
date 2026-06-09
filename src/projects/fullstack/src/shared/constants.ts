@@ -1,4 +1,6 @@
-import type {ClientRoute} from '@/shared/types'
+import type {AppSchemaSelect, ClientRoute} from '@/shared/types'
+
+import {arrayOfAll} from '@/shared/utils'
 
 import {getUnitInSeconds} from '@qodestack/utils'
 
@@ -49,6 +51,34 @@ export const changeEmailCallbackRoutes = {
 }
 
 export const callbackURLSuccessParam = '__data' as const
+
+export type AdminAuditLogAction =
+  AppSchemaSelect['adminAuditLogsTable']['metadata']['action']
+type SystemAuditLogAction =
+  AppSchemaSelect['systemAuditLogsTable']['metadata']['action']
+
+/**
+ * Single source of truth for the `action` filter values surfaced in the admin
+ * audit log UI. Keep in sync with `AdminAuditLogsMetadata` in server/types.d.ts.
+ */
+export const adminAuditLogActions = arrayOfAll<AdminAuditLogAction>()([
+  'purge-stale-users',
+  'purge-expired-verifications',
+  'purge-stale-ratelimits',
+  'purge-stale-errors',
+  'download-database',
+])
+
+/**
+ * Single source of truth for the `action` filter values surfaced in the system
+ * audit log UI. Keep in sync with `SystemAuditLogsMetadata` in server/types.d.ts.
+ */
+export const systemAuditLogActions = arrayOfAll<SystemAuditLogAction>()([
+  'purge-stale-users',
+  'purge-expired-verifications',
+  'purge-stale-ratelimits',
+  'purge-stale-errors',
+])
 
 // Add new user roles by adding matching key/value pairs.
 export const userRoles = Object.freeze({

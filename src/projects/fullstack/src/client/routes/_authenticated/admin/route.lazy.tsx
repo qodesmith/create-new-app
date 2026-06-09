@@ -5,10 +5,12 @@ import {AccountCard} from '@/client/routes/_authenticated/-AccountCard'
 import {createLazyFileRoute} from '@tanstack/react-router'
 import {PlusIcon} from 'lucide-react'
 
+import {AdminAuditLogsTable} from './-AdminAuditLogsTable'
 import {AdminSection} from './-AdminSection'
 import {CreateUserDialog} from './-CreateUserDialog'
 import {DatabaseBackup} from './-DatabaseBackup'
 import {StaleRecords} from './-StaleRecords'
+import {SystemAuditLogsTable} from './-SystemAuditLogsTable'
 import {UsersTable} from './-UsersTable'
 
 export const Route = createLazyFileRoute('/_authenticated/admin')({
@@ -46,6 +48,14 @@ function AdminPage() {
             <StaleRecords />
           </AccountCard>
         </div>
+      </AdminSection>
+
+      <AdminSection title="Admin audit logs">
+        <AdminAuditLogsTable />
+      </AdminSection>
+
+      <AdminSection title="System audit logs">
+        <SystemAuditLogsTable />
       </AdminSection>
 
       <CreateUserDialog

@@ -4,6 +4,12 @@
 minimumReleaseAge = 259200
 minimumReleaseAgeExcludes = ["@qodestack/biome-config", "@qodestack/utils"]
 
+[test]
+# Scripts to run before the tests are executed.
+# Sets default env vars that server modules read at module-load time
+# (PORT, DOMAIN, NODE_ENV, SQLITE_PATH) so tests can import the server graph.
+preload = ["./src/server/hono/adminRoutes.test.preload.ts"]
+
 [serve.static]
 plugins = ["./bunPluginTailwind.ts"]
 

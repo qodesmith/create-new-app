@@ -8,7 +8,6 @@ import {
   AvatarImage,
 } from '@/client/components/ui/avatar'
 import {Badge} from '@/client/components/ui/badge'
-import {Button} from '@/client/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
@@ -16,13 +15,9 @@ import {
 } from '@/client/components/ui/tooltip'
 import {cn, getUserInitials} from '@/client/lib/utils'
 
-import {
-  ArrowDownIcon,
-  ArrowUpDownIcon,
-  ArrowUpIcon,
-  BadgeCheckIcon,
-} from 'lucide-react'
+import {BadgeCheckIcon} from 'lucide-react'
 
+import {SortableHeader} from './-SortableHeader'
 import {UserRowActions} from './-UserRowActions'
 
 export type UsersSortBy = 'name' | 'email' | 'role' | 'createdAt'
@@ -32,44 +27,6 @@ type GetUsersColumnsOptions = {
   sortBy: UsersSortBy
   sortDirection: SortDirection | null
   onSort: (key: UsersSortBy) => void
-}
-
-function SortableHeader({
-  label,
-  sortKey,
-  sortBy,
-  sortDirection,
-  onSort,
-}: {
-  label: string
-  sortKey: UsersSortBy
-  sortBy: UsersSortBy
-  sortDirection: SortDirection | null
-  onSort: (key: UsersSortBy) => void
-}) {
-  const isActive = sortBy === sortKey && sortDirection !== null
-  const Icon = isActive
-    ? sortDirection === 'asc'
-      ? ArrowUpIcon
-      : ArrowDownIcon
-    : ArrowUpDownIcon
-
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="-ml-2 h-8 gap-1 px-2 font-medium"
-      onClick={() => onSort(sortKey)}
-    >
-      {label}
-      <Icon
-        className={cn(
-          'size-3.5 transition-opacity',
-          isActive ? 'opacity-100' : 'opacity-40'
-        )}
-      />
-    </Button>
-  )
 }
 
 function formatBanExpires(banExpires: User['banExpires']) {

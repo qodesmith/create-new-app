@@ -8,14 +8,25 @@ import process from 'node:process'
 
 import {isProd} from '@/server/constants'
 import {exportDatabase, getDatabase} from '@/server/db/getDatabase'
-import {adminAuditLogsTable, errorsTable} from '@/server/db/schema/appSchema'
+import {
+  adminAuditLogsTable,
+  avatarsTable,
+  errorsTable,
+  systemAuditLogsTable,
+} from '@/server/db/schema/appSchema'
 import {ratelimits, users, verifications} from '@/server/db/schema/authSchema'
 import {purgeStaleRecords} from '@/server/dbCleanup'
 import {adminMiddleware} from '@/server/middleware/adminMiddleware'
-import {emailVerificationExpiryInMs} from '@/shared/constants'
+import {
+  adminAuditLogActions,
+  emailVerificationExpiryInMs,
+  systemAuditLogActions,
+} from '@/shared/constants'
 
+import {arktypeValidator} from '@hono/arktype-validator'
 import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
-import {and, desc, eq, lt, sql} from 'drizzle-orm'
+import {type} from 'arktype'
+import {and, asc, count, desc, eq, lt, sql} from 'drizzle-orm'
 import {Hono} from 'hono'
 
 export type HonoAdminServer = typeof adminRoutes
@@ -303,4 +314,168 @@ export const adminRoutes = new Hono()
 
       return c.json({error: 'Failed to start backup'}, 500)
     }
+  })
+
+  /**
+   * Paginated, sortable, filterable admin audit log. Query params arrive as
+   * strings, so numerics are coerced via arktype morphs. Each row is joined to
+   * its acting user (inner join — `userId` is `notNull` with an `onDelete:
+   * 'cascade'` FK, so an audit row can never outlive its user).
+   */
+  .get(
+    '/admin-audit-logs',
+    arktypeValidator(
+      'query',
+      type({
+        // Query params arrive as strings, so coerce numerics with morphs.
+        'page?': type('string.integer.parse').to('number >= 1'),
+        'pageSize?': type("'10' | '25' | '50'").pipe(Number),
+        'sortBy?': "'createdAt' | 'action'",
+        'sortDirection?': "'asc' | 'desc'",
+        'action?': type.enumerated(...adminAuditLogActions),
+      })
+    ),
+    c => {
+      const db = getDatabase()
+      const {
+        page = 1,
+        pageSize = 25,
+        sortBy = 'createdAt',
+        sortDirection = 'desc',
+        action,
+      } = c.req.valid('query')
+
+      // Optional filter on the JSON `action` field via SQLite's `->>` operator.
+      const where = action
+        ? sql`${adminAuditLogsTable.metadata} ->> 'action' = ${action}`
+        : undefined
+
+      // Sorting by `action` reaches into the JSON metadata column.
+      const sortColumn =
+        sortBy === 'action'
+          ? sql`${adminAuditLogsTable.metadata} ->> 'action'`
+          : adminAuditLogsTable.createdAt
+      const orderBy =
+        sortDirection === 'asc' ? asc(sortColumn) : desc(sortColumn)
+
+      const logs = db
+        .select({
+          id: adminAuditLogsTable.id,
+          createdAt: adminAuditLogsTable.createdAt,
+          metadata: adminAuditLogsTable.metadata,
+          user: users,
+        })
+        .from(adminAuditLogsTable)
+        .innerJoin(users, eq(adminAuditLogsTable.userId, users.id))
+        .where(where)
+        .orderBy(orderBy)
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+        .all()
+
+      const total =
+        db.select({value: count()}).from(adminAuditLogsTable).where(where).get()
+          ?.value ?? 0
+
+      return c.json({logs, total})
+    }
+  )
+
+  /**
+   * Paginated, sortable, filterable system audit log. Same shape as the admin
+   * audit log but without an acting user (these rows have no `userId`).
+   */
+  .get(
+    '/system-audit-logs',
+    arktypeValidator(
+      'query',
+      type({
+        // Query params arrive as strings, so coerce numerics with morphs.
+        'page?': type('string.integer.parse').to('number >= 1'),
+        'pageSize?': type("'10' | '25' | '50'").pipe(Number),
+        'sortBy?': "'createdAt' | 'action'",
+        'sortDirection?': "'asc' | 'desc'",
+        'action?': type.enumerated(...systemAuditLogActions),
+      })
+    ),
+    c => {
+      const db = getDatabase()
+      const {
+        page = 1,
+        pageSize = 25,
+        sortBy = 'createdAt',
+        sortDirection = 'desc',
+        action,
+      } = c.req.valid('query')
+
+      const where = action
+        ? sql`${systemAuditLogsTable.metadata} ->> 'action' = ${action}`
+        : undefined
+
+      const sortColumn =
+        sortBy === 'action'
+          ? sql`${systemAuditLogsTable.metadata} ->> 'action'`
+          : systemAuditLogsTable.createdAt
+      const orderBy =
+        sortDirection === 'asc' ? asc(sortColumn) : desc(sortColumn)
+
+      const logs = db
+        .select({
+          id: systemAuditLogsTable.id,
+          createdAt: systemAuditLogsTable.createdAt,
+          metadata: systemAuditLogsTable.metadata,
+        })
+        .from(systemAuditLogsTable)
+        .where(where)
+        .orderBy(orderBy)
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+        .all()
+
+      const total =
+        db
+          .select({value: count()})
+          .from(systemAuditLogsTable)
+          .where(where)
+          .get()?.value ?? 0
+
+      return c.json({logs, total})
+    }
+  )
+
+  /**
+   * Serve an arbitrary user's avatar by id. Mirrors the authenticated avatar
+   * GET handler: weak ETag from `updatedAt`, 304 on revalidation, no-cache.
+   */
+  .get('/avatar/:userId', c => {
+    const db = getDatabase()
+    const {userId} = c.req.param()
+    const avatar = db
+      .select()
+      .from(avatarsTable)
+      .where(eq(avatarsTable.userId, userId))
+      .get()
+
+    if (!avatar) {
+      return c.body(null, 404)
+    }
+
+    const etag = `W/"${avatar.updatedAt.getTime()}"`
+
+    // Weak validator the browser echoes back as `If-None-Match` on revalidation.
+    c.header('ETag', etag)
+
+    /**
+     * Force revalidation on every request but allow 304 responses, so a new
+     * upload is seen immediately instead of being masked by a stale cache.
+     */
+    c.header('Cache-Control', 'private, no-cache')
+
+    // If the client's cached ETag still matches, skip sending the image bytes.
+    if (c.req.header('If-None-Match') === etag) {
+      return c.body(null, 304)
+    }
+
+    c.header('Content-Type', avatar.mimeType)
+    return c.body(new Uint8Array(avatar.data))
   })

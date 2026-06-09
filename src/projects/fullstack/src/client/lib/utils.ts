@@ -20,7 +20,7 @@ export function cn(...inputs: ClassValue[]) {
  * 'U' when neither is set. Casing is left to the caller (consumers typically
  * add an `uppercase` class on the avatar fallback).
  */
-export function getUserInitials(user: User) {
+export function getUserInitials(user: Pick<User, 'name' | 'lastName'>) {
   const first = user.name.trim()[0] ?? ''
   const last = user.lastName.trim()[0] ?? ''
   return `${first}${last}` || 'U'

@@ -1,7 +1,6 @@
 import type {FileRouteTypes} from '@/client/routeTree.gen'
 
 import {PasswordInput} from '@/client/components/custom/PasswordInput'
-import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
 import {
   Dialog,
@@ -91,17 +90,17 @@ export function DeleteAccount() {
               form.handleSubmit()
             }}
           >
-            <PasswordManagerHint />
             <form.Field name="password">
               {field => (
                 <Field>
-                  <FieldLabel>Password</FieldLabel>
+                  <FieldLabel htmlFor="deleteAccount">Password</FieldLabel>
                   <PasswordInput
-                    id="deleteAccountPassword"
+                    id="deleteAccount"
                     value={field.state.value}
                     onChange={event => field.handleChange(event.target.value)}
                     onBlur={field.handleBlur}
-                    autoComplete="current-password"
+                    typeOverride="text"
+                    placeholder="Type your pw here"
                     required
                   />
                 </Field>

@@ -13,24 +13,37 @@ export function PasswordInput({
   id,
   className,
   isInvalid,
+  typeOverride,
+  placeholder,
   ...props
 }: Omit<ComponentProps<'input'>, 'type'> & {
   id: string
   isInvalid?: boolean
+  typeOverride?: ComponentProps<'input'>['type']
 }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const toggleVisibility = useCallback(() => {
     setIsVisible(prevState => !prevState)
   }, [])
 
+  /**
+   * When `typeOverride` is "text" (to avoid password-manager detection) we lose
+   * the native bullet masking. Reproduce it with CSS while the value is hidden.
+   */
+  const maskAsText = !isVisible && typeOverride === 'text'
+
   return (
     <div className="relative">
       <Input
         {...props}
         id={id}
-        className={cn('pe-9', className)}
-        placeholder="Password"
-        type={isVisible ? 'text' : 'password'}
+        className={cn(
+          'pe-9',
+          maskAsText && '[-webkit-text-security:disc]',
+          className
+        )}
+        placeholder={placeholder ?? 'Password'}
+        type={isVisible ? 'text' : (typeOverride ?? 'password')}
         aria-invalid={isInvalid}
       />
       <button

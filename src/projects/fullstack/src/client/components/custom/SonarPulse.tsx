@@ -10,7 +10,8 @@ export function SonarPulse({
   doublePulse?: boolean
 }) {
   return (
-    <div className={className}>
+    // Use spans to avoid potentially rendering a div inside a p.
+    <span className={cn('block', className)}>
       <span className="relative flex size-1.5">
         <span
           className={cn(
@@ -33,6 +34,6 @@ export function SonarPulse({
           )}
         />
       </span>
-    </div>
+    </span>
   )
 }

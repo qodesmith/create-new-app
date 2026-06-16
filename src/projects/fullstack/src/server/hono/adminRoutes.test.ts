@@ -24,6 +24,8 @@ type AdminRoutes = typeof _adminClient
 type User = AuthSchemaInsert['users']
 type AdminAuditLog = AppSchemaInsert['adminAuditLogsTable']
 type SystemAuditLog = AppSchemaInsert['systemAuditLogsTable']
+type ErrorRecord = AppSchemaInsert['errorsTable']
+type ErrorsResponse = InferResponseType<AdminRoutes['errors']['$get']>
 type AdminAuditLogsResponse = InferResponseType<
   AdminRoutes['admin-audit-logs']['$get']
 >
@@ -211,6 +213,32 @@ beforeAll(async () => {
     testDb.insert(appSchema.systemAuditLogsTable).values(row).run()
   }
 
+  // Seed errors: mixed client/server contexts, some with a user, some without.
+  const errorRecords: ErrorRecord[] = [
+    {
+      error: {message: 'client boom', name: 'Error'},
+      context: 'client:signIn:exception',
+      userId: regularUser.id,
+      createdAt: t1,
+    },
+    {
+      error: {message: 'server boom'},
+      context: 'hono:topLevel:exception',
+      userId: null,
+      metadata: {route: '/api/whatever'},
+      createdAt: t2,
+    },
+    {
+      error: {name: 'TypeError'},
+      context: 'client:topLevel:exception',
+      userId: adminUser.id,
+      createdAt: t3,
+    },
+  ]
+  for (const row of errorRecords) {
+    testDb.insert(appSchema.errorsTable).values(row).run()
+  }
+
   // One avatar for the admin user.
   testDb
     .insert(appSchema.avatarsTable)
@@ -364,6 +392,121 @@ describe('GET /system-audit-logs', () => {
     for (const row of body.logs) {
       expect(row.metadata.action).toBe('purge-stale-users')
     }
+  })
+})
+
+describe('GET /errors', () => {
+  it('returns rows + total, newest-first, with joined user (null when none)', async () => {
+    asAdmin()
+    const res = await adminRoutes.request('/errors')
+    expect(res.status).toBe(200)
+
+    const body = (await res.json()) as ErrorsResponse
+    expect(body.total).toBe(3)
+    expect(body.errors).toHaveLength(3)
+
+    // Default sort is createdAt desc: t3 (client:topLevel), t2 (hono), t1 (client:signIn).
+    expect(body.errors.map(e => e.context)).toEqual([
+      'client:topLevel:exception',
+      'hono:topLevel:exception',
+      'client:signIn:exception',
+    ])
+
+    // The client:topLevel row is attributed to the admin; the hono row (no
+    // userId) joins to null.
+    const adminRow = body.errors.find(
+      e => e.context === 'client:topLevel:exception'
+    )
+    const systemRow = body.errors.find(
+      e => e.context === 'hono:topLevel:exception'
+    )
+    expect(adminRow?.user).toMatchObject({
+      id: adminUser.id,
+      name: adminUser.name,
+      lastName: adminUser.lastName,
+      email: adminUser.email,
+    })
+    expect(systemRow?.user).toBeNull()
+
+    for (const row of body.errors) {
+      expect(row).toHaveProperty('id')
+      expect(row).toHaveProperty('createdAt')
+      expect(row).toHaveProperty('error')
+    }
+  })
+
+  it('sorts by createdAt asc (oldest first)', async () => {
+    asAdmin()
+    const res = await adminRoutes.request('/errors?sortDirection=asc')
+    const {errors} = (await res.json()) as ErrorsResponse
+    const createdAts = errors.map(e => new Date(e.createdAt).getTime())
+
+    expect(createdAts).toEqual([t1.getTime(), t2.getTime(), t3.getTime()])
+  })
+
+  it('sorts by context', async () => {
+    asAdmin()
+    const res = await adminRoutes.request(
+      '/errors?sortBy=context&sortDirection=asc'
+    )
+    const {errors} = (await res.json()) as ErrorsResponse
+
+    expect(errors.map(e => e.context)).toEqual([
+      'client:signIn:exception',
+      'client:topLevel:exception',
+      'hono:topLevel:exception',
+    ])
+  })
+
+  it('filters by category=client', async () => {
+    asAdmin()
+    const res = await adminRoutes.request('/errors?category=client')
+    const body = (await res.json()) as ErrorsResponse
+
+    expect(body.total).toBe(2)
+    expect(body.errors).toHaveLength(2)
+    for (const row of body.errors) {
+      expect(row.context.startsWith('client:')).toBe(true)
+    }
+  })
+
+  it('filters by category=server (negation of client:%)', async () => {
+    asAdmin()
+    const res = await adminRoutes.request('/errors?category=server')
+    const body = (await res.json()) as ErrorsResponse
+
+    expect(body.total).toBe(1)
+    expect(body.errors[0]?.context).toBe('hono:topLevel:exception')
+  })
+
+  it('filters by exact context', async () => {
+    asAdmin()
+    const res = await adminRoutes.request(
+      '/errors?context=client:signIn:exception'
+    )
+    const body = (await res.json()) as ErrorsResponse
+
+    expect(body.total).toBe(1)
+    expect(body.errors[0]?.context).toBe('client:signIn:exception')
+  })
+
+  it('paginates with total unchanged', async () => {
+    asAdmin()
+    const res = await adminRoutes.request('/errors?page=2&pageSize=10')
+    const body = (await res.json()) as ErrorsResponse
+
+    expect(body.total).toBe(3)
+    expect(body.errors).toHaveLength(0)
+  })
+
+  it('returns 403 for a non-admin and 401 for no session', async () => {
+    mockSessionUser = regularUser
+    expect((await adminRoutes.request('/errors')).status).toBe(403)
+
+    mockSessionUser = null
+    expect((await adminRoutes.request('/errors')).status).toBe(401)
+
+    asAdmin()
   })
 })
 

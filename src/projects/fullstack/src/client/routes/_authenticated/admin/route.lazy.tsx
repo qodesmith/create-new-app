@@ -9,6 +9,7 @@ import {AdminAuditLogsTable} from './-AdminAuditLogsTable'
 import {AdminSection} from './-AdminSection'
 import {CreateUserDialog} from './-CreateUserDialog'
 import {DatabaseBackup} from './-DatabaseBackup'
+import {ErrorsTable} from './-ErrorsTable'
 import {StaleRecords} from './-StaleRecords'
 import {SystemAuditLogsTable} from './-SystemAuditLogsTable'
 import {UsersTable} from './-UsersTable'
@@ -56,6 +57,10 @@ function AdminPage() {
 
       <AdminSection title="System audit logs">
         <SystemAuditLogsTable />
+      </AdminSection>
+
+      <AdminSection title="Errors">
+        <ErrorsTable />
       </AdminSection>
 
       <CreateUserDialog

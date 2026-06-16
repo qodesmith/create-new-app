@@ -1,4 +1,4 @@
-import type {AppSchemaSelect, ClientRoute} from '@/shared/types'
+import type {AppSchemaSelect, ClientRoute, ErrorContext} from '@/shared/types'
 
 import {arrayOfAll} from '@/shared/utils'
 
@@ -95,6 +95,67 @@ export const systemAuditLogActions = arrayOfAll<SystemAuditLogAction>()([
   'purge-expired-verifications',
   'purge-stale-ratelimits',
   'purge-stale-errors',
+])
+
+/**
+ * Single source of truth for the exact-`context` filter values surfaced in the
+ * Errors admin table (and the server-side enum validation for `GET /errors`).
+ * `arrayOfAll<ErrorContext>()` enforces exhaustiveness, so adding a new
+ * `ErrorContext` arm forces a matching entry here. Keep in sync with
+ * `ErrorContext` in shared/types.d.ts.
+ */
+export const errorContexts = arrayOfAll<ErrorContext>()([
+  // Server
+  'hono:topLevel:exception',
+  'betterAuth:topLevel:exception',
+  'betterAuth:signOut:rejection',
+  'betterAuth:passkeyDelete:rejection',
+  'betterAuth:passkeyList:rejection',
+  'resend:sendSignUpVerificationEmail:rejection',
+  'resend:sendSignUpVerificationEmail:exception',
+  'resend:sendResetPasswordEmail:rejection',
+  'resend:sendResetPasswordEmail:exception',
+  'resend:sendChangeEmailConfirmation:rejection',
+  'resend:sendChangeEmailConfirmation:exception',
+  'resend:sendChangeEmailVerification:rejection',
+  'resend:sendChangeEmailVerification:exception',
+  'resend:sendDeleteAccountVerificationEmail:rejection',
+  'resend:sendDeleteAccountVerificationEmail:exception',
+  'dbCleanup:purgeStaleRecords:exception',
+  'db:backupSnapshot:exception',
+  'db:backupStream:exception',
+  'bunImage:avatarUpload:exception',
+
+  // Client
+  'client:topLevel:exception',
+  'client:signIn:exception',
+  'client:signUp:exception',
+  'client:signOut:exception',
+  'client:resetPassword:exception',
+  'client:requestPasswordReset:exception',
+  'client:changeEmail:exception',
+  'client:changePassword:exception',
+  'client:changeName:exception',
+  'client:avatarUpload:exception',
+  'client:avatarDelete:exception',
+  'client:passkeyAdd:exception',
+  'client:passkeyDelete:exception',
+  'client:deleteAccount:exception',
+  'client:passkeyList:exception',
+  'client:passkeySignIn:exception',
+  'client:adminPurge:exception',
+  'client:adminBackup:exception',
+  'client:adminUpdateUser:exception',
+  'client:adminCreateUser:exception',
+  'client:adminRemoveUser:exception',
+  'client:adminImpersonateUser:exception',
+  'client:adminStopImpersonating:exception',
+  'client:adminBanUser:exception',
+  'client:adminUnbanUser:exception',
+  'client:adminSetRole:exception',
+  'client:adminRevokeUserSession:exception',
+  'client:adminRevokeUserSessions:exception',
+  'client:adminSetUserPassword:exception',
 ])
 
 // Add new user roles by adding matching key/value pairs.

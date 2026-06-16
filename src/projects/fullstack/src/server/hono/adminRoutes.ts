@@ -20,13 +20,14 @@ import {adminMiddleware} from '@/server/middleware/adminMiddleware'
 import {
   adminAuditLogActions,
   emailVerificationExpiryInMs,
+  errorContexts,
   systemAuditLogActions,
 } from '@/shared/constants'
 
 import {arktypeValidator} from '@hono/arktype-validator'
 import {bestEffort, errorToObject, getUnitInMs} from '@qodestack/utils'
 import {type} from 'arktype'
-import {and, asc, count, desc, eq, lt, sql} from 'drizzle-orm'
+import {and, asc, count, desc, eq, like, lt, not, sql} from 'drizzle-orm'
 import {Hono} from 'hono'
 
 export type HonoAdminServer = typeof adminRoutes
@@ -440,6 +441,89 @@ export const adminRoutes = new Hono()
           .get()?.value ?? 0
 
       return c.json({logs, total})
+    }
+  )
+
+  /**
+   * Paginated, sortable, filterable error log. Mirrors the audit-log endpoints,
+   * but `errorsTable.userId` is nullable (many errors have no acting user), so
+   * this LEFT JOINs `users` — rows with no user come back with `user: null`.
+   *
+   * Two independent filters:
+   *   - `category`: 'client' matches `context LIKE 'client:%'`; 'server' is the
+   *     negation. Cheap prefix predicate over the indexed-enough `context` text.
+   *   - `context`: an exact match on a single `ErrorContext` value.
+   * Both `context` and `createdAt` are real columns, so sorting needs no JSON
+   * extraction (unlike the audit logs' `metadata ->> 'action'`).
+   */
+  .get(
+    '/errors',
+    arktypeValidator(
+      'query',
+      type({
+        // Query params arrive as strings, so coerce numerics with morphs.
+        'page?': type('string.integer.parse').to('number >= 1'),
+        'pageSize?': type("'10' | '25' | '50'").pipe(Number),
+        'sortBy?': "'createdAt' | 'context'",
+        'sortDirection?': "'asc' | 'desc'",
+        'category?': "'client' | 'server'",
+        'context?': type.enumerated(...errorContexts),
+      })
+    ),
+    c => {
+      const db = getDatabase()
+      const {
+        page = 1,
+        pageSize = 25,
+        sortBy = 'createdAt',
+        sortDirection = 'desc',
+        category,
+        context,
+      } = c.req.valid('query')
+
+      const clientPredicate = like(errorsTable.context, 'client:%')
+      const predicates = [
+        category === 'client'
+          ? clientPredicate
+          : category === 'server'
+            ? not(clientPredicate)
+            : undefined,
+        context ? eq(errorsTable.context, context) : undefined,
+      ].filter(p => p !== undefined)
+      const where = predicates.length ? and(...predicates) : undefined
+
+      const sortColumn =
+        sortBy === 'context' ? errorsTable.context : errorsTable.createdAt
+      const orderBy =
+        sortDirection === 'asc' ? asc(sortColumn) : desc(sortColumn)
+
+      const errors = db
+        .select({
+          id: errorsTable.id,
+          createdAt: errorsTable.createdAt,
+          context: errorsTable.context,
+          error: errorsTable.error,
+          metadata: errorsTable.metadata,
+          user: {
+            id: users.id,
+            name: users.name,
+            lastName: users.lastName,
+            email: users.email,
+          },
+        })
+        .from(errorsTable)
+        .leftJoin(users, eq(errorsTable.userId, users.id))
+        .where(where)
+        .orderBy(orderBy)
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+        .all()
+
+      const total =
+        db.select({value: count()}).from(errorsTable).where(where).get()
+          ?.value ?? 0
+
+      return c.json({errors, total})
     }
   )
 

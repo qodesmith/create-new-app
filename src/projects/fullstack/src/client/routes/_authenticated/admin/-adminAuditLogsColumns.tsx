@@ -1,5 +1,6 @@
 import type {ColumnDef} from '@tanstack/react-table'
 import type {InferResponseType} from 'hono/client'
+import type {ReactNode} from 'react'
 import type {createApiAdminClient} from '@/client/apiClient'
 import type {SortDirection} from '@/shared/types'
 
@@ -34,6 +35,10 @@ function getDownloadStatusVariant(
   if (status === 'complete') return 'default'
   if (status === 'fail') return 'destructive'
   return 'secondary'
+}
+
+function DetailText({children}: {children: ReactNode}) {
+  return <span className="text-muted-foreground text-sm">{children}</span>
 }
 
 export function getAdminAuditLogsColumns({
@@ -88,18 +93,76 @@ export function getAdminAuditLogsColumns({
       header: 'Details',
       cell: ({row}) => {
         const {metadata} = row.original
-        if (metadata.action === 'download-database') {
-          return (
-            <Badge variant={getDownloadStatusVariant(metadata.status)}>
-              {metadata.status}
-            </Badge>
-          )
+
+        switch (metadata.action) {
+          case 'download-database':
+            return (
+              <Badge variant={getDownloadStatusVariant(metadata.status)}>
+                {metadata.status}
+              </Badge>
+            )
+          case 'create-user':
+            return (
+              <DetailText>
+                Created {metadata.email}
+                {metadata.role ? ` (${metadata.role})` : ''}
+              </DetailText>
+            )
+          case 'update-user':
+            return (
+              <DetailText>
+                Updated {metadata.targetUserId}
+                {metadata.updatedFields.length > 0
+                  ? ` — ${metadata.updatedFields.join(', ')}`
+                  : ''}
+              </DetailText>
+            )
+          case 'set-user-role':
+            return (
+              <DetailText>
+                {metadata.targetUserId} → role {metadata.role}
+              </DetailText>
+            )
+          case 'ban-user':
+            return (
+              <DetailText>
+                Banned {metadata.targetUserId}
+                {metadata.banReason ? ` — ${metadata.banReason}` : ''}
+              </DetailText>
+            )
+          case 'unban-user':
+            return <DetailText>Unbanned {metadata.targetUserId}</DetailText>
+          case 'set-user-password':
+            return (
+              <DetailText>
+                Reset password for {metadata.targetUserId}
+              </DetailText>
+            )
+          case 'remove-user':
+            return <DetailText>Removed {metadata.targetUserId}</DetailText>
+          case 'revoke-user-session':
+            return (
+              <DetailText>
+                Revoked session {metadata.sessionToken.slice(0, 12)}…
+              </DetailText>
+            )
+          case 'revoke-user-sessions':
+            return (
+              <DetailText>
+                Revoked all sessions for {metadata.targetUserId}
+              </DetailText>
+            )
+          case 'impersonate-user':
+            return <DetailText>Impersonated {metadata.targetUserId}</DetailText>
+          case 'stop-impersonating':
+            return (
+              <DetailText>
+                Stopped impersonating {metadata.targetUserId}
+              </DetailText>
+            )
+          default:
+            return <DetailText>{metadata.deletedCount} deleted</DetailText>
         }
-        return (
-          <span className="text-muted-foreground text-sm">
-            {metadata.deletedCount} deleted
-          </span>
-        )
       },
     },
     {

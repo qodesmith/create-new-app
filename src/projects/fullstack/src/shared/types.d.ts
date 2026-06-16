@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
 
+import type {userRoles} from '@/shared/constants'
 import type {FileRouteTypes} from '../client/routeTree.gen'
 import type {auth} from '../server/db/auth/auth'
 
@@ -41,6 +42,8 @@ export type Prettify<T> = T extends BuiltIn
       : T
 
 export type ServerAuth = typeof auth
+
+export type UserRole = keyof typeof userRoles
 
 /**
  * Naming convention: `<service>:<operation>:<suffix>`

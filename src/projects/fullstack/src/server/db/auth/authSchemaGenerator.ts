@@ -4,7 +4,7 @@
  */
 import {Database} from 'bun:sqlite'
 
-import {authOptions, drizzleAdapterOptions} from '@/server/db/auth/auth'
+import {authOptions, drizzleAdapterOptions} from '@/server/db/auth/authOptions'
 
 import {drizzleAdapter} from '@better-auth/drizzle-adapter'
 import {betterAuth} from 'better-auth'

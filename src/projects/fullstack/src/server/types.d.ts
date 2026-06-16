@@ -1,5 +1,6 @@
 import type {Input, MiddlewareHandler} from 'hono'
 import type {HandlerResponse} from 'hono/types'
+import type {userRoles} from '@/shared/constants'
 import type {Prettify} from '@/shared/types'
 import type {auth} from './db/auth/auth'
 import type * as appSchema from './db/schema/appSchema'
@@ -53,8 +54,81 @@ export type SharedAuditLogsMetadata =
 
 export type DownloadDatabaseStatus = 'started' | 'complete' | 'fail'
 
+/**
+ * One discriminated arm per better-auth admin-plugin mutation we audit. Written
+ * from the `after` hook in `db/auth/auth.ts`, one row per successful action. The
+ * acting admin is the `userId` FK on the row; everything user-specific to the
+ * action lives here in the (FK-free) JSON metadata. `targetUserId` is the user
+ * the action was performed ON. Secrets (passwords) are never recorded.
+ *
+ * Keep in sync with `adminAuditLogActions` in shared/constants.ts and the
+ * Details cell in `-adminAuditLogsColumns.tsx`.
+ */
+export type AdminUserManagementAuditMetadata =
+  | {
+      action: 'create-user'
+      targetUserId: string
+      email: string
+      role: string | null
+    }
+  | {
+      // Admin-driven edit only (better-auth `/admin/update-user`). The
+      // self-service `/update-user` core endpoint is intentionally not audited.
+      action: 'update-user'
+      targetUserId: string
+      updatedFields: string[]
+    }
+  | {
+      action: 'set-user-role'
+      targetUserId: string
+      role: keyof typeof userRoles
+    }
+  | {
+      action: 'ban-user'
+      targetUserId: string
+      banReason: string | null
+      banExpiresIn: number | null
+    }
+  | {
+      action: 'unban-user'
+      targetUserId: string
+    }
+  | {
+      // Only the target is recorded — NEVER the password.
+      action: 'set-user-password'
+      targetUserId: string
+    }
+  | {
+      action: 'remove-user'
+      targetUserId: string
+    }
+  | {
+      /**
+       * This endpoint keys off a session token, not a user id. We grab the user
+       * id from a db query of the session object in the `before` hook, return
+       * it there, so the `after` hook (which uses these types) can log it.
+       */
+      action: 'revoke-user-session'
+      sessionToken: string
+      targetUserId: string
+    }
+  | {
+      action: 'revoke-user-sessions'
+      targetUserId: string
+    }
+  | {
+      action: 'impersonate-user'
+      targetUserId: string
+    }
+  | {
+      // `targetUserId` is the user who was being impersonated.
+      action: 'stop-impersonating'
+      targetUserId: string
+    }
+
 export type AdminAuditLogsMetadata =
   | SharedAuditLogsMetadata
+  | AdminUserManagementAuditMetadata
   | {
       action: 'download-database'
       /**

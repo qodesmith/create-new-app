@@ -67,6 +67,23 @@ export const adminAuditLogActions = arrayOfAll<AdminAuditLogAction>()([
   'purge-stale-ratelimits',
   'purge-stale-errors',
   'download-database',
+
+  /**
+   * https://better-auth.com/docs/plugins/admin
+   * Admin user-management actions. Audited via the `after` hook in
+   * db/auth/auth.ts.
+   */
+  'create-user',
+  'set-user-role',
+  'set-user-password',
+  'update-user',
+  'ban-user',
+  'unban-user',
+  'revoke-user-session',
+  'revoke-user-sessions',
+  'impersonate-user',
+  'stop-impersonating',
+  'remove-user',
 ])
 
 /**

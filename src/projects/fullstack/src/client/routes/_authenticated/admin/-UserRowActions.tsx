@@ -1,4 +1,5 @@
 import type {User} from '@/client/types'
+import type {UserRole} from '@/shared/types'
 
 import {ConfirmDialog} from '@/client/components/custom/ConfirmDialog'
 import {Button} from '@/client/components/ui/button'
@@ -55,7 +56,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const isTargetAdmin = user.role === 'admin'
   const canImpersonateAdmins = currentUser?.role
     ? authClient.admin.checkRolePermission({
-        role: currentUser.role as 'admin' | 'user',
+        role: currentUser.role as UserRole,
         permissions: {user: ['impersonate-admins']},
       })
     : false

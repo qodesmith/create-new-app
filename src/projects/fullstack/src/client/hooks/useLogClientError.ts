@@ -25,14 +25,11 @@ function logClientError({
   metadata?: Record<string, unknown>
   apiClient: ApiClient
 }): void {
-  bestEffort(
-    () => {
-      apiClient['client-error'].$post({
-        json: {error: errorToObject(error), context, metadata},
-      })
-    },
-    {log: true}
-  )
+  bestEffort(() => {
+    apiClient['client-error'].$post({
+      json: {error: errorToObject(error), context, metadata},
+    })
+  })
 }
 
 export function useLogClientError() {

@@ -233,14 +233,11 @@ export const adminRoutes = new Hono()
         if (finalized) return
         finalized = true
 
-        bestEffort(
-          () => {
-            if (sqliteBackupPath) {
-              fs.unlinkSync(sqliteBackupPath)
-            }
-          },
-          {log: true}
-        )
+        bestEffort(() => {
+          if (sqliteBackupPath) {
+            fs.unlinkSync(sqliteBackupPath)
+          }
+        })
 
         setAuditStatus(succeeded ? 'complete' : 'fail')
 

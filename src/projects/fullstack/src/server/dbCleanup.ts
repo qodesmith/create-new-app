@@ -316,28 +316,25 @@ export function reconcileBackupAuditOnBoot() {
   const action: AdminAuditLogsMetadata['action'] = 'download-database'
   const startedStatus: DownloadDatabaseStatus = 'started'
 
-  bestEffort(
-    () => {
-      const reaped = db
-        .update(adminAuditLogsTable)
-        .set({metadata: {action: 'download-database', status: 'fail'}})
-        .where(
-          and(
-            sql`${adminAuditLogsTable.metadata} ->> 'action' = ${action}`,
-            sql`${adminAuditLogsTable.metadata} ->> 'status' = ${startedStatus}`
-          )
+  bestEffort(() => {
+    const reaped = db
+      .update(adminAuditLogsTable)
+      .set({metadata: {action: 'download-database', status: 'fail'}})
+      .where(
+        and(
+          sql`${adminAuditLogsTable.metadata} ->> 'action' = ${action}`,
+          sql`${adminAuditLogsTable.metadata} ->> 'status' = ${startedStatus}`
         )
-        .returning({id: adminAuditLogsTable.id})
-        .all()
+      )
+      .returning({id: adminAuditLogsTable.id})
+      .all()
 
-      if (reaped.length > 0) {
-        log.text(
-          `[DB_BOOT] Reaped ${reaped.length} orphan backup attempt(s) from a previous process`
-        )
-      }
-    },
-    {log: true}
-  )
+    if (reaped.length > 0) {
+      log.text(
+        `[DB_BOOT] Reaped ${reaped.length} orphan backup attempt(s) from a previous process`
+      )
+    }
+  })
 }
 
 /**
@@ -361,6 +358,6 @@ export function startDbCleanup() {
 
   const systemPurge = () => purgeStaleRecords({system: true})
 
-  bestEffort(systemPurge, {log: true})
-  setInterval(() => bestEffort(systemPurge, {log: true}), oneHourInMs)
+  bestEffort(systemPurge)
+  setInterval(() => bestEffort(systemPurge), oneHourInMs)
 }

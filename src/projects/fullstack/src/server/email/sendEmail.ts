@@ -35,27 +35,19 @@ export async function sendEmail({
         const error = errorToObject(res.error)
         const metadata = res.headers === null ? null : {headers: res.headers}
 
-        bestEffort(
-          () => {
-            db.insert(errorsTable)
-              .values({context: rejectionContext, error, metadata})
-              .run()
-          },
-          {log: true}
-        )
+        bestEffort(() => {
+          db.insert(errorsTable)
+            .values({context: rejectionContext, error, metadata})
+            .run()
+        })
       }
     })
     .catch(e => {
       const db = getDatabase()
       const error = errorToObject(e)
 
-      bestEffort(
-        () => {
-          db.insert(errorsTable)
-            .values({context: exceptionContext, error})
-            .run()
-        },
-        {log: true}
-      )
+      bestEffort(() => {
+        db.insert(errorsTable).values({context: exceptionContext, error}).run()
+      })
     })
 }

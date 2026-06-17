@@ -9,14 +9,14 @@ The simulated flow is: build the tarball with `npm pack`, install that tarball g
 ```shell
 # 1. From the repo root, build the tarball
 cd /Users/qodesmith/repos/create-new-app
-npm pack
+bun pm pack
 # Produces: create-new-app-8.0.0.tgz
 
 # 2. Move to a scratch directory outside the repo
 mkdir -p /tmp/cna-test && cd /tmp/cna-test
 
 # 3. Install the tarball globally
-npm i -g /Users/qodesmith/repos/create-new-app/create-new-app-8.0.0.tgz
+bun i -g /Users/qodesmith/repos/create-new-app/create-new-app-8.0.0.tgz
 
 # 4. Confirm the global bin is on PATH
 which create-new-app
@@ -39,14 +39,14 @@ If steps 4–7 all work, the artifact is good.
 
 ## What each step actually verifies
 
-| Step | What it catches |
-|------|-----------------|
-| `npm pack` | Errors in `package.json` (bad `bin`, malformed `files`). |
-| `npm pack --dry-run` | What ships vs. what's left out. Run this first if you've changed `"files"` or added new template assets. |
-| `npm i -g ./...tgz` | The `bin` wrapper is wired up correctly and the shim lands on `PATH`. |
-| `create-new-app --version` | The wrapper successfully execs `bun src/cli/index.ts` and arg-forwarding works. |
+| Step                                         | What it catches                                                                                                                                                                                                                          |
+|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bun pm pack`                                | Errors in `package.json` (bad `bin`, malformed `files`).                                                                                                                                                                                 |
+| `bun pm pack --dry-run`                      | What ships vs. what's left out. Run this first if you've changed `"files"` or added new template assets.                                                                                                                                 |
+| `bun i -g ./...tgz`                          | The `bin` wrapper is wired up correctly and the shim lands on `PATH`.                                                                                                                                                                    |
+| `create-new-app --version`                   | The wrapper successfully execs `bun src/cli/index.ts` and arg-forwarding works.                                                                                                                                                          |
 | `create-new-app fullstack-test -t fullstack` | Template files are present in the published tarball (the original `/$bunfs/...` bug would surface here as "Template not found"). Post-install steps (`bun install`, `bunx biomeInit`, `git init`) all run against the generated project. |
-| `bun dev` in the generated app | The generated `package.json`, scripts, and template substitutions all produced a working app. |
+| `bun dev` in the generated app               | The generated `package.json`, scripts, and template substitutions all produced a working app.                                                                                                                                            |
 
 ## Verify the Bun-missing error path
 
@@ -74,7 +74,7 @@ Exit code should be `1`.
 
 ```shell
 # Uninstall the global package
-npm uninstall -g create-new-app
+bun remove -g create-new-app
 
 # Wipe the scratch dir
 rm -rf /tmp/cna-test

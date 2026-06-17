@@ -27,6 +27,6 @@ export const arrayOfAll =
   <T>() =>
   <U extends readonly T[]>(
     array: U &
-      ([T] extends [U[number]] ? unknown : 'Array is missing a union member'),
+      ([T] extends [U[number]] ? unknown : 'Array is missing a union member')
   ): readonly T[] =>
     array

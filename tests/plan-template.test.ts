@@ -169,7 +169,8 @@ describe('planTemplate', () => {
 
   it('substitutes inside placeholder-bearing files even when other files have no placeholders', async () => {
     const reader = makeReader({
-      [join(SRC, 'package.json')]: '{"name":"create-new-app-template-fullstack"}',
+      [join(SRC, 'package.json')]:
+        '{"name":"create-new-app-template-fullstack"}',
       [join(SRC, 'README.md')]: 'No placeholders here.',
     })
 

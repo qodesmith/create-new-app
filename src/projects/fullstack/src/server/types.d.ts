@@ -34,6 +34,7 @@ export type AuthSchemaSelect = {
     : never]: (typeof authSchema)[K]['$inferSelect']
 }
 
+/** This is the source of truth for the systemAuditLogsTable schema metadata. */
 export type SharedAuditLogsMetadata =
   | {
       action: 'purge-stale-users'
@@ -51,6 +52,11 @@ export type SharedAuditLogsMetadata =
       action: 'purge-stale-errors'
       deletedCount: number
     }
+
+export type SystemAuditLogAction = Pick<
+  SharedAuditLogsMetadata,
+  'action'
+>['action']
 
 export type DownloadDatabaseStatus = 'started' | 'complete' | 'fail'
 
@@ -140,6 +146,11 @@ export type AdminAuditLogsMetadata =
        */
       status: DownloadDatabaseStatus
     }
+
+export type AdminAuditLogAction = Pick<
+  AdminAuditLogsMetadata,
+  'action'
+>['action']
 
 export type SystemAuditLogsMetadata = SharedAuditLogsMetadata
 

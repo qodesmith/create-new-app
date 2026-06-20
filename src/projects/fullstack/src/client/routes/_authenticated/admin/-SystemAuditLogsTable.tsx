@@ -1,4 +1,4 @@
-import type {SortDirection} from '@/shared/types'
+import type {SortDirection, SystemAuditLogAction} from '@/shared/types'
 import type {SystemAuditLogsSortBy} from './-systemAuditLogsColumns'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
@@ -30,8 +30,6 @@ import {useCallback, useMemo, useState} from 'react'
 
 import {getSystemAuditLogsColumns} from './-systemAuditLogsColumns'
 
-type ActionFilter = (typeof systemAuditLogActions)[number]
-
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
 const ALL_ACTIONS_VALUE = 'all'
 
@@ -45,7 +43,9 @@ export function SystemAuditLogsTable() {
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(
     'desc'
   )
-  const [actionFilter, setActionFilter] = useState<ActionFilter | null>(null)
+  const [actionFilter, setActionFilter] = useState<SystemAuditLogAction | null>(
+    null
+  )
 
   const queryParams = {
     page,
@@ -126,10 +126,8 @@ export function SystemAuditLogsTable() {
         <div className="flex items-center gap-2">
           <Select
             value={actionFilter ?? ALL_ACTIONS_VALUE}
-            onValueChange={v => {
-              setActionFilter(
-                v === ALL_ACTIONS_VALUE ? null : (v as ActionFilter)
-              )
+            onValueChange={(v: SystemAuditLogAction | 'all') => {
+              setActionFilter(v === ALL_ACTIONS_VALUE ? null : v)
               setPage(1)
             }}
           >

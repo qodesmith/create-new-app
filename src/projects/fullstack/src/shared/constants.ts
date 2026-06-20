@@ -1,4 +1,8 @@
-import type {AppSchemaSelect, ClientRoute, ErrorContext} from '@/shared/types'
+import type {
+  AdminAuditLogAction,
+  ClientRoute,
+  SystemAuditLogAction,
+} from '@/shared/types'
 
 import {arrayOfAll} from '@/shared/utils'
 
@@ -52,11 +56,6 @@ export const changeEmailCallbackRoutes = {
 
 export const callbackURLSuccessParam = '__data' as const
 
-export type AdminAuditLogAction =
-  AppSchemaSelect['adminAuditLogsTable']['metadata']['action']
-type SystemAuditLogAction =
-  AppSchemaSelect['systemAuditLogsTable']['metadata']['action']
-
 /**
  * Single source of truth for the `action` filter values surfaced in the admin
  * audit log UI. Keep in sync with `AdminAuditLogsMetadata` in server/types.d.ts.
@@ -98,13 +97,23 @@ export const systemAuditLogActions = arrayOfAll<SystemAuditLogAction>()([
 ])
 
 /**
- * Single source of truth for the exact-`context` filter values surfaced in the
- * Errors admin table (and the server-side enum validation for `GET /errors`).
- * `arrayOfAll<ErrorContext>()` enforces exhaustiveness, so adding a new
- * `ErrorContext` arm forces a matching entry here. Keep in sync with
- * `ErrorContext` in shared/types.d.ts.
+ * Single source of truth for error-tracking contexts. The `ErrorContext` union
+ * in shared/types.d.ts is derived from this array via `(typeof
+ * errorContexts)[number]`, so adding a value here updates the type everywhere.
+ * These are also the exact-`context` filter values surfaced in the Errors admin
+ * table (and the server-side enum validation for `GET /errors`).
+ *
+ * Naming convention: `<service>:<operation>:<suffix>`
+ *
+ * - `<service>:<operation>:rejection` - service responded but indicated failure
+ * - `<service>:<operation>:exception` - error caught in a catch clause
+ *
+ * Rejections are only listed here when they represent a real bug signal
+ * (server-side state inconsistency, infra failure, etc.). Expected user-error
+ * rejections like wrong passwords, expired reset tokens, or oversized uploads
+ * are surfaced via the UI without being logged anywhere.
  */
-export const errorContexts = arrayOfAll<ErrorContext>()([
+export const errorContexts = [
   // Server
   'hono:topLevel:exception',
   'betterAuth:topLevel:exception',
@@ -156,7 +165,7 @@ export const errorContexts = arrayOfAll<ErrorContext>()([
   'client:adminRevokeUserSession:exception',
   'client:adminRevokeUserSessions:exception',
   'client:adminSetUserPassword:exception',
-])
+] as const
 
 // Add new user roles by adding matching key/value pairs.
 export const userRoles = Object.freeze({

@@ -1,12 +1,16 @@
 ---
 name: add-error-context
-description: Add a new entry to the ErrorContext union type in src/shared/types.d.ts. Use when adding error tracking for server-side operations or genuine client-side catch-clause errors.
+description: Add a new entry to the errorContexts array in src/shared/constants.ts. Use when adding error tracking for server-side operations or genuine client-side catch-clause errors.
 argument-hint: "[error-context-description]"
 ---
 
 # Add ErrorContext Entry
 
-Add a new entry to the `ErrorContext` union type in `src/shared/types.d.ts`.
+Add a new entry to the `errorContexts` array in `src/shared/constants.ts`. That
+array is the single source of truth; the `ErrorContext` union in
+`src/shared/types.d.ts` derives itself from it via `(typeof errorContexts)[number]`,
+so you never edit the type directly — adding an array element updates the type
+everywhere.
 
 ## Philosophy
 
@@ -21,7 +25,7 @@ Three colon-separated parts. `<suffix>` is always lowercase: `rejection` or `exc
 ### Server-side rejections — for bug-signal non-2xx responses
 
 ```ts
-| '<service>:<operation>:rejection'
+'<service>:<operation>:rejection',
 ```
 
 Use when the server returns a non-2xx that shouldn't normally happen — e.g. an operation with no user-error failure mode where a 4xx/5xx points to a server-side problem worth investigating.
@@ -34,8 +38,8 @@ Do NOT add a rejection context for operations where non-2xx is expected user beh
 ### Server-side calls to external services — rejection + exception pair
 
 ```ts
-| '<service>:<operation>:rejection'
-| '<service>:<operation>:exception'
+'<service>:<operation>:rejection',
+'<service>:<operation>:exception',
 ```
 
 - **rejection** — service responded but indicated failure (e.g. Resend returned `{error: ...}`)
@@ -45,7 +49,7 @@ Do NOT add a rejection context for operations where non-2xx is expected user beh
 ### Catch-clause exceptions — exception only
 
 ```ts
-| '<area>:<name>:exception'
+'<area>:<name>:exception',
 ```
 
 For genuine errors caught in a try/catch:
@@ -57,7 +61,7 @@ Client code does **not** log `DetailedError` (non-2xx response from server) — 
 ## Rules
 
 - `<service>`, `<operation>`, and `<area>` are camelCase; `<suffix>` is lowercase (`rejection` | `exception`)
-- Place new entries in the correct section (Server or Client) with a comment if starting a new group
-- Check existing entries in the union to match naming style
+- Place new entries in the correct section (Server or Client) of the `errorContexts` array, with a comment if starting a new group
+- Check existing entries in the array to match naming style
 
 See [CONVENTIONS](../CONVENTIONS.md) for finalize steps and rules.

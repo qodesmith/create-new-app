@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: it's ok here */
 
-import type {userRoles} from '@/shared/constants'
+import type {errorContexts, userRoles} from '@/shared/constants'
 import type {FileRouteTypes} from '../client/routeTree.gen'
 import type {auth} from '../server/db/auth/auth'
 
@@ -46,65 +46,8 @@ export type ServerAuth = typeof auth
 export type UserRole = keyof typeof userRoles
 
 /**
- * Naming convention: `<service>:<operation>:<suffix>`
- *
- * - `<service>:<operation>:rejection` - service responded but indicated failure
- * - `<service>:<operation>:exception` - error caught in a catch clause
- *
- * Rejections are only listed here when they represent a real bug signal
- * (server-side state inconsistency, infra failure, etc.). Expected user-error
- * rejections like wrong passwords, expired reset tokens, or oversized uploads
- * are surfaced via the UI without being logged anywhere.
+ * Derived from the `errorContexts` array in shared/constants.ts, which is the
+ * single source of truth. Add new values there; this union updates itself. See
+ * that array for the `<service>:<operation>:<suffix>` naming convention.
  */
-export type ErrorContext =
-  // Server
-  | 'hono:topLevel:exception'
-  | 'betterAuth:topLevel:exception'
-  | 'betterAuth:signOut:rejection'
-  | 'betterAuth:passkeyDelete:rejection'
-  | 'betterAuth:passkeyList:rejection'
-  | 'resend:sendSignUpVerificationEmail:rejection'
-  | 'resend:sendSignUpVerificationEmail:exception'
-  | 'resend:sendResetPasswordEmail:rejection'
-  | 'resend:sendResetPasswordEmail:exception'
-  | 'resend:sendChangeEmailConfirmation:rejection'
-  | 'resend:sendChangeEmailConfirmation:exception'
-  | 'resend:sendChangeEmailVerification:rejection'
-  | 'resend:sendChangeEmailVerification:exception'
-  | 'resend:sendDeleteAccountVerificationEmail:rejection'
-  | 'resend:sendDeleteAccountVerificationEmail:exception'
-  | 'dbCleanup:purgeStaleRecords:exception'
-  | 'db:backupSnapshot:exception'
-  | 'db:backupStream:exception'
-  | 'bunImage:avatarUpload:exception'
-
-  // Client
-  | 'client:topLevel:exception'
-  | 'client:signIn:exception'
-  | 'client:signUp:exception'
-  | 'client:signOut:exception'
-  | 'client:resetPassword:exception'
-  | 'client:requestPasswordReset:exception'
-  | 'client:changeEmail:exception'
-  | 'client:changePassword:exception'
-  | 'client:changeName:exception'
-  | 'client:avatarUpload:exception'
-  | 'client:avatarDelete:exception'
-  | 'client:passkeyAdd:exception'
-  | 'client:passkeyDelete:exception'
-  | 'client:deleteAccount:exception'
-  | 'client:passkeyList:exception'
-  | 'client:passkeySignIn:exception'
-  | 'client:adminPurge:exception'
-  | 'client:adminBackup:exception'
-  | 'client:adminUpdateUser:exception'
-  | 'client:adminCreateUser:exception'
-  | 'client:adminRemoveUser:exception'
-  | 'client:adminImpersonateUser:exception'
-  | 'client:adminStopImpersonating:exception'
-  | 'client:adminBanUser:exception'
-  | 'client:adminUnbanUser:exception'
-  | 'client:adminSetRole:exception'
-  | 'client:adminRevokeUserSession:exception'
-  | 'client:adminRevokeUserSessions:exception'
-  | 'client:adminSetUserPassword:exception'
+export type ErrorContext = (typeof errorContexts)[number]

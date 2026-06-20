@@ -1,5 +1,4 @@
-import type {AdminAuditLogAction} from '@/shared/constants'
-import type {SortDirection} from '@/shared/types'
+import type {AdminAuditLogAction, SortDirection} from '@/shared/types'
 import type {
   AdminAuditLogRow,
   AdminAuditLogsSortBy,

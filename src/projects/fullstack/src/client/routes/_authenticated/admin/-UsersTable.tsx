@@ -68,7 +68,12 @@ export function UsersTable() {
     pageSize,
   }
 
-  const usersQuery = useQuery({
+  const {
+    data: usersData,
+    isLoading: isInitialLoading,
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ['admin', 'users', queryParams] as const,
     queryFn: async () => {
       const trimmed = debouncedSearch.trim()
@@ -98,10 +103,10 @@ export function UsersTable() {
    * lastName). The server does return them, so cast through unknown.
    */
   const users = useMemo<User[]>(
-    () => (usersQuery.data?.users ?? []) as User[],
-    [usersQuery.data]
+    () => (usersData?.users ?? []) as User[],
+    [usersData?.users]
   )
-  const total = usersQuery.data?.total ?? 0
+  const total = usersData?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   const toggleSort = useCallback(
@@ -142,9 +147,6 @@ export function UsersTable() {
     pageCount: totalPages,
   })
 
-  const isInitialLoading = usersQuery.isLoading
-  const isFetching = usersQuery.isFetching
-  const error = usersQuery.error
   const headerGroups = table.getHeaderGroups()
   const rows = table.getRowModel().rows
   const columnCount = columns.length

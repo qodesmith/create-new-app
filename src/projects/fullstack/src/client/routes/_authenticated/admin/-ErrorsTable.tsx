@@ -61,7 +61,12 @@ export function ErrorsTable() {
     context: contextFilter,
   }
 
-  const errorsQuery = useQuery({
+  const {
+    data: errorsData,
+    isLoading,
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ['admin', 'errors', queryParams],
     queryFn: () =>
       parseResponse(
@@ -79,10 +84,10 @@ export function ErrorsTable() {
   })
 
   const errors = useMemo<ErrorRow[]>(
-    () => errorsQuery.data?.errors ?? [],
-    [errorsQuery.data]
+    () => errorsData?.errors ?? [],
+    [errorsData?.errors]
   )
-  const total = errorsQuery.data?.total ?? 0
+  const total = errorsData?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / +pageSize))
 
   const toggleSort = useCallback(
@@ -126,7 +131,6 @@ export function ErrorsTable() {
     pageCount: totalPages,
   })
 
-  const {isLoading, isFetching, error} = errorsQuery
   const headerGroups = table.getHeaderGroups()
   const {rows} = table.getRowModel()
   const columnCount = columns.length

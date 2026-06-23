@@ -2,7 +2,7 @@ import type {MotionStyle, Transition} from 'motion/react'
 
 import {cn} from '@/client/lib/utils'
 
-import {motion} from 'motion/react'
+import {motion, useReducedMotion} from 'motion/react'
 
 type BorderBeamProps = {
   /**
@@ -70,6 +70,10 @@ export const BorderBeam = ({
   borderWidth = 1,
   borderColor = 'border-transparent',
 }: BorderBeamProps) => {
+  // Respect the user's "reduce motion" OS setting (WCAG 2.3.3): hold the beam
+  // still instead of looping it forever for users prone to motion sickness.
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <div
       className={cn(
@@ -98,18 +102,26 @@ export const BorderBeam = ({
           } as MotionStyle
         }
         initial={{offsetDistance: `${initialOffset}%`}}
-        animate={{
-          offsetDistance: reverse
-            ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
-            : [`${initialOffset}%`, `${100 + initialOffset}%`],
-        }}
-        transition={{
-          repeat: Infinity,
-          ease: 'linear',
-          duration,
-          delay: -delay,
-          ...transition,
-        }}
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                offsetDistance: reverse
+                  ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
+                  : [`${initialOffset}%`, `${100 + initialOffset}%`],
+              }
+        }
+        transition={
+          shouldReduceMotion
+            ? undefined
+            : {
+                repeat: Infinity,
+                ease: 'linear',
+                duration,
+                delay: -delay,
+                ...transition,
+              }
+        }
       />
     </div>
   )

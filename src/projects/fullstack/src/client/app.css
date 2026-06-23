@@ -208,3 +208,20 @@
     transform-origin: 0% 50%;
   }
 }
+
+/*
+  Accessibility (WCAG 2.3.3): honor the user's OS-level "reduce motion"
+  preference. Near-instantly collapses CSS animations/transitions (e.g. the
+  marquee) for users who get motion sick. JS-driven motion animations opt in
+  separately via `useReducedMotion()` (see border-beam.tsx).
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

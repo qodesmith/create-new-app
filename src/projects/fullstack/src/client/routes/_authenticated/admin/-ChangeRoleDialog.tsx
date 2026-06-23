@@ -47,7 +47,7 @@ export function ChangeRoleDialog({
   // Proactive last-admin check so we can render a stronger warning in the
   // description before the user clicks Confirm. Only runs when the dialog is
   // open and the target is currently an admin.
-  const adminCountQuery = useQuery({
+  const {data: adminCountData} = useQuery({
     queryKey: ['admin', 'users', 'adminCount'] as const,
     queryFn: async () => {
       const {data, error} = await authClient.admin.listUsers({
@@ -70,7 +70,7 @@ export function ChangeRoleDialog({
   const isDemotingAdmin =
     currentRole === userRoles.admin && selectedRole !== userRoles.admin
   const isNoChange = selectedRole === currentRole
-  const isLastAdmin = isDemotingAdmin && (adminCountQuery.data ?? Infinity) <= 1
+  const isLastAdmin = isDemotingAdmin && (adminCountData ?? Infinity) <= 1
 
   async function handleConfirm() {
     if (!user) return

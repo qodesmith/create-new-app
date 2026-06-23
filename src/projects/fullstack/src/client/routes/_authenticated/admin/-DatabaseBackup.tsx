@@ -13,14 +13,13 @@ const lastBackupQueryKey = ['admin', 'last-backup'] as const
 export function DatabaseBackup() {
   const adminClient = useAtomValue(apiAdminClientAtom)
   const queryClient = useQueryClient()
-  const lastBackupQuery = useQuery({
+  const {data: lastBackupData, isLoading: isLastBackupLoading} = useQuery({
     queryKey: lastBackupQueryKey,
     queryFn: () => parseResponse(adminClient['last-backup'].$get()),
     refetchInterval: query =>
       query.state.data?.inProgressSince ? 5000 : false,
   })
-  const {lastBackup, inProgressSince, lastFailureAt} =
-    lastBackupQuery.data ?? {}
+  const {lastBackup, inProgressSince, lastFailureAt} = lastBackupData ?? {}
 
   function handleDownload() {
     /**
@@ -52,7 +51,7 @@ export function DatabaseBackup() {
       <div>
         <p className="text-muted-foreground text-sm">
           Last backup:{' '}
-          {lastBackupQuery.isLoading ? (
+          {isLastBackupLoading ? (
             <AudioLoader width={14} height={14} bars={3} gap={1} rounded={1} />
           ) : lastBackup ? (
             new Date(lastBackup).toLocaleString()

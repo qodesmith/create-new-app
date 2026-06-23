@@ -83,7 +83,11 @@ function UserSessionsDialogBody({user, onClose}: UserSessionsDialogBodyProps) {
 
   const sessionsQueryKey = ['admin', 'users', user.id, 'sessions'] as const
 
-  const sessionsQuery = useQuery({
+  const {
+    data: sessionsData,
+    isLoading: isSessionsLoading,
+    error: sessionsError,
+  } = useQuery({
     queryKey: sessionsQueryKey,
     queryFn: async () => {
       const {data, error} = await authClient.admin.listUserSessions({
@@ -160,7 +164,7 @@ function UserSessionsDialogBody({user, onClose}: UserSessionsDialogBodyProps) {
     }
   }
 
-  const sessions = sessionsQuery.data ?? []
+  const sessions = sessionsData ?? []
   const hasSessions = sessions.length > 0
 
   return (
@@ -178,7 +182,7 @@ function UserSessionsDialogBody({user, onClose}: UserSessionsDialogBodyProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sessionsQuery.isLoading ? (
+            {isSessionsLoading ? (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -190,13 +194,13 @@ function UserSessionsDialogBody({user, onClose}: UserSessionsDialogBodyProps) {
                   </span>
                 </TableCell>
               </TableRow>
-            ) : sessionsQuery.error ? (
+            ) : sessionsError ? (
               <TableRow>
                 <TableCell
                   colSpan={6}
                   className="h-24 text-center text-destructive"
                 >
-                  {sessionsQuery.error.message || 'Failed to load sessions'}
+                  {sessionsError.message || 'Failed to load sessions'}
                 </TableCell>
               </TableRow>
             ) : hasSessions ? (

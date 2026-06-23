@@ -17,7 +17,7 @@ export function StaleRecords() {
   const logClientError = useLogClientError()
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  const staleRecordsQuery = useQuery({
+  const {data: stale, isLoading: isStaleRecordsLoading} = useQuery({
     queryKey: staleRecordsQueryKey,
     queryFn: () => parseResponse(adminClient['stale-records'].$get()),
   })
@@ -39,7 +39,6 @@ export function StaleRecords() {
     },
   })
 
-  const stale = staleRecordsQuery.data
   const hasStale = stale
     ? stale.staleUsers.length +
         stale.staleVerifications.length +
@@ -49,7 +48,7 @@ export function StaleRecords() {
 
   return (
     <>
-      {staleRecordsQuery.isLoading ? (
+      {isStaleRecordsLoading ? (
         <p className="text-muted-foreground text-sm">…</p>
       ) : stale ? (
         <div className="grid grid-cols-[auto_1fr] justify-start gap-x-3 text-muted-foreground text-sm">

@@ -55,7 +55,12 @@ export function SystemAuditLogsTable() {
     action: actionFilter,
   }
 
-  const logsQuery = useQuery({
+  const {
+    data: logsData,
+    isLoading: isInitialLoading,
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ['admin', 'system-audit-logs', queryParams] as const,
     queryFn: () =>
       parseResponse(
@@ -72,8 +77,8 @@ export function SystemAuditLogsTable() {
     placeholderData: keepPreviousData,
   })
 
-  const logs = useMemo(() => logsQuery.data?.logs ?? [], [logsQuery.data])
-  const total = logsQuery.data?.total ?? 0
+  const logs = useMemo(() => logsData?.logs ?? [], [logsData])
+  const total = logsData?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   const toggleSort = useCallback(
@@ -113,9 +118,6 @@ export function SystemAuditLogsTable() {
     pageCount: totalPages,
   })
 
-  const isInitialLoading = logsQuery.isLoading
-  const isFetching = logsQuery.isFetching
-  const error = logsQuery.error
   const headerGroups = table.getHeaderGroups()
   const rows = table.getRowModel().rows
   const columnCount = columns.length

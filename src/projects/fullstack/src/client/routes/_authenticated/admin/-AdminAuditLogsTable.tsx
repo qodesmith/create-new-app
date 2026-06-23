@@ -29,7 +29,7 @@ import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table'
 import {parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
-import {useCallback, useMemo, useState} from 'react'
+import {useCallback, useMemo, useReducer} from 'react'
 
 import {getAdminAuditLogsColumns} from './-adminAuditLogsColumns'
 
@@ -38,18 +38,59 @@ const ALL_ACTIONS = 'all' as const
 
 type PageSize = (typeof PAGE_SIZE_OPTIONS)[number]
 
+type TableState = {
+  page: number
+  pageSize: PageSize
+  sortBy: AdminAuditLogsSortBy
+  sortDirection: SortDirection | null
+  actionFilter: AdminAuditLogAction | undefined
+}
+
+type TableAction =
+  | {type: 'sortToggled'; key: AdminAuditLogsSortBy}
+  | {type: 'actionFilterChanged'; action: AdminAuditLogAction | undefined}
+  | {type: 'pageSizeChanged'; pageSize: PageSize}
+  | {type: 'pageChanged'; page: number}
+
+const initialTableState: TableState = {
+  page: 1,
+  pageSize: '25',
+  sortBy: 'createdAt',
+  sortDirection: 'desc',
+  actionFilter: undefined,
+}
+
+function tableReducer(state: TableState, action: TableAction): TableState {
+  switch (action.type) {
+    case 'sortToggled': {
+      if (state.sortBy === action.key) {
+        const sortDirection =
+          state.sortDirection === 'asc'
+            ? 'desc'
+            : state.sortDirection === 'desc'
+              ? null
+              : 'asc'
+        return {...state, sortDirection, page: 1}
+      }
+      return {...state, sortBy: action.key, sortDirection: 'asc', page: 1}
+    }
+    case 'actionFilterChanged':
+      return {...state, actionFilter: action.action, page: 1}
+    case 'pageSizeChanged':
+      return {...state, pageSize: action.pageSize, page: 1}
+    case 'pageChanged':
+      return {...state, page: action.page}
+    default:
+      action satisfies never
+      return state
+  }
+}
+
 export function AdminAuditLogsTable() {
   const adminClient = useAtomValue(apiAdminClientAtom)
 
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState<PageSize>('25')
-  const [sortBy, setSortBy] = useState<AdminAuditLogsSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(
-    'desc'
-  )
-  const [actionFilter, setActionFilter] = useState<
-    AdminAuditLogAction | undefined
-  >()
+  const [{page, pageSize, sortBy, sortDirection, actionFilter}, dispatch] =
+    useReducer(tableReducer, initialTableState)
 
   const queryParams = {
     page,
@@ -82,22 +123,9 @@ export function AdminAuditLogsTable() {
   const total = auditLogsQuery.data?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / +pageSize))
 
-  const toggleSort = useCallback(
-    (key: AdminAuditLogsSortBy) => {
-      if (sortBy === key) {
-        setSortDirection(d => {
-          if (d === 'asc') return 'desc'
-          if (d === 'desc') return null
-          return 'asc'
-        })
-      } else {
-        setSortBy(key)
-        setSortDirection('asc')
-      }
-      setPage(1)
-    },
-    [sortBy]
-  )
+  const toggleSort = useCallback((key: AdminAuditLogsSortBy) => {
+    dispatch({type: 'sortToggled', key})
+  }, [])
 
   const columns = useMemo(() => {
     return getAdminAuditLogsColumns({
@@ -131,8 +159,10 @@ export function AdminAuditLogsTable() {
           <Select
             value={actionFilter ?? ALL_ACTIONS}
             onValueChange={(v: AdminAuditLogAction | typeof ALL_ACTIONS) => {
-              setActionFilter(v === ALL_ACTIONS ? undefined : v)
-              setPage(1)
+              dispatch({
+                type: 'actionFilterChanged',
+                action: v === ALL_ACTIONS ? undefined : v,
+              })
             }}
           >
             <SelectTrigger
@@ -158,8 +188,7 @@ export function AdminAuditLogsTable() {
           <Select
             value={pageSize}
             onValueChange={(v: PageSize) => {
-              setPageSize(v)
-              setPage(1)
+              dispatch({type: 'pageSizeChanged', pageSize: v})
             }}
           >
             <SelectTrigger size="sm" aria-label="Page size">
@@ -260,7 +289,7 @@ export function AdminAuditLogsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => dispatch({type: 'pageChanged', page: page - 1})}
             disabled={page <= 1 || isInitialLoading}
             aria-label="Previous page"
           >
@@ -273,7 +302,7 @@ export function AdminAuditLogsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => dispatch({type: 'pageChanged', page: page + 1})}
             disabled={page >= totalPages || isInitialLoading}
             aria-label="Next page"
           >

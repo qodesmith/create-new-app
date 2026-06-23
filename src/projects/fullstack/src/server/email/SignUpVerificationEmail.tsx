@@ -150,7 +150,7 @@ export default function Email({verificationUrl}: SignUpVerificationEmailProps) {
               your browser:
             </Text>
             <Text
-              style={{margin: '6px 0 0', fontSize: '11px', color: '#9ca3af'}}
+              style={{margin: '6px 0 0', fontSize: '12px', color: '#9ca3af'}}
             >
               <Link
                 href={verificationUrl}

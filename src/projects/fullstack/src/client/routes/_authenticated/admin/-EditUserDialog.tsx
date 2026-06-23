@@ -12,9 +12,10 @@ import {
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {nameFieldValidator} from '@/client/lib/formValidators'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
-import {namePattern, nameRegex, nameValidationMessage} from '@/shared/constants'
+import {namePattern} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {useQueryClient} from '@tanstack/react-query'
@@ -109,16 +110,7 @@ function EditUserForm({user, onOpenChange}: EditUserFormProps) {
         form.handleSubmit()
       }}
     >
-      <form.Field
-        name="name"
-        validators={{
-          onSubmit: ({value}) => {
-            if (!nameRegex.test(value)) {
-              return `First name ${nameValidationMessage}`
-            }
-          },
-        }}
-      >
+      <form.Field name="name" validators={nameFieldValidator('First name')}>
         {field => (
           <Field>
             <FieldLabel htmlFor="editUserFirstName">First name</FieldLabel>
@@ -136,16 +128,7 @@ function EditUserForm({user, onOpenChange}: EditUserFormProps) {
         )}
       </form.Field>
 
-      <form.Field
-        name="lastName"
-        validators={{
-          onSubmit: ({value}) => {
-            if (!nameRegex.test(value)) {
-              return `Last name ${nameValidationMessage}`
-            }
-          },
-        }}
-      >
+      <form.Field name="lastName" validators={nameFieldValidator('Last name')}>
         {field => (
           <Field>
             <FieldLabel htmlFor="editUserLastName">Last name</FieldLabel>

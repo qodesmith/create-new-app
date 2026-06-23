@@ -12,10 +12,9 @@ import {
 } from '@/client/components/ui/dialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {
-  generateStrongPassword,
-  handleFormSubmitInvalid,
-} from '@/client/lib/utils'
+import {usePasswordGenerator} from '@/client/hooks/usePasswordGenerator'
+import {passwordsMatchValidator} from '@/client/lib/formValidators'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
@@ -23,7 +22,7 @@ import {useForm} from '@tanstack/react-form'
 import {useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {CheckIcon, CopyIcon} from 'lucide-react'
-import {useCallback, useState} from 'react'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 type SetPasswordDialogProps = {
@@ -115,9 +114,6 @@ function SetPasswordForm({
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
   const queryClient = useQueryClient()
-  const [hasGeneratedPassword, setHasGeneratedPassword] =
-    useState<boolean>(false)
-  const [didCopy, setDidCopy] = useState<boolean>(false)
 
   const form = useForm({
     defaultValues: {
@@ -167,26 +163,13 @@ function SetPasswordForm({
     },
   })
 
-  const handleGenerate = useCallback(() => {
-    const next = generateStrongPassword()
-    form.setFieldValue('newPassword', next)
-    form.setFieldValue('confirmPassword', next)
-    setHasGeneratedPassword(true)
-    setDidCopy(false)
-  }, [form])
-
-  const handleCopy = useCallback(async () => {
-    const current = form.getFieldValue('newPassword')
-    if (!current) return
-    try {
-      await navigator.clipboard.writeText(current)
-      setDidCopy(true)
-      toast.success('Password copied to clipboard')
-      setTimeout(() => setDidCopy(false), 2000)
-    } catch {
-      toast.error('Failed to copy password')
-    }
-  }, [form])
+  const passwordGenerator = usePasswordGenerator({
+    onGenerate: password => {
+      form.setFieldValue('newPassword', password)
+      form.setFieldValue('confirmPassword', password)
+    },
+    getValue: () => form.getFieldValue('newPassword'),
+  })
 
   return (
     <form
@@ -226,8 +209,7 @@ function SetPasswordForm({
                   value={field.state.value}
                   onChange={event => {
                     field.handleChange(event.target.value)
-                    setHasGeneratedPassword(false)
-                    setDidCopy(false)
+                    passwordGenerator.reset()
                   }}
                   onBlur={field.handleBlur}
                   autoComplete="new-password"
@@ -241,20 +223,20 @@ function SetPasswordForm({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={handleGenerate}
+                onClick={passwordGenerator.generate}
                 disabled={submitted}
               >
                 Generate
               </Button>
-              {hasGeneratedPassword && (
+              {passwordGenerator.hasGeneratedPassword && (
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
-                  onClick={handleCopy}
+                  onClick={passwordGenerator.copy}
                   aria-label="Copy generated password to clipboard"
                 >
-                  {didCopy ? (
+                  {passwordGenerator.didCopy ? (
                     <CheckIcon className="size-4" />
                   ) : (
                     <CopyIcon className="size-4" />
@@ -268,21 +250,7 @@ function SetPasswordForm({
 
       <form.Field
         name="confirmPassword"
-        validators={{
-          onChangeListenTo: ['newPassword'],
-          onChange: ({value, fieldApi}) => {
-            const newPassword = fieldApi.form.getFieldValue('newPassword')
-            if (value !== newPassword) {
-              return 'Passwords do not match'
-            }
-          },
-          onSubmit: ({value, fieldApi}) => {
-            const newPassword = fieldApi.form.getFieldValue('newPassword')
-            if (value !== newPassword) {
-              return 'Passwords do not match'
-            }
-          },
-        }}
+        validators={passwordsMatchValidator('newPassword')}
       >
         {field => (
           <Field>

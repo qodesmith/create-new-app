@@ -11,6 +11,7 @@ import {Field, FieldLabel} from '@/client/components/ui/field'
 import {MagicCard} from '@/client/components/ui/magic-card'
 import {useBoolean} from '@/client/hooks/useBoolean'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {passwordsMatchValidator} from '@/client/lib/formValidators'
 import {
   getSafeAuthErrorMessage,
   handleFormSubmitInvalid,
@@ -159,14 +160,7 @@ function NewPasswordForm({
 
             <form.Field
               name="confirmPassword"
-              validators={{
-                onSubmit: ({value, fieldApi}) => {
-                  const pw = fieldApi.form.getFieldValue('password')
-                  if (value && pw && value !== pw) {
-                    return 'Passwords do not match'
-                  }
-                },
-              }}
+              validators={passwordsMatchValidator('password')}
             >
               {field => (
                 <Field>

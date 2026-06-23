@@ -12,16 +12,15 @@ import {MagicCard} from '@/client/components/ui/magic-card'
 import {defaultAuthedPath} from '@/client/constants'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
 import {
+  nameFieldValidator,
+  passwordsMatchValidator,
+} from '@/client/lib/formValidators'
+import {
   getSafeAuthErrorMessage,
   handleFormSubmitInvalid,
 } from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
-import {
-  minPasswordLength,
-  namePattern,
-  nameRegex,
-  nameValidationMessage,
-} from '@/shared/constants'
+import {minPasswordLength, namePattern} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {createLazyFileRoute, Link, useRouter} from '@tanstack/react-router'
@@ -108,13 +107,7 @@ function SignUpPage() {
               {/* FIRST NAME */}
               <form.Field
                 name="name"
-                validators={{
-                  onSubmit: ({value}) => {
-                    if (!nameRegex.test(value)) {
-                      return `First name ${nameValidationMessage}`
-                    }
-                  },
-                }}
+                validators={nameFieldValidator('First name')}
               >
                 {field => (
                   <Field>
@@ -137,13 +130,7 @@ function SignUpPage() {
               {/* LAST NAME */}
               <form.Field
                 name="lastName"
-                validators={{
-                  onSubmit: ({value}) => {
-                    if (!nameRegex.test(value)) {
-                      return `Last name ${nameValidationMessage}`
-                    }
-                  },
-                }}
+                validators={nameFieldValidator('Last name')}
               >
                 {field => (
                   <Field>
@@ -224,14 +211,7 @@ function SignUpPage() {
             {/* CONFIRM PASSWORD */}
             <form.Field
               name="confirmPassword"
-              validators={{
-                onSubmit: ({value, fieldApi}) => {
-                  const pw = fieldApi.form.getFieldValue('password')
-                  if (value && pw && value !== pw) {
-                    return 'Passwords do not match'
-                  }
-                },
-              }}
+              validators={passwordsMatchValidator('password')}
             >
               {field => (
                 <Field>

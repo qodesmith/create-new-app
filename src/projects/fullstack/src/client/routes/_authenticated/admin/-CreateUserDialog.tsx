@@ -18,26 +18,18 @@ import {
   SelectValue,
 } from '@/client/components/ui/select'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {
-  generateStrongPassword,
-  handleFormSubmitInvalid,
-} from '@/client/lib/utils'
+import {usePasswordGenerator} from '@/client/hooks/usePasswordGenerator'
+import {nameFieldValidator} from '@/client/lib/formValidators'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
-import {
-  minPasswordLength,
-  namePattern,
-  nameRegex,
-  nameValidationMessage,
-  userRoles,
-} from '@/shared/constants'
-import {emailValidator, nameValidator} from '@/shared/validators'
+import {minPasswordLength, namePattern, userRoles} from '@/shared/constants'
+import {emailValidator} from '@/shared/validators'
 
 import {useForm} from '@tanstack/react-form'
 import {useQueryClient} from '@tanstack/react-query'
 import {type} from 'arktype'
 import {useAtomValue} from 'jotai'
 import {CheckIcon, CopyIcon} from 'lucide-react'
-import {useCallback, useState} from 'react'
 import {toast} from 'sonner'
 
 const userRoleOptions = Object.values(userRoles)
@@ -52,9 +44,6 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
   const authClient = useAtomValue(authClientAtom)
   const logClientError = useLogClientError()
   const queryClient = useQueryClient()
-  const [hasGeneratedPassword, setHasGeneratedPassword] =
-    useState<boolean>(false)
-  const [didCopy, setDidCopy] = useState<boolean>(false)
 
   const form = useForm({
     defaultValues: {
@@ -83,8 +72,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
         toast.success(`User ${value.email} created`)
         await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
         form.reset()
-        setHasGeneratedPassword(false)
-        setDidCopy(false)
+        passwordGenerator.reset()
         onOpenChange(false)
       } catch (error) {
         toast.error('An unexpected error occurred while creating the user')
@@ -96,25 +84,10 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
     },
   })
 
-  const handleGenerate = useCallback(() => {
-    const next = generateStrongPassword()
-    form.setFieldValue('password', next)
-    setHasGeneratedPassword(true)
-    setDidCopy(false)
-  }, [form])
-
-  const handleCopy = useCallback(async () => {
-    const current = form.getFieldValue('password')
-    if (!current) return
-    try {
-      await navigator.clipboard.writeText(current)
-      setDidCopy(true)
-      toast.success('Password copied to clipboard')
-      setTimeout(() => setDidCopy(false), 2000)
-    } catch {
-      toast.error('Failed to copy password')
-    }
-  }, [form])
+  const passwordGenerator = usePasswordGenerator({
+    onGenerate: password => form.setFieldValue('password', password),
+    getValue: () => form.getFieldValue('password'),
+  })
 
   return (
     <Dialog
@@ -122,8 +95,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
       onOpenChange={nextOpen => {
         if (!nextOpen) {
           form.reset()
-          setHasGeneratedPassword(false)
-          setDidCopy(false)
+          passwordGenerator.reset()
         }
         onOpenChange(nextOpen)
       }}
@@ -175,17 +147,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
           <div className="flex gap-3">
             <form.Field
               name="name"
-              validators={{
-                onSubmit: ({value}) => {
-                  if (!nameRegex.test(value)) {
-                    return `First name ${nameValidationMessage}`
-                  }
-                  const result = nameValidator(value)
-                  if (result instanceof type.errors) {
-                    return `First name ${nameValidationMessage}`
-                  }
-                },
-              }}
+              validators={nameFieldValidator('First name')}
             >
               {field => (
                 <Field>
@@ -208,17 +170,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
 
             <form.Field
               name="lastName"
-              validators={{
-                onSubmit: ({value}) => {
-                  if (!nameRegex.test(value)) {
-                    return `Last name ${nameValidationMessage}`
-                  }
-                  const result = nameValidator(value)
-                  if (result instanceof type.errors) {
-                    return `Last name ${nameValidationMessage}`
-                  }
-                },
-              }}
+              validators={nameFieldValidator('Last name')}
             >
               {field => (
                 <Field>
@@ -260,8 +212,7 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
                       value={field.state.value}
                       onChange={event => {
                         field.handleChange(event.target.value)
-                        setHasGeneratedPassword(false)
-                        setDidCopy(false)
+                        passwordGenerator.reset()
                       }}
                       onBlur={field.handleBlur}
                       autoComplete="new-password"
@@ -274,19 +225,19 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={handleGenerate}
+                    onClick={passwordGenerator.generate}
                   >
                     Generate
                   </Button>
-                  {hasGeneratedPassword && (
+                  {passwordGenerator.hasGeneratedPassword && (
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={handleCopy}
+                      onClick={passwordGenerator.copy}
                       aria-label="Copy generated password to clipboard"
                     >
-                      {didCopy ? (
+                      {passwordGenerator.didCopy ? (
                         <CheckIcon className="size-4" />
                       ) : (
                         <CopyIcon className="size-4" />

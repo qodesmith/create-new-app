@@ -36,7 +36,7 @@ const IGNORED_PATH =
  * `tailwindcss` package from the project's own dependencies (not a bundled
  * copy), new utilities ship the same day Tailwind releases them.
  */
-export function bunPluginTailwind(): BunPlugin {
+function bunPluginTailwind(): BunPlugin {
   const minify = process.env.NODE_ENV === 'production'
   const isDev = process.env.NODE_ENV !== 'production'
 

@@ -2,7 +2,7 @@ import type {MotionStyle, Transition} from 'motion/react'
 
 import {cn} from '@/client/lib/utils'
 
-import {motion, useReducedMotion} from 'motion/react'
+import {m, useReducedMotion} from 'motion/react'
 
 type BorderBeamProps = {
   /**
@@ -86,7 +86,7 @@ export const BorderBeam = ({
         } as React.CSSProperties
       }
     >
-      <motion.div
+      <m.div
         className={cn(
           'absolute aspect-square',
           'bg-linear-to-l from-(--color-from) via-(--color-to) to-transparent',

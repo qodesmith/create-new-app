@@ -15,7 +15,7 @@ import {userRoles} from '@/shared/constants'
 
 import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {toast} from 'sonner'
 
 const roleOptions = Object.values(userRoles)
@@ -39,10 +39,16 @@ export function ChangeRoleDialog({
   const [selectedRole, setSelectedRole] = useState<RoleOption>(currentRole)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Reset the selected role whenever the target user changes or the dialog reopens.
-  useEffect(() => {
+  /**
+   * Reset the selected role whenever the target user's role changes or the
+   * dialog reopens. Done during render (the React-recommended alternative to a
+   * reset effect) so there's no extra render and no chance of a stale value.
+   */
+  const [lastSync, setLastSync] = useState({open, currentRole})
+  if (lastSync.open !== open || lastSync.currentRole !== currentRole) {
+    setLastSync({open, currentRole})
     if (open) setSelectedRole(currentRole)
-  }, [open, currentRole])
+  }
 
   // Proactive last-admin check so we can render a stronger warning in the
   // description before the user clicks Confirm. Only runs when the dialog is

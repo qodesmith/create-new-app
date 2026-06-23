@@ -110,7 +110,18 @@
       }
     },
 
-    // Client code must not import from server.
+    /**
+     * Client-code import restrictions. NOTE: keep every client-side
+     * `noRestrictedImports` ban in THIS single block — Biome lets a later
+     * matching override *replace* (not merge) this rule, so a second client
+     * override would silently drop these bans. One block ⇒ one severity, so
+     * both share `error`.
+     *   - must not import server code (architectural boundary)
+     *   - must import `m`, never the full `motion`, from motion/react:
+     *     features come from the root <LazyMotion features={domAnimation}
+     *     strict> in app.tsx, and a `motion` import throws under strict.
+     *     (Pairs with the CONVENTIONS.md rule.)
+     */
     {
       "includes": ["src/client/**/*.ts", "src/client/**/*.tsx"],
       "linter": {
@@ -119,6 +130,12 @@
             "noRestrictedImports": {
               "level": "error",
               "options": {
+                "paths": {
+                  "motion/react": {
+                    "importNames": ["motion"],
+                    "message": "Import `m` (e.g. <m.div>), not the full `motion`, from motion/react. Features are supplied by the root <LazyMotion features={domAnimation} strict> in app.tsx — switch that to domMax if you need drag/pan/layout."
+                  }
+                },
                 "patterns": [
                   {
                     "group": [

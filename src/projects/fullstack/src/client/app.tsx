@@ -16,6 +16,7 @@ import {createTanstackRouter} from '@/client/router'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {RouterProvider} from '@tanstack/react-router'
 import {createStore, Provider as JotaiProvider} from 'jotai'
+import {domAnimation, LazyMotion} from 'motion/react'
 import {StrictMode, useState} from 'react'
 import {createRoot} from 'react-dom/client'
 
@@ -51,7 +52,9 @@ async function start() {
     return (
       <QueryClientProvider client={queryClient}>
         <JotaiProvider store={store}>
-          <RouterProvider router={router} context={context} />
+          <LazyMotion features={domAnimation} strict>
+            <RouterProvider router={router} context={context} />
+          </LazyMotion>
         </JotaiProvider>
       </QueryClientProvider>
     )

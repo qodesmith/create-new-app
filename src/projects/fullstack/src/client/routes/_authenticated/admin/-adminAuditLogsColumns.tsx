@@ -1,6 +1,5 @@
 import type {ColumnDef} from '@tanstack/react-table'
 import type {InferResponseType} from 'hono/client'
-import type {ReactNode} from 'react'
 import type {createApiAdminClient} from '@/client/apiClient'
 import type {SortDirection} from '@/shared/types'
 
@@ -13,6 +12,7 @@ import {Badge} from '@/client/components/ui/badge'
 import {getUserInitials} from '@/client/lib/utils'
 import {adminRoutePath} from '@/shared/constants'
 
+import {DetailText} from './-DetailText'
 import {SortableHeader} from './-SortableHeader'
 
 export type AdminAuditLogsSortBy = 'action' | 'createdAt'
@@ -35,10 +35,6 @@ function getDownloadStatusVariant(
   if (status === 'complete') return 'default'
   if (status === 'fail') return 'destructive'
   return 'secondary'
-}
-
-function DetailText({children}: {children: ReactNode}) {
-  return <span className="text-muted-foreground text-sm">{children}</span>
 }
 
 export function getAdminAuditLogsColumns({

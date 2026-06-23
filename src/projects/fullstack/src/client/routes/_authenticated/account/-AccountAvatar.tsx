@@ -54,7 +54,7 @@ export function AccountAvatar() {
   const [imageLoadingStatus, setImageLoadingStatus] =
     useState<ImageLoadingStatus>('idle')
   const [blobPreviewUrl, setBlobPreviewUrl] = useState<string | null>(null)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const selectedFileRef = useRef<File | null>(null)
   const [crop, setCrop] = useState<Point>({x: 0, y: 0})
   const [zoom, setZoom] = useState(minZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
@@ -72,7 +72,7 @@ export function AccountAvatar() {
   const clearPreview = () => {
     if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
     setBlobPreviewUrl(null)
-    setSelectedFile(null)
+    selectedFileRef.current = null
     setCrop({x: 0, y: 0})
     setZoom(minZoom)
     setCroppedAreaPixels(null)
@@ -131,6 +131,7 @@ export function AccountAvatar() {
   )
 
   const handleConfirm = async () => {
+    const selectedFile = selectedFileRef.current
     if (!(blobPreviewUrl && croppedAreaPixels && selectedFile)) return
     try {
       const file = await renderCroppedFile(
@@ -194,7 +195,7 @@ export function AccountAvatar() {
                 }
                 if (blobPreviewUrl) URL.revokeObjectURL(blobPreviewUrl)
                 setBlobPreviewUrl(URL.createObjectURL(file))
-                setSelectedFile(file)
+                selectedFileRef.current = file
                 setCrop({x: 0, y: 0})
                 setZoom(minZoom)
                 setCroppedAreaPixels(null)

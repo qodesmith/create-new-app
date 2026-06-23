@@ -12,7 +12,10 @@ import {
 } from '@/client/components/ui/dialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  generateStrongPassword,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
@@ -22,21 +25,6 @@ import {useAtomValue} from 'jotai'
 import {CheckIcon, CopyIcon} from 'lucide-react'
 import {useCallback, useState} from 'react'
 import {toast} from 'sonner'
-
-const passwordCharset =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
-const generatedPasswordLength = 16
-
-function generateStrongPassword(): string {
-  const bytes = window.crypto.getRandomValues(
-    new Uint8Array(generatedPasswordLength)
-  )
-  let out = ''
-  for (const byte of bytes) {
-    out += passwordCharset[byte % passwordCharset.length]
-  }
-  return out
-}
 
 type SetPasswordDialogProps = {
   open: boolean

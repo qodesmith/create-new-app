@@ -18,7 +18,10 @@ import {
   SelectValue,
 } from '@/client/components/ui/select'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {handleFormSubmitInvalid} from '@/client/lib/utils'
+import {
+  generateStrongPassword,
+  handleFormSubmitInvalid,
+} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {
   minPasswordLength,
@@ -39,21 +42,6 @@ import {toast} from 'sonner'
 
 const userRoleOptions = Object.values(userRoles)
 type UserRoleOption = (typeof userRoleOptions)[number]
-
-const passwordCharset =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
-const generatedPasswordLength = 16
-
-function generateStrongPassword(): string {
-  const bytes = window.crypto.getRandomValues(
-    new Uint8Array(generatedPasswordLength)
-  )
-  let out = ''
-  for (const byte of bytes) {
-    out += passwordCharset[byte % passwordCharset.length]
-  }
-  return out
-}
 
 type CreateUserDialogProps = {
   open: boolean

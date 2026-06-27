@@ -12,44 +12,40 @@ import {
 } from '@/client/components/ui/dialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
 import {useAtomValue} from 'jotai'
-import {toast} from 'sonner'
 
 export function DeleteAccount() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
   const deleteDialog = useBoolean()
+
+  const {run} = useMutationWithToast(
+    (password: string) => {
+      const callbackURL: FileRouteTypes['to'] = '/signup'
+      return authClient.deleteUser({callbackURL, password})
+    },
+    {
+      success: 'Check your email to confirm account deletion',
+      context: 'client:deleteAccount:exception',
+      // Static: deliberately never surface the server message — it could leak
+      // why the deletion request was rejected.
+      errorFallback: 'Failed to request account deletion',
+      errorMessage: 'static',
+      exception: 'An unexpected error occurred while deleting your account',
+    }
+  )
 
   const form = useForm({
     defaultValues: {password: ''},
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
-      try {
-        const callbackURL: FileRouteTypes['to'] = '/signup'
-        const {error} = await authClient.deleteUser({
-          callbackURL,
-          password: value.password,
-        })
-
-        if (error) {
-          toast.error('Failed to request account deletion')
-          return
-        }
-
+      if (await run(value.password)) {
         deleteDialog.setFalse()
         form.reset()
-        toast.success('Check your email to confirm account deletion')
-      } catch (error) {
-        toast.error('An unexpected error occurred while deleting your account')
-        logClientError({
-          error,
-          context: 'client:deleteAccount:exception',
-        })
       }
     },
   })

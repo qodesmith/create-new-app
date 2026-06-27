@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/client/components/ui/select'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {nameFieldValidator} from '@/client/lib/formValidators'
 import {
   generateStrongPassword,
@@ -28,7 +28,6 @@ import {minPasswordLength, namePattern, userRoles} from '@/shared/constants'
 import {emailValidator} from '@/shared/validators'
 
 import {useForm} from '@tanstack/react-form'
-import {useQueryClient} from '@tanstack/react-query'
 import {type} from 'arktype'
 import {useAtomValue} from 'jotai'
 import {CheckIcon, CopyIcon} from 'lucide-react'
@@ -45,11 +44,32 @@ type CreateUserDialogProps = {
 
 export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
   const [hasGeneratedPassword, setHasGeneratedPassword] =
     useState<boolean>(false)
   const [didCopy, setDidCopy] = useState<boolean>(false)
+
+  const {run} = useMutationWithToast(
+    (value: {
+      email: string
+      password: string
+      name: string
+      lastName: string
+      role: UserRoleOption
+    }) =>
+      authClient.admin.createUser({
+        email: value.email,
+        password: value.password,
+        name: value.name,
+        role: value.role,
+        data: {lastName: value.lastName},
+      }),
+    {
+      invalidate: ['admin', 'users'],
+      context: 'client:adminCreateUser:exception',
+      errorFallback: 'Failed to create user',
+      exception: 'An unexpected error occurred while creating the user',
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -61,33 +81,16 @@ export function CreateUserDialog({open, onOpenChange}: CreateUserDialogProps) {
     },
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
-      try {
-        const {error} = await authClient.admin.createUser({
-          email: value.email,
-          password: value.password,
-          name: value.name,
-          role: value.role,
-          data: {lastName: value.lastName},
-        })
+      // Success toast is interpolated with the submitted email, so it lives here
+      // (driven by run's return value) rather than in the hook's static config.
+      const created = await run(value)
+      if (!created) return
 
-        if (error) {
-          toast.error(error.message ?? 'Failed to create user')
-          return
-        }
-
-        toast.success(`User ${value.email} created`)
-        await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-        form.reset()
-        setHasGeneratedPassword(false)
-        setDidCopy(false)
-        onOpenChange(false)
-      } catch (error) {
-        toast.error('An unexpected error occurred while creating the user')
-        logClientError({
-          error,
-          context: 'client:adminCreateUser:exception',
-        })
-      }
+      toast.success(`User ${value.email} created`)
+      form.reset()
+      setHasGeneratedPassword(false)
+      setDidCopy(false)
+      onOpenChange(false)
     },
   })
 

@@ -11,14 +11,13 @@ import {
 } from '@/client/components/ui/dialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {nameFieldValidator} from '@/client/lib/formValidators'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {namePattern} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
-import {useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {toast} from 'sonner'
 
@@ -59,8 +58,18 @@ type EditUserFormProps = {
 
 function EditUserForm({user, onOpenChange}: EditUserFormProps) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
+  const {run} = useMutationWithToast(
+    (data: {name: string; lastName: string}) =>
+      authClient.admin.updateUser({userId: user.id, data}),
+    {
+      success: 'User updated',
+      invalidate: ['admin', 'users'],
+      context: 'client:adminUpdateUser:exception',
+      errorFallback: 'Failed to update user',
+      exception: 'An unexpected error occurred while updating the user',
+      onSuccess: () => onOpenChange(false),
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -77,27 +86,7 @@ function EditUserForm({user, onOpenChange}: EditUserFormProps) {
         return
       }
 
-      try {
-        const {error} = await authClient.admin.updateUser({
-          userId: user.id,
-          data: {name, lastName},
-        })
-
-        if (error) {
-          toast.error(error.message ?? 'Failed to update user')
-          return
-        }
-
-        toast.success('User updated')
-        await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-        onOpenChange(false)
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating the user')
-        logClientError({
-          error,
-          context: 'client:adminUpdateUser:exception',
-        })
-      }
+      await run({name, lastName})
     },
   })
 

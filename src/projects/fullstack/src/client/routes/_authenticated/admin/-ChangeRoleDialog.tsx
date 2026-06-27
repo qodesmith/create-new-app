@@ -9,11 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/client/components/ui/select'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {authClientAtom} from '@/client/state/globalState'
 import {userRoles} from '@/shared/constants'
 
-import {useQuery, useQueryClient} from '@tanstack/react-query'
+import {useQuery} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {useState} from 'react'
 import {toast} from 'sonner'
@@ -33,11 +33,19 @@ export function ChangeRoleDialog({
   user,
 }: ChangeRoleDialogProps) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
   const currentRole = (user?.role ?? userRoles.user) as RoleOption
   const [selectedRole, setSelectedRole] = useState<RoleOption>(currentRole)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const {run, isPending} = useMutationWithToast(
+    (userId: string) => authClient.admin.setRole({userId, role: selectedRole}),
+    {
+      success: 'Role updated',
+      invalidate: ['admin', 'users'],
+      context: 'client:adminSetRole:exception',
+      errorFallback: 'Failed to update role',
+      exception: 'An unexpected error occurred while updating the role',
+      onSuccess: () => onOpenChange(false),
+    }
+  )
 
   /**
    * Reset the selected role whenever the target user's role changes or the
@@ -86,55 +94,32 @@ export function ChangeRoleDialog({
       return
     }
 
-    setIsSubmitting(true)
-    try {
-      // Last-admin guard: if demoting the only remaining admin, block the change.
-      if (isDemotingAdmin) {
-        const {data: adminList, error: listError} =
-          await authClient.admin.listUsers({
-            query: {
-              filterField: 'role',
-              filterValue: userRoles.admin,
-              limit: 1,
-            },
-          })
+    // Last-admin guard: if demoting the only remaining admin, block the change
+    // before hitting the mutation seam.
+    if (isDemotingAdmin) {
+      const {data: adminList, error: listError} =
+        await authClient.admin.listUsers({
+          query: {
+            filterField: 'role',
+            filterValue: userRoles.admin,
+            limit: 1,
+          },
+        })
 
-        if (listError) {
-          toast.error(
-            listError.message ??
-              'Failed to verify admin count before role change'
-          )
-          return
-        }
-
-        if ((adminList?.total ?? 0) <= 1) {
-          toast.error('Cannot demote the last admin')
-          return
-        }
-      }
-
-      const {error} = await authClient.admin.setRole({
-        userId: user.id,
-        role: selectedRole,
-      })
-
-      if (error) {
-        toast.error(error.message ?? 'Failed to update role')
+      if (listError) {
+        toast.error(
+          listError.message ?? 'Failed to verify admin count before role change'
+        )
         return
       }
 
-      toast.success('Role updated')
-      await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-      onOpenChange(false)
-    } catch (error) {
-      toast.error('An unexpected error occurred while updating the role')
-      logClientError({
-        error,
-        context: 'client:adminSetRole:exception',
-      })
-    } finally {
-      setIsSubmitting(false)
+      if ((adminList?.total ?? 0) <= 1) {
+        toast.error('Cannot demote the last admin')
+        return
+      }
     }
+
+    await run(user.id)
   }
 
   return (
@@ -159,7 +144,7 @@ export function ChangeRoleDialog({
         </>
       }
       confirmLabel="Change role"
-      isPending={isSubmitting}
+      isPending={isPending}
       onConfirm={handleConfirm}
     >
       <Field>

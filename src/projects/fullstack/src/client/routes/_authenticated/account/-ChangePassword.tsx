@@ -2,11 +2,8 @@ import {PasswordInput} from '@/client/components/custom/PasswordInput'
 import {PasswordManagerHint} from '@/client/components/custom/PasswordManagerHint'
 import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {
-  getSafeAuthErrorMessage,
-  handleFormSubmitInvalid,
-} from '@/client/lib/utils'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
@@ -16,7 +13,18 @@ import {toast} from 'sonner'
 
 export function ChangePassword() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+
+  const {run} = useMutationWithToast(
+    (input: {currentPassword: string; newPassword: string}) =>
+      authClient.changePassword({...input, revokeOtherSessions: true}),
+    {
+      success: 'Password updated successfully',
+      context: 'client:changePassword:exception',
+      errorFallback: 'Failed to change password',
+      errorMessage: 'safe',
+      exception: 'An unexpected error occurred while updating your password',
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -39,29 +47,7 @@ export function ChangePassword() {
         return
       }
 
-      try {
-        const {error} = await authClient.changePassword({
-          currentPassword,
-          newPassword,
-          revokeOtherSessions: true,
-        })
-
-        if (error) {
-          toast.error(
-            getSafeAuthErrorMessage(error, 'Failed to change password')
-          )
-          return
-        }
-
-        toast.success('Password updated successfully')
-        form.reset()
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating your password')
-        logClientError({
-          error,
-          context: 'client:changePassword:exception',
-        })
-      }
+      if (await run({currentPassword, newPassword})) form.reset()
     },
   })
 

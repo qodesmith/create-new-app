@@ -11,15 +11,12 @@ import {
 } from '@/client/components/ui/dropdown-menu'
 import {defaultAuthedPath} from '@/client/constants'
 import {useBoolean} from '@/client/hooks/useBoolean'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {authClientAtom, userAtom} from '@/client/state/globalState'
 
-import {useQueryClient} from '@tanstack/react-query'
 import {useNavigate, useRouter} from '@tanstack/react-router'
 import {useAtomValue} from 'jotai'
 import {MoreHorizontalIcon} from 'lucide-react'
-import {useState} from 'react'
-import {toast} from 'sonner'
 
 import {BanUserDialog} from './-BanUserDialog'
 import {ChangeRoleDialog} from './-ChangeRoleDialog'
@@ -35,8 +32,6 @@ type UserRowActionsProps = {
 export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const authClient = useAtomValue(authClientAtom)
   const currentUser = useAtomValue(userAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
   const router = useRouter()
   const navigate = useNavigate()
   const editDialog = useBoolean()
@@ -47,9 +42,46 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
   const changeRoleDialog = useBoolean()
   const sessionsDialog = useBoolean()
   const setPasswordDialog = useBoolean()
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [isImpersonating, setIsImpersonating] = useState(false)
-  const [isUnbanning, setIsUnbanning] = useState(false)
+
+  const {run: runDelete, isPending: isDeleting} = useMutationWithToast(
+    () => authClient.admin.removeUser({userId: user.id}),
+    {
+      success: `User ${user.email} deleted`,
+      invalidate: ['admin', 'users'],
+      context: 'client:adminRemoveUser:exception',
+      errorFallback: 'Failed to delete user',
+      exception: 'An unexpected error occurred while deleting the user',
+      onSuccess: deleteDialog.setFalse,
+    }
+  )
+
+  const {run: runUnban, isPending: isUnbanning} = useMutationWithToast(
+    () => authClient.admin.unbanUser({userId: user.id}),
+    {
+      success: `User ${user.email} unbanned`,
+      invalidate: ['admin', 'users'],
+      context: 'client:adminUnbanUser:exception',
+      errorFallback: 'Failed to unban user',
+      exception: 'An unexpected error occurred while unbanning the user',
+      onSuccess: unbanDialog.setFalse,
+    }
+  )
+
+  const {run: runImpersonate, isPending: isImpersonating} =
+    useMutationWithToast(
+      () => authClient.admin.impersonateUser({userId: user.id}),
+      {
+        context: 'client:adminImpersonateUser:exception',
+        errorFallback: 'Failed to impersonate user',
+        exception: 'An unexpected error occurred while impersonating the user',
+        onSuccess: async () => {
+          impersonateDialog.setFalse()
+          await router.invalidate()
+          await navigate({to: defaultAuthedPath})
+        },
+      }
+    )
+
   const isSelf = user.id === currentUserId
   const isBanned = user.banned === true
 
@@ -61,78 +93,6 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
       })
     : false
   const impersonateDisabled = isTargetAdmin && !canImpersonateAdmins
-
-  async function handleDelete() {
-    setIsDeleting(true)
-    try {
-      const {error} = await authClient.admin.removeUser({userId: user.id})
-
-      if (error) {
-        toast.error(error.message ?? 'Failed to delete user')
-        return
-      }
-
-      toast.success(`User ${user.email} deleted`)
-      await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-      deleteDialog.setFalse()
-    } catch (error) {
-      toast.error('An unexpected error occurred while deleting the user')
-      logClientError({
-        error,
-        context: 'client:adminRemoveUser:exception',
-      })
-    } finally {
-      setIsDeleting(false)
-    }
-  }
-
-  async function handleUnban() {
-    setIsUnbanning(true)
-    try {
-      const {error} = await authClient.admin.unbanUser({userId: user.id})
-
-      if (error) {
-        toast.error(error.message ?? 'Failed to unban user')
-        return
-      }
-
-      toast.success(`User ${user.email} unbanned`)
-      await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-      unbanDialog.setFalse()
-    } catch (error) {
-      toast.error('An unexpected error occurred while unbanning the user')
-      logClientError({
-        error,
-        context: 'client:adminUnbanUser:exception',
-      })
-    } finally {
-      setIsUnbanning(false)
-    }
-  }
-
-  async function handleImpersonate() {
-    setIsImpersonating(true)
-    try {
-      const {error} = await authClient.admin.impersonateUser({userId: user.id})
-
-      if (error) {
-        toast.error(error.message ?? 'Failed to impersonate user')
-        return
-      }
-
-      impersonateDialog.setFalse()
-      await router.invalidate()
-      await navigate({to: defaultAuthedPath})
-    } catch (error) {
-      toast.error('An unexpected error occurred while impersonating the user')
-      logClientError({
-        error,
-        context: 'client:adminImpersonateUser:exception',
-      })
-    } finally {
-      setIsImpersonating(false)
-    }
-  }
 
   return (
     <>
@@ -233,7 +193,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
         description="This user will be able to sign in again. Any sessions that were active when they were banned remain revoked, so they'll need to sign in fresh."
         confirmLabel="Unban"
         isPending={isUnbanning}
-        onConfirm={handleUnban}
+        onConfirm={() => void runUnban()}
       />
 
       <ConfirmDialog
@@ -243,7 +203,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
         description="You'll be signed in as this user. Use the banner at the top to stop impersonating and return to your admin session."
         confirmLabel="Impersonate"
         isPending={isImpersonating}
-        onConfirm={handleImpersonate}
+        onConfirm={() => void runImpersonate()}
       />
 
       <ConfirmDialog
@@ -261,7 +221,7 @@ export function UserRowActions({user, currentUserId}: UserRowActionsProps) {
         confirmLabel="Delete user"
         variant="destructive"
         isPending={isDeleting}
-        onConfirm={handleDelete}
+        onConfirm={() => void runDelete()}
       />
     </>
   )

@@ -19,12 +19,11 @@ import {
   SelectValue,
 } from '@/client/components/ui/select'
 import {Textarea} from '@/client/components/ui/textarea'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 
 import {useForm} from '@tanstack/react-form'
-import {useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {toast} from 'sonner'
 
@@ -97,8 +96,20 @@ type BanUserFormProps = {
 
 function BanUserForm({user, onOpenChange}: BanUserFormProps) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
+  const {run} = useMutationWithToast(
+    (input: {
+      banReason: string | undefined
+      banExpiresIn: number | undefined
+    }) => authClient.admin.banUser({userId: user.id, ...input}),
+    {
+      success: 'User banned',
+      invalidate: ['admin', 'users'],
+      context: 'client:adminBanUser:exception',
+      errorFallback: 'Failed to ban user',
+      exception: 'An unexpected error occurred while banning the user',
+      onSuccess: () => onOpenChange(false),
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -126,28 +137,10 @@ function BanUserForm({user, onOpenChange}: BanUserFormProps) {
 
       const trimmedReason = value.banReason.trim()
 
-      try {
-        const {error} = await authClient.admin.banUser({
-          userId: user.id,
-          banReason: trimmedReason === '' ? undefined : trimmedReason,
-          banExpiresIn,
-        })
-
-        if (error) {
-          toast.error(error.message ?? 'Failed to ban user')
-          return
-        }
-
-        toast.success('User banned')
-        await queryClient.invalidateQueries({queryKey: ['admin', 'users']})
-        onOpenChange(false)
-      } catch (error) {
-        toast.error('An unexpected error occurred while banning the user')
-        logClientError({
-          error,
-          context: 'client:adminBanUser:exception',
-        })
-      }
+      await run({
+        banReason: trimmedReason === '' ? undefined : trimmedReason,
+        banExpiresIn,
+      })
     },
   })
 

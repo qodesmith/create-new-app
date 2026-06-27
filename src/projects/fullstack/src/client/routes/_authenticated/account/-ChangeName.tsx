@@ -1,12 +1,9 @@
 import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {nameFieldValidator} from '@/client/lib/formValidators'
-import {
-  getSafeAuthErrorMessage,
-  handleFormSubmitInvalid,
-} from '@/client/lib/utils'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {namePattern} from '@/shared/constants'
 
@@ -17,12 +14,23 @@ import {toast} from 'sonner'
 
 export function ChangeName() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
   const router = useRouter()
   const user = useRouteContext({
     from: '/_authenticated',
     select: ({user}) => user,
   })
+
+  const {run} = useMutationWithToast(
+    (input: {name: string; lastName: string}) => authClient.updateUser(input),
+    {
+      success: 'Name updated successfully',
+      context: 'client:changeName:exception',
+      errorFallback: 'Failed to update name',
+      errorMessage: 'safe',
+      exception: 'An unexpected error occurred while updating your name',
+      onSuccess: () => router.invalidate(),
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -39,23 +47,7 @@ export function ChangeName() {
         return
       }
 
-      try {
-        const {error} = await authClient.updateUser({name, lastName})
-
-        if (error) {
-          toast.error(getSafeAuthErrorMessage(error, 'Failed to update name'))
-          return
-        }
-
-        toast.success('Name updated successfully')
-        await router.invalidate()
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating your name')
-        logClientError({
-          error,
-          context: 'client:changeName:exception',
-        })
-      }
+      await run({name, lastName})
     },
   })
 

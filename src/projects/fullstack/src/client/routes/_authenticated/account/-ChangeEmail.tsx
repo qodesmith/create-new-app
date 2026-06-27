@@ -1,11 +1,8 @@
 import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
-import {
-  getSafeAuthErrorMessage,
-  handleFormSubmitInvalid,
-} from '@/client/lib/utils'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
+import {handleFormSubmitInvalid} from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
 import {changeEmailCallbackRoutes} from '@/shared/constants'
 
@@ -15,7 +12,33 @@ import {toast} from 'sonner'
 
 export function ChangeEmail() {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
+
+  const {run} = useMutationWithToast(
+    /**
+     * We've implemented Better Auth's change email functionality with a two
+     * step process:
+     *
+     * 1. CONFIRM the INTENT to change an email
+     * 2. VERIFY the ACTION to change an email
+     *
+     * `authClient.changeEmail` only takes in a single callbackURL which Better
+     * Auth uses for BOTH steps. We override the 2nd step callbackURL in auth.ts
+     * where these two steps are defined.
+     */
+    (newEmail: string) =>
+      authClient.changeEmail({
+        newEmail,
+        callbackURL: changeEmailCallbackRoutes.step1,
+      }),
+    {
+      success:
+        'We sent a verification link to your current email. Please confirm the change.',
+      context: 'client:changeEmail:exception',
+      errorFallback: 'Failed to change email',
+      errorMessage: 'safe',
+      exception: 'An unexpected error occurred while updating your email',
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -31,39 +54,7 @@ export function ChangeEmail() {
         return
       }
 
-      try {
-        /**
-         * We've implemented Better Auth's change email functionality with a two
-         * step process:
-         *
-         * 1. CONFIRM the INTENT to change an email
-         * 2. VERIFY the ACTION to change an email
-         *
-         * `authClient.changeEmail` only takes in a single callbackURL which
-         * Better Auth uses for BOTH steps. We override the 2nd step callbackURL
-         * in auth.ts where these two steps are defined.
-         */
-        const {error} = await authClient.changeEmail({
-          newEmail: email.trim(),
-          callbackURL: changeEmailCallbackRoutes.step1,
-        })
-
-        if (error) {
-          toast.error(getSafeAuthErrorMessage(error, 'Failed to change email'))
-          return
-        }
-
-        form.reset()
-        toast.success(
-          'We sent a verification link to your current email. Please confirm the change.'
-        )
-      } catch (error) {
-        toast.error('An unexpected error occurred while updating your email')
-        logClientError({
-          error,
-          context: 'client:changeEmail:exception',
-        })
-      }
+      if (await run(email.trim())) form.reset()
     },
   })
 

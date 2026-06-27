@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from '@/client/components/ui/dialog'
 import {Field, FieldLabel} from '@/client/components/ui/field'
-import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {useMutationWithToast} from '@/client/hooks/useMutationWithToast'
 import {passwordsMatchValidator} from '@/client/lib/formValidators'
 import {
   generateStrongPassword,
@@ -21,7 +21,6 @@ import {authClientAtom} from '@/client/state/globalState'
 import {minPasswordLength} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
-import {useQueryClient} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {CheckIcon, CopyIcon} from 'lucide-react'
 import {useCallback, useState} from 'react'
@@ -114,11 +113,46 @@ function SetPasswordForm({
   onRequestClose,
 }: SetPasswordFormProps) {
   const authClient = useAtomValue(authClientAtom)
-  const logClientError = useLogClientError()
-  const queryClient = useQueryClient()
   const [hasGeneratedPassword, setHasGeneratedPassword] =
     useState<boolean>(false)
   const [didCopy, setDidCopy] = useState<boolean>(false)
+
+  const {run} = useMutationWithToast(
+    // Two sequential calls: set the password, then optionally revoke sessions.
+    // A revoke failure is non-fatal — it toasts but still resolves as success
+    // so the password change (which succeeded) is reflected.
+    async (value: {newPassword: string; revokeSessions: boolean}) => {
+      const result = await authClient.admin.setUserPassword({
+        userId: user.id,
+        newPassword: value.newPassword,
+      })
+
+      if (result.error) return result
+
+      if (value.revokeSessions) {
+        const {error: revokeError} = await authClient.admin.revokeUserSessions({
+          userId: user.id,
+        })
+
+        if (revokeError) {
+          toast.error('Password updated, but failed to revoke sessions')
+        }
+      }
+
+      return result
+    },
+    {
+      success: 'Password updated',
+      invalidate: [
+        ['admin', 'users'],
+        ['admin', 'users', user.id, 'sessions'],
+      ],
+      context: 'client:adminSetUserPassword:exception',
+      errorFallback: 'Failed to set password',
+      exception: 'An unexpected error occurred while setting the password',
+      onSuccess: onSubmitted,
+    }
+  )
 
   const form = useForm({
     defaultValues: {
@@ -128,43 +162,10 @@ function SetPasswordForm({
     },
     onSubmitInvalid: handleFormSubmitInvalid,
     onSubmit: async ({value}) => {
-      try {
-        const {error} = await authClient.admin.setUserPassword({
-          userId: user.id,
-          newPassword: value.newPassword,
-        })
-
-        if (error) {
-          toast.error(error.message ?? 'Failed to set password')
-          return
-        }
-
-        if (value.revokeSessions) {
-          const {error: revokeError} =
-            await authClient.admin.revokeUserSessions({userId: user.id})
-
-          if (revokeError) {
-            toast.error('Password updated, but failed to revoke sessions')
-          }
-        }
-
-        toast.success('Password updated')
-
-        await Promise.all([
-          queryClient.invalidateQueries({queryKey: ['admin', 'users']}),
-          queryClient.invalidateQueries({
-            queryKey: ['admin', 'users', user.id, 'sessions'],
-          }),
-        ])
-
-        onSubmitted()
-      } catch (error) {
-        logClientError({
-          error,
-          context: 'client:adminSetUserPassword:exception',
-        })
-        toast.error('An unexpected error occurred while setting the password')
-      }
+      await run({
+        newPassword: value.newPassword,
+        revokeSessions: value.revokeSessions,
+      })
     },
   })
 

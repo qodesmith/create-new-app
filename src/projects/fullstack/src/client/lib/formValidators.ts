@@ -1,17 +1,15 @@
 import type {AnyFieldApi} from '@tanstack/react-form'
 
-import {nameRegex, nameValidationMessage} from '@/shared/constants'
+import {validateName} from '@/shared/validators'
 
 /**
- * TanStack Form validator for a person's-name field (first or last). The shared
- * `nameValidator` (shared/validators) is just arktype wrapping this same
- * `nameRegex`, so a single regex test is the entire check — `label`
- * ('First name' | 'Last name') only prefixes the shared message.
+ * TanStack Form adapter wrapping the shared `validateName` check into an
+ * `{onSubmit}` validator for a person's-name field. `label` ('First name' |
+ * 'Last name') prefixes the shared error message.
  */
 export function nameFieldValidator(label: string) {
   return {
-    onSubmit: ({value}: {value: string}) =>
-      nameRegex.test(value) ? undefined : `${label} ${nameValidationMessage}`,
+    onSubmit: ({value}: {value: string}) => validateName(value, label),
   }
 }
 

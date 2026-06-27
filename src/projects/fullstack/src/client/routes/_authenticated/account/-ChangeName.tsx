@@ -2,12 +2,13 @@ import {Button} from '@/client/components/ui/button'
 import {Field, FieldLabel} from '@/client/components/ui/field'
 import {Input} from '@/client/components/ui/input'
 import {useLogClientError} from '@/client/hooks/useLogClientError'
+import {nameFieldValidator} from '@/client/lib/formValidators'
 import {
   getSafeAuthErrorMessage,
   handleFormSubmitInvalid,
 } from '@/client/lib/utils'
 import {authClientAtom} from '@/client/state/globalState'
-import {namePattern, nameRegex, nameValidationMessage} from '@/shared/constants'
+import {namePattern} from '@/shared/constants'
 
 import {useForm} from '@tanstack/react-form'
 import {useRouteContext, useRouter} from '@tanstack/react-router'
@@ -67,16 +68,7 @@ export function ChangeName() {
         form.handleSubmit()
       }}
     >
-      <form.Field
-        name="name"
-        validators={{
-          onSubmit: ({value}) => {
-            if (!nameRegex.test(value)) {
-              return `First name ${nameValidationMessage}`
-            }
-          },
-        }}
-      >
+      <form.Field name="name" validators={nameFieldValidator('First name')}>
         {field => (
           <Field>
             <FieldLabel htmlFor="firstName">First name</FieldLabel>
@@ -94,16 +86,7 @@ export function ChangeName() {
         )}
       </form.Field>
 
-      <form.Field
-        name="lastName"
-        validators={{
-          onSubmit: ({value}) => {
-            if (!nameRegex.test(value)) {
-              return `Last name ${nameValidationMessage}`
-            }
-          },
-        }}
-      >
+      <form.Field name="lastName" validators={nameFieldValidator('Last name')}>
         {field => (
           <Field>
             <FieldLabel htmlFor="lastName">Last name</FieldLabel>

@@ -1,5 +1,5 @@
+import type {getAuthClient} from '@/client/apiClient'
 import type {User} from '@/client/types'
-import type {SortDirection} from '@/shared/types'
 import type {UsersSortBy} from './-usersTableColumns'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
@@ -22,65 +22,79 @@ import {
 } from '@/client/components/ui/table'
 import {TooltipProvider} from '@/client/components/ui/tooltip'
 import {useDebouncedValue} from '@/client/hooks/useDebouncedValue'
+import {useTableState} from '@/client/hooks/useTableState'
 import {cn} from '@/client/lib/utils'
 import {authClientAtom, userAtom} from '@/client/state/globalState'
 
-import {keepPreviousData, useQuery} from '@tanstack/react-query'
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table'
 import {useAtomValue} from 'jotai'
 import {ChevronLeftIcon, ChevronRightIcon, SearchIcon} from 'lucide-react'
-import {useCallback, useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 
 import {getUsersColumns} from './-usersTableColumns'
 
 type SearchField = 'email' | 'name'
+type UsersFilter = {searchValue: string; searchField: SearchField}
+
+type ListUsersData = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getAuthClient>['admin']['listUsers']>
+  >['data']
+>
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
 const SEARCH_DEBOUNCE_MS = 250
+
+/**
+ * better-auth's admin plugin types listUsers' result as UserWithRole[], which
+ * omits additional fields configured via inferAdditionalFields (e.g.
+ * lastName). The server does return them, so cast through unknown.
+ */
+const selectUsers = (raw: ListUsersData) => ({
+  rows: (raw.users ?? []) as unknown as User[],
+  total: raw.total ?? 0,
+})
 
 export function UsersTable() {
   const authClient = useAtomValue(authClientAtom)
   const currentUser = useAtomValue(userAtom)
   const currentUserId = currentUser?.id
 
+  // Raw input + field live table-side; the debounced value is pushed into the
+  // table-state filter below, which resets the page on change.
   const [searchValue, setSearchValue] = useState('')
   const [searchField, setSearchField] = useState<SearchField>('email')
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZE_OPTIONS)[number]>(25)
-  const [sortBy, setSortBy] = useState<UsersSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(
-    'desc'
-  )
-
-  const debouncedSearch = useDebouncedValue(
-    searchValue,
-    SEARCH_DEBOUNCE_MS,
-    () => setPage(1)
-  )
-
-  const queryParams = {
-    searchValue: debouncedSearch,
-    searchField,
-    sortBy,
-    sortDirection,
-    page,
-    pageSize,
-  }
+  const debouncedSearch = useDebouncedValue(searchValue, SEARCH_DEBOUNCE_MS)
 
   const {
-    data: usersData,
+    page,
+    pageSize,
+    sortBy,
+    sortDirection,
+    setPage,
+    setPageSize,
+    toggleSort,
+    setFilter,
+    rows: users,
+    total,
+    totalPages,
     isLoading: isInitialLoading,
     isFetching,
     error,
-  } = useQuery({
-    queryKey: ['admin', 'users', queryParams] as const,
-    queryFn: async () => {
-      const trimmed = debouncedSearch.trim()
+  } = useTableState({
+    resourceKey: ['admin', 'users'],
+    defaultSortBy: 'createdAt' as UsersSortBy,
+    defaultFilter: {searchValue: '', searchField: 'email'} as UsersFilter,
+    fetch: async ({page, pageSize, sortBy, sortDirection, filter}) => {
+      const trimmed = filter.searchValue.trim()
       const {data, error} = await authClient.admin.listUsers({
         query: {
           ...(trimmed
-            ? {searchValue: trimmed, searchField, searchOperator: 'contains'}
+            ? {
+                searchValue: trimmed,
+                searchField: filter.searchField,
+                searchOperator: 'contains',
+              }
             : {}),
           limit: pageSize,
           offset: (page - 1) * pageSize,
@@ -94,37 +108,12 @@ export function UsersTable() {
 
       return data
     },
-    placeholderData: keepPreviousData,
+    select: selectUsers,
   })
 
-  /**
-   * better-auth's admin plugin types listUsers' result as UserWithRole[], which
-   * omits additional fields configured via inferAdditionalFields (e.g.
-   * lastName). The server does return them, so cast through unknown.
-   */
-  const users = useMemo<User[]>(
-    () => (usersData?.users ?? []) as User[],
-    [usersData?.users]
-  )
-  const total = usersData?.total ?? 0
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-
-  const toggleSort = useCallback(
-    (key: UsersSortBy) => {
-      if (sortBy === key) {
-        setSortDirection(d => {
-          if (d === 'asc') return 'desc'
-          if (d === 'desc') return null
-          return 'asc'
-        })
-      } else {
-        setSortBy(key)
-        setSortDirection('asc')
-      }
-      setPage(1)
-    },
-    [sortBy]
-  )
+  useEffect(() => {
+    setFilter({searchValue: debouncedSearch, searchField})
+  }, [debouncedSearch, searchField, setFilter])
 
   const columns = useMemo(
     () =>
@@ -170,7 +159,6 @@ export function UsersTable() {
               value={searchField}
               onValueChange={v => {
                 setSearchField(v as SearchField)
-                setPage(1)
               }}
             >
               <SelectTrigger size="sm" aria-label="Search field">
@@ -188,9 +176,7 @@ export function UsersTable() {
             <Select
               value={String(pageSize)}
               onValueChange={v => {
-                const next = Number(v) as (typeof PAGE_SIZE_OPTIONS)[number]
-                setPageSize(next)
-                setPage(1)
+                setPageSize(Number(v))
               }}
             >
               <SelectTrigger size="sm" aria-label="Page size">
@@ -296,7 +282,7 @@ export function UsersTable() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(p => Math.max(1, p - 1))}
+              onClick={() => setPage(page - 1)}
               disabled={page <= 1 || isInitialLoading}
               aria-label="Previous page"
             >
@@ -309,7 +295,7 @@ export function UsersTable() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setPage(page + 1)}
               disabled={page >= totalPages || isInitialLoading}
               aria-label="Next page"
             >

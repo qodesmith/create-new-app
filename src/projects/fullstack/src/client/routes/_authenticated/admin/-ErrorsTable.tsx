@@ -1,4 +1,4 @@
-import type {ErrorContext, SortDirection} from '@/shared/types'
+import type {ErrorContext} from '@/shared/types'
 import type {ErrorRow, ErrorsSortBy} from './-errorsColumns'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
@@ -18,10 +18,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/client/components/ui/table'
+import {useTableState} from '@/client/hooks/useTableState'
 import {apiAdminClientAtom} from '@/client/state/globalState'
 import {errorContexts} from '@/shared/constants'
 
-import {keepPreviousData, useQuery} from '@tanstack/react-query'
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table'
 import {parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
@@ -31,81 +31,59 @@ import {useCallback, useMemo, useState} from 'react'
 import {ErrorDetailDialog} from './-ErrorDetailDialog'
 import {getErrorsColumns} from './-errorsColumns'
 
-const PAGE_SIZE_OPTIONS = ['10', '25', '50'] as const
+const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
 const ALL_CONTEXTS = 'all' as const
 const CATEGORY_OPTIONS = ['all', 'client', 'server'] as const
 
-type PageSize = (typeof PAGE_SIZE_OPTIONS)[number]
 type Category = (typeof CATEGORY_OPTIONS)[number]
+type ErrorsData = {errors: ErrorRow[]; total: number}
+type ErrorsFilter = {category: Category; context: ErrorContext | undefined}
+
+const selectErrors = (raw: ErrorsData) => ({
+  rows: raw.errors,
+  total: raw.total,
+})
 
 export function ErrorsTable() {
   const adminClient = useAtomValue(apiAdminClientAtom)
 
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState<PageSize>('25')
-  const [sortBy, setSortBy] = useState<ErrorsSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(
-    'desc'
-  )
-  const [category, setCategory] = useState<Category>('all')
-  const [contextFilter, setContextFilter] = useState<ErrorContext | undefined>()
   const [activeError, setActiveError] = useState<ErrorRow | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
-  const queryParams = {
+  const {
     page,
     pageSize,
     sortBy,
     sortDirection,
-    category,
-    context: contextFilter,
-  }
-
-  const {
-    data: errorsData,
+    filter,
+    setPage,
+    setPageSize,
+    toggleSort,
+    setFilter,
+    rows: errors,
+    total,
+    totalPages,
     isLoading,
     isFetching,
     error,
-  } = useQuery({
-    queryKey: ['admin', 'errors', queryParams],
-    queryFn: () =>
+  } = useTableState({
+    resourceKey: ['admin', 'errors'],
+    defaultSortBy: 'createdAt' as ErrorsSortBy,
+    defaultFilter: {category: 'all', context: undefined} as ErrorsFilter,
+    fetch: ({page, pageSize, sortBy, sortDirection, filter}) =>
       parseResponse(
         adminClient.errors.$get({
           query: {
             page: `${page}`,
-            pageSize,
+            pageSize: String(pageSize) as '10' | '25' | '50',
             ...(sortDirection ? {sortBy, sortDirection} : {}),
-            ...(category === 'all' ? {} : {category}),
-            ...(contextFilter ? {context: contextFilter} : {}),
+            ...(filter.category === 'all' ? {} : {category: filter.category}),
+            ...(filter.context ? {context: filter.context} : {}),
           },
         })
       ),
-    placeholderData: keepPreviousData,
+    select: selectErrors,
   })
-
-  const errors = useMemo<ErrorRow[]>(
-    () => errorsData?.errors ?? [],
-    [errorsData?.errors]
-  )
-  const total = errorsData?.total ?? 0
-  const totalPages = Math.max(1, Math.ceil(total / +pageSize))
-
-  const toggleSort = useCallback(
-    (key: ErrorsSortBy) => {
-      if (sortBy === key) {
-        setSortDirection(d => {
-          if (d === 'asc') return 'desc'
-          if (d === 'desc') return null
-          return 'asc'
-        })
-      } else {
-        setSortBy(key)
-        setSortDirection('asc')
-      }
-      setPage(1)
-    },
-    [sortBy]
-  )
 
   const onView = useCallback((row: ErrorRow) => {
     setActiveError(row)
@@ -140,10 +118,9 @@ export function ErrorsTable() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           <Select
-            value={category}
+            value={filter.category}
             onValueChange={(v: Category) => {
-              setCategory(v)
-              setPage(1)
+              setFilter({...filter, category: v})
             }}
           >
             <SelectTrigger size="sm" className="w-36" aria-label="Category">
@@ -157,10 +134,12 @@ export function ErrorsTable() {
           </Select>
 
           <Select
-            value={contextFilter ?? ALL_CONTEXTS}
+            value={filter.context ?? ALL_CONTEXTS}
             onValueChange={(v: ErrorContext | typeof ALL_CONTEXTS) => {
-              setContextFilter(v === ALL_CONTEXTS ? undefined : v)
-              setPage(1)
+              setFilter({
+                ...filter,
+                context: v === ALL_CONTEXTS ? undefined : v,
+              })
             }}
           >
             <SelectTrigger
@@ -184,10 +163,9 @@ export function ErrorsTable() {
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground text-sm">Rows</span>
           <Select
-            value={pageSize}
-            onValueChange={(v: PageSize) => {
-              setPageSize(v)
-              setPage(1)
+            value={String(pageSize)}
+            onValueChange={v => {
+              setPageSize(Number(v))
             }}
           >
             <SelectTrigger size="sm" aria-label="Page size">
@@ -195,7 +173,7 @@ export function ErrorsTable() {
             </SelectTrigger>
             <SelectContent>
               {PAGE_SIZE_OPTIONS.map(size => (
-                <SelectItem key={size} value={size}>
+                <SelectItem key={size} value={String(size)}>
                   {size}
                 </SelectItem>
               ))}
@@ -288,7 +266,7 @@ export function ErrorsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage(page - 1)}
             disabled={page <= 1 || isLoading}
             aria-label="Previous page"
           >
@@ -301,7 +279,7 @@ export function ErrorsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setPage(page + 1)}
             disabled={page >= totalPages || isLoading}
             aria-label="Next page"
           >

@@ -1,4 +1,6 @@
-import type {SortDirection, SystemAuditLogAction} from '@/shared/types'
+import type {InferResponseType} from 'hono/client'
+import type {createApiAdminClient} from '@/client/apiClient'
+import type {SystemAuditLogAction} from '@/shared/types'
 import type {SystemAuditLogsSortBy} from './-systemAuditLogsColumns'
 
 import {AudioLoader} from '@/client/components/custom/AudioLoader'
@@ -18,51 +20,55 @@ import {
   TableHeader,
   TableRow,
 } from '@/client/components/ui/table'
+import {useTableState} from '@/client/hooks/useTableState'
 import {apiAdminClientAtom} from '@/client/state/globalState'
 import {systemAuditLogActions} from '@/shared/constants'
 
-import {keepPreviousData, useQuery} from '@tanstack/react-query'
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table'
 import {parseResponse} from 'hono/client'
 import {useAtomValue} from 'jotai'
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
-import {useCallback, useMemo, useState} from 'react'
+import {useMemo} from 'react'
 
 import {getSystemAuditLogsColumns} from './-systemAuditLogsColumns'
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const
 const ALL_ACTIONS_VALUE = 'all'
 
+type SystemAuditLogsData = InferResponseType<
+  ReturnType<typeof createApiAdminClient>['system-audit-logs']['$get']
+>
+type ActionFilter = SystemAuditLogAction | null
+
+const selectSystemAuditLogs = (raw: SystemAuditLogsData) => ({
+  rows: raw.logs,
+  total: raw.total,
+})
+
 export function SystemAuditLogsTable() {
   const adminClient = useAtomValue(apiAdminClientAtom)
 
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZE_OPTIONS)[number]>(25)
-  const [sortBy, setSortBy] = useState<SystemAuditLogsSortBy>('createdAt')
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(
-    'desc'
-  )
-  const [actionFilter, setActionFilter] = useState<SystemAuditLogAction | null>(
-    null
-  )
-
-  const queryParams = {
+  const {
     page,
     pageSize,
     sortBy,
     sortDirection,
-    action: actionFilter,
-  }
-
-  const {
-    data: logsData,
+    filter: actionFilter,
+    setPage,
+    setPageSize,
+    toggleSort,
+    setFilter,
+    rows: logs,
+    total,
+    totalPages,
     isLoading: isInitialLoading,
     isFetching,
     error,
-  } = useQuery({
-    queryKey: ['admin', 'system-audit-logs', queryParams] as const,
-    queryFn: () =>
+  } = useTableState({
+    resourceKey: ['admin', 'system-audit-logs'],
+    defaultSortBy: 'createdAt' as SystemAuditLogsSortBy,
+    defaultFilter: null as ActionFilter,
+    fetch: ({page, pageSize, sortBy, sortDirection, filter}) =>
       parseResponse(
         adminClient['system-audit-logs'].$get({
           query: {
@@ -70,33 +76,12 @@ export function SystemAuditLogsTable() {
             pageSize: String(pageSize) as '10' | '25' | '50',
             sortBy,
             ...(sortDirection ? {sortDirection} : {}),
-            ...(actionFilter ? {action: actionFilter} : {}),
+            ...(filter ? {action: filter} : {}),
           },
         })
       ),
-    placeholderData: keepPreviousData,
+    select: selectSystemAuditLogs,
   })
-
-  const logs = useMemo(() => logsData?.logs ?? [], [logsData])
-  const total = logsData?.total ?? 0
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-
-  const toggleSort = useCallback(
-    (key: SystemAuditLogsSortBy) => {
-      if (sortBy === key) {
-        setSortDirection(d => {
-          if (d === 'asc') return 'desc'
-          if (d === 'desc') return null
-          return 'asc'
-        })
-      } else {
-        setSortBy(key)
-        setSortDirection('asc')
-      }
-      setPage(1)
-    },
-    [sortBy]
-  )
 
   const columns = useMemo(
     () =>
@@ -129,8 +114,7 @@ export function SystemAuditLogsTable() {
           <Select
             value={actionFilter ?? ALL_ACTIONS_VALUE}
             onValueChange={(v: SystemAuditLogAction | 'all') => {
-              setActionFilter(v === ALL_ACTIONS_VALUE ? null : v)
-              setPage(1)
+              setFilter(v === ALL_ACTIONS_VALUE ? null : v)
             }}
           >
             <SelectTrigger size="sm" aria-label="Filter by action">
@@ -152,9 +136,7 @@ export function SystemAuditLogsTable() {
           <Select
             value={String(pageSize)}
             onValueChange={v => {
-              const next = Number(v) as (typeof PAGE_SIZE_OPTIONS)[number]
-              setPageSize(next)
-              setPage(1)
+              setPageSize(Number(v))
             }}
           >
             <SelectTrigger size="sm" aria-label="Page size">
@@ -255,7 +237,7 @@ export function SystemAuditLogsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage(page - 1)}
             disabled={page <= 1 || isInitialLoading}
             aria-label="Previous page"
           >
@@ -268,7 +250,7 @@ export function SystemAuditLogsTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setPage(page + 1)}
             disabled={page >= totalPages || isInitialLoading}
             aria-label="Next page"
           >

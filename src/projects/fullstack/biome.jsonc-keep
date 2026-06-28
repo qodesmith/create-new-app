@@ -1,0 +1,184 @@
+{
+  "root": true,
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@qodestack/biome-config/react"],
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!dist",
+      "!*.lock",
+      "!src/server/db/drizzle",
+      "!src/client/routeTree.gen.ts"
+    ]
+  },
+  "overrides": [
+    // General rules for client-side code.
+    {
+      "includes": ["src/client/**/*.ts", "src/client/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // Avoid importing process in client code.
+            "noProcessGlobal": "off",
+
+            // Inform Biome about how our custom hooks work.
+            "useExhaustiveDependencies": {
+              "level": "error",
+              "fix": "safe",
+              "options": {
+                "hooks": [{"name": "useStable", "stableResult": true}]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Allow Tanstack routes & Shadcn components to export more than components.
+    {
+      "includes": [
+        "src/client/routes/**/*.tsx",
+        "src/client/components/**/*.tsx",
+        "src/client/components/**/*.ts"
+      ],
+      "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Avoid Shadcn linting noise.
+    {
+      "includes": ["src/client/components/ui/**/*.tsx"],
+      "linter": {"rules": {"suspicious": {"noArrayIndexKey": "off"}}}
+    },
+
+    // Disallow importing server code into startDev.ts (dev orchestrator
+    // shouldn't require server modules to load).
+    {
+      "includes": ["startDev.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/server/*",
+                      "@/server/**",
+                      "**/server/*",
+                      "**/server/**"
+                    ],
+                    "message": "Don't import server code from startDev.ts."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    /**
+     * Cross-boundary barrel files: `src/server/types.d.ts` is re-exported by
+     * `src/shared/types.d.ts`, which the client consumes. Aliased imports
+     * (`@/server/*`, `@/client/*`) only resolve in the project whose tsconfig
+     * defines them — when the client pulls these types through the shared
+     * re-export, unresolved aliases silently collapse to `any`, which breaks
+     * Hono RPC autocomplete (and everything else downstream). Use relative
+     * imports in these files so resolution works from any consuming project.
+     */
+    {
+      "includes": ["src/server/types.d.ts", "src/shared/types.d.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["@/server/**", "@/client/**"],
+                    "message": "Use relative imports in this barrel — alias paths break cross-project type resolution and silently collapse types to `any`."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    /**
+     * Client-code import restrictions. NOTE: keep every client-side
+     * `noRestrictedImports` ban in THIS single block — Biome lets a later
+     * matching override *replace* (not merge) this rule, so a second client
+     * override would silently drop these bans. One block ⇒ one severity, so
+     * both share `error`.
+     *   - must not import server code (architectural boundary)
+     *   - must import `m`, never the full `motion`, from motion/react:
+     *     features come from the root <LazyMotion features={domAnimation}
+     *     strict> in app.tsx, and a `motion` import throws under strict.
+     *     (Pairs with the CONVENTIONS.md rule.)
+     */
+    {
+      "includes": ["src/client/**/*.ts", "src/client/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "motion/react": {
+                    "importNames": ["motion"],
+                    "message": "Import `m` (e.g. <m.div>), not the full `motion`, from motion/react. Features are supplied by the root <LazyMotion features={domAnimation} strict> in app.tsx — switch that to domMax if you need drag/pan/layout."
+                  }
+                },
+                "patterns": [
+                  {
+                    "group": [
+                      "@/server/*",
+                      "@/server/**",
+                      "**/server/*",
+                      "**/server/**"
+                    ],
+                    "message": "Client code must not import from server."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Server code must not import from client.
+    {
+      "includes": ["src/server/**/*.ts", "src/server/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/client/*",
+                      "@/client/**",
+                      "**/client/*",
+                      "**/client/**"
+                    ],
+                    "message": "Server code must not import from client."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[install]
+# Refuse package versions published in the last 3 days. Mitigates supply-chain
+# attacks via freshly-published malicious versions.
+minimumReleaseAge = 259200
+minimumReleaseAgeExcludes = ["@qodestack/biome-config", "@qodestack/utils"]
+
+[test]
+# Scripts to run before the tests are executed.
+# Sets default env vars that server modules read at module-load time
+# (PORT, DOMAIN, NODE_ENV, SQLITE_PATH) so tests can import the server graph.
+preload = ["./src/server/hono/adminRoutes.test.preload.ts"]
+
+[serve.static]
+plugins = ["./bunPluginTailwind.ts"]
+
+# Allows client-side code to consume environment variables. During the build,
+# these env vars will be replaced with static values.
+env = "BUN_PUBLIC_*"

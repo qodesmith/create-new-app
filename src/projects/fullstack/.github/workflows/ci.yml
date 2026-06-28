@@ -1,0 +1,41 @@
+# This workflow runs checks on PRs and pushes to main, but does NOT block
+# merging by itself. To enforce that PRs must pass before merging:
+#
+# 1. Go to your repo's Settings → Branches → Add branch protection rule
+#    (or Settings → Rules → Rulesets for newer repos)
+# 2. Set "Branch name pattern" to: main
+# 3. Enable "Require status checks to pass before merging"
+# 4. Search for and add the "lint-typecheck-knip" job as a required status check
+# 5. Save the rule
+#
+# After that, GitHub will prevent merging any PR where this workflow fails.
+
+name: Lint, Typecheck, & Knip
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-typecheck-knip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Lint & format
+        run: bun run check
+
+      - name: Type check
+        run: bunx tsc --noEmit
+
+      - name: Find unused code
+        run: bun run knip

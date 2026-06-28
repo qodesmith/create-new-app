@@ -1,0 +1,92 @@
+#########################
+# BUILD STAGE - mainapp #
+#########################
+
+FROM oven/bun:alpine AS mainapp
+
+# This env var is only consumed in build.ts
+ENV IN_DOCKER_BUILD=true
+
+WORKDIR /app
+
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+
+COPY build.ts bunPluginTailwind.ts bunfig.toml ./
+COPY {{PROJECT_NAME}}.sqlite* ./
+COPY src ./src/
+
+RUN NODE_ENV=production bun --bun run ./build.ts
+
+################################
+# BUILD STAGE - Drizzle Studio #
+################################
+
+# Docker Desktop won't let you bind to 127.0.0.1 in addition to localhost.
+# Therefore, you need to run the container locally like so:
+#
+# docker run --rm -it \
+#   -p 9001:9001 \
+#   -p 127.0.0.1:4983:4983 \
+#   {{PROJECT_NAME}}:latest
+#
+# Then, in Docker Desktop, open the container by clicking it's name, choose the
+# `exec` tab, then:
+# 1. cd drizzleStudio
+# 2. bun drizzleStudio.ts
+# 3. Open https://local.drizzle.studio/ in a browser
+
+FROM oven/bun:alpine AS drizzlestudio
+
+# This env var is only consumed in buildDrizzleStudio.ts
+ENV IN_DOCKER_BUILD=true
+
+WORKDIR /app
+
+COPY buildDrizzleStudio.ts ./
+COPY src ./src/
+
+# This is so buildDrizzleStudio.ts has the necessary packages installed
+# This node_modules & package.json will NOT be copied over into the final image
+RUN echo '{}' > package.json && bun install drizzle-kit drizzle-orm @qodestack/utils
+
+# Ensure the drizzleStudio directory contains node_modules and package.json
+# This node_modules & package.json WILL be copied over into the final image
+WORKDIR /app/drizzleStudio
+RUN echo '{}' > package.json && bun install drizzle-kit drizzle-orm @libsql/client
+
+WORKDIR /app
+RUN NODE_ENV=production bun --bun run ./buildDrizzleStudio.ts
+
+COPY src/server/db/drizzleStudio.ts /app/drizzleStudio/
+
+##############
+# PROD STAGE #
+##############
+
+FROM oven/bun:alpine
+
+WORKDIR /app
+
+COPY bunPluginTailwind.ts bunfig.toml /app
+COPY --from=mainapp /dist /app/
+COPY --from=mainapp /app/{{PROJECT_NAME}}.sqlite* /app/
+COPY --from=drizzlestudio /app/drizzleStudio /app/drizzleStudio
+
+# See migrate.ts - drizzle folder expected so DB migrations can be run.
+COPY --from=mainapp /app/src/server/db/drizzle /app/drizzle/
+
+ARG PORT=9001
+
+# This is purely for documentation.
+EXPOSE ${PORT}
+
+ENV PORT=${PORT}
+ENV NODE_ENV=production
+ENV SQLITE_PATH=/app/{{PROJECT_NAME}}.sqlite
+ENV DOMAIN={{PROJECT_NAME}}.com
+ENV BETTER_AUTH_SECRET=fake_better_auth_secret_only_for_local_containers
+ENV TZ=America/New_York
+ENV IS_LOCAL_CONTAINER=true
+
+ENTRYPOINT ["bun", "./bunServer.js"]

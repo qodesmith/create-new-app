@@ -1,0 +1,33 @@
+# Ignore everything by default, then allow-list what the Dockerfile needs.
+# This is a defense-in-depth approach — even if someone adds a broad
+# `COPY . .` later, nothing sensitive leaks into an image layer.
+*
+
+# --- Allow-list: files/dirs any Dockerfile in this repo may COPY ---
+!package.json
+!bun.lock
+!bunPluginTailwind.ts     
+!bunfig.toml
+!build.ts
+!buildDrizzleStudio.ts
+!litefs.yml
+!src
+
+# --- Re-exclude noise that lives inside allowed dirs ---
+**/node_modules
+**/dist
+**/.tanstack
+**/.DS_Store
+**/Thumbs.db
+**/*.tsbuildinfo
+**/*.log
+
+# --- Re-exclude secrets & local state even if accidentally placed in src ---
+**/.env
+**/.env.*
+!**/.env.example
+**/*.pem
+**/*.key
+**/*.sqlite
+**/*.sqlite-shm
+**/*.sqlite-wal

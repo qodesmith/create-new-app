@@ -1,0 +1,25 @@
+# See https://fly.io/docs/reference/configuration/
+
+app = "{{PROJECT_NAME}}"
+primary_region = "ewr" # https://fly.io/docs/reference/regions/
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1 # Keeps 1 Machine always running in primary region
+  processes = ['app']
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[mounts]
+  # The volume name. A volume is a persistent disk attached to the machine that
+  # survives restarts because the default filesystem is ephemeral.
+  source = "litefs_volume"
+
+  # Must match `data.dir` in litefs.yml exactly.
+  destination = "/var/lib/litefs"

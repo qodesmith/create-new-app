@@ -1,0 +1,17 @@
+{
+  "prettier.enable": false,
+  "eslint.enable": false,
+  "biome.enabled": true,
+  "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "js/ts.preferences.includePackageJsonAutoImports": "auto",
+  "js/ts.preferences.importModuleSpecifier": "non-relative"
+}

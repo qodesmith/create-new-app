@@ -22,445 +22,274 @@
 
 # Create New App &middot; [![npm version](https://badge.fury.io/js/create-new-app.svg)](https://badge.fury.io/js/create-new-app)
 
-Create full-stack React applications! All the tech you've come to know and love - React, Express, & MongoDB. Use some, use none, but _always_ use React ;)
+Spin up a production-ready React app in one command. Pick **fullstack** (React + Bun + Hono + SQLite + Drizzle + Better Auth) or **client-only** (React SPA + TanStack Router + Tailwind). No ejecting, no webpack config, no Node - just Bun, end to end.
 
-## The Why
+---
 
-You want to make apps. You want to make apps with [React](https://reactjs.org/). Excellent choice.
+## What's new in v8
 
-[Create React App](https://github.com/facebookincubator/create-react-app) is awesome, no doubt, but your app needs an API - so you look to [Express](https://expressjs.com/). Heck, you might _already have_ an API! But how to integrate it? And to top it off, you like using JavaScript up and down the stack, so your persistence layer is [MongoDB](https://mongodb.github.io/node-mongodb-native/). But CRA doesn't give you all of this out of the box. What's a developer to do?
+This is a complete rewrite of Create New App.
 
-**[Create New App](https://github.com/qodesmith/create-new-app)**, _that's_ what you do!
+- **Bun-native, top to bottom.** The CLI is Bun TypeScript. The templates use Bun's bundler, Bun's dev server, Bun's `serve()`, and Bun's SQLite. No Node, no webpack, no Vite.
+- **Two opinionated templates, not a buffet of flags.** The previous CLI mixed-and-matched Express, MongoDB, React Router, and sandbox files. v8 generates exactly one of two well-tested project shapes.
+- **Modern React stack.** React 19, TanStack Router (file-based, type-safe), TanStack Query, TanStack Form, Tailwind v4, shadcn/ui (Radix primitives), Jotai for state, Biome for lint/format, Knip for dead-code detection.
+- **Fullstack means fullstack.** The fullstack template ships with Hono routing, Drizzle ORM, LiteFS-replicated SQLite, Better Auth (including passkeys), Resend email, a Fly.io deploy config, and a multi-stage Dockerfile.
 
-It's just like CRA but with full stack options - and more! You get a [Webpack](https://webpack.js.org/configuration/) development server, a build which ties all-the-things together, the fancy new [React Fast Refresh](https://medium.com/javascript-in-plain-english/what-is-react-fast-refresh-f3d1e8401333), and a custom SCSS utility library named [Sassyons](https://github.com/qodesmith/sassyons) - atomic CSS anyone? Optionally include [React Router](https://reacttraining.com/react-router/), [Express](https://expressjs.com/), and [MongoDB](https://mongodb.github.io/node-mongodb-native/). Don't need some of the goodies included? No worries! A few CLI flags and you're off to the web development races with whatever it is you _do_ need. No ejecting either. Everything is set up for you, loaded with comments and links, and ready for your tweaking - or not. You're gonna like this. I promise.
+If you want the old Express/MongoDB/sandbox CLI, install v7. v8 is a different tool with the same name.
+
+---
+
+## Requirements
+
+**[Bun](https://bun.sh) is required.** This generator runs on Bun, and every project it generates runs on Bun too - dev server, bundler, test runner, SQLite driver, production server. No Node, no webpack, no Vite. Bun is fast, batteries-included, and a joy to work with - that's the whole point.
+
+If Bun isn't installed, the CLI prints an install hint and exits. Get Bun first:
+
+```shell
+curl -fsSL https://bun.sh/install | bash
+```
 
 ## Installation
 
 ```shell
+bun install -g create-new-app
+# or with npm:
 npm install -g create-new-app
+# or use it ad-hoc:
+bunx create-new-app my-app
 ```
+
+---
 
 ## Usage
 
-### Guided Process
-
-It couldn't be easier to use Create New App. Simply type `create-new-app` (or `cna` for short) and you'll start the guided process:
-
-1. Enter a name for your app
-2. Would you like to include React Router?
-3. Would you like to include an Express server?
-4. Would you like to include MongoDB?
-
-### Manual Options
-
-Simplest example: `create-new-app <app-name>`<br>
-^^^ #Boom. Your app is running on `http://localhost:8080`.
-
-Want the full control of all the options? No problem:
+### Guided
 
 ```shell
-create-new-app <app-name> [options]
-
-# Shorthand:
-cna <app-name> [options]
-```
-
-### Sandbox Project
-
-Sometimes you simply want a quick sandbox project to test something real quick. Maybe in order to test a simple function or some CSS. Create New App has you covered:
-
-```shell
-cna <app-name> --sandbox
-```
-
-This will generate 3 files for you, tied together in `index.html`:
-
-1. index.html
-2. main.js
-3. styles.css
-
-Simple, no? Let's look at some other examples...
-
-## Other Examples
-
-```shell
-# Let the guided process walk you through it:
 create-new-app
-
-# You already have a local API built & running at `localhost:1234`:
-create-new-app awesomeness --api / --apiPort 1234
-
-# Perhaps all requests to that local api are behind the `/api` flag:
-create-new-app awesomeness --api /api --apiPort 1234
-
-# You've decided you want a new API. Express is set up for you:
-create-new-app awesomeness -e
-
-# You want a new API with MongoDB wired up & ready to go:
-create-new-app awesomeness -m
+# or the short alias:
+cna
 ```
 
-## Webpack Magic
+You'll be asked two things:
 
-**Webpack 5!!!** While Webpack certainly seems like magic, let's just go over what that "magic" is doing for you in this project.
+1. **Project name** - used as the directory name and as the `name` field in `package.json`. Must be lowercase, may contain numbers, hyphens, and underscores, and must not start with a number or hyphen.
+2. **Project type** - `Fullstack` or `Client-only SPA`.
 
-### Development Server
+That's it. The generator copies the template, replaces `{{PROJECT_NAME}}` placeholders, installs dependencies with Bun, runs `bunx biomeInit`, merges some VS Code settings if a `.vscode` directory was created, and initializes a git repo.
 
-This is an obvious one. You're developing, right? Well, you're in luck. Webpack is running a development server that defaults to port 8080. Visit `http://localhost:8080`, make changes to your JS or SCSS files, and watch Webpack refresh that screen.
+### Non-interactive
 
-### Tree Shaking / Minification
+```shell
+# Name only - prompts for the type.
+cna my-app
 
-Delivers super-sexy minified JavaScript without those dead branches! Your CSS is purged & minified as well. #Bandwidth
+# Name + type - runs without prompts.
+cna my-app --type fullstack
+cna my-app -t client-only
 
-### Babel / Polyfilling
+# Validate-only mode: never prompt. Errors out if anything is missing or invalid.
+cna my-app -t fullstack -y
+```
 
-Write ES6+ and beyond. Babel 7 is integrated and CNA is tweaked to support modern browsers. If you need to support older browsers, simply adjust the `browserslist` field in the `package.json` file. `@babel/polyfill` has been [deprecated](http://bit.ly/2DTXGpe), but fear not! `core-js` to the rescue. Check it out at the top of `entry.js`.
+### Options
 
-### Postcss
+| Option           | Alias | Type    | Description                                                                                       |
+|------------------|-------|---------|---------------------------------------------------------------------------------------------------|
+| `[project-name]` | -     | string  | Positional. Used as the directory name and `package.json` name. Prompted if omitted.              |
+| `--type`         | `-t`  | string  | One of `fullstack`, `client-only`. Prompted if omitted (or invalid) and `--yes` isn't set.        |
+| `--yes`          | `-y`  | boolean | Skip all prompts. Every required value must be present and valid, or the CLI exits with an error. |
+| `--help`         | `-h`  | boolean | Print help and exit.                                                                              |
+| `--version`      | `-v`  | boolean | Print the version and exit.                                                                       |
 
-SCSS is included and get's compiled down to CSS. But that's half the magic. [Postcss](https://github.com/postcss/postcss) is [autoprefixing](https://github.com/postcss/autoprefixer) our styles, smartly grouping [media queries](https://github.com/hail2u/node-css-mqpacker) together, [combining](https://github.com/ChristianMurphy/postcss-combine-duplicated-selectors) redudant selectors, [removing](https://github.com/ben-eb/postcss-discard-comments) comments, minifying [color names](https://www.npmjs.com/package/postcss-colormin), and [sorting](https://github.com/Siilwyn/css-declaration-sorter) properties for better gzip compression! It's also [purging](https://github.com/FullHuman/postcss-purgecss) unused css (see below).
+If `--yes` is omitted, any value that's missing or fails validation is prompted for (with the invalid value pre-filled so you can correct it).
 
-### Purgecss
+After generation:
 
-Automatically [removes unused CSS](https://www.purgecss.com/)! It's only triggered when you run a build for production, so you can still hack away in Chrome's console and have access to all your styles. Also included is the [purgecss-whitelister](https://github.com/qodesmith/purgecss-whitelister) to prevent CSS from 3rd party tools being removed that you want to keep.
+```shell
+cd my-app
+bun dev
+```
 
-### CleanWebpackPlugin
+**Always use `bun` to run the generated project's scripts - not `npm run`.** The templates use inline env-var prefixes in `package.json` scripts (e.g. `NODE_ENV=development bun --bun run ./startDev.ts`), which is POSIX shell syntax. Bun's built-in shell handles this on every platform, including Windows. `npm run` dispatches through `cmd.exe` on Windows and fails with `'NODE_ENV' is not recognized`. Stick to `bun dev`, `bun run db:init`, and so on.
 
-[CleanWebpackPlugin](http://bit.ly/2WEalXF) is used to clean the `dist` folder when running a build. It's the folder that will contain your app's bundled assets.
+Search the generated codebase for `TODO` to find the spots you'll want to address before deploying.
 
-### MiniCssExtractPlugin
+---
 
-[MiniCssExtractPlugin](http://bit.ly/2YYiAvg) removes the CSS data that's in the JS bundle and extracts it into a CSS file. This is the recommended plugin to use instead of the old [extract text webpack plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin).
+## The two templates
 
-### HtmlWebpackPlugin
+### Fullstack
 
-[HtmlWebpackPlugin](http://bit.ly/2WBxaLR) generates the `index.html` file. Dynamically creates a `<style>` tag in the `<head>` of the document and a `<script>` tag before the closing `<body>` tag, referencing the build assets.
+A single deployable that serves the React client and a Hono-based API from one Bun process.
 
-## Options
+**Stack**
 
-### React Router
+- **Runtime / bundler**: Bun (`bun build` + `bun --bun run`), with HMR in dev via Bun's native hot reloading
+- **Server**: Bun's `serve()` with Hono routes mounted as the fallback `fetch` handler
+- **Database**: SQLite via Bun's `bun:sqlite` + [Drizzle ORM](https://orm.drizzle.team/), with [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview) wired up for local schema inspection
+- **Replicated SQLite in prod**: [LiteFS](https://fly.io/docs/litefs/) (Fly.io) for read replicas and primary failover
+- **Auth**: [Better Auth](https://www.better-auth.com/) with `@better-auth/passkey` for WebAuthn
+- **Email**: [Resend](https://resend.com/) + [React Email](https://react.email/) templates (signup verification, change-email, password reset, account deletion)
+- **Client**: React 19 + [TanStack Router](https://tanstack.com/router) (file-based, type-safe, with route trees auto-generated by `tsr watch`), [TanStack Query](https://tanstack.com/query), [TanStack Form](https://tanstack.com/form), [Jotai](https://jotai.org/) for atom-based state
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/), [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css), [shadcn/ui](https://ui.shadcn.com/) components on top of Radix primitives, [Lucide](https://lucide.dev/) icons, [Motion](https://motion.dev/) for animations
+- **Validation**: [Arktype](https://arktype.io/) (`@hono/arktype-validator`, `drizzle-arktype`)
+- **Image handling**: Bun's native [`Bun.Image`](https://bun.sh/docs/runtime/image) for avatar processing (resize + WebP compression, no native deps)
+- **Deploy**: Multi-stage `Dockerfile` (production), `Dockerfile.local` (local prod testing), `fly.toml`, `litefs.yml`, and a `deploy.ts` script
+- **Tooling**: [Biome](https://biomejs.dev/) for lint + format, [Knip](https://knip.dev/) for dead-code detection, strict TypeScript with separate `tsconfig.json` projects for `client/`, `server/`, and `shared/`
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Alias</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td width="125px"><code>--router</code></td>
-      <td align="center"><code>-r</code></td>
-      <td>Boolean</td>
-      <td>
-        Includes <a href="https://github.com/ReactTraining/react-router">React Router</a> in your application, completely wired up & ready to go. Enjoy the widely supported go-to router of choice in the React ecosystem!
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--router</code>
-        <br><code>-r</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-  </tbody>
-</table>
+**Repository shape**
 
-### Server - Express, MongoDB, API
+```
+my-app/
+├── src/
+│   ├── client/          # React app (entry: app.tsx)
+│   │   ├── routes/      # File-based TanStack Router
+│   │   ├── components/  # `ui/` (shadcn) and `custom/`
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   ├── state/       # Jotai atoms
+│   │   ├── apiClient.ts # Hono RPC + Better Auth clients
+│   │   └── router.tsx
+│   ├── server/
+│   │   ├── bunServer.ts # Entry - Bun.serve()
+│   │   ├── hono/        # API routes, auth, static assets
+│   │   ├── middleware/  # auth, admin, CORS, no-direct-request, security headers
+│   │   ├── db/          # Drizzle schemas, migrations, seed, Drizzle Studio
+│   │   ├── email/       # React Email templates
+│   │   └── utils/       # logger, env helpers, error handling
+│   └── shared/          # Code/types shared across client and server
+├── build.ts             # Production bundle (client + server in one pass)
+├── startDev.ts          # Dev orchestrator (spawns `tsr watch` + `bun --hot`)
+├── initDevDb.ts         # First-run DB bootstrap
+├── deploy.ts            # Fly.io deploy script
+├── Dockerfile           # Multi-stage prod image
+├── Dockerfile.local     # Identical pipeline for local prod smoke-tests
+├── fly.toml
+├── litefs.yml
+└── package.json
+```
 
-If you're developing a fullstack app we've got you covered with Express and MongoDB. If you _already have_ an existing server that you'd like to connect to - these options are for you too.
+**Scripts**
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Alias</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td width="180px"><code>--express</code></td>
-      <td width="80px" align="center"><code>-e</code></td>
-      <td>Boolean</td>
-      <td>
-        Set's up a Node server running Express.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--express</code>
-        <br><code>-e</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td ><code>--api</code></td>
-      <td align="center">-</td>
-      <td>String</td>
-      <td>
-        Sets the key value to <code>devServer.proxy[api]</code> in <code>webpack.config.js</code>. Used when you have a local back-end you'd like to proxy requests to while developing. For example, set this to <code>/api</code> if your backend responds to calls at <code>/api/some-endpoint</code>.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--api /api</code>
-        <br><code>--api=/api</code>
-      </td>
-      <td><code>"/api"</code></td>
-    </tr>
-    <tr>
-      <td><code>--mongo</code></td>
-      <td align="center"><code>-m</code></td>
-      <td>Boolean</td>
-      <td>
-        Set's up MongoDB with a Node server running Express, all wired up & ready to go! If you use this option, no need to also use `--express`.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--mongo</code>
-        <br><code>-m</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--devServerPort</code></td>
-      <td align="center">-</td>
-      <td>Number</td>
-      <td>
-        Port number to the webpack development server. You'll visit the app locally at <code>http://localhost:&lt;devServerPort&gt;</code>.
-        <br>Note: <code>apiPort</code> takes priority over <code>devServerPort</code>. In the event they are both the same, <code>devServerPort</code> will automatically be adjusted.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--devServerPort 1234</code>
-        <br><code>--devServerPort=1234</code>
-      </td>
-      <td><code>8080</code></td>
-    </tr>
-    <tr>
-      <td><code>--apiPort</code></td>
-      <td align="center">-</td>
-      <td>Number</td>
-      <td>
-        Port number to the webpack development server. You'll visit the app locally at <code>http://localhost:&lt;devServerPort&gt;</code>.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--devServerPort 1234</code>
-        <br><code>--devServerPort=1234</code>
-      </td>
-      <td><code>3000</code></td>
-    </tr>
-    <tr>
-      <td><code>--mongoPort</code></td>
-      <td align="center"><code>--mp</code></td>
-      <td>Number</td>
-      <td>
-        Port number that MongoDB connects on. If you haven't <span style="font-style: italic;">specifically</span> set MongoDB's port when you installed it locally, simply leave this alone and use the default value.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--mongoPort 30123</code>
-        <br><code>--mongoPort=30123</code>
-        <br><code>--mp 30123</code>
-        <br><code>--mp=30123</code>
-      </td>
-      <td><code>27017</code></td>
-    </tr>
-    <tr>
-      <td><code>--mongoPortProd</code></td>
-      <td align="center"><code>--mpp</code></td>
-      <td>Number</td>
-      <td>
-        Port number that MongoDB connects to <span style="font-style: italic;"><strong>in production</strong></span>. This value <span style="font-style: italic;">should</span> be different than the default value when using MongoDB in production. It defaults to <code>27017</code> in case you didn't change the port in your production environment. But for security reasons, do yourself the favor and don't use the default value in production.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--mongoPortProd 30123</code>
-        <br><code>--mongoPortProd=30123</code>
-        <br><code>--mpp 30123</code>
-        <br><code>--mpp=30123</code>
-      </td>
-      <td><code>27017</code></td>
-    </tr>
-    <tr>
-      <td><code>--mongoUser</code></td>
-      <td align="center"><code>--mu</code></td>
-      <td>String</td>
-      <td>
-        CNA is set up to to use authentication in production with MongoDB. This sets the user value. You will also need to set a user password, but there's no cli option. Nobody should type a password into a cli! The variable <code>MONGO_USER_PASSWORD</code> will be available in the <code>.env</code> file, but will not be set. Set it manually. See <code>cna --mongoHelp</code> for more information.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--mongoUser mongo_master</code>
-        <br><code>--mongoUser=mongo_master</code>
-        <br><code>--mu mongo_master</code>
-        <br><code>--mu=mongo_master</code>
-      </td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td><code>--mongoAuthSource</code></td>
-      <td align="center"><code>--mas</code></td>
-      <td>String</td>
-      <td>
-        CNA is set up to to use authentication in production with MongoDB. This sets the database name for MongoDB to authenticate against. See <code>cna --mongoHelp</code> for more information.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--mongoAuthSource admin</code>
-        <br><code>--mongoAuthSource=admin</code>
-        <br><code>--mas admin</code>
-        <br><code>--mas=admin</code>
-      </td>
-      <td>-</td>
-    </tr>
-  </tbody>
-</table>
+| Script                 | What it does                                                                    |
+|------------------------|---------------------------------------------------------------------------------|
+| `bun dev`              | Start the dev server (HMR, route tree generation, auto-open browser)            |
+| `bun dev:all`          | Same as `dev`, but listens on `0.0.0.0` so phones on the same Wi-Fi can connect |
+| `bun dev:email`        | Run React Email's preview server against `src/server/email`                     |
+| `bun run db:init`      | Initialize a fresh local SQLite database with schema and seed data              |
+| `bun run db:view`      | Open Drizzle Studio against the local database                                  |
+| `bun run typecheck`    | Run `tsc --noEmit` against shared, client, server, and root configs             |
+| `bun run knip`         | Find unused files, exports, and dependencies                                    |
+| `bun run deploy`       | Build and deploy to Fly.io                                                      |
+| `bun run docker:local` | Build the local production Docker image                                         |
 
-### package.json options
+### Client-only SPA
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Alias</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td width="160px"><code>--author</code></td>
-      <td width="90px" align="center">-</td>
-      <td>String</td>
-      <td>Populates package.json field name of the same value.</td>
-      <td><code>''</code></td>
-    </tr>
-    <tr>
-      <td><code>--description</code></td>
-      <td align="center">-</td>
-      <td>String</td>
-      <td>Populates package.json field name of the same value.</td>
-      <td><code>''</code></td>
-    </tr>
-    <tr>
-      <td><code>--email</code></td>
-      <td align="center">-</td>
-      <td>String</td>
-      <td>Populates package.json field name of the same value.</td>
-      <td><code>''</code></td>
-    </tr>
-    <tr>
-      <td><code>--keywords</code></td>
-      <td align="center">-</td>
-      <td>Array</td>
-      <td>Populates package.json field name of the same value.<br>Example:<br><code>--keywords one two three</code></td>
-      <td><code>[]</code></td>
-    </tr>
-    <tr>
-      <td><code>--browserslist</code></td>
-      <td><code>--bl</code></td>
-      <td>Array</td>
-      <td>Populates package.json field name of the same value. This field is used by <a href="https://babeljs.io/docs/en/babel-preset-env#browserslist-integration">@babel/preset-env</a> and <a href="https://github.com/postcss/autoprefixer#browsers">autoprefixer</a>.The default value is aimed at supporting modern browsers only. Also, using <code>last 2 versions</code> <a href="http://bit.ly/2Z5pejA">might not do what you think.</a></td>
-      <td><code>['>0.25%', 'not ie 11', 'not op_mini all']</code></td>
-    </tr>
-    <tr>
-      <td><code>--repository</code></td>
-      <td><code>--repo</code></td>
-      <td>Array</td>
-      <td>Populates package.json field name of the same value.</td>
-      <td><code>''</code></td>
-    </tr>
-  </tbody>
-</table>
+A standalone React app - no server, no database, no auth. Same DX as the fullstack template (Bun bundler, HMR, TanStack everything, Tailwind, shadcn) but without the backend layer.
 
-### Information-only
+**Stack**
 
-| Option        | Alias  | Description                                                                     |
-| ------------- | ------ | ------------------------------------------------------------------------------- |
-| `--help`      | `-h`   | Outputs the help screen, showing all the above documented options.              |
-| `--mongoHelp` | `--mh` | Outputs some helpful information about getting MongoDB prepared for production. |
-| `--version`   | `-v`   | Outputs the version of CNA that you're using to the terminal.                   |
+React 19, TanStack Router, TanStack Query, TanStack Form, Tailwind v4, shadcn/ui, Jotai, Biome, Knip, strict TypeScript, Bun bundler + dev server.
 
-### Other options
+**Repository shape**
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Alias</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td width="125px"><code>--offline</code></td>
-      <td><code>-o</code></td>
-      <td>Boolean</td>
-      <td>
-        Forces npm to use cache when installing. Great if you don't want npm hogging your data. Tethering, anyone?
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--offline</code>
-        <br><code>-o</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--force</code></td>
-      <td><code>-f</code></td>
-      <td>Boolean</td>
-      <td>
-        Want to install an app in a pre-existing folder? Use this. But be warned! There's a possibility you can overwrite files if the names conflict!
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--force</code>
-        <br><code>-f</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--noGit</code></td>
-      <td>-</td>
-      <td>Boolean</td>
-      <td>
-        Don't want a git repo? This is for you. Keep in mind CNA won't initialize a git repo if the `--force` or `--repository` options are used.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--noGit</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--sandbox</code></td>
-      <td><code>-s</code></td>
-      <td>Boolean</td>
-      <td>
-        Creates a "sandbox" app which consists of 3 simple files:
-        <ul>
-          <li>index.html</li>
-          <li>styles.css</li>
-          <li>main.js</li>
-        </ul>
-        If you use this option, everything else will be ignored. This option is perfect for whipping up a quick directory with some files to play in.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--sandbox</code>
-        <br><code>-s</code>
-      </td>
-      <td><code>false</code></td>
-    </tr>
-    <tr>
-      <td><code>--title</code></td>
-      <td><code>-t</code></td>
-      <td>String</td>
-      <td>
-        Sets the webpage title generated by Webpack's <code>HtmlWebpackPlugin</code>.
-        <br><br>
-        <em>Examples:</em>
-        <br><code>--title 'JavaScript Rules'</code>
-        <br><code>--title='JavaScript Rules'</code>
-        <br><code>-t 'JavaScript Rules'</code>
-        <br><code>-t='JavaScript Rules'</code>
-      </td>
-      <td>Title-cased version of the app name.</td>
-    </tr>
-  </tbody>
-</table>
+```
+my-app/
+├── src/
+│   ├── routes/        # File-based TanStack Router
+│   ├── components/    # `ui/` (shadcn) and `custom/`
+│   ├── hooks/
+│   ├── lib/
+│   ├── state/         # Jotai atoms
+│   ├── app.tsx
+│   ├── app.css
+│   └── router.tsx
+├── index.html
+├── build.ts
+├── startDev.ts
+├── bunServer.ts       # Tiny static server used by the bundler in dev
+├── Dockerfile
+└── package.json
+```
+
+**Scripts**
+
+| Script                 | What it does                                            |
+|------------------------|---------------------------------------------------------|
+| `bun dev`              | Start the dev server with HMR and route tree generation |
+| `bun dev:all`          | Same as `dev`, but listens on `0.0.0.0`                 |
+| `bun run typecheck`    | Run `tsc --noEmit`                                      |
+| `bun run knip`         | Find unused files, exports, and dependencies            |
+| `bun run docker:build` | Build a production Docker image                         |
+
+---
+
+## What the generator actually does
+
+When you run `cna my-app -t fullstack`, here's the sequence:
+
+1. **Validate inputs.** Name and type are checked against the same rules used by the prompts.
+2. **Create the target directory.** `my-app/` under your current working directory.
+3. **Plan the file copy.** The template directory (`src/projects/fullstack` or `src/projects/client-only-react`) plus a small `src/shared` overlay are walked. Files ending in `-keep` (e.g. `.gitignore-keep`, `biome.jsonc-keep`) and directories ending in `-keep` (e.g. `.claude-keep`, `.vscode-keep`) are renamed on write - this dodges npm's behavior of stripping `.gitignore` from published packages and keeps Bun workspaces from misinterpreting nested config files in the monorepo.
+4. **Replace placeholders.** `{{PROJECT_NAME}}` is replaced with your app name; `{{BETTER_AUTH_SECRET}}` is replaced with a freshly generated 32-byte hex secret (fullstack only). The template's `package.json` name (`create-new-app-template-fullstack` / `-client-only`) is also rewritten to your project's name.
+5. **Write the files.** Single pass, parent directories created as needed.
+6. **Install dependencies** via `bun install`.
+7. **Initialize Biome** via `bunx biomeInit --no-include-biome-config` (the template ships its own `biome.jsonc`, so we skip the one biomeInit would write).
+8. **Merge VS Code settings** if a `.vscode/settings.json` was generated.
+9. **`git init`.** Non-fatal - if it fails, you'll see a warning and the rest of the generation still succeeds.
+
+---
+
+## Development
+
+This repo uses Bun. Standard workflow:
+
+```shell
+bun install           # Install root deps
+bun run dev           # Run the CLI locally (src/cli/index.ts)
+bun test              # Run the test suite
+bun test --watch      # Watch mode
+bun run check         # Biome check
+bun run check:fix     # Biome check + autofix
+```
+
+### Project layout
+
+```
+create-new-app/
+├── bin/
+│   └── cna.js                      # Node wrapper - checks for Bun, execs the CLI
+├── src/
+│   ├── cli/
+│   │   ├── index.ts                # Entry - parse args, run, print next steps
+│   │   ├── options-parser.ts       # node:util parseArgs wrapper
+│   │   ├── resolveProjectOptions.ts # CLI args → validated options, with prompts
+│   │   └── generateProject.ts      # Plan + apply file writes, run post-install
+│   ├── projects/
+│   │   ├── fullstack/              # Fullstack template
+│   │   └── client-only-react/      # Client-only template
+│   ├── shared/                     # Files overlaid on every template
+│   ├── utils/                      # run(), withSpinner()
+│   └── types.ts
+├── tests/                          # bun:test
+├── package.json                    # Workspaces: src/projects/*
+└── biome.jsonc
+```
+
+The two templates are real Bun workspace members, so you can `cd src/projects/fullstack && bun install` to work on them as if they were standalone apps.
+
+### Adding to a template
+
+Templates are plain files on disk. To change what gets generated:
+
+1. Edit files under `src/projects/<template>/`.
+2. Use `{{PROJECT_NAME}}` and `{{BETTER_AUTH_SECRET}}` placeholders where needed.
+3. If you're adding a file that npm would otherwise strip on publish, or that Bun workspaces would resolve too eagerly, suffix the name with `-keep` (and update tests if relevant).
+4. Run `bun test` - the integration test generates a real project and checks the output.
+
+---
+
+## License
+
+MIT &copy; [Qodesmith](https://github.com/qodesmith)

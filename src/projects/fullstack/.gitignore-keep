@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.**
+!.env.example
+
+# caches
+*.tsbuildinfo
+
+# Database
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# TanStack temp dir
+.tanstack
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private keys / certs
+*.pem

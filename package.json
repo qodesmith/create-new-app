@@ -1,42 +1,30 @@
 {
   "name": "create-new-app",
-  "version": "7.5.0",
-  "description": "Easily generate a new React application, optionally with Express & MongoDB.",
-  "scripts": {
-    "test": "jest ; node removeTestFolders.js",
-    "test:update": "jest --updateSnapshot ; node removeTestFolders.js",
-    "test:update:noinstall": "NO_INSTALL=1 jest --updateSnapshot ; node removeTestFolders.js",
-    "test:remain": "REMAIN=true npm run test",
-    "e2e": "jest ./tests/e2e ; node removeTestFolders.js",
-    "e2e:noinstall": "NO_INSTALL=1 npm run e2e",
-    "e2e:update": "jest ./tests/e2e --updateSnapshot ; node removeTestFolders.js",
-    "e2e:update:noinstall": "NO_INSTALL=1 npm run e2e:update",
-    "unit": "jest ./tests/unit",
-    "unit:update": "jest ./tests/unit --updateSnapshot",
-    "preinstall": "node ./versionCheck.js",
-    "jest": "jest"
+  "version": "8.0.0",
+  "description": "Generate a full-stack React application ready for production",
+  "type": "module",
+  "workspaces": ["src/projects/*"],
+  "bin": {
+    "create-new-app": "./bin/cna.js",
+    "cna": "./bin/cna.js"
   },
-  "keywords": [
-    "react",
-    "react-router",
-    "webpack",
-    "scss",
-    "sassyons",
-    "express",
-    "mongo",
-    "mongodb",
-    "generator",
-    "generate",
-    "scaffold",
-    "scaffolding",
-    "development",
-    "app",
-    "cli",
-    "tool",
-    "template",
-    "MERN",
-    "MERN stack"
-  ],
+  "scripts": {
+    "dev": "bun run src/cli/index.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "check": "biome check",
+    "check:fix": "biome check --write .",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format",
+    "format:fix": "biome format --write .",
+    "prepublishOnly": "bun test && bun run check"
+  },
+  "files": ["bin", "src"],
+  "engines": {
+    "bun": ">=1.3.13"
+  },
+  "keywords": [],
   "homepage": "https://github.com/qodesmith/create-new-app",
   "bugs": {
     "url": "https://github.com/qodesmith/create-new-app/issues",
@@ -44,34 +32,17 @@
   },
   "license": "MIT",
   "author": "Qodesmith <theqodesmith@gmail.com> (https://github.com/qodesmith/create-new-app)",
-  "main": "main.js",
-  "bin": {
-    "create-new-app": "main.js",
-    "cna": "main.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/qodesmith/create-new-app"
   },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/e2e/config/extends.js"
-    ]
-  },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "command-line-args": "^5.1.1",
-    "dotenv": "^10.0.0",
-    "fs-extra": "^10.0.0",
-    "npm-registry-fetch": "^11.0.0",
-    "validate-npm-package-name": "^3.0.0"
+    "@clack/prompts": "^1.5.1",
+    "@qodestack/biome-config": "^2.4.14",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.16.0",
-    "eslint-plugin-react": "^7.21.5",
-    "jest": "^26.6.3"
-  },
-  "engines": {
-    "node": ">=12.13.0"
+    "@types/bun": "^1.3.14",
+    "typescript": "^6.0.3"
   }
 }

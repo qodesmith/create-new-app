@@ -1,0 +1,71 @@
+{
+  "root": true,
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@qodestack/biome-config/react"],
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!dist",
+      "!*.lock",
+
+      // Avoid Biome's complaints around template interpolation. It expects
+      // spaces between curly braces like {{ TEMPLATE }} but we don't have that.
+      "!src/projects/**/*.html"
+    ]
+  },
+  "overrides": [
+    // General rules for client-side code.
+    {
+      "includes": [
+        "src/projects/fullstack/src/client/**/*.ts",
+        "src/projects/fullstack/src/client/**/*.tsx",
+        "src/projects/client-only-react/src/**/*.ts",
+        "src/projects/client-only-react/src/**/*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            // Avoid importing process in client code.
+            "noProcessGlobal": "off",
+
+            // Inform Biome about how our custom hooks work.
+            "useExhaustiveDependencies": {
+              "level": "error",
+              "fix": "safe",
+              "options": {
+                "hooks": [{"name": "useStable", "stableResult": true}]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // Allow Tanstack routes & Shadcn components to export more than components.
+    {
+      "includes": [
+        "src/projects/fullstack/src/client/routes/**/*.tsx",
+        "src/projects/fullstack/src/client/components/**/*.tsx",
+        "src/projects/fullstack/src/client/components/**/*.ts",
+        "src/projects/client-only-react/src/routes/**/*.tsx",
+        "src/projects/client-only-react/src/components/**/*.tsx",
+        "src/projects/client-only-react/src/components/**/*.ts"
+      ],
+      "linter": {"rules": {"style": {"useComponentExportOnlyModules": "off"}}}
+    },
+
+    // Don't re-order package.json keys.
+    {
+      "includes": ["**/package.json"],
+      "assist": {
+        "actions": {
+          "source": {
+            "useSortedKeys": "off"
+          }
+        }
+      }
+    }
+  ]
+}
